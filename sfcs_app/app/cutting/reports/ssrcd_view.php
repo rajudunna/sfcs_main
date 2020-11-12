@@ -313,7 +313,6 @@ if(isset($_POST['submit']))
 	$category=$_POST['category'];
 	$mpo=$_POST['mpo'];
 	$sub_po=$_POST['sub_po'];
-
 	// get master po
 	$qry_toget_podescri="SELECT master_po_description,master_po_number,mpo_serial FROM $pps.mp_order WHERE master_po_number ='$mpo' AND is_active=1";
     $toget_podescri_result=mysqli_query($link_new, $qry_toget_podescri) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -328,13 +327,14 @@ if(isset($_POST['submit']))
 
 	// get sub po
 	 /**Below query to get sub po's by using master po's */
-	 $qry_toget_sub_order="SELECT po_description,po_number,mpo_serial,sub_po_serial FROM $pps.mp_sub_order LEFT JOIN $pps.mp_order ON mp_order.master_po_number = mp_sub_order.master_po_number WHERE mp_sub_order.master_po_number='$mpo' AND mp_sub_order.po_number='$sub_po'  AND mp_sub_order.plant_code='$plantcode' AND mp_sub_order.is_active=1";
+	 $qry_toget_sub_order="SELECT po_description,po_number,mpo_serial,sub_po_serial FROM $pps.mp_sub_order LEFT JOIN $pps.mp_order ON mp_order.master_po_number = mp_sub_order.master_po_number WHERE mp_sub_order.master_po_number='$mpo' AND mp_sub_order.po_number='$sub_po'  AND mp_sub_order.plant_code='$plant_code' AND mp_sub_order.is_active=1";
 	 $toget_sub_order_result=mysqli_query($link_new, $qry_toget_sub_order) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 	 $toget_podescri_num=mysqli_num_rows($toget_sub_order_result);
 	 if($toget_podescri_num>0){
 		 while($toget_sub_order_row=mysqli_fetch_array($toget_sub_order_result))
 			 {
-				 $mpo_sequence = getMasterPoSequence($toget_sub_order_row['mpo_serial'],$plantcode);
+				 $mpo_sequence = getMasterPoSequence($toget_sub_order_row['mpo_serial'],$plant_code);
 				 $spo_sequnce = $mpo_sequence."-".$toget_sub_order_row['sub_po_serial'];
 				 $spo_seq_desc = $spo_sequnce."/".$toget_sub_order_row['po_description'];
 			 }
@@ -432,8 +432,7 @@ if(isset($_POST['submit']))
 
 
 				// to get actual cut qty
-				$qryGetcutqty ="SELECT sum(good_quantity) as good_quantity,style,schedule,color,size,parent_job,resource_id,DATE(created_at) as created_at,shift FROM $pts.transaction_log WHERE plant_code='$plant_code' AND `operation`=15 AND style ='$style' AND color ='$color' AND schedule ='$schedule' AND is_active=1 GROUP BY size ORDER BY size
-					";
+				$qryGetcutqty ="SELECT sum(good_quantity) as good_quantity,style,schedule,color,size,parent_job,resource_id,DATE(created_at) as created_at,shift FROM $pts.transaction_log WHERE plant_code='$plant_code' AND `operation`=15 AND style ='$style' AND color ='$color' AND schedule ='$schedule' AND is_active=1 GROUP BY size ORDER BY size";
 
 				$qryGetcutqtyresult = mysqli_query($link, $qryGetcutqty) or die("Error".$qryGetcutqty.mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -487,7 +486,8 @@ if(isset($_POST['submit']))
 												{
 													$planned_plies = $plies*$row['size_ratio'];
 													$actul_plies = $actual_plies*$row['size_ratio'];
-													$fabric_not_allocated_qty[$row['size']] = $planned_plies - $actul_plies;
+													$fabric_not_allocated_qty[$row['size']]+= $planned_plies - $actul_plies;
+													$actual_cut[$row['size']]+= $actual_plies*$row['size_ratio'];
 												}
 										}
 			?>
@@ -618,7 +618,7 @@ if(isset($_POST['submit']))
 							$notallocatedsum = 0;
 							if(count($fabric_not_allocated_qty)){
 								foreach($fabric_not_allocated_qty as $key => $value){
-									$notallocated = ($value['value'])?$value['value']:0;
+									$notallocated = ($value)?$value:0;
 									echo "<td class='success'>".$notallocated."</td>";
 									$notallocatedsum+=$notallocated;
 								}
@@ -628,7 +628,7 @@ if(isset($_POST['submit']))
 								}	
 							}
 							
-							echo "<td class='success'>".$percentage."</td>";
+							echo "<td class='success'>".$notallocatedsum."</td>";
 						?>
 					</tr>
 					<tr>
@@ -636,7 +636,7 @@ if(isset($_POST['submit']))
 						<?php
 							$sumqty = 0;
 							$cnt =1;
-							foreach($actual_cut_qty as $key => $value){
+							foreach($actual_cut as $key => $value){
 								echo "<td class='success'>".$value."</td>";
 								$sumqty+=$value;
 								$cnt++;
