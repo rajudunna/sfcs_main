@@ -1,8 +1,8 @@
 
 <?php
 error_reporting(E_ALL & ~E_NOTICE);
-// $include_path=getenv('config_job_path');
-$include_path='C:\xampp\htdocs\sfcs_main';
+$include_path=getenv('config_job_path');
+// $include_path='C:\xampp\htdocs\sfcs_main';
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 include($include_path.'\sfcs_app\common\config\functions_v2.php');
 include($include_path.'\sfcs_app\common\config\enums.php');
