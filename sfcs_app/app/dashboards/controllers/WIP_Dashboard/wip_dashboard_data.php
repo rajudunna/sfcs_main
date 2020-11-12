@@ -3,10 +3,11 @@ error_reporting(E_ALL);
 include($_SERVER['DOCUMENT_ROOT'] . '/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'] . '/sfcs_app/common/config/functions_v2.php');
 include($_SERVER['DOCUMENT_ROOT'] . '/sfcs_app/common/config/enums.php');
-$section = $_GET['section'];
-$get_operation = $_GET['operations'];
-$session_plant_code = $_GET['plant_code'];
-$session_username = $_GET['username'];
+$section = $_POST['section'];
+$get_operation = $_POST['operations'];
+$session_plant_code = $_POST['plant_code'];
+$session_username = $_POST['username'];
+$authToken=$_POST['authToken'];
 // var_dump($session_username);
 // $session_plant_code='AIP';
 $data = '';
@@ -20,7 +21,7 @@ if ($section) {
     //getting all workstations against to the section
     $workstations_data = getWorkstationsForSection($session_plant_code, $section)['workstation_data'];
     $data .= "<table><tbody>";
-
+    $form_unique_id=1;
     foreach ($workstations_data as $wkstation) {
         $line_breaker = 0;
         $total_wip = 0;
@@ -29,13 +30,18 @@ if ($section) {
         $module=$wkstation['workstation_code'];
         $module_id=$wkstation['workstation_id'];
         $data .= "<tr rowspan=2>";
-        // $data .= "<td rowspan=2 class='mod-td'><span class='mod-no'><b>" . $wkstation['workstation_code'] . "</b></span></td>";
-        $data.="<td rowspan=2 class='mod-td'><span class='mod-no'><b>
-        <a href='javascript:void(0)' onclick='window.open(\"$popup_url?module_id=$module_id&module_code=$module&plantCode=$session_plant_code&username=$session_username&operation_code=$get_operation\",\"Popup\");'>
-                        $module</a>
-    
-        </b></span></td>";
+        $data.='<td rowspan=2 class="mod-td">
+        <form id="TheForm_' .$section.$form_unique_id . '" method="post" action="' . $popup_url . '" target="TheWindow">
+        <input type="hidden" name="module_id" value="' . $module_id . '" />
+        <input type="hidden" name="module_code" value="' . $module . '" />
+        <input type="hidden" name="plantCode" value="' . $session_plant_code . '" />
+        <input type="hidden" name="username" value="' . $session_username . '" />
+        <input type="hidden" name="operation_code" value="'.$get_operation.'" />
+        <input type="hidden" name="authToken" value="' . $authToken . '" />
+        </form>';
 
+       $data.="<span class='mod-no'><b>
+       <a href='javascript:void(0)' onclick=\"window.open('', 'TheWindow');document.getElementById('TheForm_$section$form_unique_id').submit();\">$module</a></b></span>";
 
         /*  BLOCK - 1 */
         $sewing_wip = getsewingJobsData($section, $wkstation['workstation_id'], $get_operation, $session_plant_code);
@@ -50,7 +56,8 @@ if ($section) {
 
 
         $data .= "</tr>";
-    } //modules loop ending
+        $form_unique_id++;
+    } 
 } else {
     $data = "Section Data Not Found";
 }
@@ -59,7 +66,6 @@ $data .= "</tbody></table>";
 $section_data['data'] = $data;
 $section_data['java_scripts'] = $jquery_data;
 echo json_encode($section_data);
-
 ?>
 
 <?php
