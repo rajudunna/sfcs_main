@@ -67,7 +67,7 @@ try
 				$delete_fab_result=mysqli_query($link, $delete_fab)or die(exception($delete_fab));
 
 				
-				$update_plan_qry="update $pps.requested_dockets set plan_lot_ref='',print_status='',fabric_status=0,updated_user='$username',updated_at=NOW() where jm_docket_line_id='".$doc_no."' and plant_code='".$plant_code."'";
+				$update_plan_qry="update $pps.requested_dockets set plan_lot_ref='',print_status=NOW(),fabric_status=0,updated_user='$username',updated_at=NOW() where jm_docket_line_id='".$doc_no."' and plant_code='".$plant_code."'";
 				// $update_plan_qry_fab_result=mysqli_query($link, $update_plan_qry) or die(exception($update_plan_qry));
 				
 				// $update_plan_qry_p="update $bai_pro3.plan_dashboard set fabric_status=0 where doc_no=".$doc_no;
@@ -77,6 +77,7 @@ try
 				$approve_at = date("Y-m-d H:i:s");
 
 				$update_req_qry = "update $wms.material_deallocation_track set approved_by='".$username."',approved_at='".$approve_at."',status='Deallocated',updated_user='$username',updated_at=NOW() where id=".$id." and plant_code='".$plant_code."'";
+				// echo $update_req_qry;
 				$update_req_qry_result=mysqli_query($link, $update_req_qry) or die(exception($update_req_qry));
 				echo "<script>swal('sucess','Material De-Allocated Successfully','success')</script>";
 				
