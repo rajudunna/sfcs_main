@@ -352,7 +352,7 @@ var table2Filters = {
 //]]>
 </script>
 <?php
-$cache_date="critical_rejection_report_new";
+$cache_date="critical_rejection_report_new_".$plant_code;
 $cachefile = $path."/quality/reports/".$cache_date.'.htm';
 // saving captured output to file
 file_put_contents($cachefile, ob_get_contents());
@@ -367,5 +367,3 @@ echo "Execution took ".$duration." milliseconds.";
 </div></div>
 </body>
 </html>
-
-
