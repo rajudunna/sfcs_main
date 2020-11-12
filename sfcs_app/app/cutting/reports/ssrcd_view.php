@@ -443,10 +443,53 @@ if(isset($_POST['submit']))
 				}
 
 
-				// docket info
-				$docketinfo = "SELECT FROM $pps.`jm_dockets` left join $pps.`jm_dockets` "
-
-
+					// to get fabric not allocated qty
+					$tot_qty=0;
+					$Qry_get_cut_details="SELECT docket_line_number,lp_lay_id,lay_status, lp_lay.plies as actualplies, jm_docket_lines.created_at as docket_date, lp_lay.created_at as cut_date, lp_lay.cut_report_status, lay_number, shift  FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_docket_lines` ON jm_docket_lines.`jm_docket_line_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_docket_lines.plant_code='$plant_code'";
+					$sql_result6=mysqli_query($link, $Qry_get_cut_details) or die("Error".$Qry_get_cut_details.mysqli_error($GLOBALS["___mysqli_ston"]));
+	
+	
+										while($fabnotallocated=mysqli_fetch_array($sql_result6))
+										{
+											$docket_no=$fabnotallocated['docket_line_number'];
+											$actual_plies=$fabnotallocated['actualplies'];
+												//To get docket_details
+												$result_docket_qty=getDocketInformation($docket_no,$plant_code);
+												$get_docket_qty=$result_docket_qty['docket_quantity'];
+												$get_cut_no=$result_docket_qty['cut_no'];
+												$doc_req=$total_order_qty*$consumption;
+	
+												 // get the docket info
+												$docket_info_query = "SELECT doc_line.plies, doc_line.fg_color,doc_line.docket_line_number,
+												doc.marker_version_id, doc.ratio_comp_group_id,
+												cut.cut_number, cut.po_number,doc_line.jm_docket_line_id,
+												ratio_cg.component_group_id as cg_id, ratio_cg.ratio_id, ratio_cg.master_po_details_id
+												FROM $pps.jm_docket_lines doc_line 
+												LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = doc_line.jm_docket_id
+												LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
+												LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
+												WHERE doc_line.plant_code = '$plant_code' AND doc_line.docket_line_number='$docket_no' AND doc_line.is_active=true";
+											$docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+	
+												while($row = mysqli_fetch_array($docket_info_result))
+												{
+													$plies =  $row['plies'];
+													$po_number = $row['po_number'];
+													$ratio_id = $row['ratio_id'];
+												}
+											 // get the docket qty
+												$size_ratio_sum = 0;
+												$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id = '$ratio_id' ";
+												$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+												$fabric_not_allocated_qty = array();
+												$fabric_allocated_plies = 0;
+												while($row = mysqli_fetch_array($size_ratios_result))
+												{
+													$planned_plies = $plies*$row['size_ratio'];
+													$actul_plies = $actual_plies*$row['size_ratio'];
+													$fabric_not_allocated_qty[$row['size']] = $planned_plies - $actul_plies;
+												}
+										}
 			?>
 
 				<table class="table table-bordered table-responsive">
@@ -496,11 +539,11 @@ if(isset($_POST['submit']))
 						<?php
 							foreach($quantitydetails as $key => $value){
 								$percentage = ($value['percentage'])?$value['percentage']:0;
-								echo "<td class='success'>".$percentage."</td>";
+								echo "<td class='success'>".$percentage." %</td>";
 
 							}
 							$avgpercentage = (($sumqty/$esumqty));
-							echo "<td class='success'>".$percentage."</td>";
+							echo "<td class='success'>".$percentage." %</td>";
 						?>
 					</tr>
 					<tr>
@@ -571,7 +614,22 @@ if(isset($_POST['submit']))
 					</tr>
 					<tr>
 						<th class='danger'>Fabric not allocated qty</th>
-						
+						<?php
+							$notallocatedsum = 0;
+							if(count($fabric_not_allocated_qty)){
+								foreach($fabric_not_allocated_qty as $key => $value){
+									$notallocated = ($value['value'])?$value['value']:0;
+									echo "<td class='success'>".$notallocated."</td>";
+									$notallocatedsum+=$notallocated;
+								}
+							}else{
+								foreach($size_code as $key => $value){
+									echo "<td class='success'>0</td>";
+								}	
+							}
+							
+							echo "<td class='success'>".$percentage."</td>";
+						?>
 					</tr>
 					<tr>
 						<th class='danger'>Actual cut qty</th>
@@ -630,13 +688,20 @@ if(isset($_POST['submit']))
 	</div>
 	<div class="row">
 		<div class="col-sm-12">
+							<?php
+									$tot_qty=0;
+									$Qry_get_cut_details="SELECT docket_line_number,lp_lay_id,lay_status, lp_lay.plies as actualplies, jm_docket_lines.created_at as docket_date, lp_lay.created_at as cut_date, lp_lay.cut_report_status, lay_number, shift  FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_docket_lines` ON jm_docket_lines.`jm_docket_line_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_docket_lines.plant_code='$plant_code'";
+									$sql_result6=mysqli_query($link, $Qry_get_cut_details) or die("Error".$Qry_get_cut_details.mysqli_error($GLOBALS["___mysqli_ston"]));
+									if(mysqli_num_rows($sql_result6))
+									{
+							?>
 					<table class="table table-bordered table-responsive">
 							<tr>
 								<th colspan=2></th>
 								<th colspan=<?=count($size_code)?>>Size Ratio</th>
-								<th colspan=4></th>
+								<th colspan=3></th>
 								<th colspan=<?=count($size_code)?>>Actual Cut Details</th>
-								<th colspan=9></th>
+								<th colspan=7></th>
 							</tr>
 							<tr class="primary">
 								<th>Docket No</th>
@@ -666,16 +731,13 @@ if(isset($_POST['submit']))
 								<th>Module</th>
 							</tr>
 							<?php
-									$tot_qty=0;
-									$Qry_get_cut_details="SELECT docket_line_number,lp_lay_id,lay_status, lp_lay.plies as actualplies, jm_docket_lines.created_at as docket_date, lp_lay.created_at as cut_date, lp_lay.cut_report_status, lay_number, shift  FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_docket_lines` ON jm_docket_lines.`jm_docket_line_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_docket_lines.plant_code='$plant_code'";
-									$sql_result6=mysqli_query($link, $Qry_get_cut_details) or die("Error".$Qry_get_cut_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 									while($row6=mysqli_fetch_array($sql_result6))
 									{
 										$docket_no=$row6['docket_line_number'];
 										$lay_id=$row6['lp_lay_id'];
 										$cut_status=$row6['lay_status'];
 										$actual_plies=$row6['actualplies'];
-										$docket_date=$row6['docket_date'];
+										// $docket_date=$row6['docket_date'];
 										$cut_date=$row6['cut_date'];
 										$cut_report_status=$row6['cut_report_status'];
 										$lay_number=$row6['lay_number'];
@@ -747,14 +809,17 @@ if(isset($_POST['submit']))
 
 											while($get_date = mysqli_fetch_array($get_docket_date_result))
 											{
-												echo "<td>".date('Y-m-d',strtotime($get_date['docket_date']))."</td>";
-												$latest_updated_date = $get_date['latest_updated_date'];
+												$docket_date = date('Y-m-d',strtotime($get_date['docket_date']));
+												$latest_updated_date = date('Y-m-d',strtotime($get_date['latest_updated_date']));
 												$resource_id = $get_date['resource_id'];
 											}
+											$docket_date = ($docket_date)?$docket_date: ' - ';
+											$latest_updated_date = ($latest_updated_date)?$latest_updated_date: ' - ';
+											echo "<td>".$docket_date."</td>";
 											echo "<td>".date('Y-m-d',strtotime($cut_date))."</td>";
 											// echo "<td>".$lay_number."</td>";
 											echo "<td>".$shift."</td>";
-											echo "<td>".date('Y-m-d',strtotime($latest_updated_date))."</td>";
+											echo "<td>".$latest_updated_date."</td>";
 											//To get workstation description
 											$query = "select workstation_description from $pms.workstation where plant_code='$plant_code' and workstation_id = '".$resource_id."' AND is_active=1";
 											$query_result=mysqli_query($link_new, $query) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -770,6 +835,11 @@ if(isset($_POST['submit']))
 							
 							?>
 					</table>
+					<?php
+					}else{
+						echo "<div><h4 style='color:red; text-align:center;'>No Dockets</h4></div>";
+					}
+					?>
 		</div>
 	</div>
 	
