@@ -1,7 +1,7 @@
 <?php
 	
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
-error_reporting(0);
+// error_reporting(0);
 $plantcode = $_SESSION['plantCode'];
 if(isset($_GET['submit']))
 {
@@ -41,7 +41,7 @@ if(isset($_GET['submit']))
   // }
   
     $qryGetOps="SELECT DISTINCT(operation) as ops FROM $pts.fg_m3_transaction WHERE sub_po='$subpo' AND plant_code='$plantcode' AND is_active=1 order by operation";
-    $toget_sub_order_result=mysqli_query($link_new, $qryGetOps) or exit("Sql Error at getting operations".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $toget_sub_order_result=mysqli_query($link_new, $qryGetOps) or exit("Sql Error at getting fg_m3 at 1nt".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_podescri_num=mysqli_num_rows($toget_sub_order_result);
   if($toget_podescri_num == 0)
   {
@@ -65,7 +65,7 @@ if(isset($_GET['submit']))
    $table_data .= "</tr></thead><tbody>";
 
    $qryMoquantities="SELECT DISTINCT(mo_number) AS mo,SUM(quantity) AS qty FROM $pts.fg_m3_transaction WHERE sub_po='$subpo' AND plant_code='$plantcode' AND is_active=1";
-   $resultMoQant=mysqli_query($link_new, $qryMoquantities) or exit("Sql Error at getting operations".mysqli_error($GLOBALS["___mysqli_ston"]));
+   $resultMoQant=mysqli_query($link_new, $qryMoquantities) or exit("Sql Error at getting Fg M3".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_podescri_num=mysqli_num_rows($resultMoQant);
     while($moRow=mysqli_fetch_array($resultMoQant))
    {  
@@ -73,8 +73,8 @@ if(isset($_GET['submit']))
         $qty=$moRow['qty'];
          $counter++;
       /**getting mo quantiy,color,size */
-      $qryGetMoSize="SELECT color_name,size_name FROM $oms.oms_products_info WHERE mo_numebr='$mos'";
-      $resultqryGetMoSize=mysqli_query($link_new, $qryGetMoSize) or exit("Sql Error at getting operations".mysqli_error($GLOBALS["___mysqli_ston"]));
+      $qryGetMoSize="SELECT color_name,size_name FROM $oms.oms_products_info WHERE mo_number='$mos'";
+      $resultqryGetMoSize=mysqli_query($link_new, $qryGetMoSize) or exit("Sql Error at oms Pro Info".mysqli_error($GLOBALS["___mysqli_ston"]));
       $toget_podescri_num=mysqli_num_rows($resultqryGetMoSize);
       while($sizeRow=mysqli_fetch_array($resultqryGetMoSize))
       { 
@@ -84,7 +84,7 @@ if(isset($_GET['submit']))
 
       /**getting mo quantiy,color,size */
       $qryGetMoQty="SELECT mo_quantity FROM $oms.oms_mo_details WHERE mo_numebr='$mos'";
-      $resultqryGetMoQty=mysqli_query($link_new, $qryGetMoSize) or exit("Sql Error at getting operations".mysqli_error($GLOBALS["___mysqli_ston"]));
+      $resultqryGetMoQty=mysqli_query($link_new, $qryGetMoSize) or exit("Sql Error at mo details".mysqli_error($GLOBALS["___mysqli_ston"]));
       $toget_podescri_num=mysqli_num_rows($resultqryGetMoQty);
       while($moQtyRow=mysqli_fetch_array($resultqryGetMoQty))
       { 
