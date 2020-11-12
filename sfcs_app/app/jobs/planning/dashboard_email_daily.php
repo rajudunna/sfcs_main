@@ -17,6 +17,7 @@ if($_GET['plantCode']){
 }else{
 	$plant_code = $argv[1];
 }
+
 $username=$_SESSION['userName'];
 $message= '<html><head><style type="text/css">
 
@@ -61,14 +62,14 @@ $decimal_factor=2;
 	$message.="<tr><th>Section</th><th>Plan SAH</th><th>Actual SAH</th><th>Output</th><th>Rework</th><th>EFF %</th></tr>";
 	$sms.="S-P-A-O-E%\r\n";
 	
-	$sql="SELECT CONCAT(bac_date,'-',bac_no,'-',bac_shift) AS tid, ROUND(SUM((bac_qty*smv)/60),2) AS sah, sum(bac_Qty) as outp FROM $pts.bai_log_buf WHERE plant_code='$plant_code' and bac_date between \"$date\" and \"$date\" GROUP BY CONCAT(bac_date,'-',bac_no,'-',bac_shift) ";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
-{
+// 	$sql="SELECT CONCAT(bac_date,'-',bac_no,'-',bac_shift) AS tid, ROUND(SUM((bac_qty*smv)/60),2) AS sah, sum(bac_Qty) as outp FROM $pts.bai_log_buf WHERE plant_code='$plant_code' and bac_date between \"$date\" and \"$date\" GROUP BY CONCAT(bac_date,'-',bac_no,'-',bac_shift) ";
+// $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// while($sql_row=mysqli_fetch_array($sql_result))
+// {
 	
-	$sql_new="update $pts.grand_rep set act_sth=".$sql_row['sah'].",act_out=".$sql_row['outp'].",updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plant_code' and tid='".$sql_row['tid']."'";
-	mysqli_query($link, $sql_new) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-}
+// 	$sql_new="update $pts.grand_rep set act_sth=".$sql_row['sah'].",act_out=".$sql_row['outp'].",updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plant_code' and tid='".$sql_row['tid']."'";
+// 	mysqli_query($link, $sql_new) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+// }
 //New block create to flush data from the begginig of the month to till date  and refresh the data in SFCS - kiran 20150722
 	
 	$tot_plan_sth=0;
@@ -89,9 +90,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	for($i=0;$i<sizeof($sec_ids);$i++)
 	{
-		$sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\", sum(rework_qty) as rework from $pts.grand_rep where plant_code='$plant_code' and date =\"$date\" and section=".$sec_ids[$i]."";
+		$sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\" from $pts.grand_rep where plant_code='$plant_code' and date =\"$date\" and section='".$sec_ids[$i]."'";
 		// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$plan_sth=round($sql_row["plan_sth"],$decimal_factor);
@@ -100,7 +101,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$act_clh=round($sql_row["act_clh"],$decimal_factor);
 			$plan_out=$sql_row['plan_out'];
 			$act_out=$sql_row['act_out'];
-			$rework=$sql_row['rework'];
 			$act_out_check+=$act_out;
 			
 			$tot_plan_sth+=$plan_sth;
@@ -109,7 +109,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$tot_act_clh+=$act_clh;
 			$tot_plan_out+=$plan_out;
 			$tot_act_out+=$act_out;
-			$tot_rework+=$rework;
 	
 		}
 
@@ -117,7 +116,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$sms.=$sec_ids[$i]."-".round($plan_sth,$decimal_factor)."-".round($act_sth,$decimal_factor)."-".round($act_out,$decimal_factor);
 
 		$message.="<td align=right>".round($act_out,$decimal_factor)."</td>";
-		$message.="<td align=right>".round($rework,$decimal_factor)."</td>";
+		// $message.="<td align=right>".round($rework,$decimal_factor)."</td>";
 		
 		if($act_clh>0)
 		{
@@ -156,66 +155,64 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	//TO show buyer wise performance
 	
-	$sql="select bai_pro3.fn_buyer_division_sch(substring_index(max_style,'^',1)) as buyer,sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\", sum(rework_qty) as rework from $pts.grand_rep where plant_code='$plant_code' and date =\"$date\" GROUP BY bai_pro3.fn_buyer_division_sch(SUBSTRING_INDEX(max_style,'^',1)) order by bai_pro3.fn_buyer_division_sch(SUBSTRING_INDEX(max_style,'^',1))";
-	// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		$plan_sth=round($sql_row["plan_sth"],$decimal_factor);
-		$plan_clh=round($sql_row["plan_clh"],$decimal_factor);
-		$act_sth=round($sql_row["act_sth"],$decimal_factor);
-		$act_clh=round($sql_row["act_clh"],$decimal_factor);
-		$plan_out=$sql_row['plan_out'];
-		$act_out=$sql_row['act_out'];
-		$rework=$sql_row['rework'];
-		//$act_out_check+=$act_out;
+// 	$sql="select bai_pro3.fn_buyer_division_sch(substring_index(max_style,'^',1)) as buyer,sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\" from $pts.grand_rep where plant_code='$plant_code' and date =\"$date\" GROUP BY bai_pro3.fn_buyer_division_sch(SUBSTRING_INDEX(max_style,'^',1)) order by bai_pro3.fn_buyer_division_sch(SUBSTRING_INDEX(max_style,'^',1))";
+// 	// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+// while($sql_row=mysqli_fetch_array($sql_result))
+// 	{
+// 		$plan_sth=round($sql_row["plan_sth"],$decimal_factor);
+// 		$plan_clh=round($sql_row["plan_clh"],$decimal_factor);
+// 		$act_sth=round($sql_row["act_sth"],$decimal_factor);
+// 		$act_clh=round($sql_row["act_clh"],$decimal_factor);
+// 		$plan_out=$sql_row['plan_out'];
+// 		$act_out=$sql_row['act_out'];
+// 		//$act_out_check+=$act_out;
 
-		$buyer=$sql_row['buyer'];
+// 		$buyer=$sql_row['buyer'];
 		
-		$message.="<tr><td align=left>".$buyer."</td><td align=right>".round($plan_sth,$decimal_factor)."</td><td align=right>".round($act_sth,$decimal_factor)."</td>";
-		//$message.="<td>".round($plan_out,0)."</td>";
-		$message.="<td align=right>".round($act_out,$decimal_factor)."</td>";
-		$message.="<td align=right>".round($rework,$decimal_factor)."</td>";
-		if($act_clh>0)
-		{
-			$message.="<td align=right>".round(($act_sth/$act_clh)*100,$decimal_factor)." %</td>";
+// 		$message.="<tr><td align=left>".$buyer."</td><td align=right>".round($plan_sth,$decimal_factor)."</td><td align=right>".round($act_sth,$decimal_factor)."</td>";
+// 		//$message.="<td>".round($plan_out,0)."</td>";
+// 		$message.="<td align=right>".round($act_out,$decimal_factor)."</td>";
+// 		// $message.="<td align=right>".round($rework,$decimal_factor)."</td>";
+// 		if($act_clh>0)
+// 		{
+// 			$message.="<td align=right>".round(($act_sth/$act_clh)*100,$decimal_factor)." %</td>";
 		
-		}
-		else
-		{
-			$message.="<td align=right>0 %</td>";
-		}
-		$message.="</tr>";
+// 		}
+// 		else
+// 		{
+// 			$message.="<td align=right>0 %</td>";
+// 		}
+// 		$message.="</tr>";
 
-	}
+// 	}
 	
-	//To show buyer wise performance
+// 	//To show buyer wise performance
 
-$sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\", sum(rework_qty) as rework from $pts.grand_rep where plant_code='$plant_code' and month(date) =".date("m",strtotime($date))." and year(date)=".date("Y",strtotime($date));
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		$mtd_plan_sth=round($sql_row["plan_sth"],$decimal_factor);
-		$mtd_plan_clh=round($sql_row["plan_clh"],$decimal_factor);
-		$mtd_act_sth=round($sql_row["act_sth"],$decimal_factor);
-		$mtd_act_clh=round($sql_row["act_clh"],$decimal_factor);
-		$mtd_plan_out=$sql_row['plan_out'];
-		$mtd_act_out=$sql_row['act_out'];
-		$rework=$sql_row['rework'];
-	}
+// $sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\" from $pts.grand_rep where plant_code='$plant_code' and month(date) =".date("m",strtotime($date))." and year(date)=".date("Y",strtotime($date));
+// 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+// while($sql_row=mysqli_fetch_array($sql_result))
+// 	{
+// 		$mtd_plan_sth=round($sql_row["plan_sth"],$decimal_factor);
+// 		$mtd_plan_clh=round($sql_row["plan_clh"],$decimal_factor);
+// 		$mtd_act_sth=round($sql_row["act_sth"],$decimal_factor);
+// 		$mtd_act_clh=round($sql_row["act_clh"],$decimal_factor);
+// 		$mtd_plan_out=$sql_row['plan_out'];
+// 		$mtd_act_out=$sql_row['act_out'];
+// 	}
 	
-	$message.="<tr bgcolor=yellow><td align=center>Factory MTD</td><td align=right>".round($mtd_plan_sth,$decimal_factor)."</td><td align=right>".round($mtd_act_sth,$decimal_factor)."</td><td align=right>".round($mtd_act_out,$decimal_factor)."</td><td align=right>".round($rework,$decimal_factor)."</td>";
+// 	$message.="<tr bgcolor=yellow><td align=center>Factory MTD</td><td align=right>".round($mtd_plan_sth,$decimal_factor)."</td><td align=right>".round($mtd_act_sth,$decimal_factor)."</td><td align=right>".round($mtd_act_out,$decimal_factor)."</td>";
 	
-	if($mtd_act_clh>0)
-	{
-		$message.="<td align=right>".round(($mtd_act_sth/$mtd_act_clh)*100,$decimal_factor)." %</td>";
+// 	if($mtd_act_clh>0)
+// 	{
+// 		$message.="<td align=right>".round(($mtd_act_sth/$mtd_act_clh)*100,$decimal_factor)." %</td>";
 	
-	}
-	else
-	{
-		$message.="<td align=right>0 %</td>";
-	}
-	$message.="</tr>";
+// 	}
+// 	else
+// 	{
+// 		$message.="<td align=right>0 %</td>";
+// 	}
+// 	$message.="</tr>";
 	
 
 	$message.="<tr><td colspan=6 align=center>L.U.: ".date("m/d H:i:s")."</td></tr>";
