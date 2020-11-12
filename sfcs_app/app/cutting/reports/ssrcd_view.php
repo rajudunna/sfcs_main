@@ -4,8 +4,8 @@ include("$url1");
 $url2 =  $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'); 
 include("$url2");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R')); 
-// $plant_code=$_SESSION['plantCode'];
-$plant_code='AIP';
+$plant_code=$_SESSION['plantCode'];
+// $plant_code='AIP';
 $username=$_SESSION['userName'];
 ?>
 
