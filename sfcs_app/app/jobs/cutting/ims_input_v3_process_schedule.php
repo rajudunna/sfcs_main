@@ -1,7 +1,8 @@
 
 <?php
 error_reporting(E_ALL & ~E_NOTICE);
-$include_path=getenv('config_job_path');
+// $include_path=getenv('config_job_path');
+$include_path='C:\xampp\htdocs\sfcs_main';
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 include($include_path.'\sfcs_app\common\config\functions_v2.php');
 include($include_path.'\sfcs_app\common\config\enums.php');
@@ -98,7 +99,7 @@ foreach($departments as $department)    //section Loop -start
 	{
 		foreach($workstationsArray as $workstations)
 		{
-			$module=$workstations['workstationId'];	
+			$moduleId=$workstations['workstationId'];	
 			$moduleCode=$workstations['workstationCode'];
 			for($i=0;$i<sizeof($teams);$i++)
 			{
@@ -196,11 +197,11 @@ foreach($departments as $department)    //section Loop -start
 					$sql_grand_rep_res=mysqli_query($link, $sql_grand_rep) or exit("Checking Grand rep information".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_grand_rep_res)==0)
 					{
-						$sql_insert="insert into $pts.grand_rep(tid,plant_code,created_user,created_at) values ('".$code."','$plant_Code','$username','".date('Y-m-d')."')";
+						$sql_insert="insert into $pts.grand_rep(tid,plant_code,created_user,created_at) values ('".$code."','$plant_Code','$username','".date('Y-m-d H:i:s')."')";
 						// echo $sql2."<br>";
 						mysqli_query($link, $sql_insert) or exit("Inserting into Grand cumulative data".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}  
-					$sql_update="update $pts.grand_rep set date='".$date."', module='$moduleCode', shift='".$teams[$i]."', section='".$sectionCode."', plan_out='$plan_out', act_out='$act_qty', plan_clh='$plan_clh', act_clh='$act_clh', plan_sth='$plan_sah', act_sth='$act_sah', smv='$smv', nop='$plan_smo',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plant_Code' and tid='".$code."'";
+					$sql_update="update $pts.grand_rep set date='".$date."', module='$moduleId', shift='".$teams[$i]."', section='".$sectionId."', plan_out='$plan_out', act_out='$act_qty', plan_clh='$plan_clh', act_clh='$act_clh', plan_sth='$plan_sah', act_sth='$act_sah', smv='$smv', nop='$plan_smo',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plant_Code' and tid='".$code."'";
 					// echo $sql_update."---1<br>";
 					mysqli_query($link, $sql_update) or exit("Updating Grand cumulative data".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
@@ -211,11 +212,11 @@ foreach($departments as $department)    //section Loop -start
 					$sql_grand_rep_res=mysqli_query($link, $sql_grand_rep) or exit("Checking Grand rep information".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_grand_rep_res)==0)
 					{
-						$sql_insert="insert into $pts.grand_rep(tid,plant_code,created_user,created_at) values ('".$code."','$plant_Code','$username','".date('Y-m-d')."')";
+						$sql_insert="insert into $pts.grand_rep(tid,plant_code,created_user,created_at) values ('".$code."','$plant_Code','$username','".date('Y-m-d H:i:s')."')";
 						// echo $sql2."<br>";
 						mysqli_query($link, $sql_insert) or exit("Inserting into Grand cumulative data".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}  
-					$sql_update="update $pts.grand_rep set date='".$date."', module='$moduleCode', shift='".$teams[$i]."', section='".$sectionCode."', plan_out='$plan_out', act_out='0', plan_clh='$plan_clh', act_clh='0', plan_sth='$plan_sah', act_sth='0', smv='0.00', nop='$plan_smo',updated_user='$username',updated_at='".date('Y-m-d H:i:s')."' where plant_code='$plant_Code' and tid='".$code."'";
+					$sql_update="update $pts.grand_rep set date='".$date."', module='$moduleId', shift='".$teams[$i]."', section='".$sectionId."', plan_out='$plan_out', act_out='0', plan_clh='$plan_clh', act_clh='0', plan_sth='$plan_sah', act_sth='0', smv='0.00', nop='$plan_smo',updated_user='$username',updated_at='".date('Y-m-d H:i:s')."' where plant_code='$plant_Code' and tid='".$code."'";
 					// echo $sql_update."---2<br>";
 					mysqli_query($link, $sql_update) or exit("Updating Grand cumulative data".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
