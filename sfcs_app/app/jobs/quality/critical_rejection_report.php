@@ -555,7 +555,7 @@ var table2Filters = {
 //]]>
 </script>
 <?php
-$cache_date="critical_rejection_report";
+$cache_date="critical_rejection_report_".$plant_code;
 $cachefile = $path."/quality/reports/".$cache_date.'.htm';
 // saving captured output to file
 file_put_contents($cachefile, ob_get_contents());
