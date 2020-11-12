@@ -409,10 +409,14 @@ foreach ($workstations as $emb_key => $emb_value) {
   $task_header_id = $result_planned_jobs['task_header_id'];
   $task_job_ids = $result_planned_jobs['task_job_ids'];
   $task_job_header_log = $result_planned_jobs['task_header_log_time'];
+  // var_dump($job_number);
 
   foreach ($task_job_ids as $task_job_id => $task_header_id_j) {
     $log_time = $task_job_header_log[$task_header_id_j];
     $emb_job_no = $job_number[$task_header_id_j];
+    // $emb_job_no = ;
+    // var_dump($job_number);die();
+    // var_dump($task_header_id_j);
     //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK HEADER ID
     $job_detail_attributes = [];
     $qry_toget_style_sch = "SELECT attribute_name,attribute_value FROM $tms.task_attributes where task_jobs_id ='$task_job_id' and plant_code='$session_plant_code'";
@@ -431,7 +435,7 @@ foreach ($workstations as $emb_key => $emb_value) {
       $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
       $club_c_code = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
       $doc_no = $job_detail_attributes[$sewing_job_attributes['docketno']];
-      $job_num = $job_detail_attributes[$sewing_job_attributes['embjobno']];
+      $job_num = $job_detail_attributes[$sewing_job_attributes['sewingjobno']];
     
       $prev_operation=15;
 
@@ -490,7 +494,7 @@ foreach ($workstations as $emb_key => $emb_value) {
 
         $type = 'embellishment';
         // sfcs_app\app\production\controllers\embellishment_job\embellishment_job_scaning\scan_jobs.php
-        $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/sewing_job/sewing_job_scaning/scan_job.php', 3, 'N')."&dashboard_reporting=1&job_type=$departmentType&job_no=$emb_job_no&plant_code=$session_plant_code&username=$username&type=$type&operation_id=$operation_code&style=$style1&schedule=$schedule&color=$colors_db&barcode_generation=1";
+        $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/sewing_job/sewing_job_scaning/scan_job.php', 3, 'N')."&dashboard_reporting=1&job_type=$departmentType&job_no=$job_num&plant_code=$session_plant_code&username=$username&type=$type&operation_id=$operation_code&style=$style1&schedule=$schedule&color=$colors_db&barcode_generation=1";
         $title = str_pad("Style:" . trim($style1), 80) . "\n" . str_pad("CO:" . trim($co_no), 80) . "\n" . str_pad("Schedule:" . $schedule, 80) . "\n" . str_pad("Color:" . trim($colors_db), 50) . "\n" . str_pad("Cut_No:" . trim($club_c_code), 80) . "\n" . str_pad("DOC No:" . trim($doc_no), 80) . "\n" . str_pad("Total Plan Qty:" . $orginal_qty, 80) . "\n" . str_pad("Actual Cut Qty:" . $total, 80) . "\n" . str_pad("Send Qty:" . ($send_qty), 80) . "\n" . str_pad("Received Qty:" . ($good_qty), 80) . "\n" . str_pad("Rejected Qty:" . $rej_qty, 80) . "\n" . str_pad("Plan_Time:" . $log_time, 50) . "\n";
     
         echo "<div id=\"$sch_string\" style=\"float:left;\"><div id='$doc_string' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(" . $club_c_code . ")-OP:$operation_code</span></div></div><br>";
