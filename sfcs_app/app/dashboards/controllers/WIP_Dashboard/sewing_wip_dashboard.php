@@ -7,7 +7,7 @@ $url = getFullURLLevel($_GET['r'], 'wip_dashboard_data.php', 0, 'R');
 $RELOAD_TIME = (int)$wpt_refresh_time;
 $dashboard_name = "WIP";
 $session_plant_code = $_SESSION['plantCode'];
-$session_plant_code = 'AIP';
+// $session_plant_code = 'AIP';
 $username =  $_SESSION['userName'];
 $result_sections = getSections($session_plant_code);
 
@@ -33,6 +33,7 @@ $sections_str = implode(',', $sections[0]);
             <div class='row'>
                 <div class='col-sm-2'>
                     <input type="hidden" name="plant_code" id="plant_code" value="<?= $session_plant_code  ?>">
+                    <input type="hidden" name="user_name" id="user_name" value="<?= $username  ?>">
                     <label for='operations'>Sewing Operations</label>
                     <select class='form-control' name='operations' id='operations' onchange="load_data()">
                         <?php
@@ -132,12 +133,13 @@ $sections_str = implode(',', $sections[0]);
                 function call_ajax(section, sync_type) {
                     var operations = $('#operations').val();
                     var plant_code = $('#plant_code').val();
+                    var user_name = $('#user_name').val();
 
                     $('#sec-load-' + section).css('display', 'block');
                     $('#sec-' + section).html('');
                     $('#sec-' + operations).html('');
                     $.ajax({
-                        url: "<?= $url ?>?section=" + section + "&operations=" + operations + "&plant_code=" + plant_code
+                        url: "<?= $url ?>?section=" + section + "&operations=" + operations + "&plant_code=" + plant_code + "&username=" + user_name
                     }).done(function(data) {
                         try {
                             console.log(data);

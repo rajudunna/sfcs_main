@@ -22,9 +22,9 @@ $plantcode = $_GET['plantCode'];
 }
 if($_session['userName']){
 
-$username =  $_session['userName'];
+$user_name =  $_session['userName'];
 }else{
-$username = $_GET['username'];
+$user_name = $_GET['username'];
 
 }
 // error_reporting(E_ALL);
@@ -57,6 +57,8 @@ function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
 
 <script type="text/javascript" src="../../../../common/js/jquery.js"></script> 
 <script src="../../../../common/js/jquery.min.js"></script>
+<script src="../../../../common/js/sweetalert.min.js"></script>
+
 
 
 </head>
@@ -67,7 +69,9 @@ function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
 $work_station_id=$_GET['module_id'];
 $work_station=$_GET['module_code'];
 $operation=$_GET['operation_code'];
-$department='SEWING';
+$department = DepartmentTypeEnum::SEWING;
+
+// $department='SEWING';
 ini_set('max_execution_time', 30000);
 
 $qryMoudleName="SELECT workstation_description FROM $pms.`workstation` WHERE workstation_id ='$work_station_id'";
@@ -279,7 +283,7 @@ echo "<br/><div class='container-fluid'>";
                         	<option value=''>Please Select</option>
                             <?php
 							 $departmentType = DepartmentTypeEnum::SEWING;
-							 var_dump($departmentType);
+							//  var_dump($departmentType);
                              /**getting workstations based plant and department*/
                              $workstationsResult=getWorkstations($departmentType,$plantcode);
                              $workStations=$workstationsResult['workstation'];
@@ -349,19 +353,19 @@ $(document).ready(function(){
 						if(res.status)
 						{
 							swal('','Bundle Transfered Successfully','success')
-							setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&operation_code="+operation)} , 3000);
+							setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&plantCode="+plantcode+"&username="+user_name+"&operation_code="+operation)} , 3000);
 							
 						}
 						else
 						{
 							swal('',res.internalMessage,'error');
-							setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&operation_code="+operation)} , 3000);
+							setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&plantCode="+plantcode+"&username="+user_name+"&operation_code="+operation)} , 3000);
 						}                       
 						//$('#loading-image').hide();
 					},
 					error: function(res){
 						swal('Error in getting data');
-						setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&operation_code="+operation)} , 3000);
+						setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&plantCode="+plantcode+"&username="+user_name+"&operation_code="+operation)} , 3000);
 						//$('#loading-image').hide();
 					}
 				});

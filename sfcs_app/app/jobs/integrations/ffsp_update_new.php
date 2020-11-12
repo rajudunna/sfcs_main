@@ -73,17 +73,17 @@ foreach($store_data as $data){
         $pt_status=0;
     }    
    
-    $ft_query="select * from $pps.trims_status where style=\"$style\" and schedule=\"$schedule\" and color='$color' and plant_code=\"$plant_code\" and status_key='FT STATUS'";
+    $ft_query="select * from $wms.trims_status where style=\"$style\" and schedule=\"$schedule\" and color='$color' and plant_code=\"$plant_code\" and status_key='FT STATUS'";
     $ft_result=mysqli_query($link, $ft_query) or exit("Sql Error3".$ft_query."".mysqli_error($GLOBALS["___mysqli_ston"]));
     if(mysqli_num_rows($ft_result)>0){
-        $ft_update="update $pps.trims_status set status_key='FT STATUS',status_value='$ft_status' where style=\"$style\" and schedule=\"$schedule\" and color='$color' and plant_code=\"$plant_code\" and status_key='FT STATUS'";
+        $ft_update="update $wms.trims_status set status_key='FT STATUS',status_value='$ft_status' where style=\"$style\" and schedule=\"$schedule\" and color='$color' and plant_code=\"$plant_code\" and status_key='FT STATUS'";
         $ft_update_result=mysqli_query($link,$ft_update)or exit("Error updating bai_order_db".mysqli_error($GLOBALS["___mysqli_ston"])); 
         if($ft_update_result>0)
         {
             print("Updated FT STATUS for trims_status Sucessfully")."<br/>";
         }
     } else{
-        $ft_insert="insert into $pps.trims_status (style,schedule,color,status_key,status_value,plant_code,created_at,created_user,updated_at,updated_user) VALUES ('".$style."','$schedule','$color','FT STATUS','$ft_status','$plant_code',NOW(),'$username',NOW(),'$username')";
+        $ft_insert="insert into $wms.trims_status (style,schedule,color,status_key,status_value,plant_code,created_at,created_user,updated_at,updated_user) VALUES ('".$style."','$schedule','$color','FT STATUS','$ft_status','$plant_code',NOW(),'$username',NOW(),'$username')";
         $ft_insert_result = mysqli_query($link, $ft_insert) or exit("Sql Errore".mysqli_error($GLOBALS["___mysqli_ston"]));
         if($ft_insert_result>0)
         {
@@ -91,17 +91,17 @@ foreach($store_data as $data){
         }
     }
 
-    $st_query="select * from $pps.trims_status where style=\"$style\" and schedule=\"$schedule\" and color='$color' and plant_code=\"$plant_code\" and status_key='ST STATUS'";
+    $st_query="select * from $wms.trims_status where style=\"$style\" and schedule=\"$schedule\" and color='$color' and plant_code=\"$plant_code\" and status_key='ST STATUS'";
     $st_result=mysqli_query($link, $st_query) or exit("Sql Error3".$st_query."".mysqli_error($GLOBALS["___mysqli_ston"]));
     if(mysqli_num_rows($st_result)>0){
-        $st_update="update $pps.trims_status set status_key='ST STATUS',status_value='$st_status' where style=\"$style\" and schedule=\"$schedule\" and color='$color' and plant_code=\"$plant_code\" and status_key='ST STATUS'";
+        $st_update="update $wms.trims_status set status_key='ST STATUS',status_value='$st_status' where style=\"$style\" and schedule=\"$schedule\" and color='$color' and plant_code=\"$plant_code\" and status_key='ST STATUS'";
         $st_update_result=mysqli_query($link,$st_update)or exit("Error updating bai_order_db".mysqli_error($GLOBALS["___mysqli_ston"])); 
         if($st_update_result>0)
         {
             print("Updated ST STATUS for trims_status Sucessfully")."<br/>";
         }
     } else{
-        $st_insert="insert into $pps.trims_status (style,schedule,color,status_key,status_value,plant_code,created_at,created_user,updated_at,updated_user) VALUES ('".$style."','$schedule','$color','ST STATUS','$st_status','$plant_code',NOW(),'$username',NOW(),'$username')";
+        $st_insert="insert into $wms.trims_status (style,schedule,color,status_key,status_value,plant_code,created_at,created_user,updated_at,updated_user) VALUES ('".$style."','$schedule','$color','ST STATUS','$st_status','$plant_code',NOW(),'$username',NOW(),'$username')";
         $st_insert_result = mysqli_query($link, $st_insert) or exit("Sql Errore".mysqli_error($GLOBALS["___mysqli_ston"]));
         if($st_insert_result>0)
         {
@@ -109,17 +109,17 @@ foreach($store_data as $data){
         }
     }
 
-    $pt_query="select * from $pps.trims_status where style=\"$style\" and schedule=\"$schedule\" and color='$color' and plant_code=\"$plant_code\" and status_key='PT STATUS'";
+    $pt_query="select * from $wms.trims_status where style=\"$style\" and schedule=\"$schedule\" and color='$color' and plant_code=\"$plant_code\" and status_key='PT STATUS'";
     $pt_result=mysqli_query($link, $pt_query) or exit("Sql Error3".$pt_query."".mysqli_error($GLOBALS["___mysqli_ston"]));
     if(mysqli_num_rows($pt_result)>0){
-        $pt_update="update $pps.trims_status set status_key='PT STATUS',status_value='$pt_status' where style=\"$style\" and schedule=\"$schedule\" and color='$color' and plant_code=\"$plant_code\" and status_key='PT STATUS'";
+        $pt_update="update $wms.trims_status set status_key='PT STATUS',status_value='$pt_status' where style=\"$style\" and schedule=\"$schedule\" and color='$color' and plant_code=\"$plant_code\" and status_key='PT STATUS'";
         $pt_update_result=mysqli_query($link,$pt_update)or exit("Error updating bai_order_db".mysqli_error($GLOBALS["___mysqli_ston"])); 
         if($pt_update_result>0)
         {
             print("Updated PT STATUS for trims_status Sucessfully")."<br/>";
         }
     } else{
-        $pt_insert="insert into $pps.trims_status (style,schedule,color,status_key,status_value,plant_code,created_at,created_user,updated_at,updated_user) VALUES ('".$style."','$schedule','$color','PT STATUS','$pt_status','$plant_code',NOW(),'$username',NOW(),'$username')";
+        $pt_insert="insert into $wms.trims_status (style,schedule,color,status_key,status_value,plant_code,created_at,created_user,updated_at,updated_user) VALUES ('".$style."','$schedule','$color','PT STATUS','$pt_status','$plant_code',NOW(),'$username',NOW(),'$username')";
         $pt_insert_result = mysqli_query($link, $pt_insert) or exit("Sql Errore".mysqli_error($GLOBALS["___mysqli_ston"]));
         if($st_insert_result>0)
         {
