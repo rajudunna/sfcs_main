@@ -456,11 +456,10 @@ foreach ($workstations as $emb_key => $emb_value) {
       $club_c_code = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
       $doc_no = $job_detail_attributes[$sewing_job_attributes['docketno']];
       // $job_num = $job_detail_attributes[$sewing_job_attributes['embjobno']];
-       $job_num = $job_detail_attributes[$sewing_job_attributes['embjobno']];
-
+      $job_num = $job_detail_attributes[$sewing_job_attributes['sewingjobno']];
 
       $cut_operaation=15;
-      $task_job_trans = "SELECT original_quantity,good_quantity,rejected_quantity,operation_code,operation_seq FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' order by operation_seq desc limit 0,1";
+      $task_job_trans = "SELECT original_quantity,good_quantity,rejected_quantity,operation_code,operation_seq FROM $tms.task_job_status where task_jobs_id ='$task_job_id' order by operation_seq desc limit 0,1";
       $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
       if (mysqli_num_rows($task_job_trans_result) > 0) {
 
@@ -471,7 +470,7 @@ foreach ($workstations as $emb_key => $emb_value) {
           $operation_code = $row_res['operation_code'];
           $operation_seq = $row_res['operation_seq'];
         }
-        $task_job_trans2 = "SELECT good_quantity,operation_seq FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' order by operation_seq desc limit 1,1";
+        $task_job_trans2 = "SELECT good_quantity,operation_seq FROM $tms.task_job_status where task_jobs_id ='$task_job_id' order by operation_seq desc limit 1,1";
         $task_job_trans2_result = mysqli_query($link_new, $task_job_trans2) or exit("Sql Error at task_job_trans2_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
         while ($row_res = mysqli_fetch_array($task_job_trans2_result)) {
           $send_qty = $row_res['good_quantity'];
@@ -517,7 +516,7 @@ foreach ($workstations as $emb_key => $emb_value) {
 
         $type = 'embellishment';
         // sfcs_app\app\production\controllers\embellishment_job\embellishment_job_scaning\scan_jobs.php
-        $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/sewing_job/sewing_job_scaning/scan_job.php', 3, 'N')."&dashboard_reporting=1&job_type=$departmentType&job_no=$emb_job_no&plant_code=$session_plant_code&username=$username&type=$type&operation_id=$operation_code&style=$style1&schedule=$schedule&color=$colors_db&barcode_generation=1";
+        $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/sewing_job/sewing_job_scaning/scan_job.php', 3, 'N')."&dashboard_reporting=1&job_type=$departmentType&job_no=$job_num&plant_code=$session_plant_code&username=$username&type=$type&operation_id=$operation_code&style=$style1&schedule=$schedule&color=$colors_db&barcode_generation=1";
 
         $title = str_pad("Style:" . trim($style1), 80) . "\n" . str_pad("CO:" . trim($co_no), 80) . "\n" . str_pad("Schedule:" . $schedule, 80) . "\n" . str_pad("Color:" . trim($colors_db), 50) . "\n" . str_pad("Cut_No:" . trim($club_c_code), 80) . "\n" . str_pad("DOC No:" . trim($doc_no), 80) . "\n" . str_pad("Total Plan Qty:" . $orginal_qty, 80) . "\n" . str_pad("Actual Cut Qty:" . $total, 80) . "\n" . str_pad("Send Qty:" . ($send_qty), 80) . "\n" . str_pad("Received Qty:" . ($good_qty), 80) . "\n" . str_pad("Rejected Qty:" . $rej_qty, 80) . "\n" . str_pad("Plan_Time:" . $log_time, 50) . "\n";
 

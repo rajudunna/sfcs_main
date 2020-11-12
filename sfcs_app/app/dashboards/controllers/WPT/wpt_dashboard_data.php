@@ -149,8 +149,8 @@ if($section){
         global $link_new;
         try{
             $taskType = TaskTypeEnum::SEWINGJOB;
-            $taskStatus = TaskStatusEnum::INPROGRESS;
-            $jobsQuery = "select tj.task_jobs_id, tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."'";
+            $taskProgress = TaskProgressEnum::INPROGRESS;
+            $jobsQuery = "select tj.task_jobs_id, tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_progress = '".$taskProgress."'";
             $jobsQueryResult = mysqli_query($link_new,$jobsQuery) or exit('Problem in getting jobs in workstation');
             if(mysqli_num_rows($jobsQueryResult)>0){
                 $jobs= [];
@@ -176,7 +176,7 @@ if($section){
         try{
             $minGoodQty = 0;
             $qrytoGetMinOperation="SELECT 
-            sum(good_quantity) as good_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ('".implode("','" , $taskJobIds)."') AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
+            sum(good_quantity) as good_quantity FROM $tms.`task_job_status` WHERE task_jobs_id IN ('".implode("','" , $taskJobIds)."') AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
             $minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting operations data for job');
             $goodQty = mysqli_fetch_assoc($minOperationResult);
             ($goodQty['good_quantity'])? $minGoodQty= $goodQty['good_quantity']: $minGoodQty = 0;
@@ -195,7 +195,7 @@ if($section){
         try{
             $maxGoodQty = 0;
             $qrytoGetMaxOperation="SELECT 
-            sum(good_quantity) as good_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ('".implode("','" , $taskJobIds)."')  AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
+            sum(good_quantity) as good_quantity FROM $tms.`task_job_status` WHERE task_jobs_id IN ('".implode("','" , $taskJobIds)."')  AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
             $maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting operations data for job');
             $goodQty = mysqli_fetch_assoc($maxOperationResult);
             ($goodQty['good_quantity'])? $minGoodQty= $goodQty['good_quantity']: $minGoodQty = 0;
@@ -453,7 +453,7 @@ if($section){
 
                 // get reported quantity for job and operation code
                 if($nextOpCode){
-                    $getRepQtyQuery="SELECT SUM(good_quantity + rejected_quantity) as reported_qty FROM $tms.`task_job_transaction` WHERE task_jobs_id='".$taskJob['taskJobId']."' AND plant_code='$plantCode' AND   operation_code= '$nextOpCode'";
+                    $getRepQtyQuery="SELECT SUM(good_quantity + rejected_quantity) as reported_qty FROM $tms.`task_job_status` WHERE task_jobs_id='".$taskJob['taskJobId']."' AND plant_code='$plantCode' AND   operation_code= '$nextOpCode'";
                     $repQtyResult = mysqli_query($link_new,$getRepQtyQuery) or exit('Problem in getting reported quantity');
                     $row = mysqli_fetch_assoc($repQtyResult);
                     ($row['reported_qty'])?$reportedQty = $row['reported_qty']: $reportedQty = 0;

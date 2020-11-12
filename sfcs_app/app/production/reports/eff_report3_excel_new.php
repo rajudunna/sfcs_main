@@ -53,7 +53,7 @@ function verify(){
 						<input type="hidden" name="section" value="0"/>  
 						<select name="section" class="form-control">
 						<?php
-							 $sql2="select section_id,section_name from $pms.sections order by section_id"; 
+							 $sql2="select section_id,section_name from $pms.sections where plant_code='$plantcode' order by section_id"; 
 									
 							 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							 while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -2987,7 +2987,7 @@ if(isset($_POST['submit']))
 
 
 // For Grand Eff Calculation
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'grand_eff_for_daily.php',0,'R'));
+	//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'grand_eff_for_daily.php',0,'R'));
 //to fasten system
 
 	// $sql="truncate $pts.grand_rep_temp";
@@ -3005,6 +3005,7 @@ if(isset($_POST['submit']))
 	$act_hrsa=0;
 	$act_hrsb=0;
 	$grand_total_nop=0;
+	
 	for($u=0;$u<sizeof($sec_data);$u++)
 	{
 		$date=$_POST['dat'];
@@ -3012,6 +3013,7 @@ if(isset($_POST['submit']))
 		$plantcode=$_POST['plantcode'];
 		$username=$_POST['username'];
 		$sec=$sec_data[$u];
+		
 
 		// echo $sec;
 		$h1=array(1,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21);
@@ -3061,17 +3063,28 @@ if(isset($_POST['submit']))
 		$i3=0;
 		$i2=$i2+1;
 
+
+		$query="select section_code from $pms.sections where section_id in(".$sec.") and plant_code='$plantcode'";
+
+		//mysqli_query($link, $query) or exit("Sql Error121".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result11=mysqli_query($link, $query) or exit("Sql Error121".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row1=mysqli_fetch_array($sql_result11))
+		{
+			$section_code=$sql_row1['section_code'];
+		}
+	
 		if($buyer_name == "ALL")
 		{
-			$sql55="select distinct module from $pts.grand_rep where plant_code='$plantcode' and section in(".$sec.") and date between \"$date\" and \"$edate\" order by module*1";
+			$sql55="select distinct module from $pts.grand_rep where plant_code='$plantcode' and section in('$section_code') and date between \"$date\" and \"$edate\" order by module*1";
 			//echo $sql1;
 			//echo "Hello";
 		}
 		else
 		{
-			$sql55="select distinct module from $pts.grand_rep where plant_code='$plantcode' and section in(".$sec.") and date between \"$date\" and \"$edate\" and buyer = '$buyer_name' order by module*1";
+			$sql55="select distinct module from $pts.grand_rep where plant_code='$plantcode' and section in('$section_code') and date between \"$date\" and \"$edate\" and buyer = '$buyer_name' order by module*1";
 			// echo $sql;
 		}
+		
 
 	
 		mysqli_query($link, $sql55) or exit("Sql Error121".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3102,7 +3115,8 @@ if(isset($_POST['submit']))
 			$pstha_mod_total=0;
 			$psthb_mod_total=0;
 			$section_array=array();
-			$sql66="select workstation_code from $pms.workstation where plant_code='$plantcode' and workstation_id='$mod'";
+			$sql66="select workstation_code from $pms.workstation where plant_code='$plantcode' and workstation_code='$mod'";
+			//echo $sql66;
 			mysqli_query($link, $sql66) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_resultx11=mysqli_query($link, $sql66) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowx11=mysqli_fetch_array($sql_resultx11))
@@ -3196,7 +3210,8 @@ if(isset($_POST['submit']))
 			}
 
 			$max=0;
-			$sql2="select smv,nop,styles, SUBSTRING_INDEX(max_style,'^',-1) as style_no, buyer, days, act_out from $pts.grand_rep where plant_code='$plantcode' and module='$mod' and date between \"$date\" and \"$edate\"";
+			$sql2="select smv,nop,styles, buyer, act_out from $pts.grand_rep where plant_code='$plantcode' and module='$mod' and date between \"$date\" and \"$edate\"";
+			//echo $sql2;
 			mysqli_query($link, $sql2) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -3234,15 +3249,17 @@ if(isset($_POST['submit']))
 						
 			//$act_clock_hrs=$act_clock_hrs+$act_hrs*($avail_A+$avail_B-$absent_A-$absent_B));
 
-			$query = "select workstation_description from $pms.workstation where plant_code='$plantcode' and workstation_id = '".$mod."' AND is_active=1";
-			$query_result=mysqli_query($link_new, $query) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($des_row=mysqli_fetch_array($query_result))
-			{
-			  $workstation_description = $des_row['workstation_description'];
-			}		
+			// $query = "select workstation_code from $pms.workstation where plant_code='$plantcode' and workstation_code = '".$mod."' AND is_active=1";
+			// echo $query;
+			// $query_result=mysqli_query($link_new, $query) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// while($des_row=mysqli_fetch_array($query_result))
+			// {
+			//   $workstation_code = $des_row['workstation_code'];
+			// }		
 			//$act_clock_hrs=$act_clock_hrs+$act_hrs*($avail_A+$avail_B-$absent_A-$absent_B));
 
-			$sql2="select avg(planned_eff) as plan_eff,capacity_factor,(capacity_factor*1) AS clh FROM $pps.`monthly_production_plan` LEFT JOIN $pps.`monthly_production_plan_upload_log` ON monthly_production_plan_upload_log.`monthly_pp_up_log_id`=monthly_production_plan.`pp_log_id` WHERE row_name='$workstation_description' AND planned_date between \"$date\" and \"$edate\" AND plant_code='$plantcode'";
+			$sql2="select avg(planned_eff) as plan_eff,capacity_factor,(capacity_factor*1) AS clh FROM $pps.`monthly_production_plan` LEFT JOIN $pps.`monthly_production_plan_upload_log` ON monthly_production_plan_upload_log.`monthly_pp_up_log_id`=monthly_production_plan.`pp_log_id` WHERE row_name='$mod' AND planned_date between \"$date\" and \"$edate\" AND monthly_production_plan.plant_code='$plantcode'";
+			//echo $sql2;
 			mysqli_query($link, $sql2) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -3322,7 +3339,8 @@ if(isset($_POST['submit']))
 				{
 					$date_range[]=$sql_row2['date'];
 				}
-				$sqlA="select sum(present+jumper) as \"avail_A\",sum(absent) as \"absent_A\" from $pts.pro_attendance where plant_code='$plantcode' and module='$mod' and shift=\"A\" and  date in (\"".implode('","',$date_range)."\")";
+				$sqlA="select sum(present+jumper) as \"avail_A\",sum(absent) as \"absent_A\" from $pms.pro_attendance where plant_code='$plantcode' and module='$mod' and shift=\"A\" and  date in (\"".implode('","',$date_range)."\")";
+				//echo $sqlA;
 				$sql_resultA=mysqli_query($link, $sqlA) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowA=mysqli_fetch_array($sql_resultA))
 				{
@@ -3336,7 +3354,7 @@ if(isset($_POST['submit']))
 					$absent_A=$absent_A+$sql_rowA['absent_A'];
 					$absent_A_fix=$sql_rowA['absent_A'];
 				}
-				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $pts.pro_attendance where plant_code='$plantcode' and module='$mod' and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
+				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $pms.pro_attendance where plant_code='$plantcode' and module='$mod' and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
 				$sql_resultB=mysqli_query($link, $sqlB) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowB=mysqli_fetch_array($sql_resultB))
 				{
@@ -3387,33 +3405,33 @@ if(isset($_POST['submit']))
 					$table.=$table_temp;
 				}
 
-				$sql2="select avg(rew_A) as \"rew_A\", avg(rew_B) as \"rew_B\", sum(auf_A) as \"auf_A\", sum(auf_B) as \"auf_B\" from $bai_pro.pro_quality where module='$mod' and date between \"$date\" and \"$edate\"";
-				mysqli_query($link, $sql2) or exit("Sql Error147".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row2=mysqli_fetch_array($sql_result2))
-				{
-					$table_temp="<td class=xl8926424>".round($sql_row2['rew_A'],0)."%</td>";
-					echo $table_temp;
-					$table.=$table_temp;
-					$table_temp="<td class=xl8926424>".round($sql_row2['rew_B'],0)."%</td>";
-					echo $table_temp;
-					$table.=$table_temp;
+				// $sql2="select avg(rew_A) as \"rew_A\", avg(rew_B) as \"rew_B\", sum(auf_A) as \"auf_A\", sum(auf_B) as \"auf_B\" from $bai_pro.pro_quality where module='$mod' and date between \"$date\" and \"$edate\"";
+				// mysqli_query($link, $sql2) or exit("Sql Error147".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while($sql_row2=mysqli_fetch_array($sql_result2))
+				// {
+				// 	$table_temp="<td class=xl8926424>".round($sql_row2['rew_A'],0)."%</td>";
+				// 	echo $table_temp;
+				// 	$table.=$table_temp;
+				// 	$table_temp="<td class=xl8926424>".round($sql_row2['rew_B'],0)."%</td>";
+				// 	echo $table_temp;
+				// 	$table.=$table_temp;
 
-					$rew_A=$rew_A+$sql_row2['rew_A'];
-					$rew_B=$rew_B+$sql_row2['rew_B'];
+				// 	$rew_A=$rew_A+$sql_row2['rew_A'];
+				// 	$rew_B=$rew_B+$sql_row2['rew_B'];
 
-					$table_temp="<td class=xl8726424>".$sql_row2['auf_A']."</td>";
-					echo $table_temp;
-					$table.=$table_temp;
-					$table_temp="<td class=xl8726424>".$sql_row2['auf_B']."</td>";
-					echo $table_temp;
-					$table.=$table_temp;
+				// 	$table_temp="<td class=xl8726424>".$sql_row2['auf_A']."</td>";
+				// 	echo $table_temp;
+				// 	$table.=$table_temp;
+				// 	$table_temp="<td class=xl8726424>".$sql_row2['auf_B']."</td>";
+				// 	echo $table_temp;
+				// 	$table.=$table_temp;
 
-					$auf_A=$auf_A+$sql_row2['auf_A'];
-					$auf_B=$auf_B+$sql_row2['auf_B'];
-				}
+				// 	$auf_A=$auf_A+$sql_row2['auf_A'];
+				// 	$auf_B=$auf_B+$sql_row2['auf_B'];
+				// }
 
-				$sql_num_check=mysqli_num_rows($sql_result2);
+				$sql_num_check=0;
 
 				if($sql_num_check==0)
 				{

@@ -53,6 +53,12 @@ $include_path=getenv('config_job_path');
 
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
+if($_GET['plantCode']){
+    $plant_code = $_GET['plantCode'];
+}else{
+    $plant_code = $argv[1];
+}
+
 $start_date_w=time();
 while((date("N",$start_date_w))!=1) {
 $start_date_w=$start_date_w-(60*60*24); // define monday
@@ -77,18 +83,17 @@ while($row=mysqli_fetch_array($result))
 	$message.="<td>".$row["PTRIM"]."</td>";
 	$message.="<td>".$row["STRIM"]."</td>";
 	$message.="<td>".$row["FAB"]."</td>";
-	$sql1="SELECT workstation_id FROM $pms.`workstation` w
-	LEFT JOIN $pms.`sections` s ON s.section_id=w.section_id
-	WHERE s.section_code='".$row["section"]."' AND s.plant_code= '$plant_code'";
-	//echo $sql1;
-	$result1=mysqli_query($link, $sql1) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($row1=mysqli_fetch_array($result1))
-	{
-		$mods=$row1["workstation_id"];
-	}
+	// $sql1="SELECT workstation_id FROM $pms.`workstation` w
+	// LEFT JOIN $pms.`sections` s ON s.section_id=w.section_id
+	// WHERE s.section_code='".$row["section"]."' AND s.plant_code= '$plant_code'";
+	// //echo $sql1;
+	// $result1=mysqli_query($link, $sql1) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($row1=mysqli_fetch_array($result1))
+	// {
+	// 	$mods=$row1["workstation_id"];
+	// }
 	$recut_count=0;
-	$sql2="SELECT COUNT(DISTINCT qms_schedule) AS sch FROM $pms.bai_qms_db WHERE log_date BETWEEN \"".trim($start_date_w)."\" AND \"".trim($end_date_w)."\" AND qms_tran_type=6 AND plant_code= '$plant_code' AND SUBSTRING_INDEX(remarks,'-',1) IN ($mods) GROUP BY log_time";
-	//echo $sql2;
+	$sql2="SELECT COUNT(DISTINCT schedule) AS sch FROM $pts.rejection_header WHERE DATE(created_at) BETWEEN \"".trim($start_date_w)."\" AND \"".trim($end_date_w)."\" AND plant_code= '$plant_code'";
 	$result2=mysqli_query($link, $sql2) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row2=mysqli_fetch_array($result2))
 	{

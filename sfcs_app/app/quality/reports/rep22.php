@@ -51,6 +51,13 @@ table{
 background-repeat:no-repeat;/*dont know if you want this to repeat, ur choice.*/
 background-position:center middle;
 }
+<?php
+if(isset($_POST['filter']))
+{
+	$sdate=$_POST['sdate'];
+	$edate=$_POST['edate'];
+}
+?>					
 </style>
 <div class="panel panel-primary">
 <div class="panel-heading">Daily Rejection Detail Report - Module Level</div>
@@ -157,16 +164,19 @@ background-position:center middle;
 			{
 				echo "<br/><hr/><br/><div class='table-responsive'><table class='table table-bordered'>";
 				echo "<tr class='tblheading'>
-				<th rowspan=2>Module</th>
-				<th rowspan=2>Shift</th>
-				<th rowspan=2>Style</th>
+				<th rowspan=2>Module</th>";
+				if($shift_level==2)
+				{
+					echo "<th rowspan=2>Shift</th>";
+				}				
+				echo "<th rowspan=2>Style</th>
 				<th rowspan=2>Schedule</th>
 				<th rowspan=2>Color</th>
 				<th rowspan=2>Output</th>
 				<th rowspan=2 width=45>Reject<br/> Out</th>";
 				for($i=0;$i<sizeof($depts);$i++)
 				{
-					echo "<th colspan=".$deptSize[$dept_type]." width=45>".$depts[$i]."</th>";
+					echo "<th colspan=".$deptSize[$depts[$i]]." width=45>".$depts[$i]."</th>";
 				}
 				echo "</tr>";
 				echo "<tr class='tblheading'>";
@@ -181,7 +191,7 @@ background-position:center middle;
 			
 				if($choice==0)
 				{
-					$sql="SELECT resource_id,operation as operation_id,style,color,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 23:59:59' AND parent_barcode_type='PPLB' and resource_id in ('".implode("','",$moduleId)."') and plant_code='".$plant_Code."' group by resource_id";
+					$sql="SELECT group_concat(distinct schedule) as schedule,resource_id,operation as operation_id,style,color,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 23:59:59' AND parent_barcode_type='PPLB' and resource_id in ('".implode("','",$moduleId)."') and plant_code='".$plant_Code."' group by resource_id";
 				}
 
 				if($choice==1)
@@ -209,7 +219,10 @@ background-position:center middle;
 					$schedule=$sql_row['schedule'];
 					echo "<tr>";
 					echo "<td>".$moduleCode[$sql_row['resource_id']]."</td>";
-					echo "<td>".$sql_row['shift']."</td>";
+					if($shift_level==2)
+					{
+						echo "<td>".$sql_row['shift']."</td>";
+					}					
 					echo "<td>".$sql_row['style']."</td>";
 					echo "<td>".$sql_row['schedule']."</td>";
 					echo "<td>".$sql_row['color']."</td>";
@@ -242,7 +255,7 @@ background-position:center middle;
 					{
 						$rej_qty[$sql_row1['reason_id']]=$sql_row1['qty'];
 					}
-					if(size($rej_qty)>0)
+					if(sizeof($rej_qty)>0)
 					{
 						$qms_qty=array_sum($rej_qty);
 					}
@@ -250,6 +263,8 @@ background-position:center middle;
 					{
 						$qms_qty=0;
 					}
+					$grand_output=$grand_output+$sw_out;	
+					$grand_rejections=$grand_rejections+$qms_qty;
 					$span1='<p class="pull-left">';
 					$span2='<p class="pull-right">';
 					$span3='</p>';				
@@ -280,10 +295,9 @@ background-position:center middle;
 						{
 							$bgcolor=" bgcolor=#FFEEDD ";
 						}
-						$grand_reject[$depts[$ii]]=$rejection;
-					}
-					$grand_output+=$grand_output+$sw_out;	
-				}				
+						$grand_reject[$depts[$jj]]=$grand_reject[$depts[$jj]]+$rejection;
+					}						
+				}	
 				echo "</tr>";			
 				//Section Data
 				$query="select section_name from $pms.sections where plant_code='$plant_code' and department_id='$section'";
@@ -292,15 +306,22 @@ background-position:center middle;
 				while ($sections_row = mysqli_fetch_array($sql_res)) {
 					$section_display_name = $sections_row['section_name'];
 				}
-				
+				if($shift_level==2)
+				{
+					$colspa=5;
+				}	
+				else
+				{
+					$colspa=4;
+				}
 				echo "<tr >";
-				echo "<td colspan=5 bgcolor=#f47f7f>$section_display_name</td>";
+				echo "<td colspan=$colspa bgcolor=#f47f7f>$section_display_name</td>";
 				echo "<td>".$grand_output."</td>";
 				echo "<td class=\"BG\">$span1".$grand_rejections."$span3$span2"; if($grand_output>0) { echo round(($grand_rejections/$grand_output)*100,1)."%"; } echo "$span3</td>";
 				$bgcolor=" bgcolor=#FFEEDD ";
 				for($j=0;$j<sizeof($depts);$j++)
 				{
-					echo "<td  class=\"BG\ colspan=".$deptSize[$dept_type].">$span1".$grand_reject[$depts[$j]]."$span3$span2"; if($grand_output>0) { echo round(($grand_reject[$depts[$j]]/$grand_output)*100,1)."%"; } echo "$span3</td>";
+					echo "<td colspan=".$deptSize[$depts[$j]]." class=\"BG\>$span1".$grand_reject[$depts[$j]]."$span3$span2"; if($grand_output>0) { echo round(($grand_reject[$depts[$j]]/$grand_output)*100,1)."%"; } echo "$span3</td>";
 					if($j/2==0)
 					{
 						$bgcolor=" bgcolor=white ";	

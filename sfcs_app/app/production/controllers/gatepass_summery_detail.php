@@ -260,7 +260,8 @@ if(isset($_POST['submit']) || ($status==1)){
 		echo  "<div class='panel-body'>";
 		echo "<div class='panel panel-primary'>";
 		echo '<table class="table table-bordered"><tr class="warning"><th class="tblheading">Date</th><th class="tblheading">Gate Pass Id</th><th class="tblheading">Operation</th><th class="tblheading">Vehicle No</th><th class="tblheading">Shift</th><th class="tblheading">Status</th></tr>';
-		$url = getFullURLLEVEL($_GET['r'],'gate_pass_print.php',0,'N');
+		$url=getFullURL($_GET['r'],'gate_pass_print.php','R');
+		// $url = getFullURLLEVEL($_GET['r'],'gate_pass_print.php',0,'N');
 		while($data_res = mysqli_fetch_array($date_gatepass))
 		{
 			$id=$data_res['id'];
@@ -283,7 +284,7 @@ if(isset($_POST['submit']) || ($status==1)){
 			{
 				$remark='Completed';
 			}			
-			echo "<tr><td>$date_get</td><td><a class='btn btn-warning' href='$url&pass_id=".$id."&type=1&plant_code=".$plant_code."&username=".$username."' >Print Gate Pass - ".$id."</a></td><td>$ops_name</td><td>$vehicle_no</td><td>$shift</td><td>$remark</td></tr>";
+			echo "<tr><td>$date_get</td><td><a class='btn btn-warning' href='$url?pass_id=".$id."&type=1&plant_code=".$plant_code."&username=".$username."' >Print Gate Pass - ".$id."</a></td><td>$ops_name</td><td>$vehicle_no</td><td>$shift</td><td>$remark</td></tr>";
 		 }
 		 echo '</table></div></div>';
 	 

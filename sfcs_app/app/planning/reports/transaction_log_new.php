@@ -239,8 +239,8 @@ function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId) {
     global $link_new;
     try{
         $taskType = TaskTypeEnum::SEWINGJOB;
-        $taskStatus = TaskStatusEnum::INPROGRESS;
-		$jobsQuery = "select tj.task_jobs_id, tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."'";
+        $taskProgress = TaskProgressEnum::INPROGRESS;
+		$jobsQuery = "select tj.task_jobs_id, tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_progress = '".$taskProgress."'";
 		// echo "</br>JOBS : ".$jobsQuery."</br>";
         $jobsQueryResult = mysqli_query($link_new,$jobsQuery) or exit('Problem in getting jobs in workstation');
         if(mysqli_num_rows($jobsQueryResult)>0){
@@ -288,7 +288,7 @@ if(isset($_POST['submit']))
 						/**
                          * getting min and max operations
                          */
-                        $qrytoGetMaxOperation="SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id='".$job['taskJobId']."' AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
+                        $qrytoGetMaxOperation="SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id='".$job['taskJobId']."' AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
 						$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting operations data for job');
 						// echo "</br>Get Max OP : ".$qrytoGetMaxOperation."</br>";
                         if(mysqli_num_rows($maxOperationResult)>0){

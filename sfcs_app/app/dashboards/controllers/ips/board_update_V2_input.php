@@ -286,7 +286,7 @@ echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"blue\">Please wai
 ob_end_flush();
 flush();
 usleep(1);
-$sqlx1="SELECT section_name as  section_display_name, plant_code FROM `pms_prod`.`sections` WHERE section_id = '$section_no'";
+$sqlx1="SELECT section_name as  section_display_name, plant_code FROM $pms.`sections` WHERE section_id = '$section_no'";
 $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 {
@@ -310,7 +310,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 	$task_jobs_qry = "SELECT DISTINCT  tj.task_jobs_id as task_jobs_id FROM `$tms`.`task_header` th 
 	LEFT JOIN $tms.`task_jobs` tj ON tj.`task_header_id` = th.`task_header_id`
 	LEFT  JOIN $tms.`job_trims` tm ON tm.`task_job_id` = tj.`task_jobs_id`
-	WHERE `resource_id` = '$module' ORDER BY tj.`priority` AND trim_status = 'OPEN'";
+	WHERE `resource_id` = '$module' AND trim_status = 'OPEN' ORDER BY tj.`priority`";
 	$task_jobs_qry_result1=mysqli_query($link, $task_jobs_qry) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($task_job_row=mysqli_fetch_array($task_jobs_qry_result1))
 	{
@@ -337,7 +337,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 		$co_no = $job_detail_attributes[$sewing_job_attributes['cono']];
 		$club_c_code = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
 
-		$qry_toget_first_ops_qry = "SELECT operation_code,original_quantity,good_quantity,rejected_quantity FROM $tms.task_job_transaction where task_jobs_id = '$task_job_id' and plant_code='$plantCode' and is_active=1 order by operation_seq asc limit 1";
+		$qry_toget_first_ops_qry = "SELECT operation_code,original_quantity,good_quantity,rejected_quantity FROM $tms.task_job_status where task_jobs_id = '$task_job_id' and plant_code='$plantCode' and is_active=1 order by operation_seq asc limit 1";
 		$qry_toget_first_ops_qry_result = mysqli_query($link_new, $qry_toget_first_ops_qry) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		while ($row3 = mysqli_fetch_array($qry_toget_first_ops_qry_result)) {
 			$input_ops_code = $row3['operation_code'];
@@ -353,7 +353,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 		$display_prefix1= $jobno;
 		$doc_no_ref_explode=explode(",",$doc_no_ref);
 		$num_docs=sizeof($doc_no_ref_explode);
-		$sqlDocketLineIds="SELECT GROUP_CONCAT(CONCAT('''', jm_docket_line_id, '''' ))AS docket_line_ids FROM $pps.`jm_docket_lines` WHERE docket_line_number IN ($doc_no_ref)";
+		$sqlDocketLineIds="SELECT GROUP_CONCAT(CONCAT('''', jm_docket_line_id, '''' )) AS docket_line_ids FROM $pps.`jm_docket_lines` WHERE docket_line_number IN ($doc_no_ref)";
 		// echo $sqlDocketLineIds.'<br/>';
 		$sql_resultsqlDocketLineIds=mysqli_query($link, $sqlDocketLineIds) or exit("Sql Error1000".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($docket_row123=mysqli_fetch_array($sql_resultsqlDocketLineIds))
@@ -478,7 +478,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 
 		if($id=="blue" || $id=="yellow")
 		{
-			$cut_input_report_query="SELECT original_quantity AS cut_qty, (good_quantity + rejected_quantity) AS report_qty, good_quantity AS recevied_qty FROM tms_prod.`task_job_transaction`
+			$cut_input_report_query="SELECT original_quantity AS cut_qty, (good_quantity + rejected_quantity) AS report_qty, good_quantity AS recevied_qty FROM $tms.`task_job_status`
 					WHERE `task_jobs_id` = '$input_job_no_random_ref' AND `operation_code` = '$input_ops_code'";
 			$cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($cut_input_report_result))

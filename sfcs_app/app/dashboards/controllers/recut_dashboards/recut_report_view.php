@@ -29,21 +29,25 @@ function show_pop3(){
 
 function firstbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value;
+	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value;
 }
 
 
 function secondbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
 }
 function thirdbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
 }
 function fourthbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&subpo="+document.test.subpo.value
+	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value
+}
+function fifthbox()
+{
+	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&subpo="+document.test.subpo.value
 }
 </script>
 
@@ -61,6 +65,7 @@ include("$url3");
 $style=$_GET['style'];
 $schedule=$_GET['schedule']; 
 $color=$_GET['color'];
+$mpo=$_GET['mpo'];
 $subpo=$_GET['subpo'];
 
 if(isset($_POST['style']))
@@ -76,6 +81,11 @@ if(isset($_POST['schedule']))
 if(isset($_POST['color']))
 {
 	$color=$_POST['color'];
+}
+
+if(isset($_POST['mpo']))
+{
+	$mpo=$_POST['mpo'];
 }
 
 if(isset($_POST['subpo']))
@@ -161,28 +171,53 @@ if(isset($_POST['subpo']))
                 echo "</select>";
             ?>
             </div>
+            <?php
+            /*function to get mpo from getdata_MPOs
+			@params : plantcode,schedule,color
+			@returns: mpo
+			*/
+			if($schedule!='' && $color!='' && $plantcode!=''){
+				$result_bulk_MPO=getMpos($schedule,$color,$plantcode);
+				$master_po_description=$result_bulk_MPO['master_po_description'];
+			}
+			echo "<div class='col-sm-3'><label>Select Master PO: </label>";  
+			echo "<select style='min-width:100%' name=\"mpo\" onchange=\"fourthbox();\" class='form-control' >
+					<option value=\"NIL\" selected>NIL</option>";
+						foreach ($master_po_description as $key=>$master_po_description_val) {
+							if(str_replace(" ","",$master_po_description_val)==str_replace(" ","",$mpo)) 
+							{ 
+								echo '<option value=\''.$master_po_description_val.'\' selected>'.$key.'</option>'; 
+							} 
+							else 
+							{ 
+								echo '<option value=\''.$master_po_description_val.'\'>'.$key.'</option>'; 
+							}
+						} 
+			echo "</select></div>";
+            ?>
 			<div class="col-sm-2 form-group">
 				<label for='style'>Select SubPO</label>
-				<select class='form-control' name='subpo' id='subpo' onclick='show_pop3()' onchange='fourthbox();' >
+				<select class='form-control' name='subpo' id='subpo' onclick='show_pop3()' onchange='fifthbox();' >
 				<?php
-					echo "<option value=\"NIL\" selected>Select subpo</option>";
-					//$sql="select distinct order_style_no from bai_orders_db";
-					$sql="SELECT DISTINCT sub_po as sub_po FROM $pts.rejection_header where plant_code='$plantcode' and style='$style' and schedule='$schedule' and fg_color='$color' AND is_active=1";
-					
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$sql_num_check=mysqli_num_rows($sql_result);
-
-					while($sql_row=mysqli_fetch_array($sql_result))
-					{
-						if(str_replace(" ","",$sql_row['sub_po'])==str_replace(" ","",$subpo))
-						{
-							echo "<option value=\"".$sql_row['sub_po']."\" selected>".$sql_row['sub_po']."</option>";
-						}
-						else
-						{
-							echo "<option value=\"".$sql_row['sub_po']."\">".$sql_row['sub_po']."</option>";
-						}
+					/*function to get subpo from getdata_bulk_subPO
+						@params : plantcode,mpo
+						@returns: subpo
+					*/
+					if($mpo!='' && $plantcode!=''){
+						$result_bulk_subPO=getBulkSubPo($mpo,$plantcode);
+						$sub_po_description=$result_bulk_subPO['sub_po_description'];
 					}
+					echo "<option value=\"NIL\" selected>Select subpo</option>";
+					foreach ($sub_po_description as $key=>$sub_po_description_val) {
+						if(str_replace(" ","",$sub_po_description_val)==str_replace(" ","",$subpo)) 
+						{ 
+							echo '<option value=\''.$sub_po_description_val.'\' selected>'.$key.'</option>'; 
+						} 
+						else 
+						{ 
+							echo '<option value=\''.$sub_po_description_val.'\'>'.$key.'</option>'; 
+						}
+					} 
 				echo "</select>";
 				?>	
 			</div>
@@ -236,6 +271,7 @@ if(isset($_POST['submit']))
     $style=$_POST['style'];
 	$color=$_POST['color'];
 	$schedule=$_POST['schedule'];
+	$mpo=$_POST['mpo'];
 	$subpo=$_POST['subpo'];
     ?><div class='row'>
         <div class='panel panel-primary'>
@@ -243,9 +279,8 @@ if(isset($_POST['submit']))
                 <b>Re Cut Issue Dashboard</b>
             </div>
             <div class='panel-body'>
-            <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Recut Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Master PO</th><th>Sub PO</th><th>Rejected quantity</th><th>Recut Raised Quantity</th><th>Recut Reported Quantity</th><th>Issued Quantity</th><th>Remaining Quantity</th><th>View</th>
-			<!-- <th>Markers</th> -->
-                </thead>
+            <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Recut Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Master PO</th><th>Sub PO</th><th>Component</th><th>Rejected quantity</th><th>Recut Raised Quantity</th><th>Recut Reported Quantity</th><th>Issued Quantity</th><th>Remaining Quantity</th><th>View</th>
+			<!-- <th>Markers</th> --></thead>
                 <?php  
 				$s_no = 1;
 				$blocks_query="SELECT rh_id,master_po,sub_po,style,SCHEDULE,fg_color,component FROM $pts.rejection_header WHERE plant_code='$plantcode' AND style='$style' AND schedule='$schedule' AND fg_color='$color' AND sub_po='$subpo' AND is_active=1 group by component,rh_id";
@@ -286,7 +321,7 @@ if(isset($_POST['submit']))
 							$masterpo_des=$des_row['master_po_description'];
 						}
 						//To get Docket numbers
-						$get_component_ids="SELECT lp_ratio_cg_id FROM $pps.`lp_ratio_component_group` LEFT JOIN $pps.`lp_product_component` ON lp_product_component.`component_group_id`= lp_ratio_component_group.`component_group_id` WHERE plant_code='$plantcode' AND ratio_id IN ('".implode("','" , $ratio_id)."') AND component_name='$component'";
+						$get_component_ids="SELECT lp_ratio_cg_id FROM $pps.`lp_ratio_component_group` LEFT JOIN $pps.`lp_product_component` ON lp_product_component.`component_group_id`= lp_ratio_component_group.`component_group_id` WHERE lp_ratio_component_group.plant_code='$plantcode' AND ratio_id IN ('".implode("','" , $ratio_id)."') AND component_name='$component'";
 						$sql_result1 = mysqli_query($link,$get_component_ids) or exit('Error get_component_ids');
 						while($row1 = mysqli_fetch_array($sql_result1))
 						{
@@ -299,7 +334,7 @@ if(isset($_POST['submit']))
 							$jm_docket_id[]=$row2['jm_docket_id'];
 						}
 						$doc_qty=0;
-						$get_dockets="SELECT docket_line_number FROM $pps.`jm_docket_lines` WHERE plant_code='$plantcode' AND jm_docket_id IN ('".implode("','" , $jm_docket_id)."')";
+						$get_dockets="SELECT docket_line_number FROM $pps.`jm_docket_lines` WHERE plant_code='$plantcode' AND jm_docket_id IN ('".implode("','" , $jm_docket_id)."') group by docket_line_number";
 						$sql_result3 = mysqli_query($link,$get_dockets) or exit('Error get_dockets');
 						while($row3 = mysqli_fetch_array($sql_result3))
 						{
@@ -307,42 +342,42 @@ if(isset($_POST['submit']))
 							$dockets[]=$row3['docket_line_number'];
 							//To get docket qty
 							$result_doc_qty=getDocketInformation($docket,$plantcode);
-							$doc_qty +=$result_doc_qty['docket_quantity'];
-						}
-						$recut_dockets=implode("','" , $dockets);
-						//To get rejected and replament qtys
-						$get_rejected_qtys="SELECT SUM(rejected_qty) as rejected, SUM(replacement_qty) as replacement FROM $pts.rejection_header WHERE plant_code='$plantcode' AND sub_po='$sub_po' AND component='$component' group by component";
-						$sql_result4 = mysqli_query($link,$get_rejected_qtys) or exit('Error get_rejected_qtys');
-						while($row4 = mysqli_fetch_array($sql_result4))
-						{
-							$rejected_qty=$row['rejected_qty'];
-							$replacement_qty=$row['replacement_qty'];
-						}
-						//To get reported qty
-						$get_reported_qty="SELECT SUM(good_quantity) AS quantity WHERE $pts.transaction_log WHERE plant_code='$plantcode' AND parent_job IN ($recut_dockets) AND parent_job_type='PD' AND operation='15'";
-						$sql_result5 = mysqli_query($link,$get_reported_qty) or exit('Error get_reported_qty');
-						while($row5 = mysqli_fetch_array($sql_result5))
-						{
-							$reported_qty=$row5['quantity'];
-						}
-						$remainig_qty=$reported_qty - $replacement_qty;
-						echo "<tr><td>$s_no</td>";
-						echo "<td>$recut_dockets</td>";
-						echo "<td>$style</td>";
-						echo "<td>$schedule</td>";
-						echo "<td>$color</td>";
-						echo "<td>$masterpo_des</td>";
-						echo "<td>$subpo_des</td>";
-						echo "<td>$component</td>";
-						echo "<td>$rejected_qty</td>";
-						echo "<td>$doc_qty</td>";
-						echo "<td>$reported_qty</td>";
-						echo "<td>$replacement_qty</td>";
-						echo "<td>$remainig_qty</td>";
-						echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$subpo.",".$component.",".$plantcode.")'>View</button></td>";
-						// echo "<td><button type='button'class='btn btn-success' onclick='viewmarkerdetails(".$subpo.",".$component.",".$plantcode.")'>Marker View</button></td>";
-						echo "</tr>";
-						$s_no++;	
+							$doc_qty =$result_doc_qty['docket_quantity'];
+
+							//To get rejected and replament qtys
+							$get_rejected_qtys="SELECT SUM(rejection_quantity) as rejected, SUM(replaced_quantity) as replacement FROM pts.`rejection_transaction` WHERE plant_code='$plantcode' AND component='$component' AND job_number='$docket' AND job_type='PD'";
+							$sql_result4 = mysqli_query($link,$get_rejected_qtys) or exit('Error get_rejected_qtys');
+							while($row4 = mysqli_fetch_array($sql_result4))
+							{
+								$rejected_qty=$row4['rejected'];
+								$replacement_qty=$row4['replacement'];
+							}
+							//To get reported qty
+							$get_reported_qty="SELECT SUM(good_quantity) AS quantity FROM $pts.transaction_log WHERE plant_code='$plantcode' AND parent_job ='$docket' AND parent_job_type='PD' AND operation='15'";
+							$sql_result5 = mysqli_query($link,$get_reported_qty) or exit('Error get_reported_qty');
+							while($row5 = mysqli_fetch_array($sql_result5))
+							{
+								$reported_qty=$row5['quantity'];
+							}
+							$remainig_qty=$reported_qty - $replacement_qty;
+							echo "<tr><td>$s_no</td>";
+							echo "<td>$docket</td>";
+							echo "<td>$style</td>";
+							echo "<td>$schedule</td>";
+							echo "<td>$color</td>";
+							echo "<td>$masterpo_des</td>";
+							echo "<td>$subpo_des</td>";
+							echo "<td>$component</td>";
+							echo "<td>$rejected_qty</td>";
+							echo "<td>$doc_qty</td>";
+							echo "<td>$reported_qty</td>";
+							echo "<td>$replacement_qty</td>";
+							echo "<td>$remainig_qty</td>";
+							echo "<td><button type='button'class='btn btn-primary' onclick=\"viewrecutdetails('$subpo','$component','$plantcode')\">View</button></td>";
+							// echo "<td><button type='button'class='btn btn-success' onclick='viewmarkerdetails('".$subpo."','".$component."','".$plantcode."')'>Marker View</button></td>";
+							echo "</tr>";
+							$s_no++;
+						}		
 					}
 				}
 				else

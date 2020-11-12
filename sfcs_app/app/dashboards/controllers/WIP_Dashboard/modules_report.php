@@ -13,11 +13,25 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
-// error_reporting(E_ALL);
+if($_session['plantCode']){
+
 $plantcode = $_session['plantCode'];
-$plantcode ='AIP';
-$username =  $_session['userName'];
-$username =  'sfcsproject1';
+}else{
+$plantcode = $_GET['plantCode'];
+
+}
+if($_session['userName']){
+
+$user_name =  $_session['userName'];
+}else{
+$user_name = $_GET['username'];
+
+}
+// error_reporting(E_ALL);
+// $plantcode = $_session['plantCode'];
+// $plantcode ='AIP';
+// $username =  $_session['userName'];
+// $username =  'sfcsproject1';
 
 
 function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
@@ -43,6 +57,8 @@ function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
 
 <script type="text/javascript" src="../../../../common/js/jquery.js"></script> 
 <script src="../../../../common/js/jquery.min.js"></script>
+<script src="../../../../common/js/sweetalert.min.js"></script>
+
 
 
 </head>
@@ -53,7 +69,9 @@ function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
 $work_station_id=$_GET['module_id'];
 $work_station=$_GET['module_code'];
 $operation=$_GET['operation_code'];
-$department='SEWING';
+$department = DepartmentTypeEnum::SEWING;
+
+// $department='SEWING';
 ini_set('max_execution_time', 30000);
 
 $qryMoudleName="SELECT workstation_description FROM $pms.`workstation` WHERE workstation_id ='$work_station_id'";
@@ -265,7 +283,7 @@ echo "<br/><div class='container-fluid'>";
                         	<option value=''>Please Select</option>
                             <?php
 							 $departmentType = DepartmentTypeEnum::SEWING;
-							 var_dump($departmentType);
+							//  var_dump($departmentType);
                              /**getting workstations based plant and department*/
                              $workstationsResult=getWorkstations($departmentType,$plantcode);
                              $workStations=$workstationsResult['workstation'];
@@ -324,58 +342,33 @@ $(document).ready(function(){
                                 "createdUser": '<?= $user_name ?>'
                             }
                             var bearer_token;
-                const creadentialObj = {
-                grant_type: 'password',
-                client_id: 'pps-back-end',
-                client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
-                username: 'bhuvan',
-                password: 'bhuvan'
-                }
-                $.ajax({
-                    method: 'POST',
-                    url: "<?php echo $KEY_LOCK_IP?>",
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    xhrFields: { withCredentials: true },
-                    contentType: "application/json; charset=utf-8",
-                    transformRequest: function (Obj) {
-                        var str = [];
-                        for (var p in Obj)
-                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
-                        return str.join("&");
-                    },
-                    data: creadentialObj
-                }).then(function (result) {
-                    console.log(result);
-                    bearer_token = result['access_token'];
-                    $.ajax({
-                        type: "POST",
-                        url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/transferBundlesToWorkStation",
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
-                        data: data,
-                        success: function (res) {
-                            // console.log(res);
-                            if(res.status)
-                            {
-                                swal('','Bundle Transfered Successfully','success')
-                                setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&operation_code="+operation)} , 3000);
-                                
-                            }
-                            else
-                            {
-                                swal('',res.internalMessage,'error');
-                                setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&operation_code="+operation)} , 3000);
-                            }                       
-                            //$('#loading-image').hide();
-                        },
-                        error: function(res){
-                            swal('Error in getting data');
-                            setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&operation_code="+operation)} , 3000);
-                            //$('#loading-image').hide();
-                        }
-                    });
-                }).fail(function (result) {
-                    console.log(result);
-                }) ;
+				bearer_token = '<?= $_SESSION['authToken'] ?>';
+				$.ajax({
+					type: "POST",
+					url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/transferBundlesToWorkStation",
+					headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+					data: data,
+					success: function (res) {
+						// console.log(res);
+						if(res.status)
+						{
+							swal('','Bundle Transfered Successfully','success')
+							setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&plantCode="+plantcode+"&username="+user_name+"&operation_code="+operation)} , 3000);
+							
+						}
+						else
+						{
+							swal('',res.internalMessage,'error');
+							setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&plantCode="+plantcode+"&username="+user_name+"&operation_code="+operation)} , 3000);
+						}                       
+						//$('#loading-image').hide();
+					},
+					error: function(res){
+						swal('Error in getting data');
+						setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&plantCode="+plantcode+"&username="+user_name+"&operation_code="+operation)} , 3000);
+						//$('#loading-image').hide();
+					}
+				});
             }
         });
     });
