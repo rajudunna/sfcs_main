@@ -41,7 +41,7 @@ if(isset($_POST['submit']))
 	
 	//Renmoved the where clause for section 
 	$decimal_factor=2;
-	$sql2="select section,shift,sum(plan_out) as plan_out,sum(act_out) as act_out,sum(plan_sth) as plan_sth,sum(act_sth) as act_sth,sum(act_clh) as act_clh from $pts.grand_rep where plant_code='$plantcode' and date between '".$sdate."' and '".$edate."' group by section,shift";
+	$sql2="select section,shift,sum(plan_out) as plan_out,sum(act_out) as act_out,sum(plan_sth) as plan_sth,sum(act_sth) as act_sth,sum(act_clh) as act_clh,sum(plan_clh) as plan_clh from $pts.grand_rep where plant_code='$plantcode' and date between '".$sdate."' and '".$edate."' group by section,shift";
 	$sql_result2=mysqli_query($link, $sql2) or exit("Error While fetching information from Grand Rep".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	if(mysqli_num_rows($sql_result2)>0)
 	{
@@ -62,40 +62,60 @@ if(isset($_POST['submit']))
 		
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
-			$section=$sql_row2['section_code']; 
-			$resource_id=$sql_row2['workstation_id']; 
+			$section=$sql_row2['section'];
+			$query = "select section_name from $pms.sections where plant_code='$plantcode' and section_id = '$section'";
+			$sql_res = mysqli_query($link_new, $query) or exit("Sql Error at Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+			$workstation_rows_num = mysqli_num_rows($sql_res);
+			if ($workstation_rows_num > 0) {
+				while ($workstation_row = mysqli_fetch_array($sql_res)) {
+					$sectionName = $workstation_row['section_name'];
+				}
+			}
+			else
+			{
+				$sectionName='Not Available';
+			} 
+			$shift=$sql_row2['shift']; 
 			$plan_sth=round($sql_row2["plan_sth"],$decimal_factor);
 			$act_sth=round($sql_row2["act_out"],$decimal_factor);
 			$plan_out=round($sql_row2["plan_sth"],$decimal_factor);
 			$act_out=round($sql_row2["act_sth"],$decimal_factor);
 			$act_clh=round($sql_row2["act_clh"],$decimal_factor);
+			$plan_clh=round($sql_row2["plan_clh"],$decimal_factor);
 			echo "<tr>"; 
-			echo "<td rowspan=$rowspan>$section</td>"; 
+			echo "<td rowspan=$rowspan>$sectionName</td>"; 
 			echo "<td>$shift</td>"; 
-				
-			$sql="SELECT AVG(planned_eff) AS planned_eff FROM $pps.`monthly_production_plan` mpl
-			LEFT JOIN $pps.`monthly_production_plan_upload_log` mppu ON mppu.monthly_pp_up_log_id=mpl.pp_log_id
-			WHERE mppu.plant_code='$plantcode' AND date(mpl.planned_date) BETWEEN '".$sdate."' and '".$edate."'"; 
-			// echo $sql."<br/>"; 
-			$sql_result=mysqli_query($link, $sql) or exit("Error While fetching information from Monthly Plan".mysqli_error($GLOBALS["___mysqli_ston"])); 
-			while($sql_row=mysqli_fetch_array($sql_result)) 
-			{ 
-				$planned_eff=round($sql_row["planned_eff"],$decimal_factor);
+			if($act_clh=='0.00')
+			{
+				$act_eff=0;
 			}
-		
-			echo "<td>".round($planned_eff,$decimal_factor)."%</td>"; 
-			echo "<td>".round(($act_sth/$act_clh)*100,$decimal_factor)."%</td>"; 
+			else
+			{
+				$act_eff=round(($act_sth/$act_clh)*100,$decimal_factor);
+			}
+
+			if($plan_clh=='0.00')
+			{
+				$plan_eff=0;
+			}
+			else
+			{
+				$plan_eff=round(($plan_sth/$plan_clh)*100,$decimal_factor);
+			}
+			
+			
+			
+			echo "<td>".$plan_eff."%</td>"; 
+			echo "<td>".$act_eff."%</td>"; 
 			echo "<td>".round($plan_sth,$decimal_factor)."</td>"; 
 			echo "<td>".round($act_sth,$decimal_factor)."</td>"; 
 			echo "<td>".round($plan_out,$decimal_factor)."</td>"; 
 			echo "<td>".round($act_out,$decimal_factor)."</td>"; 
-			echo "</tr>"; 
-				
+			echo "</tr>"; 				
 		}
 	}
 	else
-	{
-		
+	{		
 		echo "<br><br><div class='alert alert-danger'><b>No records found for selected criteria!</b></div>";
 	} 
  							
