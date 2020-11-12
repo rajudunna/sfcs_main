@@ -6,12 +6,12 @@
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/server_urls.php");
-		$emp_id = $_GET['emp_id'];
-		$team_id = $_GET['team_id'];
-		$operation_id = $_GET['operation_id'];
-		$shift = $_GET['shift'];
-		$plant_code = $_GET['plant_code'];
-		$username = $_GET['username'];
+		$emp_id = $_POST['emp_id'];
+		$team_id = $_POST['team_id'];
+		$operation_id = $_POST['operation_id'];
+		$shift = $_POST['shift'];
+		$plant_code = $_POST['plant_code'];
+		$username = $_POST['username'];
 	?>
 	<link rel="stylesheet" type="text/css" href="../../common/css/bootstrap.css">
 	<script src="../../../../common/js/jquery_new.min.js"></script>
@@ -43,7 +43,7 @@
 						<font size="5">Operation: <label class='label label-warning'><?= $operation_id; ?></label></font>
 					</div>
 					<?php
-						if ($_GET['shift'] != '') {
+						if ($_POST['shift'] != '') {
 							echo '<div class="col-md-4">
 									<font size="5">Shift: <label class="label label-warning">'.$shift.'</label></font>
 								</div>';
@@ -160,7 +160,7 @@
 				$("#scan_carton_id").html("<b><font size='7'>Scanning Carton No: <font color='green' size='7'>"+carton_id+"</font></font><b>");
 				var function_text = "carton_scan_ajax.php";
 				var bearer_token;
-				bearer_token = '<?= $_SESSION['authToken'] ?>';
+				bearer_token = '<?= $_POST['authToken'] ?>';
 				$.ajax({
 					url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportCarton",
 					headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
