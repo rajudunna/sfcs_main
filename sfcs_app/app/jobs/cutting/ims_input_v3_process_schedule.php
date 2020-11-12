@@ -2,7 +2,7 @@
 <?php
 error_reporting(E_ALL & ~E_NOTICE);
 $include_path=getenv('config_job_path');
-// $include_path='C:\xampp\htdocs\sfcs_main';
+//$include_path='C:\xampp\htdocs\sfcs_main';
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 include($include_path.'\sfcs_app\common\config\functions_v2.php');
 include($include_path.'\sfcs_app\common\config\enums.php');
@@ -152,7 +152,7 @@ foreach($departments as $department)    //section Loop -start
 				
 				$act_qty=0;
 				$act_sah=0;
-				$sql_trans="SELECT operation,style,color,SUM(good_quantity) AS qty FROM $pts.transaction_log WHERE created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 23:59:59' AND parent_barcode_type='PPLB' and resource_id='".$module."' and shift='".$teams[$i]."' and plant_code='".$plant_Code."' group by style,color,operation";
+				$sql_trans="SELECT operation,style,color,SUM(good_quantity) AS qty FROM $pts.transaction_log WHERE created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 23:59:59' AND parent_barcode_type='PPLB' and resource_id='".$moduleId."' and shift='".$teams[$i]."' and plant_code='".$plant_Code."' group by style,color,operation";
 				// echo $sql_trans."<br>";
 				$trans_result=mysqli_query($link, $sql_trans) or exit("Error while getting transactional Data".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($trans_result)>0)
