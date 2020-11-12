@@ -62,7 +62,19 @@ if(isset($_POST['submit']))
 		
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
-			$section=$sql_row2['section']; 
+			$section=$sql_row2['section'];
+			$query = "select section_name from $pms.sections where plant_code='$plantcode' and section_id = '$section'";
+			$sql_res = mysqli_query($link_new, $query) or exit("Sql Error at Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+			$workstation_rows_num = mysqli_num_rows($sql_res);
+			if ($workstation_rows_num > 0) {
+				while ($workstation_row = mysqli_fetch_array($sql_res)) {
+					$sectionName = $workstation_row['section_name'];
+				}
+			}
+			else
+			{
+				$sectionName='Not Available';
+			} 
 			$shift=$sql_row2['shift']; 
 			$plan_sth=round($sql_row2["plan_sth"],$decimal_factor);
 			$act_sth=round($sql_row2["act_out"],$decimal_factor);
@@ -71,7 +83,7 @@ if(isset($_POST['submit']))
 			$act_clh=round($sql_row2["act_clh"],$decimal_factor);
 			$plan_clh=round($sql_row2["plan_clh"],$decimal_factor);
 			echo "<tr>"; 
-			echo "<td rowspan=$rowspan>$section</td>"; 
+			echo "<td rowspan=$rowspan>$sectionName</td>"; 
 			echo "<td>$shift</td>"; 
 			if($act_clh=='0.00')
 			{
