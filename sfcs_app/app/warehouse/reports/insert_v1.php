@@ -86,7 +86,7 @@ function isNumberKey(evt)
 <?php
 if(isset($_POST['submit']))
 {	
-	$sql="select lot_no from $wms.sticker_report where plant_code='$plantcode' AND lot_no=\"".trim($_POST['lot_no'])."\" or rec_no=\"".trim($_POST['lot_no'])."\"";
+	$sql="select lot_no from $wms.sticker_report where (lot_no=\"".trim($_POST['lot_no'])."\" or rec_no=\"".trim($_POST['lot_no'])."\") AND plant_code='$plantcode'";
 	$sql_result=mysqli_query($link, $sql);
 	if(mysqli_num_rows($sql_result)>0)
 	{
