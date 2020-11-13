@@ -235,7 +235,7 @@ if(isset($_POST['submit']))
 		}
 		/**getting sewing jobs based on job header ids*/
 		if($jmJobheaderids!=""){
-			$qryGetJobs="SELECT jm_jg_header_id,job_number FROM $pps.jm_jg_header WHERE jm_job_header IN ($jmJobheaderids) AND job_group_type='$taskType' OR job_group_type='$taskTypeSej' AND plant_code='$plantcode' AND is_active=1 ORDER BY job_number ASC";
+			$qryGetJobs="SELECT jm_jg_header_id,job_number FROM $pps.jm_jg_header WHERE jm_job_header IN ($jmJobheaderids) AND (job_group_type='$taskType' OR job_group_type='$taskTypeSej') AND plant_code='$plantcode' AND is_active=1 ORDER BY job_number ASC";
 			$jobsResult=mysqli_query($link_new, $qryGetJobs) or exit("Error while getting jm jg headers ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$qryCount=mysqli_num_rows($jobsResult);
 		}else{
