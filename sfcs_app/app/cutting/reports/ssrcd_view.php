@@ -5,7 +5,7 @@ $url2 =  $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config
 include("$url2");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R')); 
 $plant_code=$_SESSION['plantCode'];
-// $plant_code='AIP';
+// $plant_code='Q01';
 $username=$_SESSION['userName'];
 ?>
 
@@ -478,7 +478,7 @@ if(isset($_POST['submit']))
 												}
 											 // get the docket qty
 												$size_ratio_sum = 0;
-												$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id = '$ratio_id' ";
+												$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id = '$ratio_id' order by size";
 												$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
 												$fabric_not_allocated_qty = array();
 												$fabric_allocated_plies = 0;
@@ -539,11 +539,11 @@ if(isset($_POST['submit']))
 						<?php
 							foreach($quantitydetails as $key => $value){
 								$percentage = ($value['percentage'])?$value['percentage']:0;
-								echo "<td class='success'>".$percentage." %</td>";
+								echo "<td class='success'>".round($percentage,2)." %</td>";
 
 							}
 							$avgpercentage = (($sumqty/$esumqty));
-							echo "<td class='success'>".$percentage." %</td>";
+							echo "<td class='success'>".round($percentage,2)." %</td>";
 						?>
 					</tr>
 					<tr>
@@ -690,7 +690,7 @@ if(isset($_POST['submit']))
 		<div class="col-sm-12">
 							<?php
 									$tot_qty=0;
-									$Qry_get_cut_details="SELECT docket_line_number,lp_lay_id,lay_status, lp_lay.plies as actualplies, jm_docket_lines.created_at as docket_date, lp_lay.created_at as cut_date, lp_lay.cut_report_status, lay_number, shift  FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_docket_lines` ON jm_docket_lines.`jm_docket_line_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_docket_lines.plant_code='$plant_code'";
+									$Qry_get_cut_details="SELECT docket_line_number,lp_lay_id,lay_status, lp_lay.plies as actualplies, jm_docket_lines.created_at as docket_date, lp_lay.created_at as cut_date, lp_lay.cut_report_status, lay_number, shift  FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_docket_lines` ON jm_docket_lines.`jm_docket_line_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_docket_lines.plant_code='$plant_code' order by docket_line_number";
 									$sql_result6=mysqli_query($link, $Qry_get_cut_details) or die("Error".$Qry_get_cut_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 									if(mysqli_num_rows($sql_result6))
 									{
@@ -780,7 +780,7 @@ if(isset($_POST['submit']))
 											echo "<td>$get_cut_no</td>";
 										 // get the docket qty
 											$size_ratio_sum = 0;
-											$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id = '$ratio_id' ";
+											$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id = '$ratio_id' order by size";
 											$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
 											$actual_cut = array();
 											$fabric_allocated_plies = 0;
@@ -802,7 +802,14 @@ if(isset($_POST['submit']))
 												$cnt++;
 											}
 											echo "<td>".$sumqty."</td>";
-											echo "<td>".$cut_status."</td>";
+											if($actual_plies==$plies){
+												echo "<td> Full Completed </td>";
+											}else if($actual_plies<$plies){
+												echo "<td> Partially Completed</td>";
+											}else if($actual_plies==0){
+												echo "<td> Not Started </td>";
+											}
+											
 											// get docket date 
 											$get_docket_date = "SELECT task_attributes.task_header_id, task_header.created_at as docket_date, task_header.updated_at as latest_updated_date, task_header.resource_id FROM $tms.task_attributes left join $tms.task_header on  task_header.task_header_id = task_attributes.task_header_id WHERE attribute_value = '$docket_no' and task_attributes.plant_code = '$plant_code' and task_attributes.task_header_id is not null";
 											$get_docket_date_result=mysqli_query($link_new, $get_docket_date) or exit("Sql get docket date qry".mysqli_error($GLOBALS["___mysqli_ston"]));
