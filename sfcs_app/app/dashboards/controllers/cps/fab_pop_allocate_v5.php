@@ -802,15 +802,21 @@ if(isset($_POST['allocate_new']))
 						}
 					}
 					
+					$select_uuid="SELECT UUID() as uuid";
+					$uuid_result=mysqli_query($link_new, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($uuid_row=mysqli_fetch_array($uuid_result))
+					{
+						$uuid=$uuid_row['uuid'];
 					
+					}
 					
 					if($process_cat==1)
 					{
-						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at,plant_code) values('".$doc_ref[$i]."','".$tid_ref[$j]."','".$width_ref[$j]."','normal','".$issued_ref[$j]."','1','$username','$username',NOW(),'$plant_code')";
+						$sql="insert into $wms.fabric_cad_allocation(tran_id,doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at,plant_code) values('".$uuid."','".$doc_ref[$i]."','".$tid_ref[$j]."','".$width_ref[$j]."','normal','".$issued_ref[$j]."','1','$username','$username',NOW(),'$plant_code')";
 					}
 					else
 					{
-						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at) values('".$doc_ref[$i]."','".$tid_ref[$j]."','".$width_ref[$j]."','recut','".$issued_ref[$j]."','1','$username','$username',NOW(),'$plant_code')";
+						$sql="insert into $wms.fabric_cad_allocation(tran_id,doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at) values('".$uuid."','".$doc_ref[$i]."','".$tid_ref[$j]."','".$width_ref[$j]."','recut','".$issued_ref[$j]."','1','$username','$username',NOW(),'$plant_code')";
 					}					
 					mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
