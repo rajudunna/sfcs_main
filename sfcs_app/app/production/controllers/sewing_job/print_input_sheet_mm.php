@@ -47,7 +47,7 @@
 						<div style="float:right"><img src="<?= $logo ?>" width="200" height="60"></div>
 
 						<?php
-							if (isset($_GET['flag']) && isset($_GET['sub_po']))
+							if(isset($_GET['sub_po']))
 							{
 								$disStyle=$_GET['style'];
 								$joinSch=$_GET['schedule'];
@@ -60,7 +60,7 @@
                                 $plant_code=$_GET['plant_code'];
 							}
 							//To get Po description
-							$get_po_des="SELECT master_po_description FROM pps.`mp_order` WHERE master_po_number='$masterponumber'";
+							$get_po_des="SELECT master_po_description FROM $pps.`mp_order` WHERE master_po_number='$masterponumber'";
 							$get_po_result=mysqli_query($link_new, $get_po_des) or exit("Sql Error at get_po_des".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($po_row=mysqli_fetch_array($get_po_result))
 							{

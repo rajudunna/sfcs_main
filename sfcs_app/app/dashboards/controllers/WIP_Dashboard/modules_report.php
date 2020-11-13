@@ -13,20 +13,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
-if($_session['plantCode']){
 
-$plantcode = $_session['plantCode'];
-}else{
-$plantcode = $_GET['plantCode'];
-
-}
-if($_session['userName']){
-
-$user_name =  $_session['userName'];
-}else{
-$user_name = $_GET['username'];
-
-}
 // error_reporting(E_ALL);
 // $plantcode = $_session['plantCode'];
 // $plantcode ='AIP';
@@ -66,9 +53,11 @@ function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
 <body>
 
 <?php
-$work_station_id=$_GET['module_id'];
-$work_station=$_GET['module_code'];
-$operation=$_GET['operation_code'];
+$work_station_id=$_POST['module_id'];
+$work_station=$_POST['module_code'];
+$operation=$_POST['operation_code'];
+$plantcode = $_POST['plantCode'];
+$user_name = $_POST['username'];
 $department = DepartmentTypeEnum::SEWING;
 
 // $department='SEWING';
@@ -302,8 +291,16 @@ echo "<br/><div class='container-fluid'>";
 						<input type="hidden" value="'.$operation.'" name="operation">
 						<input type="hidden" value="'.$user_name.'" name="user_name">'; 
 		
-					echo "</form>
-				</div>
+					echo "</form>";
+					echo '<form id="TheForm" method="post" action="" target="TheWindow">
+					<input type="hidden" name="module_id" value="' . $_POST["module_id"] . '" />
+					<input type="hidden" name="module_code" value="' . $_POST["module"] . '" />
+					<input type="hidden" name="plantCode" value="' . $_POST["session_plant_code"] . '" />
+					<input type="hidden" name="username" value="' . $_POST["session_username"] . '" />
+					<input type="hidden" name="operation_code" value="'.$_POST["get_operation"].'" />
+					<input type="hidden" name="authToken" value="' . $_POST["authToken"] . '" />
+					</form>';
+				echo "</div>
 			</div>
 		</div>
 	</div>
@@ -327,7 +324,11 @@ $(document).ready(function(){
                         bundles.push($(this).val())
 
                     }
-                });
+				});
+				if(!bundles.length){
+					swal('','Bundles not selected','error');
+					return false;
+				}
                 var module = $('#module_ref').val();
                 var plantcode = '<?= $plantcode?>';
                 var module1 = '<?= $module?>';
@@ -341,8 +342,8 @@ $(document).ready(function(){
                                 "resourceId": module,
                                 "createdUser": '<?= $user_name ?>'
                             }
-                            var bearer_token;
-				bearer_token = '<?= $_SESSION['authToken'] ?>';
+                var bearer_token;
+				bearer_token = '<?= $_POST['authToken'] ?>';
 				$.ajax({
 					type: "POST",
 					url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/transferBundlesToWorkStation",
@@ -353,19 +354,22 @@ $(document).ready(function(){
 						if(res.status)
 						{
 							swal('','Bundle Transfered Successfully','success')
-							setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&plantCode="+plantcode+"&username="+user_name+"&operation_code="+operation)} , 3000);
+							// setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&plantCode="+plantcode+"&username="+user_name+"&operation_code="+operation)} , 3000);
+							setTimeout(function(){document.getElementById('TheForm_$section$form_unique_id').submit();} , 3000);
 							
 						}
 						else
 						{
 							swal('',res.internalMessage,'error');
-							setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&plantCode="+plantcode+"&username="+user_name+"&operation_code="+operation)} , 3000);
+							// setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&plantCode="+plantcode+"&username="+user_name+"&operation_code="+operation)} , 3000);
+							setTimeout(function(){document.getElementById('TheForm_$section$form_unique_id').submit();} , 3000);
 						}                       
 						//$('#loading-image').hide();
 					},
 					error: function(res){
 						swal('Error in getting data');
-						setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&plantCode="+plantcode+"&username="+user_name+"&operation_code="+operation)} , 3000);
+						// setTimeout(function(){window.location.replace("modules_report.php?module_id="+module_id+"&module_code="+module_code+"&plantCode="+plantcode+"&username="+user_name+"&operation_code="+operation)} , 3000);
+						setTimeout(function(){document.getElementById('TheForm_$section$form_unique_id').submit();} , 3000);
 						//$('#loading-image').hide();
 					}
 				});

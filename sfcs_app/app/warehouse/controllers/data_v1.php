@@ -78,8 +78,9 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 					
 						$handle = fopen($_FILES['file']['tmp_name'],"r");
 						$flag = true;
-						$sql1 = "insert into $wms.store_in (lot_no, ref1, ref2, qty_rec, date, supplier_no, remarks, log_user,plant_code,created_user,created_at,updated_user,updated_at) values ";
+						$sql1 = "insert into $wms.store_in (tid,lot_no, ref1, ref2, qty_rec, date, supplier_no, remarks, log_user,plant_code,created_user,created_at,updated_user,updated_at) values ";
 						$values = array();
+						$uuidArray = array();
 						$total_qty=0;
 						$iro_cnt = 0;
 						while(($data = fgetcsv($handle, 1000, ",")) !== FALSE)
@@ -111,12 +112,23 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 								
 							
 							}
-						
+							
+							$select_uuid="SELECT UUID() as uuid";
+							$uuid_result=mysqli_query($link_new, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($uuid_row=mysqli_fetch_array($uuid_result))
+							{
+								$uuid=$uuid_row['uuid'];
+							
+							}
+
 							// $sql1 = "insert into bai_rm_pj1.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,upload_file) values ( '$lot_no','$ref1', '$item1','$item2', '$date','$remarks','$user_name','$upload_file')";
 							
-							array_push($values, "('" . $lot_no . "','" . $ref1 . "','" . $item1 . "','" . $item2 . "','" . $date . "','" . $item3 . "','" . $remarks . "','".$username."-".$plant_name."','$plantcode','$username','".date('Y-m-d')."','$username','".date('Y-m-d')."')");
+							array_push($values, "('" . $uuid . "','" . $lot_no . "','" . $ref1 . "','" . $item1 . "','" . $item2 . "','" . $date . "','" . $item3 . "','" . $remarks . "','".$username."-".$plant_name."','$plantcode','$username','".date('Y-m-d')."','$username','".date('Y-m-d')."')");
 							$total_qty=$total_qty+$item2;
 							$iro_cnt++;
+
+							//array_push($uuidArray,
+							array_push($uuidArray,$uuid);
 						}
 						if($convert==1)
 						{
@@ -145,16 +157,21 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 						{
 							
 							
-						  $sql_result1=mysqli_query($link, $sql1 . implode(', ', $values)) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						  $last_id_ref = mysqli_insert_id($link);
-						  $for_last_val = $last_id_ref+$iro_cnt;
-						  for($last_id=$last_id_ref;$last_id<$for_last_val;$last_id++){
+							$sql_result1=mysqli_query($link, $sql1 . implode(', ', $values)) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$last_id_ref = mysqli_insert_id($link);
+							$for_last_val = $last_id_ref+$iro_cnt;
 
-							$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$plantcode."-',tid),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid=".$last_id;
-							//echo "Update : ".$update_query."</br>"; 
-						  $sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							foreach ($uuidArray as $uuidValue) {
+								$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$plantcode."-',tid),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='$uuidValue'";
+								//echo "Update : ".$update_query."</br>"; 
+								$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							}
 
-						  }
+							// for($last_id=$last_id_ref;$last_id<$for_last_val;$last_id++){
+							// 	$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$plantcode."-',tid),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='$last_id'";
+							// 	//echo "Update : ".$update_query."</br>"; 
+							// 	$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							// }
 						  
 						  	
 							fclose($handle);
@@ -260,12 +277,20 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							}
 						}
 					}
-						$sql="insert into $wms.store_in (lot_no, ref1, ref2, ref3,supplier_no, qty_rec, date, remarks, log_user,plant_code,created_user,created_at,updated_user,updated_at) values ('$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', '$ref4[$i]', $qty[$i], '$date', '$remarks','".$username."-".$plant_name."','$plantcode','$username','".date('Y-m-d')."','$username','".date('Y-m-d')."')";
+
+					$select_uuid="SELECT UUID() as uuid";
+					$uuid_result=mysqli_query($link_new, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($uuid_row=mysqli_fetch_array($uuid_result))
+					{
+						$uuid=$uuid_row['uuid'];
+					}
+
+					$sql="insert into $wms.store_in (tid,lot_no, ref1, ref2, ref3,supplier_no, qty_rec, date, remarks, log_user,plant_code,created_user,created_at,updated_user,updated_at) values ('$uuid','$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', '$ref4[$i]', $qty[$i], '$date', '$remarks','".$username."-".$plant_name."','$plantcode','$username','".date('Y-m-d')."','$username','".date('Y-m-d')."')";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$qty_count += 1;
-					$last_id = mysqli_insert_id($link);
+					//$last_id = mysqli_insert_id($link);
 					
-					$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$plantcode."-',tid),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='$last_id'";
+					$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$plantcode."-',tid),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='$uuid'";
 					$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				}

@@ -163,7 +163,9 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 											$ttlActEff_sec = 0;
 											$ttlBalPcs_sec = 0;
 											$ttlForeCastHitRate_sec = 0;
+											$sec_count = 0;
 											while ($row = mysqli_fetch_array($res)) {
+												$sec_count += 1;
 												// ============ Get Workstation id =======================//
 												$workstationIdQuery  = "SELECT workstation_id FROM $pms.workstation WHERE workstation_code = '" . $row['row_name'] . "' and plant_code = '". $plantCode ."'";
 												$workstationResult = mysqli_query($link, $workstationIdQuery) or exit("sql Error workstation-". mysqli_error($link));
@@ -450,8 +452,8 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 												<td class="text-right"><?= $ttlForecastSAH_sec; ?></td>
 												<td class="text-right"><?= $ttlActualSAH_sec; ?></td>
 												<td class="text-right"><?= $ttlSAHDiff_sec; ?></td>
-												<td class="text-right"><?= $ttlPlanEff_sec; ?>%</td>
-												<td class="text-right"><?= $ttlActEff_sec; ?>%</td>
+												<td class="text-right"><?= round($ttlPlanEff_sec/$sec_count); ?>%</td>
+												<td class="text-right"><?= round($ttlActEff_sec/$sec_count); ?>%</td>
 												<td class="text-right"><?= $ttlBalPcs_sec; ?></td>
 												<td class="text-right"><?= $ttlForeCastHitRate_sec; ?>%</td>
 												</tr>
@@ -478,8 +480,8 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 											<td class="text-right"><?= $ttlForecastSAH; ?></td>
 											<td class="text-right"><?= $ttlActualSAH; ?></td>
 											<td class="text-right"><?= $ttlSAHDiff; ?></td>
-											<td class="text-right"><?= $ttlPlanEff; ?>%</td>
-											<td class="text-right"><?= $ttlActEff; ?>%</td>
+											<td class="text-right"><?= round($ttlPlanEff/$sec_count); ?>%</td>
+											<td class="text-right"><?= round($ttlActEff/$sec_count); ?>%</td>
 											<td class="text-right"><?= $ttlBalPcs; ?></td>
 											<td class="text-right"><?= $ttlForeCastHitRate; ?>%</td>
 										</tr>
