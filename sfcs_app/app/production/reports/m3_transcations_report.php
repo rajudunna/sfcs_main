@@ -1,3 +1,4 @@
+
 <?php
     /* ================================================
         Report : M3 Transcations Report
@@ -84,18 +85,59 @@
     if(isset($_GET['tdate'])){
         if(($_GET['tdate'] && $_GET['fdate']) || $_GET['schedule']){
             $resp_stat[] = $_GET['ts'] ? 'm3_transaction.status="'.$_GET["ts"].'"' : '';
-            $resp_stat[] = $_GET['schedule'] ? 'transaction_log.schedule="'.$_GET["schedule"].'"' : '';
-            $resp_stat[] = ($_GET['tdate'] && $_GET['fdate']) ? 'm3_transaction.created_at between  "'.$_GET["fdate"].' 00:00:00" and "'.$_GET["tdate"].' 23:59:59"' : '';
+            $resp_stat[] = ($_GET['tdate'] && $_GET['fdate']) ? 'm3_transaction.created_at between  "'.$_GET["fdate"].' 00:00:00" and "'.$_GET["tdate"].' 23:59:59"' : '';            
+            $schedule_filter = $_GET['schedule'] ? 'transaction_log.schedule="'.$_GET["schedule"].'"' : '';
             $ar_nw = array_filter($resp_stat); 
-            $qry_m3_trans = "SELECT transaction_log.style,transaction_log.schedule,transaction_log.color,transaction_log.size,m3_transaction.created_at as dt,m3_transaction.mo_number,fg_m3_transaction.operation,
-            m3_transaction.ext_operation,m3_transaction.quantity,m3_transaction.status,m3_transaction.m3_transaction_id,m3_transaction.m3_fail_trans_id,m3_transaction.created_user,fg_m3_transaction.job_ref,m3_transaction.reason_code,fg_m3_transaction.workstation_id,m3_transaction.workstation_ext_code,m3_transaction.api_type,m3_transaction.api_fail_count
-            FROM $pts.`m3_transaction`  
-            LEFT JOIN $pts.`fg_m3_transaction` ON m3_transaction.m3_transaction_id = fg_m3_transaction.m3_transaction_id
-            LEFT JOIN $pts.`transaction_log` ON m3_transaction.mo_number=transaction_log.mo_number WHERE ".implode(' and ',$ar_nw);
-
-            $result_m3_trans = mysqli_query($link_ui, $qry_m3_trans);
+            $result_arry = [];
+            
+            $qry_m3_trans = "SELECT m3_transaction.created_at,m3_transaction.mo_number,
+            m3_transaction.ext_operation,m3_transaction.quantity,m3_transaction.status,m3_transaction.m3_transaction_id,m3_transaction.m3_fail_trans_id,m3_transaction.created_user,m3_transaction.reason_code,m3_transaction.workstation_ext_code,m3_transaction.api_type,m3_transaction.api_fail_count
+            FROM $pts.`m3_transaction` WHERE ".implode(' and ',$ar_nw);
+            $result_m3_trans = mysqli_query($link, $qry_m3_trans);
             $ary_res = mysqli_fetch_all($result_m3_trans,MYSQLI_ASSOC);
             if(count($ary_res)>0){
+                foreach($ary_res as $res){
+                    $qry_fg_m3_trans = "SELECT fg_m3_transaction.operation,fg_m3_transaction.workstation_id,fg_m3_transaction.job_ref, fg_m3_transaction.sub_po FROM $pts.`fg_m3_transaction` WHERE m3_transaction_id ='".$res['m3_transaction_id']."' limit 0,1";
+                    $result_fg_m3_trans = mysqli_query($link, $qry_fg_m3_trans);
+                    $ary__fg_m3_res = mysqli_fetch_assoc($result_fg_m3_trans);
+                    $sch_filter = '';
+                    if($_GET['schedule']) {
+                        $sch_filter = 'transaction_log.schedule="'.$_GET["schedule"].'" and sub_po ="'.$ary__fg_m3_res['sub_po'].'"';
+                    } else {
+                        $sch_filter = 'sub_po ="'.$ary__fg_m3_res['sub_po'].'"';
+                    }
+                    $qry_trans_log = "SELECT transaction_log.style,transaction_log.schedule,transaction_log.color,transaction_log.size FROM $pts.`transaction_log` WHERE $sch_filter limit 0,1";
+                    $result_trans_log = mysqli_query($link, $qry_trans_log);
+                    $ary__trans_res = mysqli_fetch_assoc($result_trans_log);  
+                    if($ary__trans_res) {
+                        $output_arry = ['m3_transaction_id' => $res['m3_transaction_id'],
+                            'dt' => date("Y-m-d H:i:s", strtotime($res['created_at'])),
+                            'mo_number' => $res['mo_number'],
+                            'ext_operation' => $res['ext_operation'],
+                            'quantity' => $res['quantity'],
+                            'status' => $res['status'],
+                            'm3_fail_trans_id' => $res['m3_fail_trans_id'],
+                            'created_user' => $res['created_user'],
+                            'reason_code' => $res['reason_code'],
+                            'reason_code' => $res['reason_code'],
+                            'workstation_ext_code' => $res['workstation_ext_code'],
+                            'api_type' => $res['api_type'],
+                            'api_fail_count' => $res['api_fail_count'],
+                            'operation' => $ary__fg_m3_res['operation'],
+                            'workstation_id' => $ary__fg_m3_res['workstation_id'],
+                            'job_ref' => $ary__fg_m3_res['job_ref'],
+                            'style' => $ary__trans_res['style'],
+                            'schedule' => $ary__trans_res['schedule'],
+                            'color' => $ary__trans_res['color'],
+                            'size' => $ary__trans_res['size']
+                        ];
+                        array_push($result_arry,$output_arry);     
+                    }               
+                }
+            } else {
+                echo (isset($_GET['excel']) && $_GET['excel']) ? "<script>alert('No Data Found.');</script>" : "<div class='alert alert-warning'><i class='fas fa-exclamation-triangle'></i> No Data Found.</div>";
+            }
+            if(count($result_arry)>0){
                 if(isset($_GET['excel']) && $_GET['excel']){
                     header("Content-Type: application/xls");
                     header("Content-Disposition: attachment; filename= M3 Transcation Report.xls ");
@@ -111,10 +153,10 @@
                     
             <?php
                 $i=1;
-                foreach($ary_res as $res){
+                foreach($result_arry as $res){
                     $reason ='';
-                    $get_op_name = mysqli_fetch_array(mysqli_query($link_ui, "SELECT operation_name FROM $mdm.`operations` WHERE operation_code=".$res['operation']));
-                    $get_module_name = mysqli_fetch_array(mysqli_query($link_ui, "SELECT workstation_code FROM $pms.`workstation` WHERE workstation_id='".$res['workstation_id']."'"));
+                    $get_op_name = mysqli_fetch_array(mysqli_query($link, "SELECT operation_name FROM $mdm.`operations` WHERE operation_code=".$res['operation']));
+                    $get_module_name = mysqli_fetch_array(mysqli_query($link, "SELECT workstation_code FROM $pms.`workstation` WHERE workstation_id='".$res['workstation_id']."'"));
                     $reason = $res['status'];                 
                     if ($res['api_type'] == ApiTypeEnum::FG) {
                         $api_type = '<span class="badge progress-bar-warning">FG</span>';
@@ -125,7 +167,7 @@
                     }
                     
                     if($reason==M3TransStatusEnum::FAIL){
-                        $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT response_message FROM $pts.`m3_fail_transaction` WHERE plant_code='$plantcode' and m3_fail_trans_id='".$res['m3_fail_trans_id']."'"))['response_message'] ?? 'fail with no reason.';
+                        $ndr = mysqli_fetch_array(mysqli_query($link, "SELECT response_message FROM $pts.`m3_fail_transaction` WHERE plant_code='$plantcode' and m3_fail_trans_id='".$res['m3_fail_trans_id']."'"))['response_message'] ?? 'fail with no reason.';
                         $reason = '<label class="label label-danger">'.$ndr."</label>";
                     }else{
                         $reason = "<label class='label label-success'>".$reason."</label>";
@@ -153,7 +195,7 @@
                         <td><?= $api_type ?></td>
                         <td><?= $res['api_fail_count'] ?></td>
                     </tr>
-<?php           }      ?>
+<?php          }      ?>
                     
                 </table>
 <?php
@@ -184,5 +226,3 @@ $('#reset_table2').addClass('btn btn-warning btn-xs');
     } 
     
     ?>
-
-

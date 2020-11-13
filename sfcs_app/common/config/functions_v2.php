@@ -725,10 +725,11 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
     global $tms;
     global $TaskTypeEnum;
     global $TaskStatusEnum;
+    global $TaskProgressEnum;
     global $username;
     
     $check_type=TaskTypeEnum::SEWINGJOB;
-    $taskStatus=TaskStatusEnum::INPROGRESS;
+    $taskStatus=TaskStatusEnum::OPEN;
     $taskprogress=TaskProgressEnum::INPROGRESS;
     try
     {
@@ -846,7 +847,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                 if(is_null($resource_id)){
                     /** */
                     /**resource id update */
-                    $Qry_update_header="UPDATE $tms.task_header SET resource_id='$items[0]',task_status='$taskStatus',priority='$j',task_progress='$taskprogress' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                    $Qry_update_header="UPDATE $tms.task_header SET resource_id='$items[0]',priority='$j',task_progress='$taskprogress' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
                     // echo "</br>".$items[1]."-".$Qry_update_header."</br>";
 
                     $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at update task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1016,7 +1017,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                                     if($task_header_id!=''){
                                         /**update query task header table to update workstation */
                                         /**resource id update */
-                                        $Qry_update_header="UPDATE $tms.task_header SET resource_id='$workStationId',task_status='$taskStatus',priority='$j',task_progress='$taskprogress' WHERE task_header_id='$header_id' AND task_type='$cutJobType' AND resource_id IS NULL AND plant_code='$plantcode'";
+                                        $Qry_update_header="UPDATE $tms.task_header SET resource_id='$workStationId',priority='$j',task_progress='$taskprogress' WHERE task_header_id='$header_id' AND task_type='$cutJobType' AND resource_id IS NULL AND plant_code='$plantcode'";
                                         // echo "</br>".$items[1]."-".$Qry_update_header."</br>";
 
                                         $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at update task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1061,7 +1062,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                                                 /**update query task header table to update workstation */
                                                 /**resource id update */
                                                 $j=1;
-                                                $Qry_update_header="UPDATE $tms.task_header SET resource_id='$workStationId',task_status='$taskStatus',priority='$j',task_progress='$taskprogress' WHERE task_header_id='$task_header_id' AND task_type='$cutEmbJobType' AND resource_id IS NULL AND plant_code='$plantcode'";
+                                                $Qry_update_header="UPDATE $tms.task_header SET resource_id='$workStationId',priority='$j',task_progress='$taskprogress' WHERE task_header_id='$task_header_id' AND task_type='$cutEmbJobType' AND resource_id IS NULL AND plant_code='$plantcode'";
                                                 // echo "</br>".$items[1]."-".$Qry_update_header."</br>";
 
                                                 $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at update task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1249,7 +1250,7 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
       global $pps;
       global $tms;
       global $TaskTypeEnum;
-      global $TaskStatusEnum;
+      global $TaskProgressEnum;
         
       $check_type=TaskTypeEnum::SEWINGJOB;
       if($check_type == $tasktype)
@@ -1261,11 +1262,11 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
         $job_group_type=TaskTypeEnum::PLANNEDEMBELLISHMENTJOB;
       }   
       
-     $taskStatus=TaskStatusEnum::INPROGRESS;
+     $taskProgress = TaskProgressEnum::INPROGRESS;
       //Qry to fetch task_header_id from task_header
       $task_header_id=array();
       $task_header_log_time=array();
-      $get_task_header_id="SELECT task_header_id,updated_at FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='".$taskStatus."' AND task_type='$tasktype' AND plant_code='$plantcode' AND is_active=1";
+      $get_task_header_id="SELECT task_header_id,updated_at FROM $tms.task_header WHERE resource_id='$work_id' AND task_progress='".$taskProgress."' AND task_type='$tasktype' AND plant_code='$plantcode' AND is_active=1";
     //   echo $get_task_header_id."<br/>";
       $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
@@ -1644,11 +1645,12 @@ function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId, $limit) {
     global $tms;
     global $link_new;
     global $taskType;
-    global $taskStatus;
+    global $taskProgress;
     try{
         $taskType = TaskTypeEnum::SEWINGJOB;
-        $taskStatus = TaskStatusEnum::INPROGRESS;
-        $jobsQuery = "select tj.task_jobs_id,tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."' ORDER BY tj.`priority`";
+        $taskProgress = TaskProgressEnum::INPROGRESS;
+        
+        $jobsQuery = "select tj.task_jobs_id,tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_progress = '".$taskProgress."' ORDER BY tj.`priority`";
         // if ($limit) {
         //     $jobsQuery .= " limit 0,$limit";
         // }

@@ -19,7 +19,9 @@
 		{
 			document.getElementById("style").focus();
 			document.getElementById("schedule").focus();
-			//document.getElementById("color").focus();
+			document.getElementById("color").focus();
+			document.getElementById("po").focus();
+			document.getElementById("subpo").focus();
 		}
 
 
@@ -165,7 +167,7 @@
 	
 
 	$('#color').change(function(){
-        $('#color option').remove();
+        $('#po option').remove();
         var schedule = $('#schedule').val();
         var style = $('#style').val();
         var color = $('#color').val();
@@ -176,8 +178,8 @@
 			success: function (response) {		
 				 $('select[name="po"]').append('<option value="" selected disabled>Select Po</option>'); 
 				console.log(response);
-					$.each(response.color, function(key,value) {
-							$('select[name="po"]').append('<option value="'+ value +'">'+value+'</option>');
+					$.each(response.po, function(key,value) {
+							$('select[name="po"]').append('<option value="'+ value +'">'+key+'</option>');
 					});
 					   					
 			},
@@ -193,10 +195,11 @@
 	
 
 	$('#po').change(function(){
-        $('#color option').remove();
+        //$('#color option').remove();
         var schedule = $('#schedule').val();
         var color = $('#color').val();
         var po = $('#po').val();
+		var style = $('#style').val();
 	    $.ajax({
 			type: "POST",
 			url: '<?= $url1 ?>?style='+style+'&schedule='+schedule+'&color='+color+'&po='+po,
@@ -204,8 +207,8 @@
 			success: function (response) {		
 				 $('select[name="subpo"]').append('<option value="" selected disabled>Select sub Po</option>'); 
 				console.log(response);
-					$.each(response.color, function(key,value) {
-							$('select[name="subpo"]').append('<option value="'+ value +'">'+value+'</option>');
+					$.each(response.subpo, function(key,value) {
+							$('select[name="subpo"]').append('<option value="'+ value +'">'+key+'</option>');
 					});
 					   					
 			},
@@ -223,7 +226,9 @@
       function getdata(){
 	      var style = $("#style").val();
 	      var schedule = $("#schedule").val();	
-	     // var color = $("#color").val();
+	     var color = $("#color").val();
+	     var po = $("#po").val();
+	     var subpo = $("#subpo").val();
 	      var submit = $('#submit').val();
 
 	      if(style == null || schedule == null)
@@ -234,7 +239,7 @@
 
 	      $.ajax({
 				type: "GET",
-				url: '<?= $url ?>?style='+style +'&schedule='+schedule  +'&submit='+submit,
+				url: '<?= $url ?>?style='+style +'&schedule='+schedule  +'&color='+color +'&po='+po +'&subpo='+subpo+'&submit='+submit,
 				success: function(response) 
 				{
 					$('#excel_form').css({'display':'block'});

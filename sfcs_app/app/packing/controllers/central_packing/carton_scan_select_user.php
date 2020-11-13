@@ -33,9 +33,20 @@
 					// echo $sql_schedule;
 					mysqli_query($link, $sql_schedule) or exit("Sql Error_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$url = getFullURL($_GET['r'],'carton_scan_decentral_packing.php','R');
+					echo '<form id="TheForm" method="post" action="'.$url.'" target="TheWindow">
+					<input type="hidden" name="emp_id" value="'.$emp_id.'" />
+					<input type="hidden" name="team_id" value="'.$team_id.'" />
+					<input type="hidden" name="operation_id" value="'.$operation_id.'" />
+					<input type="hidden" name="shift" value="'.$shift.'" />
+					<input type="hidden" name="plant_code" value="'.$plant_code.'" />
+					<input type="hidden" name="username" value="'.$username.'" />
+					<input type="hidden" name="authToken" value="'.$_SESSION['authToken'].'" />
+					</form>
+					';
 					echo "<script language=\"javascript\" type=\"text/javascript\">
 							document.addEventListener('DOMContentLoaded', (event) => {
-								window.open('$url?emp_id=$emp_id&team_id=$team_id&operation_id=$operation_id&shift=$shift&plant_code=$plant_code&username=$username');
+								window.open('', 'TheWindow');
+                                document.getElementById('TheForm').submit();
 							});
 					</script>";		
 				}

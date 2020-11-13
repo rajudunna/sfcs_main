@@ -224,26 +224,25 @@ $username=$_SESSION['userName'];
          $sdate=$_POST['dat'];
          $edate=$_POST['dat1'];
          $schedule=$_POST['schedule'];
-
+         $status = M3TransStatusEnum::FAIL;
          if($schedule != '')
          {
-            $sql="SELECT m3_transaction.m3_transaction_id,m3_transaction.api_fail_count,m3_transaction.status,fg_m3_transaction.opertaion,m3_transaction.mo_number,m3_transaction.m3_fail_trans_id,m3_transaction.ext_operation,transaction_log.style,transaction_log.schedule,transaction_log.color,transaction_log.size,m3_transaction.quantity FROM $pts.`m3_transactions`  
+            $sql="SELECT m3_transaction.m3_transaction_id,m3_transaction.api_fail_count,m3_transaction.status,fg_m3_transaction.operation,m3_transaction.mo_number,m3_transaction.m3_fail_trans_id,m3_transaction.ext_operation,transaction_log.style,transaction_log.schedule,transaction_log.color,transaction_log.size,m3_transaction.quantity FROM $pts.`m3_transaction`  
             LEFT JOIN $pts.`fg_m3_transaction` ON m3_transaction.m3_transaction_id = fg_m3_transaction.m3_transaction_id
-            LEFT JOIN $pts.`transaction_log` ON m3_transaction.mo_number=transaction_log.mo_number
-            WHERE m3_transaction.status =".M3TransStatusEnum::FAIL." AND m3_transaction.`api_fail_count`=4 and transaction_log.schedule='$schedule' ";
+            LEFT JOIN $pts.`transaction_log` ON fg_m3_transaction.sub_po=transaction_log.sub_po
+            WHERE m3_transaction.status ='".$status."' AND m3_transaction.`api_fail_count`=4 and transaction_log.schedule='$schedule' group by m3_transaction.m3_transaction_id";
             $msg = "Data for the schedule - ".$schedule;
          }
          else
          {
-            $sql="SELECT m3_transaction.m3_transaction_id,m3_transaction.api_fail_count,m3_transaction.status,fg_m3_transaction.operation,m3_transaction.mo_number,m3_transaction.m3_fail_trans_id,m3_transaction.ext_operation,transaction_log.style,transaction_log.schedule,transaction_log.color,transaction_log.size,m3_transaction.quantity FROM $pts.`m3_transactions`  
+            $sql="SELECT m3_transaction.m3_transaction_id,m3_transaction.api_fail_count,m3_transaction.status,fg_m3_transaction.operation,m3_transaction.mo_number,m3_transaction.m3_fail_trans_id,m3_transaction.ext_operation,transaction_log.style,transaction_log.schedule,transaction_log.color,transaction_log.size,m3_transaction.quantity FROM $pts.`m3_transaction`  
             LEFT JOIN $pts.`fg_m3_transaction` ON m3_transaction.m3_transaction_id = fg_m3_transaction.m3_transaction_id
-            LEFT JOIN $pts.`transaction_log` ON m3_transaction.mo_number=transaction_log.mo_number
-            WHERE m3_transaction.status =".M3TransStatusEnum::FAIL." AND m3_transaction.`api_fail_count`=4 and m3_transaction.created_at between \"".$sdate." ".$shour."\" and \"".$edate." ".$ehour."\"";
+            LEFT JOIN $pts.`transaction_log` ON fg_m3_transaction.sub_po=transaction_log.sub_po
+            WHERE m3_transaction.status ='".$status."' AND m3_transaction.`api_fail_count`=4 and m3_transaction.created_at between \"".$sdate." ".$shour."\" and \"".$edate." ".$ehour."\" group by m3_transaction.m3_transaction_id";
             $date_1 = $sdate;$date_2 = $edate;
             $date1= strtotime($date_1);$date2= strtotime($date_2);
             $msg = "Data from ".date('d-M-Y', $date1)." to ".date('d-M-Y', $date2);
          }
-         // echo $sql;
          // mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
          $sql_result=mysqli_query($link, $sql);
          $count=mysqli_num_rows($sql_result);
@@ -356,11 +355,10 @@ $username=$_SESSION['userName'];
       $binddetails=$_POST['bindingdata'];
       $count1=count($binddetails);
 
-
          for($j=0;$j<$count1;$j++)
          {
             $id = $binddetails[$j];
-            $update_sql="update $pts.`m3_transaction` set api_fail_count=0,updated_user='$username',updated_at='".NOW()."' where plant_code='$plantcode' and m3_transaction_id='".$binddetails[$j]."'";
+            $update_sql="update $pts.`m3_transaction` set api_fail_count=0,updated_user='$username',updated_at=NOW() where plant_code='$plantcode' and m3_transaction_id='".$binddetails[$j]."'";
             mysqli_query($link, $update_sql) or exit("Sql Update Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
          }

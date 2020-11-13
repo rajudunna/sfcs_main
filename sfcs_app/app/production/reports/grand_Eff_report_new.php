@@ -62,8 +62,8 @@ if(isset($_POST['submit']))
 		
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
-			$section=$sql_row2['section_code']; 
-			$resource_id=$sql_row2['workstation_id']; 
+			$section=$sql_row2['section']; 
+			$shift=$sql_row2['shift']; 
 			$plan_sth=round($sql_row2["plan_sth"],$decimal_factor);
 			$act_sth=round($sql_row2["act_out"],$decimal_factor);
 			$plan_out=round($sql_row2["plan_sth"],$decimal_factor);
@@ -72,30 +72,28 @@ if(isset($_POST['submit']))
 			echo "<tr>"; 
 			echo "<td rowspan=$rowspan>$section</td>"; 
 			echo "<td>$shift</td>"; 
-				
-			$sql="SELECT AVG(planned_eff) AS planned_eff FROM $pps.`monthly_production_plan` mpl
-			LEFT JOIN $pps.`monthly_production_plan_upload_log` mppu ON mppu.monthly_pp_up_log_id=mpl.pp_log_id
-			WHERE mppu.plant_code='$plantcode' AND date(mpl.planned_date) BETWEEN '".$sdate."' and '".$edate."'"; 
-			// echo $sql."<br/>"; 
-			$sql_result=mysqli_query($link, $sql) or exit("Error While fetching information from Monthly Plan".mysqli_error($GLOBALS["___mysqli_ston"])); 
-			while($sql_row=mysqli_fetch_array($sql_result)) 
-			{ 
-				$planned_eff=round($sql_row["planned_eff"],$decimal_factor);
+			if($act_clh=='0.00')
+			{
+				$act_eff=0;
 			}
-		
+			else
+			{
+				$act_eff=round(($act_sth/$act_clh)*100,$decimal_factor);
+			}
+			
+			
+			
 			echo "<td>".round($planned_eff,$decimal_factor)."%</td>"; 
-			echo "<td>".round(($act_sth/$act_clh)*100,$decimal_factor)."%</td>"; 
+			echo "<td>".$act_eff."%</td>"; 
 			echo "<td>".round($plan_sth,$decimal_factor)."</td>"; 
 			echo "<td>".round($act_sth,$decimal_factor)."</td>"; 
 			echo "<td>".round($plan_out,$decimal_factor)."</td>"; 
 			echo "<td>".round($act_out,$decimal_factor)."</td>"; 
-			echo "</tr>"; 
-				
+			echo "</tr>"; 				
 		}
 	}
 	else
-	{
-		
+	{		
 		echo "<br><br><div class='alert alert-danger'><b>No records found for selected criteria!</b></div>";
 	} 
  							
