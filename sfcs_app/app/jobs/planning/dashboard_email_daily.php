@@ -19,7 +19,6 @@ if($_GET['plantCode']){
 	$plant_code = $argv[1];
 }
 
-$username=$_SESSION['userName'];
 $message= '<html><head><style type="text/css">
 
 body
@@ -145,7 +144,6 @@ $decimal_factor=2;
 	$sms.="F-".round($tot_plan_sth,$decimal_factor)."-".round($tot_act_sth,$decimal_factor)."-".round($tot_act_out,$decimal_factor);
 
 	$message.="<td align=right>".round($tot_act_out,$decimal_factor)."</td>";
-	$message.="<td align=right>".round($tot_rework,$decimal_factor)."</td>";
 	if($tot_act_clh>0)
 	{
 		$message.="<td align=right>".round(($tot_act_sth/$tot_act_clh)*100,$decimal_factor)." %</td>";
@@ -161,34 +159,56 @@ $decimal_factor=2;
 	$message.="<tr><th colspan=6>Buyer wise Performance</th></tr>";
 	
 	$teams=$shifts_array;
+	$tot_plansah=0;
+	$tot_actsah=0;
+	$tot_actout=0;
+	$tot_eff=0;
+	$tot_actclh=0;
 	//TO show buyer wise performance
 	$get_buyerdetails="SELECT GROUP_CONCAT(DISTINCT(mo_number)) AS monumbers,buyer_desc FROM $oms.`oms_mo_details` WHERE plant_code='$plant_code' GROUP BY buyer_desc";	
 	$buyers_result=mysqli_query($link, $get_buyerdetails) or exit("Sql Error556".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($buyers_row=mysqli_fetch_array($buyers_result))
 	{
+		
 	   $buyers=$buyers_row['buyer_desc'];
 	   $monumbers=$buyers_row['monumbers'];
 	   
 	   $jobtype=TaskTypeEnum::SEWINGJOB;
 	   //get details from fg_m3_transaction
-	   $get_fg_m3_transactiondetails="SELECT job_ref,DISTINCT(workstation_id) AS workstations_id FROM $pts.fg_m3_transaction WHERE job_type='$jobtype' AND plant_code='$plant_code' AND mo_number IN ('".$monumbers."')";
+	   $get_fg_m3_transactiondetails="SELECT job_ref,workstation_id FROM $pts.fg_m3_transaction WHERE job_type='$jobtype' AND plant_code='$plant_code' AND DATE(created_at)='$date' AND mo_number IN ($monumbers)";
 	   $transactions_result=mysqli_query($link, $get_fg_m3_transactiondetails) or exit("Sql Error557".mysqli_error($GLOBALS["___mysqli_ston"]));
-	   while($transaction_row=mysqli_fetch_array($transactions_result))
-	   {
-		 $jobnumber[]=$transaction_row['job_ref'];
-		 $workstations_id[]=$transaction_row['workstations_id'];
+	   if(mysqli_num_rows($transactions_result)>0){
+			while($transaction_row=mysqli_fetch_array($transactions_result))
+			{
+			 $jobnumber[]=$transaction_row['job_ref'];
+			 $workstations_id[]=$transaction_row['workstations_id'];
+			}
 	   }
+	   
+	   //get act_s=clh from grand-rep
+	   $get_actclh="SELECT sum(act_clh) AS act_clh from $pts.grand_rep WHERE date='$date' AND plant_code='$plant_code' AND module IN ('".implode("','" , $workstations_id)."')";
+	   $actclh_result=mysqli_query($link, $get_actclh) or exit("Sql Errorget_actclh".mysqli_error($GLOBALS["___mysqli_ston"]));
+	   if(mysqli_num_rows($actclh_result)>0){
+			while($actclh_row=mysqli_fetch_array($actclh_result))
+			{
+			  $act_clh=$actclh_row['act_clh'];
+			  $tot_actclh +=$act_clh;
+			}
+			
+	   }
+	  
 	   //Get workstation code
 	   $getworkstationcode="SELECT workstation_code FROM $pms.`workstation` WHERE workstation_id IN ('".implode("','" , $workstations_id)."')";
 	   $workstations_result=mysqli_query($link, $getworkstationcode) or exit("Sql Error789".mysqli_error($GLOBALS["___mysqli_ston"]));
-	   while($workstation_row=mysqli_fetch_array($workstations_result))
-	   { 
-         $workstationcode[]=$workstation_row['workstation_code'];
+	   if(mysqli_num_rows($workstations_result)>0){
+			while($workstation_row=mysqli_fetch_array($workstations_result))
+			{ 
+			  $workstationcode[]=$workstation_row['workstation_code'];
+			}
 	   }
 
 	   //To get planned SAH
-	   // Getting Plan Information
-	   $sql_month_plan="select sum(planned_qty) as qty,sum(planned_sah) as sah,planned_eff,capacity_factor from $pps.monthly_production_plan where plant_code='$plant_code' and row_name in ('".implode("','" , $workstationcode)."')";
+	   $sql_month_plan="select sum(planned_sah) as sah from $pps.monthly_production_plan where plant_code='$plant_code' and row_name in ('".implode("','" , $workstationcode)."')";
 	   $sql_month_plan_res=mysqli_query($link, $sql_month_plan) or exit("Fetching Monthly Plan information".mysqli_error($GLOBALS["___mysqli_ston"]));
 	   while($monthlyRow=mysqli_fetch_array($sql_month_plan_res))
 	   {
@@ -200,45 +220,97 @@ $decimal_factor=2;
 			{
 				$plan_sah=0;
 			}
+			$tot_plansah +=$plan_sah;
 	   }
+	   $message.="<tr><td align=left>".$buyers."</td><td align=right>".round($plan_sah,$decimal_factor)."</td>";
+	   //To get actual sah
+	   $act_sah=0;
+	   $sql_trans="SELECT operation,style,color,SUM(good_quantity) AS qty FROM $pts.transaction_log WHERE DATE(created_at)='$date' AND parent_barcode_type='PPLB' and plant_code='".$plant_code."' AND parent_job IN ('".implode("','" , $jobnumber)."') group by style,color,operation";
+		// echo $sql_trans."<br>";
+	   $trans_result=mysqli_query($link, $sql_trans) or exit("Error while getting transactional Data".mysqli_error($GLOBALS["___mysqli_ston"]));
+	   while($trans_row=mysqli_fetch_array($trans_result))
+	   {	
+			$style=$trans_row['style'];
+			$color=$trans_row['color'];
+			$operaiton_code=$trans_row['operation'];
+			//echo $style."--".$color."--".$operaiton_code."<br>";
+			//Fetching SMV
+			$sql_to_fet_smv="SELECT smv FROM $oms.oms_products_info AS opi LEFT JOIN $oms.oms_mo_operations AS omo ON opi.mo_number=omo.mo_number LEFT JOIN $oms.oms_mo_details AS omd ON omd.mo_number=omo.mo_number WHERE opi.style='".$style."' AND opi.color_desc='".$color."' AND omo.operation_code=".$operaiton_code." and omd.plant_code='".$plant_code."' LIMIT 1";
+			// echo $sql_to_fet_smv."<br>";
+			$sql_to_fet_smv_res=mysqli_query($link, $sql_to_fet_smv) or exit("Error while getting SMV Information".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($smv_res=mysqli_fetch_array($sql_to_fet_smv_res))
+			{
+				$smv=$smv_res['smv'];
+			}
+			
+			if($smv>0)
+			{
+				$act_sah=$trans_row['qty']*$smv/60;
+				$tot_actsah +=$act_sah;
+			}							
+	   }
+	   $message.="<td align=right>".round($act_sah,$decimal_factor)."</td>";	
 	   $actoutqty=0;
 	   foreach($jobnumber as $job)
 	   {
-         //To get taskjob reference from jm_jg_header
-		 $get_jmjgheader_details="SELECT jm_jg_header_id FROM pps.`jm_jg_header` WHERE job_number='$job' AND plant_code='$plant_code' AND is_active=1";
-		 $jgheader_result=mysqli_query($link, $get_jmjgheader_details) or exit("Sql Error558".mysqli_error($GLOBALS["___mysqli_ston"]));
-		 while($header_row=mysqli_fetch_array($jgheader_result))
-		 {
-           $jm_jg_header_id=$header_row['jm_jg_header_id']; 
-		 }
-		 //To get tsakjobid from taskjobs
-		 $get_taskjobsid="SELECT task_jobs_id FROM $tms.`task_jobs` WHERE task_job_reference='$jm_jg_header_id' AND plant_code='$plant_code' AND is_active=1";
-		 $taskjob_result=mysqli_query($link, $get_taskjobsid) or exit("Sql Error559".mysqli_error($GLOBALS["___mysqli_ston"]));
-		 while($taskjob_row=mysqli_fetch_array($taskjob_result))
-		 {
-           $taskjobid=$taskjob_row['task_jobs_id'];
-		 }
-		 /**
-		 * getting min and max operations
-		 */
-		 $qrytoGetMaxOperation="SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id='".$taskjobid."' AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
-		 $maxOperationResult = mysqli_query($link,$qrytoGetMaxOperation) or exit('Problem in getting operations data for job');
-		 if(mysqli_num_rows($maxOperationResult)>0){
-			while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){
-				$maxOperation=$maxOperationResultRow['operation_code'];
+			//To get taskjob reference from jm_jg_header
+			$get_jmjgheader_details="SELECT jm_jg_header_id FROM pps.`jm_jg_header` WHERE job_number='$job' AND plant_code='$plant_code' AND is_active=1";
+			$jgheader_result=mysqli_query($link, $get_jmjgheader_details) or exit("Sql Error558".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($header_row=mysqli_fetch_array($jgheader_result))
+			{
+			  $jm_jg_header_id=$header_row['jm_jg_header_id']; 
 			}
-		 }
-		 
-		 $get_qtys="SELECT SUM(good_quantity) AS quantity FROM $tms.`task_job_status` WHERE plant_code='$plant_code' AND operation_code='$maxOperation'";
-		 $qtys_result=mysqli_query($link, $get_qtys) or exit("Sql Error560".mysqli_error($GLOBALS["___mysqli_ston"]));
-		 while($qty_row=mysqli_fetch_array($qtys_result))
-		 {
-           $actoutqty +=$qty_row['quantity'];
-		 }
+			//To get tsakjobid from taskjobs
+			$get_taskjobsid="SELECT task_jobs_id FROM $tms.`task_jobs` WHERE task_job_reference='$jm_jg_header_id' AND plant_code='$plant_code' AND is_active=1";
+			$taskjob_result=mysqli_query($link, $get_taskjobsid) or exit("Sql Error559".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($taskjob_row=mysqli_fetch_array($taskjob_result))
+			{
+			  $taskjobid=$taskjob_row['task_jobs_id'];
+			}
+			/**
+			 * getting min and max operations
+			 */
+			$qrytoGetMaxOperation="SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id='".$taskjobid."' AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
+			$maxOperationResult = mysqli_query($link,$qrytoGetMaxOperation) or exit('Problem in getting operations data for job');
+			if(mysqli_num_rows($maxOperationResult)>0){
+				while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){
+					$maxOperation=$maxOperationResultRow['operation_code'];
+				}
+			}
+			
+			$get_qtys="SELECT SUM(good_quantity) AS quantity FROM $pts.transaction_log WHERE DATE(created_at)='$date' AND parent_barcode_type='PPLB' and plant_code='".$plant_code."' AND operation='$maxOperation' AND parent_job IN ('".implode("','" , $jobnumber)."')";
+			$qtys_result=mysqli_query($link, $get_qtys) or exit("Sql Error560".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($qty_row=mysqli_fetch_array($qtys_result))
+			{
+			  $actoutqty =$qty_row['quantity'];
+			  $tot_actout +=$actoutqty;
+			}
 		}
-
+		$message.="<td align=right>".round($actoutqty,$decimal_factor)."</td>";
+        if($act_clh>0)
+		{
+			$message.="<td align=right>".round(($act_sah/$act_clh)*100,$decimal_factor)." %</td>";
+		
+		}
+		else
+		{
+			$message.="<td align=right>0 %</td>";
+		}
+		$message.="</tr>";
 		 
 	}
+	$message.="<tr bgcolor=yellow><td align=center>Factory MTD</td><td align=right>".round($tot_plansah,$decimal_factor)."</td><td align=right>".round($tot_actsah,$decimal_factor)."</td><td align=right>".round($tot_actout,$decimal_factor)."</td>";
+	
+    if($tot_actclh>0)
+	{
+		$message.="<td align=right>".round(($tot_actsah/$tot_actclh)*100,$decimal_factor)." %</td>";
+	
+	}
+	else
+	{
+		$message.="<td align=right>0 %</td>";
+	}
+	$message.="</tr>";// 	
 	
 // 	$sql="select bai_pro3.fn_buyer_division_sch(substring_index(max_style,'^',1)) as buyer,sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\" from $pts.grand_rep where plant_code='$plant_code' and date =\"$date\" GROUP BY bai_pro3.fn_buyer_division_sch(SUBSTRING_INDEX(max_style,'^',1)) order by bai_pro3.fn_buyer_division_sch(SUBSTRING_INDEX(max_style,'^',1))";
 // 	// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -256,7 +328,6 @@ $decimal_factor=2;
 // 		$buyer=$sql_row['buyer'];
 		
 // 		$message.="<tr><td align=left>".$buyer."</td><td align=right>".round($plan_sth,$decimal_factor)."</td><td align=right>".round($act_sth,$decimal_factor)."</td>";
-// 		//$message.="<td>".round($plan_out,0)."</td>";
 // 		$message.="<td align=right>".round($act_out,$decimal_factor)."</td>";
 // 		// $message.="<td align=right>".round($rework,$decimal_factor)."</td>";
 // 		if($act_clh>0)
@@ -310,7 +381,7 @@ $decimal_factor=2;
 	$message.="</body></html>";
 
 
-
+echo $message;
 
 if(date("H")=="14")
 {
