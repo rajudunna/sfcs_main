@@ -202,12 +202,17 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 	{
 		if($qty[$i]>0)
 		{
-		
-		$sql="insert into $wms.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,plant_code,created_user,created_at,updated_user,updated_at) values ('$lot_no[$i]', '$ref1', '$box[$i]', $qty[$i], '$date', '$remarks[$i]','$user_name','$plant_code','$username','$current_date','$username','$current_date')";
+				$select_uuid="SELECT UUID() as uuid";
+				$uuid_result=mysqli_query($link_new, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($uuid_row=mysqli_fetch_array($uuid_result))
+				{
+					$uuid=$uuid_row['uuid'];
+				}
+		$sql="insert into $wms.store_in (tid,lot_no, ref1, ref2, qty_rec, date, remarks, log_user,plant_code,created_user,created_at,updated_user,updated_at) values ('$uuid','$lot_no[$i]', '$ref1', '$box[$i]', $qty[$i], '$date', '$remarks[$i]','$user_name','$plant_code','$username','$current_date','$username','$current_date')";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$last_id = mysqli_insert_id($link);
 
-		$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid),updated_user='$username',updated_at='$current_date' where plant_code='$plant_code' AND tid='$last_id'";
+		$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid),updated_user='$username',updated_at='$current_date' where plant_code='$plant_code' AND tid='$uuid'";
 		$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 	}

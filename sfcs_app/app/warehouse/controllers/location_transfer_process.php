@@ -56,13 +56,21 @@ if($_POST['put'])
 			}
 			else
 			{
-				$sql="insert into $wms.store_in (lot_no, ref1, ref2, ref3, qty_rec, date, remarks,log_user,barcode_number,ref_tid,ref4,supplier_no,four_point_status,shade_grp,plant_code,created_user,updated_user,updated_at,created_at) select lot_no,\"".$n_location[$i]."\",ref2,ref3,".$qty_issued[$i].",\"$date\",\"Transfer-".$remarks[$i]."\",\"$username\",'0',\"".$ref_tid[$i]."\",ref4,supplier_no,four_point_status,shade_grp,\"".$plant_code."\",\"".$username."\",\"".$username."\",NOW(),NOW() from $wms.store_in where barcode_number='$barcode_number[$i]' and plant_code='".$plant_code."'";
+				$select_uuid="SELECT UUID() as uuid";
+				$uuid_result=mysqli_query($link_new, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($uuid_row=mysqli_fetch_array($uuid_result))
+				{
+					$uuid=$uuid_row['uuid'];
+				
+				}
+
+				$sql="insert into $wms.store_in (tid,lot_no, ref1, ref2, ref3, qty_rec, date, remarks,log_user,barcode_number,ref_tid,ref4,supplier_no,four_point_status,shade_grp,plant_code,created_user,updated_user,updated_at,created_at) select \"".$uuid."\",lot_no,\"".$n_location[$i]."\",ref2,ref3,".$qty_issued[$i].",\"$date\",\"Transfer-".$remarks[$i]."\",\"$username\",'0',\"".$ref_tid[$i]."\",ref4,supplier_no,four_point_status,shade_grp,\"".$plant_code."\",\"".$username."\",\"".$username."\",NOW(),NOW() from $wms.store_in where barcode_number='$barcode_number[$i]' and plant_code='".$plant_code."'";
 //echo $sql;
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-				$new_tid=mysqli_insert_id($link);
+				//$new_tid=mysqli_insert_id($link);
 				
-				$sql="update $wms.store_in set barcode_number='".$facility_code."-".$new_tid."',updated_user= '".$username."',updated_at=NOW() where tid='$new_tid' and plant_code='".$plant_code."'";
+				$sql="update $wms.store_in set barcode_number='".$facility_code."-".$uuid."',updated_user= '".$username."',updated_at=NOW() where tid='$uuid' and plant_code='".$plant_code."'";
 				//echo $sql;
 				$sql_result2=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 				

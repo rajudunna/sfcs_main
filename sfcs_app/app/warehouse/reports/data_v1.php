@@ -49,7 +49,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 				{
 					$handle = fopen($_FILES['file']['tmp_name'],"r");
 					$flag = true;
-					$sql1 = "insert into $wms.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,upload_file,plant_code,created_user,updated_user) values ";
+					$sql1 = "insert into $wms.store_in (tid,lot_no, ref1, ref2, qty_rec, date, remarks, log_user,upload_file,plant_code,created_user,updated_user) values ";
 					$values = array();
 					$total_qty=0;
 
@@ -74,8 +74,14 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 						}
 					
 						// $sql1 = "insert into bai_rm_pj1.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,upload_file) values ( '$lot_no','$ref1', '$item1','$item2', '$date','$remarks','$user_name','$upload_file')";
-						
-						array_push($values, "('" . $lot_no . "','" . $ref1 . "','" . $item1 . "','" . $item2 . "','" . $date . "','" . $remarks . "','" . $user_name . "','" . $upload_file . "','" . $plant_code . "','" . $created_user . "','" . $created_user . "')");
+						$select_uuid="SELECT UUID() as uuid";
+                        $uuid_result=mysqli_query($link_new, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($uuid_row=mysqli_fetch_array($uuid_result))
+                        {
+                            $uuid=$uuid_row['uuid'];
+                        
+                        }
+						array_push($values, "('" . $uuid . "','" . $lot_no . "','" . $ref1 . "','" . $item1 . "','" . $item2 . "','" . $date . "','" . $remarks . "','" . $user_name . "','" . $upload_file . "','" . $plant_code . "','" . $created_user . "','" . $created_user . "')");
 						$total_qty=$total_qty+$item2;
 					}
 					if($convert==1)
@@ -172,7 +178,16 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							$qty[$i]=round($qty[$i]*1.09361,2);
 						}
 					}
-					$sql="insert into $wms.store_in (lot_no, ref1, ref2, ref3, qty_rec, date, remarks, log_user,plant_code,created_user,updated_user) values ('$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', $qty[$i], '$date', '$remarks','$user_name','$plant_code','$username','$username')";
+
+					$select_uuid="SELECT UUID() as uuid";
+					$uuid_result=mysqli_query($link_new, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($uuid_row=mysqli_fetch_array($uuid_result))
+					{
+						$uuid=$uuid_row['uuid'];
+					
+					} 
+
+					$sql="insert into $wms.store_in (tid,lot_no, ref1, ref2, ref3, qty_rec, date, remarks, log_user,plant_code,created_user,updated_user) values ('$uuid','$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', $qty[$i], '$date', '$remarks','$user_name','$plant_code','$username','$username')";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$qty_count += 1;
 				}
