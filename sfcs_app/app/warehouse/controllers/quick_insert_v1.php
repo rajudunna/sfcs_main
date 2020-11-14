@@ -26,14 +26,14 @@ if(isset($_POST['submit']) or isset($_GET['ref']))
 	{
 		if(isset($_POST['lot_no'])){
 			$lot_no = $_POST['lot_no'];
-			$main_sql = "select lot_no,rec_qty,rec_no,item,item_name,item_desc,inv_no,po_no,batch_no,product_group,pkg_no,grn_date from $wms.sticker_report where plant_code = '$plant_code' and lot_no = '$lot_no' or rec_no = '$lot_no' ";
+			$main_sql = "select lot_no,rec_qty,rec_no,item,item_name,item_desc,inv_no,po_no,batch_no,product_group,pkg_no,grn_date from $wms.sticker_report where  (lot_no = '$lot_no' or rec_no = '$lot_no') and  plant_code = '$plant_code'";
 		}else{
 			$ref=$_POST['reference'];
-			$main_sql = "select lot_no,rec_qty,rec_no,item,item_name,item_desc,inv_no,po_no,batch_no,product_group,pkg_no,grn_date from $wms.sticker_report where plant_code = \"".$plant_code."\" and inv_no=\"".$ref."\" or po_no=\"".$ref."\" or batch_no=\"".$ref."\"";
+			$main_sql = "select lot_no,rec_qty,rec_no,item,item_name,item_desc,inv_no,po_no,batch_no,product_group,pkg_no,grn_date from $wms.sticker_report where ( inv_no=\"".$ref."\" or po_no=\"".$ref."\" or batch_no=\"".$ref."\") and plant_code = \"".$plant_code."\" ";
 		}
 	}else{
 		$ref=$_GET['ref'];
-		$main_sql = "select lot_no,rec_qty,rec_no,item,item_name,item_desc,inv_no,po_no,batch_no,product_group,pkg_no,grn_date from $wms.sticker_report where plant_code = \"".$plant_code."\" and inv_no=\"".$ref."\" or po_no=\"".$ref."\" or batch_no=\"".$ref."\"";
+		$main_sql = "select lot_no,rec_qty,rec_no,item,item_name,item_desc,inv_no,po_no,batch_no,product_group,pkg_no,grn_date from $wms.sticker_report where (inv_no=\"".$ref."\" or po_no=\"".$ref."\" or batch_no=\"".$ref."\") and plant_code = \"".$plant_code."\"";
 	}
 	// echo $ref;
 	

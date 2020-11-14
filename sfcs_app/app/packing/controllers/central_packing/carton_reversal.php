@@ -48,7 +48,7 @@ function cartonReversal(){
 					headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
 					dataType: "json", 
 					type: "POST",
-					data: {barcode:carton_id,operationCode:operation_id,plantCode:plant_code,createdUser:username},    
+					data: {barcode:carton_id,operationCode:operation_id,plantCode:plant_code,createdUser:username,shift:'A'},    
 					cache: false,
 					success: function (response) 
 					{
