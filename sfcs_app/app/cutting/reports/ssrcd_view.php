@@ -43,10 +43,10 @@ function fifthbox()
 {
 	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value
 }
-function sixthbox()
-{
-	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value+"&category="+document.test.category.value
-}
+// function sixthbox()
+// {
+// 	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value+"&category="+document.test.category.value
+// }
 
 $(document).ready(function() {
 	$('#schedule').on('mouseup',function(e){
@@ -68,33 +68,33 @@ $(document).ready(function() {
 			sweetAlert('Please Select Schedule','','warning');
 		}
 	});
-	$('#category').on('mouseup',function(e){
-		style = $('#style').val();
-		schedule = $('#schedule').val();
-		color = $('#color').val();
-		if(style === 'NIL' && schedule === 'NIL' && color === 'NIL'){
-			sweetAlert('Please Select Style, Schedule and Color','','warning');
-		}
-		else if(schedule === 'NIL' && color === 'NIL'){
-			sweetAlert('Please Select Schedule and Color','','warning');
-		}
-		else if(color === 'NIL'){
-			sweetAlert('Please Select Color','','warning');
-		}
-		else {
-			document.getElementById("submit").disabled = false;
-		}
-	});
-	$('#submit').on('click',function(e){
-		category = $('#category').val();
-		if(category === 'NIL') {
-			sweetAlert('Please Select Category','','warning');
-			document.getElementById("submit").disabled = true;
-		}
-		else {
-			document.getElementById("submit").disabled = false;
-		}
-	});
+	// $('#category').on('mouseup',function(e){
+	// 	style = $('#style').val();
+	// 	schedule = $('#schedule').val();
+	// 	color = $('#color').val();
+	// 	if(style === 'NIL' && schedule === 'NIL' && color === 'NIL'){
+	// 		sweetAlert('Please Select Style, Schedule and Color','','warning');
+	// 	}
+	// 	else if(schedule === 'NIL' && color === 'NIL'){
+	// 		sweetAlert('Please Select Schedule and Color','','warning');
+	// 	}
+	// 	else if(color === 'NIL'){
+	// 		sweetAlert('Please Select Color','','warning');
+	// 	}
+	// 	else {
+	// 		document.getElementById("submit").disabled = false;
+	// 	}
+	// });
+	// $('#submit').on('click',function(e){
+	// 	category = $('#category').val();
+	// 	if(category === 'NIL') {
+	// 		sweetAlert('Please Select Category','','warning');
+	// 		document.getElementById("submit").disabled = true;
+	// 	}
+	// 	else {
+	// 		document.getElementById("submit").disabled = false;
+	// 	}
+	// });
 
 });
 </script>
@@ -113,7 +113,7 @@ $get_schedule=$_GET['schedule'];
 $get_color=$_GET['color'];
 $get_mpo=$_GET['mpo']; 
 $get_sub_po=$_GET['sub_po'];
-$category=$_GET['category'];
+// $category=$_GET['category'];
 
 if(isset($_POST['style']))
 {
@@ -135,10 +135,10 @@ if(isset($_POST['sub_po']))
 {
 	$get_sub_po=$_POST['sub_po'];
 }
-if(isset($_POST['category']))
-{
-	$category=$_POST['category'];
-}
+// if(isset($_POST['category']))
+// {
+// 	$category=$_POST['category'];
+// }
 ?>
 
 <div class='panel panel-primary'>
@@ -274,27 +274,7 @@ if(isset($_POST['category']))
 				?>
 			</div>
 
-			<div class="col-sm-2 form-group">
-				<label for='category'>Select Category:</label>
-				<select required class='form-control' name='category' onchange='sixthbox();'  id='category'>
-				<?php				
-					 $sql="SELECT fabric_category FROM $pps.`mp_color_detail` LEFT JOIN $pps.`mp_fabric` ON mp_fabric.master_po_details_id=mp_color_detail.master_po_details_id WHERE style='$get_style' AND color='$get_color' AND mp_fabric.plant_code='$plant_code'";		
-					 $sql_result=mysqli_query($link, $sql) or exit();
-					 $sql_num_check=mysqli_num_rows($sql_result);
- 
-					 echo "<option value=\"NIL\" selected>NIL</option>";
-						 
-					 while($sql_row=mysqli_fetch_array($sql_result))
-					 {
-						 if(str_replace(" ","",$sql_row['fabric_category'])==str_replace(" ","",$category)){
-							 echo "<option value=\"".$sql_row['fabric_category']."\" selected>".$sql_row['fabric_category']."</option>";
-						 }else{
-							 echo "<option value=\"".$sql_row['fabric_category']."\">".$sql_row['fabric_category']."</option>";
-						 }
-					 }
-					echo "</select>";
-				?>
-			</div>	
+			
 			<div class="col-sm-2 form-group">
 			<?php
 				echo "<input class='btn btn-success' type='submit' value='submit' name='submit' id='submit'>";	
@@ -310,7 +290,7 @@ if(isset($_POST['submit']))
 	$style=$_POST['style'];
 	$color=$_POST['color'];
 	$schedule=$_POST['schedule'];
-	$category=$_POST['category'];
+	// $category=$_POST['category'];
 	$mpo=$_POST['mpo'];
 	$sub_po=$_POST['sub_po'];
 	// get master po
@@ -365,9 +345,6 @@ if(isset($_POST['submit']))
 		<div class="col-sm-12">
 			<div class="col-sm-3">
 				Sub PO : <span class='text-danger'><b><?=$spo_seq_desc?></b></span>
-			</div>
-			<div class="col-sm-3">
-				Category : <span class='text-danger'><b><?=$category?></b></span>
 			</div>
 		</div>
 	</div>
@@ -524,7 +501,7 @@ if(isset($_POST['submit']))
 							foreach($quantitydetails as $key => $value){
 								$percentage = ($value['percentage'])?$value['percentage']:0;
 								$quantity = $value['qty'];
-								$exqty = ((($quantity/100)*$percentage)+$quantity);
+								$exqty = floor((($quantity/100)*$percentage)+$quantity);
 								echo "<td class='success'>".$exqty."</td>";
 								$esumqty+=$exqty;
 								$totalcutplanqty[$key] = $exqty;
@@ -549,9 +526,15 @@ if(isset($_POST['submit']))
 					<tr>
 						<th class='danger'>Planned Excess Cut %</th>
 						<?php
+							$cnt =1;
 							foreach($cut_percentage as $key => $value){
 								$percentage = ($value['percentage'])?$value['percentage']:0;
 								echo "<td class='success'>".$percentage." %</td>";
+								$cnt++;
+							}
+							while($cnt<=count($size_code)){
+								echo "<td class='success'>0</td>";
+								$cnt++;
 							}
 							echo "<td class='success'>".$percentage." %</td>";
 						?>
