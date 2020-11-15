@@ -12,7 +12,7 @@
 <?php
 
         include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-        include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+        include(getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
         include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
         $style=$_GET['style'];
         $schedule=$_GET['schedule'];
