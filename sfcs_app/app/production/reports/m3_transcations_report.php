@@ -13,11 +13,11 @@
         update v0.2: changes based on 1048
         update v0.3: add Module Number, Rejection Reason based on 1270
         update v0.4: added api type column based on 1298
-    ================================================== */
-	$plantcode=$_SESSION['plantCode'];
-	$username=$_SESSION['userName'];	
+    ================================================== */	
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
+    $plantcode=$_SESSION['plantCode'];
+	$username=$_SESSION['userName'];	
     if(!isset($_GET['excel'])){
         echo "<script>
             function redirectf(){
@@ -91,7 +91,7 @@
 
             $qry_m3_trans = "SELECT m3_transaction.created_at,m3_transaction.mo_number,
             m3_transaction.ext_operation,m3_transaction.quantity,m3_transaction.status,m3_transaction.m3_transaction_id,m3_transaction.m3_fail_trans_id,m3_transaction.created_user,m3_transaction.reason_code,m3_transaction.workstation_ext_code,m3_transaction.api_type,m3_transaction.api_fail_count, fg_m3_transaction.operation,fg_m3_transaction.workstation_id,fg_m3_transaction.job_ref, fg_m3_transaction.sub_po, finished_good.style,finished_good.schedule,finished_good.color,finished_good.size
-            FROM $pts.`m3_transaction` left join $pts.fg_m3_transaction on m3_transaction.mo_number = fg_m3_transaction.mo_number left join $pts.finished_good on fg_m3_transaction.mo_number = finished_good.mo_number WHERE ".implode(' and ',$ar_nw)."group by m3_transaction.m3_transaction_id";
+            FROM $pts.`m3_transaction` left join $pts.fg_m3_transaction on m3_transaction.mo_number = fg_m3_transaction.mo_number left join $pts.finished_good on fg_m3_transaction.mo_number = finished_good.mo_number WHERE ".implode(' and ',$ar_nw)." and m3_transaction.plant_code = '".$plantcode."' group by m3_transaction.m3_transaction_id";
             $result_m3_trans = mysqli_query($link, $qry_m3_trans);
             $ary_res = mysqli_fetch_all($result_m3_trans,MYSQLI_ASSOC);
             if(count($ary_res)>0){
@@ -104,7 +104,7 @@
 ?>
                 <br/>
                 <table class="<?= $_GET['excel'] ?? "table table-bordered" ?>" id='table2'>
-                    <thead><tr class="info"><th>ID</th><th>Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Mo Number</th><th>Job Number</th><th>Module</th><th>SFCS Operation Code</th><th>M3 Operation Code</th><th>Operation Name</th><th>Workstation Id</th><th>Rejection Reason</th><th>User</th><th>Quantity</th><th>Status</th><th>API Type</th>
+                    <thead><tr class="info"><th>ID</th><th>Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Mo Number</th><th>Job Number</th><th>Module</th><th>SFCS Operation Code</th><th>M3 Operation Code</th><th>Operation Name</th><th>Workstation Id</th><th>Status</th><th>User</th><th>Quantity</th><th>Rejection Reason</th><th>API Type</th>
                     <th>Failed Count</th></tr>
                     </thead>
                     
@@ -113,7 +113,7 @@
                 foreach($ary_res as $res){
                     $reason ='';
                     $get_op_name = mysqli_fetch_array(mysqli_query($link, "SELECT operation_name FROM $mdm.`operations` WHERE operation_code=".$res['operation']));
-                    $get_module_name = mysqli_fetch_array(mysqli_query($link, "SELECT workstation_code FROM $pms.`workstation` WHERE workstation_id='".$res['workstation_id']."'"));
+                    $get_module_name = mysqli_fetch_array(mysqli_query($link, "SELECT workstation_code FROM $pms.`workstation` WHERE workstation_id='".$res['workstation_id']."' and plant_code = '".$plantcode."'"));
                     $reason = $res['status'];                 
                     if ($res['api_type'] == ApiTypeEnum::FG) {
                         $api_type = '<span class="badge progress-bar-warning">FG</span>';

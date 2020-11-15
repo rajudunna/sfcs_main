@@ -230,7 +230,7 @@ $username=$_SESSION['userName'];
             $sql="SELECT m3_transaction.m3_transaction_id,m3_transaction.m3_transaction_no,m3_transaction.api_fail_count,m3_transaction.status,fg_m3_transaction.operation,m3_transaction.mo_number,m3_transaction.m3_fail_trans_id,m3_transaction.ext_operation,finished_good.style,finished_good.schedule,finished_good.color,finished_good.size,m3_transaction.quantity FROM $pts.`m3_transaction`  
             LEFT JOIN $pts.`fg_m3_transaction` ON m3_transaction.mo_number = fg_m3_transaction.mo_number
             LEFT JOIN $pts.`finished_good` ON fg_m3_transaction.mo_number=finished_good.mo_number
-            WHERE m3_transaction.status ='".$status."' AND m3_transaction.`api_fail_count`=4 and finished_good.schedule='$schedule' group by m3_transaction.m3_transaction_id";
+            WHERE m3_transaction.status ='".$status."' AND m3_transaction.`api_fail_count`=4 and finished_good.schedule='$schedule' and m3_transaction.plant_code = '".$plantcode."' group by m3_transaction.m3_transaction_id";
             $msg = "Data for the schedule - ".$schedule;
          }
          else
@@ -238,7 +238,7 @@ $username=$_SESSION['userName'];
             $sql="SELECT m3_transaction.m3_transaction_id,m3_transaction.m3_transaction_no,m3_transaction.api_fail_count,m3_transaction.status,fg_m3_transaction.operation,m3_transaction.mo_number,m3_transaction.m3_fail_trans_id,m3_transaction.ext_operation,finished_good.style,finished_good.schedule,finished_good.color,finished_good.size,m3_transaction.quantity FROM $pts.`m3_transaction`  
             LEFT JOIN $pts.`fg_m3_transaction` ON m3_transaction.mo_number = fg_m3_transaction.mo_number
             LEFT JOIN $pts.`finished_good` ON fg_m3_transaction.mo_number=finished_good.mo_number
-            WHERE m3_transaction.status ='".$status."' AND m3_transaction.`api_fail_count`=4 and m3_transaction.created_at between \"".$sdate." ".$shour."\" and \"".$edate." ".$ehour."\" group by m3_transaction.m3_transaction_id";
+            WHERE m3_transaction.status ='".$status."' AND m3_transaction.`api_fail_count`=4 and m3_transaction.plant_code = '".$plantcode."' and m3_transaction.created_at between \"".$sdate." ".$shour."\" and \"".$edate." ".$ehour."\"  group by m3_transaction.m3_transaction_id";
             $date_1 = $sdate;$date_2 = $edate;
             $date1= strtotime($date_1);$date2= strtotime($date_2);
             $msg = "Data from ".date('d-M-Y', $date1)." to ".date('d-M-Y', $date2);
@@ -319,7 +319,7 @@ $username=$_SESSION['userName'];
                $m3_fail_tran_no = $response['m3_fail_trans_no'];
                ['response_message'] ?? 'fail with no reason.';
                
-               echo "<tr><td>".$i++."</td><td>".$sql_row['mo_number']."</td><td>".$id."<td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$size."</td><td>".$mo_qty."</td><td>".$op_dec."</td><td>".$m3_ops_code."</td><td>".$m3_fail_tran_no."</td><td>".$response_status."</td><td>".$trail_count."</td><td>".$response_message."</td>";
+               echo "<tr><td>".$i++."</td><td>".$sql_row['mo_number']."</td><td>".$id."<td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$size."</td><td>".$mo_qty."</td><td>".$op_dec."</td><td>".$m3_ops_code."</td><td>".$m3_fail_tran_no."</td><td>".$response_message."</td><td>".$trail_count."</td><td>".$response_status."</td>";
                echo "<td><input type='checkbox' name='bindingdata[]' value='".$trans_id."'></td>";
 
             }  
