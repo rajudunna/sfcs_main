@@ -91,7 +91,7 @@
 
             $qry_m3_trans = "SELECT m3_transaction.created_at,m3_transaction.mo_number,
             m3_transaction.ext_operation,m3_transaction.quantity,m3_transaction.status,m3_transaction.m3_transaction_id,m3_transaction.m3_fail_trans_id,m3_transaction.created_user,m3_transaction.reason_code,m3_transaction.workstation_ext_code,m3_transaction.api_type,m3_transaction.api_fail_count, fg_m3_transaction.operation,fg_m3_transaction.workstation_id,fg_m3_transaction.job_ref, fg_m3_transaction.sub_po, finished_good.style,finished_good.schedule,finished_good.color,finished_good.size
-            FROM $pts.`m3_transaction` left join $pts.fg_m3_transaction on m3_transaction.mo_number = fg_m3_transaction.mo_number left join $pts.finished_good on fg_m3_transaction.mo_number = finished_good.mo_number WHERE ".implode(' and ',$ar_nw)." and m3_transaction.plant_code = '".$plantcode."' group by m3_transaction.m3_transaction_id";
+            FROM $pts.`m3_transaction` left join $pts.fg_m3_transaction on m3_transaction.m3_transaction_id = fg_m3_transaction.m3_transaction_id left join $pts.finished_good on fg_m3_transaction.fg_id = finished_good.finished_good_id WHERE ".implode(' and ',$ar_nw)." and m3_transaction.plant_code = '".$plantcode."' group by m3_transaction.m3_transaction_id";
             $result_m3_trans = mysqli_query($link, $qry_m3_trans);
             $ary_res = mysqli_fetch_all($result_m3_trans,MYSQLI_ASSOC);
             if(count($ary_res)>0){
