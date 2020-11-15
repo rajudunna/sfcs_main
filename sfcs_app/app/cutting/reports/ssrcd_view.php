@@ -524,7 +524,7 @@ if(isset($_POST['submit']))
 							foreach($quantitydetails as $key => $value){
 								$percentage = ($value['percentage'])?$value['percentage']:0;
 								$quantity = $value['qty'];
-								$exqty = ((($quantity/100)*$percentage)+$quantity);
+								$exqty = floor((($quantity/100)*$percentage)+$quantity);
 								echo "<td class='success'>".$exqty."</td>";
 								$esumqty+=$exqty;
 								$totalcutplanqty[$key] = $exqty;
@@ -549,9 +549,15 @@ if(isset($_POST['submit']))
 					<tr>
 						<th class='danger'>Planned Excess Cut %</th>
 						<?php
+							$cnt =1;
 							foreach($cut_percentage as $key => $value){
 								$percentage = ($value['percentage'])?$value['percentage']:0;
 								echo "<td class='success'>".$percentage." %</td>";
+								$cnt++;
+							}
+							while($cnt<=count($size_code)){
+								echo "<td class='success'>0</td>";
+								$cnt++;
 							}
 							echo "<td class='success'>".$percentage." %</td>";
 						?>
