@@ -600,7 +600,7 @@ function getCutDetails($sub_po,$plantcode){
     global $pps;
     $cuts=array();
     /**By using po's we are getting*/
-    $qry_cut_numbers="SELECT cut_number FROM $pps.jm_cut_job WHERE po_number='$sub_po' AND plant_code='$plantcode' AND is_active=1";
+    $qry_cut_numbers="SELECT cut_number FROM $pps.jm_cut_job WHERE plant_code='$plantcode' AND po_number='$sub_po' AND is_active=1";
     $toget_cut_result=mysqli_query($link_new, $qry_cut_numbers) or exit("Sql Error at cutnumbers".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_cut_num=mysqli_num_rows($toget_cut_result);
     if($toget_cut_num>0){
@@ -672,7 +672,7 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
     global $pps; 
     $docs=array();
     //qry to get cutjobid
-    $qry_cut_numbers="SELECT jm_cut_job_id FROM $pps.jm_cut_job WHERE po_number='$sub_po' AND plant_code='$plantcode' AND is_active=1";
+    $qry_cut_numbers="SELECT jm_cut_job_id FROM $pps.jm_cut_job WHERE plant_code='$plantcode' AND po_number='$sub_po' AND is_active=1";
     //echo "</br>Cut jobs : ".$qry_cut_numbers;
     $toget_cut_result=mysqli_query($link_new, $qry_cut_numbers) or exit("Sql Error at cutnumbers".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_cut_num=mysqli_num_rows($toget_cut_result);
@@ -684,7 +684,7 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
     }
     $cut_job_id = implode("','", $cut_job_id);
      //qry to get dockets using cut_job_id
-    $qry_get_dockets="SELECT jm_docket_id From $pps.jm_dockets WHERE jm_cut_job_id in ('$cut_job_id') AND plant_code='$plantcode' AND is_active=1 order by docket_number ASC";
+    $qry_get_dockets="SELECT jm_docket_id From $pps.jm_dockets WHERE plant_code='$plantcode' AND jm_cut_job_id in ('$cut_job_id') AND is_active=1 order by docket_number ASC";
     $toget_dockets_result=mysqli_query($link_new, $qry_get_dockets) or exit("Sql Error at dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_dockets_num=mysqli_num_rows($toget_dockets_result);
     if($toget_dockets_num>0){
@@ -1027,7 +1027,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                                 if($tasktype == $check_type)
                                 {
                                     /**if it is  sewing jobs*/
-                                    $qryGetCutjobs = "SELECT jm_cut_job_id FROM $pps.jm_dockets WHERE jm_docket_id='$jmDocketId' AND plant_code='$plantcode' AND is_active=1";
+                                    $qryGetCutjobs = "SELECT jm_cut_job_id FROM $pps.jm_dockets WHERE plant_code='$plantcode' AND jm_docket_id='$jmDocketId' AND is_active=1";
                                     $resultGetCutJob = mysqli_query($link_new,$qryGetCutjobs) or die(exception($qryGetCutjobs));
                                     if (mysqli_num_rows($resultGetCutJob) > 0) {
                                         while($cutJobRow=mysqli_fetch_array($resultGetCutJob)) 

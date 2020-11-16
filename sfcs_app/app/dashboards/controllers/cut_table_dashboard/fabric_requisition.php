@@ -25,7 +25,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$plant_code = $_POST['plantCode'];
 		$username = $_POST['userName'];
 		$ratio_comp_group_id = $_POST['ratio_comp_group_id'];
-		$sql2x="select * from $pps.fabric_prorities where jm_docket_line_id=\"".$doc_no."\" and plant_code='$plant_code'";
+		$sql2x="select * from $pps.fabric_prorities where plant_code='$plant_code' AND jm_docket_line_id=\"".$doc_no."\"";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows2=mysqli_num_rows($result2x);
 	} 
@@ -38,7 +38,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$plant_code = $_GET['plantCode'];
 		$username = $_GET['userName'];
 		$ratio_comp_group_id = $_GET['ratio_comp_group_id'];
-		$sql2x="select * from $pps.fabric_prorities where jm_docket_line_id=\"".$doc_no."\" and plant_code='$plant_code'";
+		$sql2x="select * from $pps.fabric_prorities where plant_code='$plant_code' AND jm_docket_line_id=\"".$doc_no."\"";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows2=mysqli_num_rows($result2x);	
 	}	
@@ -481,7 +481,7 @@ if(isset($_POST["submit1"]))
 	//for($i=0;$i<sizeof($doc_nos_split);$i++)
 	for($i=0;$i<1;$i++)
 	{
-		$sql1="select * from $pps.fabric_prorities where jm_docket_line_id=\"".$doc_nos."\" and plant_code='$plant_code'";
+		$sql1="select * from $pps.fabric_prorities where plant_code='$plant_code' AND jm_docket_line_id=\"".$doc_nos."\"";
 		$result=mysqli_query($link, $sql1) or die("Error = 123".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows=mysqli_num_rows($result);
 		//Date: 2013-10-09

@@ -181,7 +181,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$rem="Available";
 					if(sizeof($num_docs) > 0)
 					{
-						$sql1x1="select * from $pps.fabric_prorities where jm_docket_line_id in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
+						$sql1x1="select * from $pps.fabric_prorities where plant_code='$plant_code' AND jm_docket_line_id in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0";
 						//echo $sql1x1."<br>";
 						$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error7".mysqli_error());
 						if(mysqli_num_rows($sql_result1x1)==$num_docs)
@@ -224,7 +224,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				{
 					if(sizeof($num_docs) > 0)
 					{
-						$sql1x1="select * from $pps.fabric_prorities where jm_docket_line_id in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
+						$sql1x1="select * from $pps.fabric_prorities where plant_code='$plant_code' AND jm_docket_line_id in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0";
 						//echo $sql1x1."<br>";
 						$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error9---1".mysqli_error());
 						if(mysqli_num_rows($sql_result1x1)==$num_docs)
@@ -247,7 +247,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				}
 			}
 			
-			$sql11x="select * from $pps.fabric_prorities where jm_docket_line_id in ('$doc_no_ref_input') and plant_code='$plant_code'";
+			$sql11x="select * from $pps.fabric_prorities where plant_code='$plant_code' AND jm_docket_line_id in ('$doc_no_ref_input')";
 			$sql_result11x=mysqli_query($link,$sql11x) or exit("Sql Error9----2".mysqli_error());
 			if(mysqli_num_rows($sql_result11x)==$num_docs and $id!="yellow")
 			//if(mysqli_num_rows($sql_result11x) and $id!="yellow")
@@ -255,7 +255,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$id="D-Green";	
 			} 
 			
-			$sql1x1="select * from $pps.fabric_prorities where jm_docket_line_id in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
+			$sql1x1="select * from $pps.fabric_prorities where plant_code='$plant_code' AND jm_docket_line_id in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0";
 			//echo $sql1x1."<br>";
 			$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error10".mysqli_error());
 			if(mysqli_num_rows($sql_result1x1)==$num_docs)

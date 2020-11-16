@@ -478,7 +478,7 @@ $(document).ready(function(){
 
 
                     }
-                    $sql1111="select jm_docket_line_id from $pps.jm_docket_lines where jm_docket_line_id IN ('".implode("','" , $jm_docket_id)."') and plant_code='$plant_code'";
+                    $sql1111="select jm_docket_line_id from $pps.jm_docket_lines where plant_code='$plant_code' AND jm_docket_line_id IN ('".implode("','" , $jm_docket_id)."')";
                 //    echo "<option value=\"0\" selected>".$sql1111."</option>";
                     $sql_result111=mysqli_query($link, $sql1111) or die("Error".$sql111.mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row111=mysqli_fetch_array($sql_result111))
