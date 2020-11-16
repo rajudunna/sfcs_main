@@ -113,7 +113,7 @@
                 foreach($ary_res as $res){
                     $reason ='';
                     $get_op_name = mysqli_fetch_array(mysqli_query($link, "SELECT operation_name FROM $mdm.`operations` WHERE operation_code=".$res['operation']));
-                    $get_module_name = mysqli_fetch_array(mysqli_query($link, "SELECT workstation_code FROM $pms.`workstation` WHERE workstation_id='".$res['workstation_id']."' and plant_code = '".$plantcode."'"));
+                    $get_module_name = mysqli_fetch_array(mysqli_query($link, "SELECT workstation_description FROM $pms.`workstation` WHERE workstation_id='".$res['workstation_id']."' and plant_code = '".$plantcode."'"));
                     $reason = $res['status'];                 
                     if ($res['api_type'] == ApiTypeEnum::FG) {
                         $api_type = '<span class="badge progress-bar-warning">FG</span>';
@@ -122,14 +122,6 @@
                     } else {
                         $api_type = '<span class="badge progress-bar-danger">No API Type Available for this Record</span>';
                     }
-                    
-                    if($reason==M3TransStatusEnum::FAIL){
-                        $ndr = mysqli_fetch_array(mysqli_query($link, "SELECT response_message FROM $pts.`m3_fail_transaction` WHERE plant_code='$plantcode' and m3_fail_trans_id='".$res['m3_fail_trans_id']."'"))['response_message'] ?? 'fail with no reason.';
-                        $reason = '<label class="label label-danger">'.$ndr."</label>";
-                    }else{
-                        $reason = "<label class='label label-success'>".$reason."</label>";
-                    }
-
 ?>
                     <tr>
                         <td><?= $i++?></td>
@@ -140,7 +132,7 @@
                         <td><?= $res['size'] ?></td>
                         <td><?= $res['mo_number'] ?></td>
                         <td><?= $res['job_ref'] ?></td>
-                        <td><?= $get_module_name['workstation_code'] ?></td>
+                        <td><?= $get_module_name['workstation_description'] ?></td>
                         <td><?= $res['operation'] ?></td>
 					    <td><?= $res['ext_operation'] ?></td>
                         <td><?= $get_op_name['operation_name'] ?></td>
@@ -148,7 +140,7 @@
                         <td><?= $res['status'] ?></td>
                         <td><?= $res['created_user'] ?></td>
                         <td><?= $res['quantity'] ?></td>
-                        <td><?= $reason ?></td>
+                        <td><?= $res['reason_code'] ?></td>
                         <td><?= $api_type ?></td>
                         <td><?= $res['api_fail_count'] ?></td>
                     </tr>
