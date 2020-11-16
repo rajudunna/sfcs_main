@@ -43,30 +43,7 @@ CREATE TABLE `disp_db` (
   PRIMARY KEY (`disp_note_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='To track dispatch details';
 
-/*Table structure for table `fabric_cad_allocation` */
 
-DROP TABLE IF EXISTS `fabric_cad_allocation`;
-
-CREATE TABLE `fabric_cad_allocation` (
-  `tran_id` varchar(108) DEFAULT NULL,
-  `doc_no` varchar(108) DEFAULT NULL,
-  `roll_id` varchar(33) DEFAULT NULL,
-  `roll_width` float DEFAULT NULL,
-  `plies` int(11) DEFAULT NULL,
-  `mk_len` float DEFAULT NULL,
-  `doc_type` varchar(36) DEFAULT NULL,
-  `log_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `allocated_qty` float DEFAULT NULL,
-  `status` int(11) DEFAULT NULL,
-  `shade` varchar(60) DEFAULT NULL,
-  `nbits` varchar(765) DEFAULT NULL,
-  `plant_code` varchar(450) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `created_user` varchar(360) DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `updated_user` varchar(360) DEFAULT NULL,
-  `version_flag` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `fabric_cad_allocation_deleted` */
 
@@ -635,45 +612,6 @@ CREATE TABLE `roll_inspection_child` (
   UNIQUE KEY `where_clause` (`store_in_tid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1;
 
-/*Table structure for table `sticker_report` */
-
-DROP TABLE IF EXISTS `sticker_report`;
-
-CREATE TABLE `sticker_report` (
-  `sticker_id` varchar(108) DEFAULT NULL,
-  `item` varchar(600) DEFAULT NULL,
-  `item_name` varchar(600) DEFAULT NULL,
-  `item_desc` varchar(600) DEFAULT NULL,
-  `inv_no` varchar(300) DEFAULT NULL,
-  `po_no` varchar(300) DEFAULT NULL,
-  `rec_no` varchar(30) DEFAULT NULL,
-  `rec_qty` double DEFAULT NULL,
-  `lot_no` varchar(300) DEFAULT NULL,
-  `batch_no` varchar(600) DEFAULT NULL,
-  `buyer` varchar(600) DEFAULT NULL,
-  `product_group` varchar(450) DEFAULT NULL,
-  `doe` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `pkg_no` varchar(150) DEFAULT NULL,
-  `grn_date` varchar(150) DEFAULT NULL,
-  `backup_status` tinyint(4) DEFAULT NULL,
-  `allocated_qty` float DEFAULT NULL,
-  `supplier` varchar(900) DEFAULT NULL,
-  `uom` varchar(30) DEFAULT NULL,
-  `grn_location` varchar(45) DEFAULT NULL,
-  `po_line_price` double DEFAULT NULL,
-  `po_total_cost` double DEFAULT NULL,
-  `style_no` varchar(105) DEFAULT NULL,
-  `grn_type` varchar(150) DEFAULT NULL,
-  `po_line` int(11) DEFAULT NULL,
-  `po_subline` int(11) DEFAULT NULL,
-  `rm_color` varchar(765) DEFAULT NULL,
-  `plant_code` varchar(150) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `created_user` varchar(120) DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `updated_user` varchar(120) DEFAULT NULL,
-  `version_flag` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `sticker_report_deleted` */
 
@@ -804,52 +742,6 @@ CREATE TABLE `stock_report_inventory` (
   KEY `label_id` (`tid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-/*Table structure for table `store_in` */
-
-DROP TABLE IF EXISTS `store_in`;
-
-CREATE TABLE `store_in` (
-  `tid` varchar(108) DEFAULT NULL,
-  `lot_no` varchar(450) DEFAULT NULL,
-  `ref1` varchar(150) DEFAULT NULL,
-  `ref2` varchar(300) DEFAULT NULL,
-  `ref3` varchar(300) DEFAULT NULL,
-  `qty_rec` double DEFAULT NULL,
-  `qty_issued` double DEFAULT NULL,
-  `qty_ret` double DEFAULT NULL,
-  `date` date DEFAULT NULL,
-  `log_user` varchar(150) DEFAULT NULL,
-  `remarks` varchar(600) DEFAULT NULL,
-  `log_stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `status` int(11) DEFAULT NULL,
-  `ref4` varchar(30) DEFAULT NULL,
-  `ref5` varchar(30) DEFAULT NULL,
-  `ref6` varchar(30) DEFAULT NULL,
-  `allotment_status` smallint(6) DEFAULT NULL,
-  `qty_allocated` double DEFAULT NULL,
-  `roll_joins` int(11) DEFAULT NULL,
-  `roll_status` tinyint(4) DEFAULT NULL,
-  `partial_appr_qty` double DEFAULT NULL,
-  `upload_file` varchar(600) DEFAULT NULL,
-  `shrinkage_length` float DEFAULT NULL,
-  `shrinkage_width` float DEFAULT NULL,
-  `shrinkage_group` varchar(765) DEFAULT NULL,
-  `roll_remarks` varchar(765) DEFAULT NULL,
-  `rejection_reason` varchar(765) DEFAULT NULL,
-  `split_roll` varchar(150) DEFAULT NULL,
-  `barcode_number` varchar(765) DEFAULT NULL,
-  `ref_tid` int(11) DEFAULT NULL,
-  `shade_grp` varchar(30) DEFAULT NULL,
-  `act_width_grp` varchar(30) DEFAULT NULL,
-  `supplier_no` varchar(30) DEFAULT NULL,
-  `four_point_status` int(11) DEFAULT NULL,
-  `plant_code` varchar(450) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `created_user` varchar(120) DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `updated_user` varchar(120) DEFAULT NULL,
-  `version_flag` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `store_in_backup` */
 
@@ -1252,25 +1144,6 @@ CREATE TABLE `supplier_performance_track_log` (
   KEY `NewIndex1` (`tid`,`grn_date`,`supplier_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 
-/*Table structure for table `trims_status` */
-
-DROP TABLE IF EXISTS `trims_status`;
-
-CREATE TABLE `trims_status` (
-  `trims_id` varchar(108) DEFAULT NULL,
-  `style` varchar(150) DEFAULT NULL,
-  `sehedule` varchar(150) DEFAULT NULL,
-  `color` varchar(150) DEFAULT NULL,
-  `size` varchar(45) DEFAULT NULL,
-  `status_key` char(24) DEFAULT NULL,
-  `status_value` tinyint(4) DEFAULT NULL,
-  `plant_code` varchar(150) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `created_user` varchar(120) DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `updated_user` varchar(120) DEFAULT NULL,
-  `version_flag` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

@@ -48,6 +48,26 @@ CREATE TABLE pms.`hcm_module_mapping` (
   `version_flag` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+/*Table structure for table `inspection_complaint_reasons` */
+
+DROP TABLE IF EXISTS mdm.`inspection_complaint_reasons`;
+
+CREATE TABLE mdm.`inspection_complaint_reasons` (
+  `tid` int(11) NOT NULL AUTO_INCREMENT,
+  `sno` double DEFAULT NULL,
+  `complaint_reason` varchar(1350) DEFAULT NULL,
+  `Complaint_clasification` varchar(2700) DEFAULT NULL,
+  `complaint_category` varchar(1350) DEFAULT NULL,
+  `status` double DEFAULT NULL,
+  `plant_code` varchar(150) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `created_user` varchar(120) DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `updated_user` varchar(120) DEFAULT NULL,
+  `version_flag` int(11) DEFAULT NULL,
+  PRIMARY KEY (`tid`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+
 /*Table structure for table `hcm_shift_mapping` */
 
 DROP TABLE IF EXISTS pms.`hcm_shift_mapping`;
