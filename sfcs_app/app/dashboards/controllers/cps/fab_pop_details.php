@@ -670,7 +670,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
     echo "<td>".$colorx.'-'.$docket_line_number."</td>";
     // echo "<td>".($marker)."</td>";
     
-	$maker_update="select * from $pps.requested_dockets where jm_docket_line_id='".$doc_no."' and plant_code='$plant_code'";
+	$maker_update="select * from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_line_id='".$doc_no."'";
 	$maker_update_result=mysqli_query($link, $maker_update) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($maker_update_result)){
 		$plan_lot_ref = $row['plan_lot_ref'];
@@ -952,7 +952,7 @@ if($enable_allocate_button==1)
 echo "</form>";
 //NEW Implementation for Docket generation from RMS
 
-$sql1="SELECT fabric_status from $pps.requested_dockets where jm_docket_line_id='$doc_no' and plant_code='$plant_code'";
+$sql1="SELECT fabric_status from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_line_id='$doc_no'";
 
 //mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error567".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -964,7 +964,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 
 if($sql_num_check == 0){
 	if($doc_no > 0){
-		$fab_status_query = "SELECT fabric_status from $pps.requested_dockets where jm_docket_line_id='$doc_no' and plant_code='$plant_code'";
+		$fab_status_query = "SELECT fabric_status from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_line_id='$doc_no'";
 		$fab_status_result = mysqli_query($link,$fab_status_query);
 		while($row = mysqli_fetch_array($fab_status_result)){
 			$fabric_status=$row['fabric_status'];
@@ -1177,11 +1177,11 @@ if(isset($_POST['submit']))
 	if($issue_status==5)
 	{
 		
-		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
+		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and jm_docket_line_id in ('$doc_no')";
 		//Uncheck this
 		mysqli_query($link, $sql1) or exit("Sql Error---5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
+		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and jm_docket_line_id in ('$doc_no')";
 		//Uncheck this
 		mysqli_query($link, $sql1) or exit("Sql Error---6".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
@@ -1198,7 +1198,7 @@ if(isset($_POST['submit']))
 
 	if($issue_status==1)
 	{
-		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
+		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and jm_docket_line_id in ('$doc_no')";
 		//Uncheck this
 		mysqli_query($link, $sql1) or exit("Sql Error---5.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}

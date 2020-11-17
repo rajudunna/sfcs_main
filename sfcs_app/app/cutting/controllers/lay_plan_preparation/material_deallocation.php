@@ -221,7 +221,7 @@ if(isset($_POST['formSubmit']))
 			$jm_docket_line_id = $sql_row01['jm_docket_line_id'];
 		}
   
-        $fabric_status_qry="SELECT fabric_status FROM $pps.requested_dockets WHERE jm_docket_line_id='$jm_docket_line_id' and plant_code='".$plant_code."'";
+        $fabric_status_qry="SELECT fabric_status FROM $pps.requested_dockets WHERE plant_code='".$plant_code."' and jm_docket_line_id='$jm_docket_line_id'";
         //  echo $fabric_status_qry;
     
 		$fabric_status_qry_result=mysqli_query($link, $fabric_status_qry) or die(exception($fabric_status_qry));

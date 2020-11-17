@@ -117,7 +117,7 @@ function getMpMoQty($po_number,$plant_code){
     global $pps;
     $schedule='';
     $schedule_temp=array();
-    $qry_mp_sub_mo_qty="SELECT mp_mo_qty_id FROM $pps.mp_sub_mo_qty WHERE po_number='$po_number' AND plant_code='$plant_code'";
+    $qry_mp_sub_mo_qty="SELECT mp_mo_qty_id FROM $pps.mp_sub_mo_qty WHERE plant_code='$plant_code' AND po_number='$po_number' ";
     $mp_sub_mo_qty_result=mysqli_query($link_new, $qry_mp_sub_mo_qty) or exit("Sql Errorat_mp_sub_mo_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
         $mp_sub_mo_qty_num=mysqli_num_rows($mp_sub_mo_qty_result);
         /**By using above query we will get master po details mo quantity id to get schedules*/
@@ -286,7 +286,7 @@ function getDocketInfo($doc_num,$doc_type,$plant_code){
     global $link_new;
     global $wms;
     global $pps;
-    $sql1="SELECT plan_lot_ref from $pps.requested_dockets where jm_docket_line_id='$doc_num' and plant_code='$plant_code' and plan_lot_ref!=''";
+    $sql1="SELECT plan_lot_ref from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_line_id='$doc_num' and plan_lot_ref!=''";
     $sql_result1=mysqli_query($link_new, $sql1) or exit("Sql Error at Doscket123 roll details".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sql_num1=mysqli_num_rows($sql_result1);
         if($sql_num1>0){
@@ -508,7 +508,7 @@ function getMpSchedulewise($get_schedule,$plantcode){
         $master_po_details_id=array_unique($master_po_details_id);
     /**Based master po details id we can get masetr po number */    
     $master_po_number=array();
-    $qry_mp_color_details="SELECT master_po_number FROM $pps.mp_color_detail WHERE master_po_details_id IN ('".implode("','" , $master_po_details_id)."') AND plant_code='$plantcode' AND is_active=1";
+    $qry_mp_color_details="SELECT master_po_number FROM $pps.mp_color_detail WHERE plant_code='$plantcode' AND master_po_details_id IN ('".implode("','" , $master_po_details_id)."') AND is_active=1";
     $mp_color_details_result=mysqli_query($link_new, $qry_mp_color_details) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
     $mp_color_details_num=mysqli_num_rows($mp_color_details_result);
     if($mp_color_details_num>0){
@@ -1363,7 +1363,7 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
 function getPoDetaials($po_number,$plant_code){
     global $link_new;
     global $pps;
-    $QryPODetails="SELECT po_description FROM $pps.mp_sub_order WHERE po_number='$po_number' AND plant_code='$plant_code' AND is_active=1";
+    $QryPODetails="SELECT po_description FROM $pps.mp_sub_order WHERE plant_code='$plant_code' AND po_number='$po_number' AND is_active=1";
     $ResultPoDetails=mysqli_query($link_new, $QryPODetails) or exit("Sql Error at PO details".mysqli_error($GLOBALS["___mysqli_ston"]));
     $PoDetails_num=mysqli_num_rows($ResultPoDetails);
     if($PoDetails_num>0){

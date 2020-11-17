@@ -58,7 +58,7 @@ function getCheckList($get_style,$get_schedule,$plantcode){
 
         $sub_po_description=array();
         /**Below query to get sub po's by using master po's */
-        $qry_toget_sub_order="SELECT po_description,po_number FROM $pps.mp_sub_order WHERE master_po_number in ('$get_mpo') AND plant_code='$plantcode'";
+        $qry_toget_sub_order="SELECT po_description,po_number FROM $pps.mp_sub_order WHERE plant_code='$plantcode' AND master_po_number in ('$get_mpo')";
         // echo $qry_toget_sub_order;
         $toget_sub_order_result=mysqli_query($link_new, $qry_toget_sub_order) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
         $toget_podescri_num=mysqli_num_rows($toget_sub_order_result);

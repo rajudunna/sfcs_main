@@ -320,7 +320,7 @@ if(isset($_POST['submit']))
 				$data['cut']['color']=array_unique($color);
 		
 				//To get style
-				$qry_get_style="SELECT style FROM $pps.`mp_mo_qty` LEFT JOIN $pps.`mp_color_detail` ON mp_color_detail.`master_po_details_id`=mp_mo_qty.`master_po_details_id` WHERE mp_mo_qty.color in ('".implode("','" , $color_bulk)."') and mp_color_detail.plant_code='$plant_code'";
+				$qry_get_style="SELECT style FROM $pps.`mp_mo_qty` LEFT JOIN $pps.`mp_color_detail` ON mp_color_detail.`master_po_details_id`=mp_mo_qty.`master_po_details_id` WHERE mp_color_detail.plant_code='$plant_code' and mp_mo_qty.color in ('".implode("','" , $color_bulk)."')";
 				$qry_get_style_result=mysqli_query($link_new, $qry_get_style) or exit("Sql Error at qry_get_style".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row1=mysqli_fetch_array($qry_get_style_result))
 				{

@@ -178,7 +178,7 @@ $username=$_SESSION['userName'];
 					/**
 					 * getting print_status,fabric_status info 
 					 */
-					$qryrequestedDockets="SELECT print_status,fabric_status,updated_user,created_at FROM $pps.requested_dockets WHERE jm_docket_line_id='$jm_docket_line_id' AND plant_code='$plantcode'";
+					$qryrequestedDockets="SELECT print_status,fabric_status,updated_user,created_at FROM $pps.requested_dockets WHERE plant_code='$plantcode' AND jm_docket_line_id='$jm_docket_line_id'";
 					$requestedDocketsResult=mysqli_query($link_new, $qryrequestedDockets) or exit("Sql Error at getting requested Dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$requestedDockets=mysqli_num_rows($requestedDocketsResult);
 					if($requestedDockets>0){

@@ -185,7 +185,7 @@ $username = $_SESSION['userName'];
 				</br> <p style='font-size:20px;'><span class=\"label label-info\"><b>Schedules: ".implode(",",array_unique($bulk_schedule))."</b></span><br/></p>"; 
 			    // Cut Level
 				$cutnos=0; $size_array=array();
-				$sub_po_query="select po_number FROM $pps.mp_sub_order WHERE master_po_number IN($po_num) and plant_code='$plant_code'"; 
+				$sub_po_query="select po_number FROM $pps.mp_sub_order WHERE plant_code='$plant_code' and master_po_number IN($po_num)"; 
 				$sub_po_query_result=mysqli_query($link, $sub_po_query) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			    while($sub_po_query_result_result_row=mysqli_fetch_array($sub_po_query_result)) 
 			    { 

@@ -215,7 +215,7 @@ if(isset($_POST['submit']))
 	/**
 	 * getting po description
 	 */
-	$qryGetPodescrip="SELECT po_description FROM $pps.mp_sub_order WHERE po_number='$sub_po' AND plant_code='$plantcode' AND is_active=1";
+	$qryGetPodescrip="SELECT po_description FROM $pps.mp_sub_order WHERE  plant_code='$plantcode' AND po_number='$sub_po' AND is_active=1";
 	$poDescripResult=mysqli_query($link_new, $qryGetPodescrip) or exit("Error while getting po description ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($poDescripResult)>0){
 		while($poDescripRow=mysqli_fetch_array($poDescripResult))

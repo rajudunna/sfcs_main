@@ -162,7 +162,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$doc_no_ref_input = implode("','",$doc_no_ref);
 			
 		//qry to get fabric status
-		  $get_fabric_status="SELECT fabric_status FROM $pps.requested_dockets WHERE jm_docket_line_id in ('$doc_no_ref_explode') and plant_code='".$plant_code."'";
+		  $get_fabric_status="SELECT fabric_status FROM $pps.requested_dockets WHERE plant_code='".$plant_code."' and jm_docket_line_id in ('$doc_no_ref_explode')";
 		  $get_fabric_status_result = mysqli_query($link_new, $get_fabric_status) or exit("Sql Error at get_fabric_status" . mysqli_error($GLOBALS["___mysqli_ston"]));
 			while ($row_stat = mysqli_fetch_array($get_fabric_status_result)) 
 			{

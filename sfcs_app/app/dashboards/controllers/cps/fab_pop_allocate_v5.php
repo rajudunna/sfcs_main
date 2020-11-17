@@ -1022,7 +1022,7 @@ if(isset($_POST['allocate']))
 		}
 		$shrinkaage='';
 		$pur_width='A';
-		$sql007="select reference from $pps.requested_dockets where jm_docket_line_id=\"".$doc_no[$i]."\" and plant_code='$plant_code'";
+		$sql007="select reference from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_line_id=\"".$doc_no[$i]."\"";
 		
 		$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row007=mysqli_fetch_array($sql_result007))
