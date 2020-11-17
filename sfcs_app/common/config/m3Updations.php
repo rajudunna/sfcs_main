@@ -377,7 +377,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
             $work_station_id = $row['work_center_id'];
             $short_key_code  = $row['short_cut_code'];
         }
-        else
+        if(!$work_station_id)
         {
             $qry_to_get_work_station_id1 = "SELECT work_center_id,short_cut_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE operation_code = '$op_code'";
             $result_qry_to_get_work_station_id1=mysqli_query($link,$qry_to_get_work_station_id1) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -711,10 +711,10 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
         $result_dep_ops_array_qry5 = $link->query($dep_ops_array_qry5);
         if(mysqli_num_rows($result_dep_ops_array_qry5) > 0)
         {
-        while($row5= $result_dep_ops_array_qry5->fetch_assoc()) 
-        {
-            $main_ops_code = $row5['main_operationnumber'];
-        }
+            while($row5= $result_dep_ops_array_qry5->fetch_assoc()) 
+            {
+                $main_ops_code = $row5['main_operationnumber'];
+            }
         }else
         {
             // query excluding packing in rejection reversal 
@@ -799,7 +799,20 @@ function updateM3TransactionsRejectionsReversal($ref_id,$op_code,$r_qty,$r_reaso
                     {
                         $is_m3 = $row['default_operration'];
                     }
-                
+                    
+                    if($is_m3 == 'Yes' || $is_m3 == 'yes' || $is_m3 == 'YES')
+                    {
+                        $rej_opn_sch_opn_master = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $op_code";
+                        $rej_opn_sch_opn_res=mysqli_query($link, $rej_opn_sch_opn_master) or exit("Sql Error sch opn master opn for rejections".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if(mysqli_num_rows($rej_opn_sch_opn_res) > 0)
+                        {
+                            while($row_rej_opn_sch_opn_res=mysqli_fetch_array($rej_opn_sch_opn_res))
+                            {
+                                $main_ops_code = $row_rej_opn_sch_opn_res['Main_OperationNumber'];
+                            }
+                        }
+                    }
+
                     // if(strtolower($is_m3) == 'yes')
                     // {
                         $to_update_qty = -$to_update_qty;
