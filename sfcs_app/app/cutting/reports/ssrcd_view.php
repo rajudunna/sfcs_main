@@ -249,20 +249,12 @@ if(isset($_POST['submit']))
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
 		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-		
-			for($s=0;$s<sizeof($sizes_code);$s++)
-			{
-				$o_s[$sizes_code[$s]]=$sql_row["order_s_s".$sizes_code[$s].""];
-			}
-
-
-			for($s=0;$s<sizeof($sizes_code);$s++)
-			{
-				$n_s[$sizes_code[$s]]=$sql_row["old_order_s_s".$sizes_code[$s].""];
-			}
-
-
+		{		
+			$order_tid=$sql_row['order_tid'];
+			$order_no=$sql_row['order_no'];
+			$color_code=$sql_row['color_code'];
+			$customer=$sql_row['order_div'];
+			
 			for($s=0;$s<sizeof($sizes_code);$s++)
 			{
 				if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
@@ -270,14 +262,34 @@ if(isset($_POST['submit']))
 					$s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
 				}	
 			}
-
-
-			$o_total=array_sum($o_s);
-			$order_tid=$sql_row['order_tid'];
-			$color_code=$sql_row['color_code'];
-			$customer=$sql_row['order_div'];
 			
-			
+			if($order_no==1)
+			{
+				for($s=0;$s<sizeof($s_tit);$s++)
+				{
+					$o_s[$sizes_code[$s]]=$sql_row["old_order_s_s".$sizes_code[$s].""];
+				}
+
+				for($s=0;$s<sizeof($s_tit);$s++)
+				{
+					$e_s[$sizes_code[$s]]=$sql_row["order_s_s".$sizes_code[$s].""];
+					$e_s_q[$sizes_code[$s]]=$e_s[$sizes_code[$s]]-$o_s[$sizes_code[$s]];
+				}
+				
+			}
+			else
+			{
+				for($s=0;$s<sizeof($s_tit);$s++)
+				{
+					$o_s[$sizes_code[$s]]=$sql_row["order_s_s".$sizes_code[$s].""];
+				}
+
+				for($s=0;$s<sizeof($s_tit);$s++)
+				{
+					$e_s[$sizes_code[$s]]=0;
+					$e_s_q[$sizes_code[$s]]=0;
+				}
+			}			
 		}	
 		
 		$customer=substr($customer,0,((strlen($customer)-2)*-1));
@@ -296,18 +308,16 @@ if(isset($_POST['submit']))
 		$sql_num_check=mysqli_num_rows($sql_result);
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{		
-			for($s=0;$s<sizeof($sizes_code);$s++)
+			for($s=0;$s<sizeof($s_tit);$s++)
 			{
 				$a_s[$sizes_code[$s]]=$sql_row["a_s_s".$sizes_code[$s].""];
-				//echo $sql_row["a_s_s".$sizes_code[$s].""]."<br>";
 			}
 			$a_total=array_sum($a_s);			
 		}
 		
 		
 		$cut_qty_total=0;
-		$input_qty_total=0;
-		
+		$input_qty_total=0;		
 		
 		$sql1="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_id";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -315,81 +325,42 @@ if(isset($_POST['submit']))
 		{
 			$act_doc_no=$sql_row1['doc_no'];
 			$act_cut_no=$sql_row1['acutno'];
-			
-
 			$status=$sql_row1['act_cut_status'];
-			for($s=0;$s<sizeof($sizes_code);$s++)
+			if($status=='DONE')
 			{
-				$act_s[$sizes_code[$s]]=$sql_row1["a_s".$sizes_code[$s].""]*$sql_row1['a_plies'];
+				for($s=0;$s<sizeof($s_tit);$s++)
+				{
+					$act_s[$sizes_code[$s]]=$act_s[$sizes_code[$s]]+$sql_row1["a_s".$sizes_code[$s].""]*$sql_row1['a_plies'];
+				}
 			}
-					
-			$act_total=array_sum($act_s);
-			$cut_status=$sql_row1['act_cut_status'];
-			$input_status=$sql_row1['act_cut_issue_status'];
-			$doc_date=$sql_row1['date'];
-			
-				$cut_date="";
-				$cut_section="";
-				$cut_shift="";
-			
-			$sql="select * from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_num_check=mysqli_num_rows($sql_result);
-			while($sql_row=mysqli_fetch_array($sql_result))
+
+			for($ss=0;$ss<sizeof($s_tit);$ss++)
 			{
-				$cut_date=$sql_row['date'];
-				$cut_section=$sql_row['section'];
-				$cut_shift=$sql_row['shift'];
-			}
-			
-			if($status == 'DONE')
-			{
-				$cut_qty_total=$cut_qty_total+$act_total;
-			}
-			unset($act_s);
-				$input_date="";
-				$input_module="";
-				$input_shift="";
-			
-			$sql="select * from $bai_pro3.act_cut_issue_status where doc_no=$act_doc_no";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Erro14r".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_num_check=mysqli_num_rows($sql_result);
-			while($sql_row=mysqli_fetch_array($sql_result))
-			{
-				$input_date=$sql_row['date'];
-				$input_module=$sql_row['mod_no'];
-				$input_shift=$sql_row['shift'];
-			}
-			
-			if($input_date!="")
-			{
-				$input_qty_total=$input_qty_total+$act_total;
-			}
-			
-			unset($act_s);
+				$cut_s[$sizes_code[$ss]]=$cut_s[$sizes_code[$ss]]+$sql_row1["p_s".$sizes_code[$ss].""]*$sql_row1['p_plies'];
+			}			
 		}
 		// Getting cuttable percentage from cuttable stat log of respective order tid
 		$sql_cuttable="select cuttable_percent from $bai_pro3.cuttable_stat_log where order_tid=\"$order_tid\"";
 		mysqli_query($link, $sql_cuttable) or exit("15".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result_cuttable=mysqli_query($link, $sql_cuttable) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row_cuttable=mysqli_fetch_array($sql_result_cuttable))
-			{
-				$cuttable_percent=$sql_row_cuttable['cuttable_percent'];
-			}
+		{
+			$cuttable_percent=$sql_row_cuttable['cuttable_percent'];
+		}
 
-		$sql_tot_cut_plan_qty="select * from $bai_pro3.plandoc_stat_log where doc_no=$act_doc_no";
-		mysqli_query($link, $sql_tot_cut_plan_qty) or exit($sql_tot_cut_plan_qty."Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result_tot_cut_plan_qty=mysqli_query($link, $sql_tot_cut_plan_qty) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
-		echo $sql_tot_cut_plan_qty;
-		while($sql_row_tot_cut_plan_qty=mysqli_fetch_array($sql_result_tot_cut_plan_qty))
-			{
-				$actual_plies=$sql_row_tot_cut_plan_qty['a_plies'];
-				$planned_plies=$sql_row_tot_cut_plan_qty['p_plies'];
-				for($s=0;$s<sizeof($sizes_code);$s++)
-			{
-				$a_s_tot[$sizes_code[$s]]=$sql_row_tot_cut_plan_qty["a_s".$sizes_code[$s].""];
-			}
-			}
+		// $sql_tot_cut_plan_qty="select * from $bai_pro3.plandoc_stat_log where doc_no=$act_doc_no";
+		// mysqli_query($link, $sql_tot_cut_plan_qty) or exit($sql_tot_cut_plan_qty."Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// $sql_result_tot_cut_plan_qty=mysqli_query($link, $sql_tot_cut_plan_qty) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// echo $sql_tot_cut_plan_qty;
+		// while($sql_row_tot_cut_plan_qty=mysqli_fetch_array($sql_result_tot_cut_plan_qty))
+		// 	{
+		// 		$actual_plies=$sql_row_tot_cut_plan_qty['a_plies'];
+		// 		$planned_plies=$sql_row_tot_cut_plan_qty['p_plies'];
+		// 		for($s=0;$s<sizeof($sizes_code);$s++)
+		// 	{
+		// 		$a_s_tot[$sizes_code[$s]]=$sql_row_tot_cut_plan_qty["a_s".$sizes_code[$s].""];
+		// 	}
+		// 	}
 
 		?>
 
@@ -431,8 +402,8 @@ if(isset($_POST['submit']))
 					<?php
 						for($s=0;$s<sizeof($s_tit);$s++)
 						{
-							$order_qty_tot+=$n_s[$sizes_code[$s]];
-							 echo "<td>".$n_s[$sizes_code[$s]]."</td>";
+							$order_qty_tot+=$o_s[$sizes_code[$s]];
+							 echo "<td>".$o_s[$sizes_code[$s]]."</td>";
 						}
 						echo "<td>".$order_qty_tot."</td>";
 					?>
@@ -443,8 +414,8 @@ if(isset($_POST['submit']))
 					<?php
 					for($s=0;$s<sizeof($s_tit);$s++)
 					{
-						$order_qty_ext_ship_tot+=$o_s[$sizes_code[$s]];
-						echo "<td>".$o_s[$sizes_code[$s]]."</td>";
+						$order_qty_ext_ship_tot+=$e_s[$sizes_code[$s]];
+						echo "<td>".$e_s[$sizes_code[$s]]."</td>";
 					}
 					echo "<td>".$order_qty_ext_ship_tot."</td>";
 					?>
@@ -454,14 +425,14 @@ if(isset($_POST['submit']))
 					<?php 
 					for($s=0;$s<sizeof($s_tit);$s++)
 					{
-					$extra_ship_per = (($o_s[$sizes_code[$s]]-$n_s[$sizes_code[$s]])/$n_s[$sizes_code[$s]])*100;
+						$extra_ship_per =  round((($e_s[$sizes_code[$s]]-$o_s[$sizes_code[$s]])/$o_s[$sizes_code[$s]])*100,2);
 						if ($extra_ship_per > 0) {
 							// $extra_ship_per_tot+=$extra_ship_per;
-							echo "<td>".$extra_ship_per."%</td>";
+							echo "<td>".floor($extra_ship_per)."%</td>";
 						} else {
 							echo "<td> 0 </td>";
 						}
-					}echo "<td>".$extra_ship_per."%</td>";
+					}echo "<td>".floor($extra_ship_per)."%</td>";
 					?>
 				</tr>
 				<tr>
@@ -478,10 +449,10 @@ if(isset($_POST['submit']))
 					<?php 
 					for($s=0;$s<sizeof($s_tit);$s++)
 					{
-						$planned_excess_qty=($n_s[$sizes_code[$s]]/100)*$cuttable_percent;
-						$planned_excess_qty_tot+=$planned_excess_qty;
-						echo "<td>".$planned_excess_qty."</td>";
-					}echo "<td>".$planned_excess_qty_tot."</td>";
+						$planned_excess_qty[$sizes_code[$s]]=($o_s[$sizes_code[$s]]/100)*$cuttable_percent;
+						$planned_excess_qty_tot+=($planned_excess_qty[$sizes_code[$s]]);
+						echo "<td>".ceil($planned_excess_qty[$sizes_code[$s]])."</td>";
+					}echo "<td>".ceil($planned_excess_qty_tot)."</td>";
 					?>
 				</tr>
 				<tr>
@@ -489,15 +460,15 @@ if(isset($_POST['submit']))
 					<?php 
 					for($s=0;$s<sizeof($s_tit);$s++)
 					{
-						$total_cut_plan_qty=$a_s_tot[$sizes_code[$s]]*$planned_plies;
-						$excess_size_ratio =$total_cut_plan_qty-($n_s[$sizes_code[$s]]+$o_s[$sizes_code[$s]]+$planned_excess_qty);
-						$excess_size_ratio_tot+=$excess_size_ratio;
+						$total_cut_plan_qty = $cut_s[$sizes_code[$s]];
+						$excess_size_ratio = $total_cut_plan_qty-($o_s[$sizes_code[$s]]+$e_s_q[$sizes_code[$s]]+$planned_excess_qty[$sizes_code[$s]]);
+						$excess_size_ratio_tot+=floor($excess_size_ratio);
 						if ($excess_size_ratio > 0) {
-							echo "<td>".$excess_size_ratio."</td>";
+							echo "<td>".floor($excess_size_ratio)."</td>";
 						} else {
 							echo "<td> 0 </td>";
 						}
-					}echo "<td>".$excess_size_ratio_tot."</td>";
+					}echo "<td>".floor($excess_size_ratio_tot)."</td>";
 					?>
 				</tr>
 				<tr>
@@ -505,7 +476,7 @@ if(isset($_POST['submit']))
 					<?php 
 					for($s=0;$s<sizeof($s_tit);$s++)
 					{
-					$total_cut_plan_qty=$a_s_tot[$sizes_code[$s]]*$planned_plies;
+					$total_cut_plan_qty=$cut_s[$sizes_code[$s]];
 					$total_cut_plan_qty_tot+=$total_cut_plan_qty;
 					echo "<td>".$total_cut_plan_qty."</td>";
 					}echo "<td>".$total_cut_plan_qty_tot."</td>";
@@ -516,21 +487,24 @@ if(isset($_POST['submit']))
 					<?php 
 					for($s=0;$s<sizeof($s_tit);$s++)
 					{
-						$fablic_alloc_qty = $a_s[$sizes_code[$s]]-$o_s[$sizes_code[$s]];
+						$fablic_alloc_qty = $cut_s[$sizes_code[$s]]-$act_s[$sizes_code[$s]];
+						$total_fablic_alloc_qty+=$fablic_alloc_qty;
 						if ($fablic_alloc_qty > 0) {
 							echo "<td>$fablic_alloc_qty</td>";
 						} else {
 							echo "<td> 0 </td>";
 						}
 					}
+					echo "<td>".$total_fablic_alloc_qty."</td>";
 					?>
+					
 				</tr>
 				<tr>
 					<th style="width:100px;">Act Cut Qty</th>
 					<?php 
 					for($s=0;$s<sizeof($s_tit);$s++)
 					{
-						$act_cut_qty = $a_s_tot[$sizes_code[$s]]*$actual_plies;
+						$act_cut_qty = $act_s[$sizes_code[$s]];
 						$act_cut_qty_tot+=$act_cut_qty;
 						if ($act_cut_qty > 0) {
 							echo "<td>$act_cut_qty</td>";
@@ -545,7 +519,7 @@ if(isset($_POST['submit']))
 					<?php 
 					for($s=0;$s<sizeof($s_tit);$s++)
 					{
-						$act_cut_percent = (($a_s_tot[$sizes_code[$s]]*$actual_plies)/($a_s_tot[$sizes_code[$s]]*$planned_plies))*100;
+						$act_cut_percent = round(($act_s[$sizes_code[$s]]/$cut_s[$sizes_code[$s]])*100,2);
 						if ($act_cut_percent > 0) {
 							echo "<td>".$act_cut_percent."%</td>";
 						} else {
@@ -576,16 +550,16 @@ if(isset($_POST['submit']))
 			<table class="table table-bordered table-responsive">
 					<tr>
 						<th class='success'>Order Qty</th>
-						<td><?php echo $o_total; ?></td>
+						<td><?php echo $order_qty_tot; ?></td>
 						<td>100%</td>
 					</tr>
 					<tr>
 						<th class='success'>Cut Qty</th>
 						<td>
 							<?php
-								if ($cut_qty_total > $o_total)
+								if ($cut_qty_total > $order_qty_tot)
 								{
-									echo $o_total;
+									echo $order_qty_tot;
 								}
 								else
 								{
@@ -595,13 +569,13 @@ if(isset($_POST['submit']))
 						</td>
 						<td>
 							<?php
-								if ($cut_qty_total > $o_total)
+								if ($act_cut_qty_tot == 0 )
 								{
-									echo round(($o_total/$o_total)*100,2);
+									echo "0";
 								}
 								else
 								{
-									echo round(($cut_qty_total/$o_total)*100,2);
+									echo round(($act_cut_qty_tot/$order_qty_tot)*100,2);
 								}
 							?>
 							%
@@ -652,9 +626,9 @@ if(isset($_POST['submit']))
 							<th>Cut No</th>
 							<?php
 							for($s=0;$s<sizeof($s_tit);$s++)
-								{
-									echo "<th>".$s_tit[$sizes_code[$s]]."</th>";
-								}
+							{
+								echo "<th>".$s_tit[$sizes_code[$s]]."</th>";
+							}
 							?>
 							<th>Total of the size ratio</th>
 							<th>Plan Plies</th>
@@ -662,9 +636,9 @@ if(isset($_POST['submit']))
 							<th>Actual Plies</th>
 							<?php
 							for($s=0;$s<sizeof($s_tit);$s++)
-								{
-									echo "<th>".$s_tit[$sizes_code[$s]]."</th>";
-								}
+							{
+								echo "<th>".$s_tit[$sizes_code[$s]]."</th>";
+							}
 							?>
 							<th>Total</th>	
 							<th>Cut Status</th>
@@ -685,58 +659,85 @@ if(isset($_POST['submit']))
 								$act_cut_no=$sql_row1['acutno'];
 								for($s=0;$s<sizeof($sizes_code);$s++)
 								{
-									$act_s[$sizes_code[$s]]=$sql_row1["a_s".$sizes_code[$s].""];
+									$act_s[$sizes_code[$s]]=$sql_row1["p_s".$sizes_code[$s].""];
 								}
 								
 								$act_total=array_sum($act_s);
 								$plan_plies=$sql_row1['p_plies'];
 								//to take plice from fabric_cad_allocation against doc_no
 								$fabric_allocated_plies=0;
-								$actual_plies=$sql_row1['a_plies'];
-								//
-								for($s=0;$s<sizeof($sizes_code);$s++)
-								{
-									$act_cut[$sizes_code[$s]]=$sql_row1["a_s".$sizes_code[$s].""]*$sql_row1['a_plies'];
-								}
-								$act_plies_total=array_sum($act_cut);
-								$cut_status=$sql_row1['act_cut_status'];
-								// $input_status=$sql_row1['act_cut_issue_status'];
-								$doc_date=$sql_row1['date'];
 								
-									$cut_date="";
-									$cut_section="";
-									$cut_shift="";
+								$cut_status=$sql_row1['act_cut_status'];
+								$manual_flag=$sql_row1['manual_flag'];
+								if($cut_status=='DONE')
+								{
+									$actual_plies=$sql_row1['a_plies'];
+									for($s=0;$s<sizeof($sizes_code);$s++)
+									{
+										$act_cut[$sizes_code[$s]]=$sql_row1["a_s".$sizes_code[$s].""]*$sql_row1['a_plies'];
+									}
+									
+									if(($actual_plies == $plan_plies) && $manual_flag==0)
+									{
+										$cut_status_new='Full Completed';
+									}
+									else if(($actual_plies <> $plan_plies) && $manual_flag==0)
+									{
+										$cut_status_new='Partially';
+									}
+									else if(($actual_plies <> $plan_plies) && $manual_flag==1)
+									{
+										$cut_status_new='Partially Completed';
+									}
+									else if($actual_plies==0 && $manual_flag==1)
+									{
+										$cut_status_new='Cancelled';
+									}																			
+								}
+								else
+								{
+									$actual_plies=0	;
+									for($s=0;$s<sizeof($sizes_code);$s++)
+									{
+										$act_cut[$sizes_code[$s]]=0;
+									}
+									$cut_status_new='Not Started';
+								}
+								
+								$act_plies_total=array_sum($act_cut);
+								$doc_date=$sql_row1['date'];
+							
+								$cut_date="";
+								$cut_section="";
+								$cut_shift="";
 								
 								$sql="select * from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
-								mysqli_query($link, $sql) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$sql_result=mysqli_query($link, $sql) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
-								$sql_num_check=mysqli_num_rows($sql_result);
 								while($sql_row=mysqli_fetch_array($sql_result))
 								{
 									$cut_date=$sql_row['date'];
-									$cut_section=$sql_row['section'];
+									$cut_id=$sql_row['section'];
 									$cut_shift=$sql_row['shift'];
+									$sql12="select tbl_name from $bai_pro3.tbl_cutting_table where tbl_id=$cut_id";
+									$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
+									while($sql_row12=mysqli_fetch_array($sql_result12))
+									{
+										$cut_section=$sql_row12['tbl_name'];
+									}
+
 								}
+								
 								
 								if($cut_date!="")
 								{
 									$cut_qty_total=$cut_qty_total+$act_total;
 								}
 								
-									$input_date="";
-									$input_module="";
-									$input_shift="";
-									$input_reported_qty=0;
-								// $sql="select * from $bai_pro3.act_cut_issue_status where doc_no=$act_doc_no";						
-								// $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-								// $sql_num_check=mysqli_num_rows($sql_result);
-								// while($sql_row=mysqli_fetch_array($sql_result))
-								// {
-								// 	$input_date=$sql_row['date'];
-								// 	$input_module=$sql_row['mod_no'];
-								// 	$input_shift=$sql_row['shift'];
-								// }	
-
+								$input_date="";
+								$input_module="";
+								$input_shift="";
+								$input_reported_qty=0;
+							
 								$sql_ims_log="SELECT min(ims_date) as ims_date,COALESCE(SUM(ims_qty),0) as qty,group_concat(distinct ims_mod_no ORDER BY ims_mod_no) as mod_no from  $bai_pro3.ims_combine where ims_doc_no=$act_doc_no";
 								$sql_result_ims_log=mysqli_query($link, $sql_ims_log) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row_ims_log=mysqli_fetch_array($sql_result_ims_log))
@@ -797,7 +798,7 @@ if(isset($_POST['submit']))
 								}	
 								unset($act_cut);
 								echo "<td>$act_plies_total</td>";
-								echo "<td>$cut_status</td>";
+								echo "<td>$cut_status_new</td>";
 								echo "<td>$doc_date</td>";
 								echo "<td>$cut_date</td>";
 								echo "<td>$cut_section</td>";
