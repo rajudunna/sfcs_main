@@ -775,7 +775,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 					}
 					//echo implode("','" , $jm_docket_line_id);
 					/**getting fabric req or not */
-					$get_fab_req_details="SELECT fabric_prorities_id FROM $pps.fabric_prorities WHERE jm_docket_line_id IN ('".implode("','" , $jm_docket_line_id)."') AND plant_code='$plant_code' AND is_active=1";
+					$get_fab_req_details="SELECT fabric_prorities_id FROM $pps.fabric_prorities WHERE plant_code='$plant_code' AND jm_docket_line_id IN ('".implode("','" , $jm_docket_line_id)."') AND is_active=1";
 					//echo $get_fab_req_details;
 					$get_fab_req_result=mysqli_query($link_new, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$resulted_rows = mysqli_num_rows($get_fab_req_result);

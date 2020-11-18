@@ -401,7 +401,7 @@ if(isset($_POST['submit']))
 							}
 
 							/**getting cut number based on ref_id */
-							$qryGetCut="SELECT cut_number FROM $pps.jm_cut_job WHERE jm_cut_job_id='$ref_id' AND plant_code='$plantCode' AND is_active=1";
+							$qryGetCut="SELECT cut_number FROM $pps.jm_cut_job WHERE plant_code='$plantCode' AND jm_cut_job_id='$ref_id' AND is_active=1";
 							$jmcutResult=mysqli_query($link, $qryGetCut) or exit("Error while getting jm cut job".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($jmcutRow=mysqli_fetch_array($jmcutResult))
 							{	

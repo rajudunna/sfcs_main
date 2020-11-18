@@ -127,7 +127,7 @@ function verify_date(){
 						<!-- <div class="col-md-3">
 							<label>Shift : </label>
 							<span class="label label-info" style="font-size: 12px;">
-							<?php// echo str_replace('"',"",$shift); ?>
+							// echo str_replace('"',"",$shift); 
 							</span>
 						</div> -->
 					</div>
@@ -251,7 +251,7 @@ function verify_date(){
 								// 	$category=$result_category['category'];	
 								// }
 								
-								$qry_mp_mo_qty="SELECT jm_pplb_id FROM $pps.jm_docket_logical_bundle WHERE `jm_docket_bundle_id`='$jm_docket_bundle_id' AND plant_code='$plantcode'";
+								$qry_mp_mo_qty="SELECT jm_pplb_id FROM $pps.jm_docket_logical_bundle WHERE plant_code='$plantcode' AND `jm_docket_bundle_id`='$jm_docket_bundle_id'";
 								$qry_mp_mo_qty_result=mysqli_query($link_new, $qry_mp_mo_qty) or exit("Sql Errorat 34_mp_mo_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row5=mysqli_fetch_array($qry_mp_mo_qty_result))
 								{
@@ -386,7 +386,7 @@ function verify_date(){
 										// 	$category=$result_category['category'];	
 										// }
 										
-										$qry_mp_mo_qty="SELECT jm_pplb_id FROM $pps.jm_docket_logical_bundle WHERE `jm_docket_bundle_id`='$jm_docket_bundle_id' AND plant_code='$plantcode'";
+										$qry_mp_mo_qty="SELECT jm_pplb_id FROM $pps.jm_docket_logical_bundle WHERE plant_code='$plantcode' AND `jm_docket_bundle_id`='$jm_docket_bundle_id'";
 										$qry_mp_mo_qty_result=mysqli_query($link_new, $qry_mp_mo_qty) or exit("Sql Errorat 34_mp_mo_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
 										while($sql_row5=mysqli_fetch_array($qry_mp_mo_qty_result))
 										{
