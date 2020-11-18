@@ -388,7 +388,7 @@ if(isset($_POST['submit']))
 						
 					?>	
 					<?php
-					   $get_working_days="select DATE_FORMAT(last_up,'%Y-%m-%d') AS last_up  FROM $bai_pro.pro_attendance_adjustment  GROUP BY last_up ORDER BY last_up DESC LIMIT 1  ";
+					   $get_working_days="select DATE_FORMAT(last_up,'%Y-%m-%d') AS last_up  FROM $bai_pro.pro_attendance_adjustment  GROUP BY last_up ORDER BY last_up DESC LIMIT 0,2  ";
 					   $result_get_working_day=mysqli_query($link, $get_working_days) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					   while($sql_row11=mysqli_fetch_array($result_get_working_day))
 								 {
@@ -444,7 +444,7 @@ if(isset($_POST['submit']))
 					 </table>
 					 <?php
 					 
-					 $get_working_days="select DATE_FORMAT(last_up,'%Y-%m-%d') AS last_up  FROM $bai_pro.pro_attendance_adjustment  GROUP BY last_up ORDER BY last_up DESC LIMIT 1 ";
+					 $get_working_days="select DATE_FORMAT(last_up,'%Y-%m-%d') AS last_up  FROM $bai_pro.pro_attendance_adjustment  GROUP BY last_up ORDER BY last_up DESC LIMIT 0,2 ";
 					 $result_get_working_day=mysqli_query($link, $get_working_days) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					 while($sql_row11=mysqli_fetch_array($result_get_working_day))
 							   {
