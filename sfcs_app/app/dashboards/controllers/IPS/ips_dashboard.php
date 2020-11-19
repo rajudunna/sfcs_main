@@ -40,6 +40,7 @@ $table_name="$bai_pro3.plan_dashboard_input";
 $sec_id=$_GET["sec"];
 
 $sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$sec_id and module_master.status='active' GROUP BY section ORDER BY section + 0";
+//echo $sqlx;exit;
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
@@ -49,6 +50,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	$section_display_name=$sql_rowx['section_display_name'];
 	// Ticket #424781 change the buyer division display based on the pink,logo,IU as per plan_modules
 	$sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1";
+	// echo $sql1d;exit;
 	$sql_num_checkd=0;
 	$sql_result1d=mysqli_query($link, $sql1d) or exit("Sql Errordd".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_checkd=mysqli_num_rows($sql_result1d);
@@ -87,7 +89,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$y=0;
 		
 			$sql="SELECT input_job_no_random_ref,input_trims_status FROM $table_name WHERE input_module='$module' and (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and date(log_time) >=\"2013-01-09\" GROUP BY input_job_no_random_ref order by input_priority asc limit ".$_GET['priority_limit']; 
-			// echo $sql."<br>";
+			//  echo $sql."<br>";
 			$result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row=mysqli_fetch_array($result))
 			{							
@@ -441,13 +443,19 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						
 						if($id=="yellow")
 						{									
-							if($add_css == ""){				
+							if($add_css == ""){	
 								$ips_data.="<a href=\"javascript:void(0);\" onclick=\"viewPopupCenter('$style','$schedule','$module','$input_job_no_random_ref','$input_ops_code','$sidemenu');\" data-title='$title' rel='tooltip'><div id=\"S$schedule\" style=\"float:left;\">
+								<div id=\"SJ$input_job_no\" style=\"float:left;\">
+									<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" >
+									</div>
+								</div>
+							</div></a>";			
+								/*$ips_data.="<a href=\"javascript:void(0);\" onclick=\"viewPopupCenter('$style','$schedule','$module','$input_job_no_random_ref','$input_ops_code','$sidemenu');\" data-title='$title' rel='tooltip'><div id=\"S$schedule\" style=\"float:left;\">
 									<div id=\"SJ$input_job_no\" style=\"float:left;\">
 										<div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" >
 										</div>
 									</div
-								</div></a>";
+								</div></a>";*/
 							}
 							else
 							{
@@ -523,5 +531,6 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 $data=array();
 $data['data']=$ips_data;
 $data['sec']=$_GET["sec"];
+$data['query']=$sql11;
 echo json_encode($data);
 ?>
