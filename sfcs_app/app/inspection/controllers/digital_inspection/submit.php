@@ -84,10 +84,10 @@ if (isset($_POST['delete_id'])) {
     $delete_roll = "UPDATE $wms.inspection_population set status=0,updated_user= '".$username."',updated_at=NOW() where store_in_id = '$store_id' and plant_code='".$plant_code."'";
     $details_result_fir = mysqli_query($link, $delete_roll) or exit("get_details Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
     
-    $delete_roll_inspection = "delete from $wms.roll_inspection_child where store_in_tid = ' $store_id' and plant_code='".$plant_code."'";
+    $delete_roll_inspection = "delete from $wms.roll_inspection_child where store_in_tid = '".$store_id."' and plant_code='".$plant_code."'";
     $details_result_sec = mysqli_query($link, $delete_roll_inspection) or exit("get_details Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
    
-    $delete_four_points = "delete from $wms.four_points_table where insp_child_id = ' $store_id' and plant_code='".$plant_code."'";
+    $delete_four_points = "delete from $wms.four_points_table where insp_child_id = '".$store_id."' and plant_code='".$plant_code."'";
     $details_result_third = mysqli_query($link, $delete_four_points) or exit("get_details Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
     
   //  $update_store_in = "update $wms.store_in set four_point_status = 0 where tid = '$store_id'";

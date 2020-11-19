@@ -689,20 +689,19 @@ $username = $_SESSION['userName'];
 				$width = $exp[14];
 				$length = $exp[15];
 				$main_item_name = str_replace('"', '',$item_name);
-				$insertbinditems .= ' ("' . $lot_no . '","' . $supplier_po . '","' . $po_line . '","' . $po_subline . '","' . $inv_no . '","' . $item_code . '","' . $item_desc . '","'.$main_item_name.'","' . $batch . '","' . $rm_color . '","' . $supplier_roll_no . '","' . $fcs_no . '","' . $qty . '",0,' . $lastinsert_id . ',' . $main_id . ',"'.$plant_code.'","'.$username.'","'.$username.'",NOW()),';
+				$insertbinditems .= ' ("' . $lot_no . '","' . $supplier_po . '","' . $po_line . '","' . $po_subline . '","' . $inv_no . '","' . $item_code . '","' . $item_desc . '","'.$main_item_name.'","' . $batch . '","' . $rm_color . '","' . $supplier_roll_no . '","' . $fcs_no . '","' . $qty . '",0,' . $lastinsert_id . ',"' . $main_id . '","'.$plant_code.'","'.$username.'","'.$username.'",NOW()),';
         
 				$update_4point_status = "update $wms.store_in set four_point_status=1,updated_user= '".$username."',updated_at=NOW() where tid in ('" . $main_id . "') and plant_code='".$plant_code."'";
 
 				mysqli_query($link, $update_4point_status) or exit(message_sql());
 			}
-            
 			$insertbinditems = rtrim($insertbinditems, ",");
 			mysqli_query($link, $insertbinditems) or exit(message_sql());
 		}
          // die();
 		echo "<script>swal('Successfully Selected.','Successfully','success')</script>";
-		$url = getFullURLLevel($_GET['r'], 'digital_inspection_report_v1.php', 0, 'N');
-		echo "<script>location.href = '" . $url . "&parent_id=$lastinsert_id&plant_code=$plant_code&username=$username'</script>";
+		 $url = getFullURLLevel($_GET['r'], 'digital_inspection_report_v1.php', 0, 'N');
+		 echo "<script>location.href = '" . $url . "&parent_id=$lastinsert_id&plant_code=$plant_code&username=$username'</script>";
 	}
 	?>
 	</div>

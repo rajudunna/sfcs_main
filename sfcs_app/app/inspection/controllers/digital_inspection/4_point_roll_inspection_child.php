@@ -367,7 +367,7 @@ while ($row1112 = mysqli_fetch_array($supplier_result))
                                 <td>" . $invoice_qty . "</td>";
                                 if($sno_points>0)
                                 {
-                                    $get_status_details = "select sum(points) as points from $wms.four_points_table where insp_child_id = ".$sno_points." and plant_code='".$plant_code."'";
+                                    $get_status_details = "select sum(points) as points from $wms.four_points_table where insp_child_id = '".$sno_points."' and plant_code='".$plant_code."'";
                                     //echo $get_status_details;
                                     $status_details_result = mysqli_query($link, $get_status_details) or exit("get_status_details Error--5" . mysqli_error($GLOBALS["___mysqli_ston"]));
                                     if(mysqli_num_rows($status_details_result)>0)
@@ -770,7 +770,7 @@ if (isset($_POST['confirm'])) {
                         $arraVal[] = $flag_var;
                         if($flag_var!='')
                         {
-                            $insert_four_points = "insert ignore into $wms.four_points_table(insp_child_id,code,description,points,plant_code,created_user) values('$roll_id','".$code[$i]."','".$damage[$i]."',$flag_var,'".$plant_code."','".$username."')";
+                            $insert_four_points = "insert ignore into $wms.four_points_table(insp_child_id,code,description,points,plant_code,created_user) values('".$roll_id."','".$code[$i]."','".$damage[$i]."',$flag_var,'".$plant_code."','".$username."')";
                             mysqli_query($link, $insert_four_points) or exit("third ErrorError-2" . mysqli_error($GLOBALS["___mysqli_ston"]));
                             $i++;
                         }
@@ -798,7 +798,7 @@ if (isset($_POST['confirm'])) {
                         $arraVal[] = $flag_var;
                         if($flag_var!='')
                         {
-                            $insert_four_points = "insert ignore into $wms.four_points_table(insp_child_id,code,description,points,plant_code,created_user) values('$roll_id','".$code[$i]."','".$damage[$i]."',$flag_var,'".$plant_code."','".$username."')";
+                            $insert_four_points = "insert ignore into $wms.four_points_table(insp_child_id,code,description,points,plant_code,created_user) values('".$roll_id."','".$code[$i]."','".$damage[$i]."',$flag_var,'".$plant_code."','".$username."')";
                             mysqli_query($link, $insert_four_points) or exit("third ErrorError-2" . mysqli_error($GLOBALS["___mysqli_ston"]));
                             $i++;
                         }
@@ -1005,7 +1005,7 @@ if (isset($_POST['save'])) {
                         $arraVal[] = $flag_var;                
                         if($flag_var!='')
                         {
-                            $insert_four_points = "insert ignore into $wms.four_points_table(insp_child_id,code,description,points,plant_code,created_user) values('$roll_id','".$code[$i]."','".$damage[$i]."',$flag_var,'".$plant_code."','".$username."')";
+                            $insert_four_points = "insert ignore into $wms.four_points_table(insp_child_id,code,description,points,plant_code,created_user) values('".$roll_id."','".$code[$i]."','".$damage[$i]."',$flag_var,'".$plant_code."','".$username."')";
                             mysqli_query($link, $insert_four_points) or exit("third ErrorError-2" . mysqli_error($GLOBALS["___mysqli_ston"]));
                             $i++;
                         }
@@ -1033,7 +1033,7 @@ if (isset($_POST['save'])) {
                     $arraVal[] = $flag_var;
                     if($flag_var!='')
                     {
-                        $insert_four_points = "insert ignore into $wms.four_points_table(insp_child_id,code,description,points,plant_code,created_user) values('$roll_id','".$code[$i]."','".$damage[$i]."',$flag_var,'".$plant_code."','".$username."')";
+                        $insert_four_points = "insert ignore into $wms.four_points_table(insp_child_id,code,description,points,plant_code,created_user) values('".$roll_id."','".$code[$i]."','".$damage[$i]."',$flag_var,'".$plant_code."','".$username."')";
                         mysqli_query($link, $insert_four_points) or exit("third ErrorError-2" . mysqli_error($GLOBALS["___mysqli_ston"]));
                         $i++;
                     }
