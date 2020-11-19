@@ -384,7 +384,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
         $result_qry_to_get_work_station_id1=mysqli_query($link,$qry_to_get_work_station_id1) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($row1=mysqli_fetch_array($result_qry_to_get_work_station_id1))
         {
-            if(mysqli_num_rows($result_qry_to_get_work_station_id) > 0)
+            if(mysqli_num_rows($result_qry_to_get_work_station_id1) > 0)
             {
                 $work_station_id = $row1['work_center_id'];
                 $short_key_code  = $row1['short_cut_code'];
