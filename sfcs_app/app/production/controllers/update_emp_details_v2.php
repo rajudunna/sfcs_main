@@ -388,17 +388,18 @@ if(isset($_POST['submit']))
 						
 					?>	
 					<?php
-					   $get_working_days="select DATE_FORMAT(last_up,'%Y-%m-%d') AS last_up  FROM $bai_pro.pro_attendance_adjustment  GROUP BY last_up ORDER BY last_up DESC LIMIT 0,2  ";
+					   $get_working_days="SELECT DATE_FORMAT(date,'%Y-%m-%d') AS pre_date,SUM(present) AS present FROM $bai_pro.pro_attendance WHERE DATE(date)<DATE(NOW()) GROUP BY DATE(date) HAVING present>0 ORDER BY date DESC LIMIT 1";
 					   $result_get_working_day=mysqli_query($link, $get_working_days) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					   while($sql_row11=mysqli_fetch_array($result_get_working_day))
 								 {
-								 $final_date=$sql_row11['last_up'];
+								 $final_date=$sql_row11['pre_date'];
   
 								 }
 								
 								if($date==$final_date || $now_date==$date){
 									echo'<input type="submit" id="submit" class="btn btn-primary" value="Submit" >';
 								}
+								echo $final_date;
 					}
 				
 					echo "</form>";
@@ -443,12 +444,12 @@ if(isset($_POST['submit']))
 					 ?>
 					 </table>
 					 <?php
-					 
-					 $get_working_days="select DATE_FORMAT(last_up,'%Y-%m-%d') AS last_up  FROM $bai_pro.pro_attendance_adjustment  GROUP BY last_up ORDER BY last_up DESC LIMIT 0,2 ";
+					 $get_working_days="SELECT DATE_FORMAT(date,'%Y-%m-%d') AS pre_date,SUM(present) AS present FROM $bai_pro.pro_attendance WHERE DATE(date)<DATE(NOW()) GROUP BY DATE(date) HAVING present>0 ORDER BY date DESC LIMIT 1";
+					 // var_dump($get_working_days);
 					 $result_get_working_day=mysqli_query($link, $get_working_days) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					 while($sql_row11=mysqli_fetch_array($result_get_working_day))
 							   {
-							   $final_date=$sql_row11['last_up'];
+							   $final_date=$sql_row11['pre_date'];
 
 							   }
 							 
