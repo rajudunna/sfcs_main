@@ -765,7 +765,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                 $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskheader) or exit("Sql Error at taskheader".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                 /**Update qry for priority */
-                $qryUpdateJobsPriority="UPDATE $tms.task_jobs SET priority=NULL,updated_at=NOW() WHERE task_job_reference='$items[1]' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                $qryUpdateJobsPriority="UPDATE $tms.task_jobs SET priority=0,updated_at=NOW() WHERE task_job_reference='$items[1]' AND task_type='$tasktype' AND plant_code='$plantcode'";
                 $UpdateJobsPriority_result=mysqli_query($link_new, $qryUpdateJobsPriority) or exit("Sql Error at TaskjObs priority Update".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                 /**insert records into jobs_movement_track*/
@@ -885,7 +885,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                             $Qry_taskheader_result=mysqli_query($link_new, $Qry_insert_taskheader) or exit("Sql Error at insert task_header1".mysqli_error($GLOBALS["___mysqli_ston"]));
                             
                             /**update resource id tasks jobs with task_header*/
-                            $Qry_update_taskjobs="UPDATE $tms.task_jobs SET priority=NULL,task_header_id='$uuid' WHERE task_jobs_id IN ('$taskJobsImplode') AND task_type='$tasktype' AND plant_code='$plantcode'";
+                            $Qry_update_taskjobs="UPDATE $tms.task_jobs SET priority=0,task_header_id='$uuid' WHERE task_jobs_id IN ('$taskJobsImplode') AND task_type='$tasktype' AND plant_code='$plantcode'";
                             $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskjobs) or exit("Sql Error at update task_jobs1".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
                     }
