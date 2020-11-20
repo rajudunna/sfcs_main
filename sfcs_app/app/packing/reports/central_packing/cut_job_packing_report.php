@@ -185,14 +185,14 @@ $username = $_SESSION['userName'];
 				</br> <p style='font-size:20px;'><span class=\"label label-info\"><b>Schedules: ".implode(",",array_unique($bulk_schedule))."</b></span><br/></p>"; 
 			    // Cut Level
 				$cutnos=0; $size_array=array();
-				$sub_po_query="select po_number FROM $pps.mp_sub_order WHERE master_po_number IN($po_num) and plant_code='$plant_code'"; 
+				$sub_po_query="select po_number FROM $pps.mp_sub_order WHERE plant_code='$plant_code' and master_po_number IN($po_num)"; 
 				$sub_po_query_result=mysqli_query($link, $sub_po_query) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			    while($sub_po_query_result_result_row=mysqli_fetch_array($sub_po_query_result)) 
 			    { 
 			        $sub_po_number[]=$sub_po_query_result_result_row['po_number']; 
 				}
 				$sub_po="'".implode("','",$sub_po_number)."'";
-				$logical_bundle_query="select jm_cut_job_id,cut_number FROM $pps.jm_cut_job WHERE po_number IN($sub_po) and plant_code='$plant_code' "; 
+				$logical_bundle_query="select jm_cut_job_id,cut_number FROM $pps.jm_cut_job WHERE plant_code='$plant_code' AND po_number IN($sub_po)"; 
 				
 				$logical_bundle_query_result=mysqli_query($link, $logical_bundle_query) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			    while($logical_bundle_query_result_row=mysqli_fetch_array($logical_bundle_query_result)) 
@@ -200,7 +200,7 @@ $username = $_SESSION['userName'];
 					$jm_cut_job_id=$logical_bundle_query_result_row['jm_cut_job_id']; 
 					$cut_number=$logical_bundle_query_result_row['cut_number']; 
 
-					$query5="select jm_cut_bundle_id FROM $pps.jm_cut_bundle WHERE jm_cut_job_id='$jm_cut_job_id'  and plant_code='$plant_code'";
+					$query5="select jm_cut_bundle_id FROM $pps.jm_cut_bundle WHERE plant_code='$plant_code' AND jm_cut_job_id='$jm_cut_job_id'";
 				
 					$query4_result1=mysqli_query($link, $query5) or exit("Sql Error54".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					while($query4_result_row1=mysqli_fetch_array($query4_result1)) 
@@ -209,7 +209,7 @@ $username = $_SESSION['userName'];
 						
 					}
 					$jm_cut_bundle_id1="'".implode("','",$jm_cut_bundle_id)."'";
-					$query6="select jm_ppb_id FROM $pps.jm_cut_bundle_details WHERE jm_cut_bundle_id in($jm_cut_bundle_id1)  and plant_code='$plant_code'";
+					$query6="select jm_ppb_id FROM $pps.jm_cut_bundle_details WHERE plant_code='$plant_code' AND jm_cut_bundle_id in($jm_cut_bundle_id1)";
 
 					$query4_result11=mysqli_query($link, $query6) or exit("Sql Error51".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					while($query4_result_row11=mysqli_fetch_array($query4_result11)) 

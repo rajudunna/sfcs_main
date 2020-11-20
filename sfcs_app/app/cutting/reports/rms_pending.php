@@ -114,7 +114,7 @@ if(isset($_POST['show']))
 
 
 		//get po_description,master_po_number from po_number
-		$get_sub_po="select po_description,master_po_number from $pps.mp_sub_order where po_number='$po_number' and plant_code='$plantcode' and is_active=true";
+		$get_sub_po="select po_description,master_po_number from $pps.mp_sub_order where plant_code='$plantcode' and po_number='$po_number' and is_active=true";
 		// echo $get_sub_po;
 		$get_sub_po_result=mysqli_query($link, $get_sub_po) or exit("Sql Error--1x==".$get_sub_po.mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($get_sub_po_result)>0)
@@ -140,7 +140,7 @@ if(isset($_POST['show']))
 
 
 				//get style,color from master_po_number
-				$get_mpo="select style,group_concat(distinct(color)) as color from $pps.mp_color_detail where master_po_number='$master_po_number' and plant_code='$plantcode' and is_active=true limit 1";
+				$get_mpo="select style,group_concat(distinct(color)) as color from $pps.mp_color_detail where plant_code='$plantcode' and master_po_number='$master_po_number' and is_active=true limit 1";
 				$get_mpo_result=mysqli_query($link, $get_mpo) or exit("Sql Error--1x==".$get_mpo.mysqli_error($GLOBALS["___mysqli_ston"]));
 				// echo $get_mpo;
 				if(mysqli_num_rows($get_mpo_result)>0)

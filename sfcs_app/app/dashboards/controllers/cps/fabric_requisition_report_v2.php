@@ -184,7 +184,7 @@ if($cat!=''){
 			{
 				$section=$row111["section_name"];
 			}
-			$docket_query="select docket_line_number from $pps.jm_docket_lines where jm_docket_line_id='$jm_docket_line_id' and plant_code='$plant_code'";
+			$docket_query="select docket_line_number from $pps.jm_docket_lines where plant_code='$plant_code' AND jm_docket_line_id='$jm_docket_line_id'";
 			$docket_query_result=mysqli_query($link,$docket_query) or die("Error1 = ".mysqli_error());
 			while($row1112=mysqli_fetch_array($docket_query_result))
 			{

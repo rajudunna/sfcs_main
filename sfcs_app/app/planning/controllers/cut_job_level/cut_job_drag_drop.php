@@ -31,7 +31,7 @@ try
 		 }
 		 //To get dockets from jm_dockets based on jm_docket_id
 		 $docket_no=array();
-		 $qry_get_dockets="SELECT docket_number,jm_docket_id From $pps.jm_dockets WHERE jm_docket_id in ('".implode("','" , $task_job_reference)."') AND plant_code='$plantcode' order by docket_number ASC";
+		 $qry_get_dockets="SELECT docket_number,jm_docket_id From $pps.jm_dockets WHERE plant_code='$plantcode' AND jm_docket_id in ('".implode("','" , $task_job_reference)."') order by docket_number ASC";
 		 $toget_dockets_result=mysqli_query($link_new, $qry_get_dockets) or die(exception($qry_get_dockets));
 		 while($dockets_row=mysqli_fetch_array($toget_dockets_result))
 		 {

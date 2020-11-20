@@ -1005,7 +1005,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $req_date_time=$sql_row1['req_time'];
           $log_time=$sql_row1['log_time'];
           $lay_time=$sql_row1['req_time'];
-          $get_order_joins="select plan_lot_ref,fabric_status,print_status from $pps.requested_dockets where jm_docket_line_id=\"$doc_no\" and plant_code='$plant_code'";
+          $get_order_joins="select plan_lot_ref,fabric_status,print_status from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_line_id=\"$doc_no\"";
           $sql_result=mysqli_query($link, $get_order_joins) or exit("Sql Error27".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($sql_row1236=mysqli_fetch_array($sql_result))
         {

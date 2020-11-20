@@ -9,7 +9,7 @@ $get_docket_id_result = mysqli_query($link,$get_docket_id);
 while($id_row = mysqli_fetch_array($get_docket_id_result)){
    $jm_docket_line_id = $id_row['jm_docket_line_id'];
 
-   $check_fabric_status="SELECT fabric_status FROM $pps.requested_dockets WHERE jm_docket_line_id='$jm_docket_line_id' and plant_code='$plantcode'";
+   $check_fabric_status="SELECT fabric_status FROM $pps.requested_dockets WHERE plant_code='$plantcode' and jm_docket_line_id='$jm_docket_line_id'";
    $check_fabric_status_result = mysqli_query($link,$check_fabric_status);
    $sql_num=mysqli_num_rows($check_fabric_status_result);
    if($sql_num > 0)

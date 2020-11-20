@@ -9,7 +9,7 @@ $table_filter = getFullURL($_GET['r'],'TableFilter_EN/tablefilter.js','R');
 
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-// $plantcode='AIP';
+// $plantcode='EKG';
 // $username='Mounika';
 ?>
 <script>
@@ -304,7 +304,7 @@ function showdet(btn,inpjob,schedule)
 	var inputjob=inpjob;
 	var schedule=schedule;
 	var plant_code = $('#plant_code').val();
-	window.open('/sfcs_app/app/production/controllers/sewing_job/small_popup_new.php?schedule='+schedule+'&inputjob='+inputjob+'&plantcode='+plant_code+'_blank');
+	window.open('index-no-navi.php?r=<?= base64_encode("/sfcs_app/app/production/controllers/sewing_job/small_popup_new.php"); ?>&schedule='+schedule+'&inputjob='+inputjob+'&plantcode='+plant_code+'_blank');
 }
 
 

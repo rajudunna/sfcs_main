@@ -311,7 +311,7 @@ if($section){
                                     $status_color = 'orange';
                                     $remaingPlies = $docketPlies - $reportedPlies;
                                 }else {                         
-                                    $fabric_status_query="SELECT fabric_status from $pps.requested_dockets where jm_docket_line_id = '".$docketId."' and plant_code='".$plantCode."'";
+                                    $fabric_status_query="SELECT fabric_status from $pps.requested_dockets where  plant_code='".$plantCode."' and jm_docket_line_id = '".$docketId."'";
                                     $fabric_status_result=mysqli_query($link_new, $fabric_status_query) or exit('fabric status error');
                                     $row = mysqli_fetch_assoc($fabric_status_result);
                                     if($row['fabric_status']){

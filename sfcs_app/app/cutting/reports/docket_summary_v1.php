@@ -178,7 +178,7 @@ $username=$_SESSION['userName'];
 					/**
 					 * getting print_status,fabric_status info 
 					 */
-					$qryrequestedDockets="SELECT print_status,fabric_status,updated_user,created_at FROM $pps.requested_dockets WHERE jm_docket_line_id='$jm_docket_line_id' AND plant_code='$plantcode'";
+					$qryrequestedDockets="SELECT print_status,fabric_status,updated_user,created_at FROM $pps.requested_dockets WHERE plant_code='$plantcode' AND jm_docket_line_id='$jm_docket_line_id'";
 					$requestedDocketsResult=mysqli_query($link_new, $qryrequestedDockets) or exit("Sql Error at getting requested Dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$requestedDockets=mysqli_num_rows($requestedDocketsResult);
 					if($requestedDockets>0){
@@ -194,7 +194,7 @@ $username=$_SESSION['userName'];
 					/**
 					 * getting fabric priorities 
 					 */
-					$qryfabricPriorities="SELECT created_user,created_at,req_time,issued_time FROM $pps.fabric_prorities WHERE jm_docket_line_id='$jm_docket_line_id' AND plant_code='$plantcode'";
+					$qryfabricPriorities="SELECT created_user,created_at,req_time,issued_time FROM $pps.fabric_prorities WHERE plant_code='$plantcode' AND jm_docket_line_id='$jm_docket_line_id'";
 					$fabricPrioritiesResult=mysqli_query($link_new, $qryfabricPriorities) or exit("Sql Error at getting requested Dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$fabricPriorities=mysqli_num_rows($fabricPrioritiesResult);
 					if($fabricPriorities>0){

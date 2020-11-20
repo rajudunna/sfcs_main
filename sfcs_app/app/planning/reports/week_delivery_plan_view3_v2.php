@@ -443,7 +443,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		{
 			$master_po_details_id=$sql_row1['master_po_details_id'];
 			$style=$sql_row1['style'];
-			$sql7="select schedule,color,size,z_feature from $pps.mp_mo_qty where master_po_details_id='$master_po_details_id' and plant_code='$plantcode' group by schedule,color,size";
+			$sql7="select schedule,color,size,z_feature from $pps.mp_mo_qty where plant_code='$plantcode' and master_po_details_id='$master_po_details_id'  group by schedule,color,size";
 			//echo "<br>2=".$sql7."<br>";
 			$sql_result7=mysqli_query($link, $sql7) or exit("Sql Error2x".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row7=mysqli_fetch_array($sql_result7))
