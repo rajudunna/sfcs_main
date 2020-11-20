@@ -1,7 +1,35 @@
 <?php
 	include('../../../../common/config/config_ajax.php');
 	include("../../../../common/config/m3Updations.php");
-	include("../../../../common/config/functions.php");
+	// include("../../../../common/config/functions.php");
+
+	function leading_zeros($value, $places)
+	{
+		$leading='';
+		
+		if(is_numeric($value))
+		{
+			for($x = 1; $x <= $places; $x++)
+			{
+				$ceiling = pow(10, $x);
+				if($value < $ceiling)
+				{
+					$zeros = $places - $x;
+					for($y = 1; $y <= $zeros; $y++)
+					{
+						$leading .= "0";
+					}
+				$x = $places + 1;
+				}
+			}
+			$output = $leading . $value;
+		}
+		else{
+			$output = $value;
+		}
+		
+		return $output;
+	}
 
 	$plant_code = $plant_wh_code;
 	// $b_op_id='200';
