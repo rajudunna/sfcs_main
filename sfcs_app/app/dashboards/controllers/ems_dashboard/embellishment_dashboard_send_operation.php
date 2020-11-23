@@ -30,7 +30,7 @@ set_time_limit(200000);
 $session_plant_code = $_SESSION['plantCode'];
 $username =  $_SESSION['userName'];
 $departmentType = OperationCategory::EMBELLISHMENT;
-// $session_plant_code = 'AIP';
+// $session_plant_code = 'EKG';
 // $username = 'AIP';
 
 ?>
@@ -438,7 +438,7 @@ foreach ($workstations as $emb_key => $emb_value) {
       $job_num = $job_detail_attributes[$sewing_job_attributes['sewingjobno']];
     
       $prev_operation=15;
-
+      $balance_qty=0;
       $task_job_trans = "SELECT original_quantity,good_quantity,rejected_quantity,operation_code,operation_seq FROM $tms.task_job_status where task_jobs_id ='$task_job_id'  order by operation_seq ASC limit 0,1";
       $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
       if (mysqli_num_rows($task_job_trans_result) > 0) {
@@ -449,6 +449,7 @@ foreach ($workstations as $emb_key => $emb_value) {
           $rej_qty = $row_res['rejected_quantity'];
           $operation_code = $row_res['operation_code'];
           $operation_seq = $row_res['operation_seq'];
+          $balance_qty = $orginal_qty - ($good_qty+$rej_qty);
         }
         $send_qty=0;
         $task_job_trans2 = "SELECT sum(good_quantity) as good_quantity FROM $pts.transaction_log where parent_job ='$doc_no' and operation = $prev_operation and is_active=1 and plant_code='$session_plant_code'";
@@ -496,8 +497,11 @@ foreach ($workstations as $emb_key => $emb_value) {
         // sfcs_app\app\production\controllers\embellishment_job\embellishment_job_scaning\scan_jobs.php
         $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/sewing_job/sewing_job_scaning/scan_job.php', 3, 'N')."&dashboard_reporting=1&job_type=$departmentType&job_no=$job_num&plant_code=$session_plant_code&username=$username&type=$type&operation_id=$operation_code&style=$style1&schedule=$schedule&color=$colors_db&barcode_generation=1";
         $title = str_pad("Style:" . trim($style1), 80) . "\n" . str_pad("CO:" . trim($co_no), 80) . "\n" . str_pad("Schedule:" . $schedule, 80) . "\n" . str_pad("Color:" . trim($colors_db), 50) . "\n" . str_pad("Cut_No:" . trim($club_c_code), 80) . "\n" . str_pad("DOC No:" . trim($doc_no), 80) . "\n" . str_pad("Total Plan Qty:" . $orginal_qty, 80) . "\n" . str_pad("Actual Cut Qty:" . $total, 80) . "\n" . str_pad("Send Qty:" . ($send_qty), 80) . "\n" . str_pad("Received Qty:" . ($good_qty), 80) . "\n" . str_pad("Rejected Qty:" . $rej_qty, 80) . "\n" . str_pad("Plan_Time:" . $log_time, 50) . "\n";
-    
-        echo "<div id=\"$sch_string\" style=\"float:left;\"><div id='$doc_string' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(" . $club_c_code . ")-OP:$operation_code</span></div></div><br>";
+        
+        if($balance_qty > 0)
+        {
+          echo "<div id=\"$sch_string\" style=\"float:left;\"><div id='$doc_string' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(" . $club_c_code . ")-OP:$operation_code</span></div></div><br>";
+        }
       }
     }
   }
