@@ -181,6 +181,9 @@ $row=mysqli_fetch_array($result);
 		$batch = $batch_no;
 		$plant_code=$plant;
 	}
+	
+	echo "<input type=\"hidden\" name=\"plantcode\" id=\"plantcode\" value='".$plant_code."'>";
+	echo "<input type=\"hidden\" name=\"username\" id=\"username\" value='".$username."'>";
 	$sql1="SELECT DISTINCT(lot_no) AS lot_no FROM $wms.sticker_report WHERE batch_no=\"".$batch."\" and plant_code='".$plant_code."' and length(batch_no) > 0";	
 	echo "<input type='text' readonly value='$value_comp' name=\"selcompro\" id='selcompro' class='form-control' style='width: 150px;  display: inline-block;'>";
 	
@@ -206,7 +209,8 @@ $row=mysqli_fetch_array($result);
 	if(mysqli_num_rows($result1) < 1 && $batch != '-1'){
 		echo "<script>sweetAlert('No lots found for entered batch','','error');</script>";
 	}
-
+	echo "<input type=\"hidden\" name=\"plantcode\" id=\"plantcode\" value=\"$plant_code\">";
+	echo "<input type=\"hidden\" name=\"username\" id=\"username\" value=\"$username\">";
 	echo "<input type=\"submit\" value=\"Show\" name=\"show\" onclick='return check_batch();' class=\"btn btn-success\" />";
  }
  
@@ -218,7 +222,8 @@ if(isset($_POST['show']))
 	$comcat_type=$_POST["selcompro"];
 	$batch_no=$_POST["txtbatch"];
 	$lot_no_ref_new=$_POST["sellotnosrefnew"];
-	$plant_code=$_POST["plant"];
+	$plant_code=$_POST["plantcode"];
+	$username=$_POST["username"];
 	$user=$_POST["user"];
 	if ($comcat_type=='' or $batch_no=='' or empty($lot_no_ref_new))
 	{
@@ -442,7 +447,7 @@ if(isset($_POST['show']))
 			echo "<div class='col-md-6'>";
 			echo "<table class='table table-bordered'>";
 			echo "<tr ><th class=\"tblheading\">Reason</th><th>Effected Qty</th><th>Ratings</th><th>Remarks</th></tr>";	
-			$sql5="select complaint_reason,sno from $wms.inspection_complaint_reasons where status=1 and complaint_category=\"$comcat_type\" and plant_code='".$plant_code."'";
+			$sql5="select complaint_reason,sno from $mdm.inspection_complaint_reasons where status=1 and complaint_category=\"$comcat_type\" and plant_code='".$plant_code."'";
 			// echo $sql5."<br>";
 			$result5=mysqli_query($link, $sql5) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row5=mysqli_fetch_array($result5))
