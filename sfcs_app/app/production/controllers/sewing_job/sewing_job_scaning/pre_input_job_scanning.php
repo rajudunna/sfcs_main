@@ -11,7 +11,7 @@ $configuration_bundle_print_array = [0=>'Bundle Level',1=>'Job Level'];
 $job_type = $_GET['job_type'];
 if($job_type == OperationCategory::EMBELLISHMENT){
     $lable = 'Embellishment';
-    $configuration_bundle_print_array = [0=> $lable.' Job Level'];
+    $configuration_bundle_print_array = [1=> $lable.' Job Level'];
 } else {
     $lable = 'Sewing';
     $configuration_bundle_print_array = [0=> $lable.' Bundle Level',1=> $lable.' Job Level'];
