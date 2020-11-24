@@ -196,22 +196,33 @@ else
 
 	if($schedule == 'all')
 	{
-		$get_subpos= "SELECT distinct sub_po as sub_po FROM $pts.transaction_log WHERE style='$style' AND plant_code='$plant_code'";
 		$main_query = "where style='$style' AND plant_code='$plant_code' group by schedule,color";
+		if($_GET['size']!='')
+		{
+			$main_query =  $main_query.' ,size';  
+		}
 	}
 	else if ($schedule == 'all' && $color != 'all')
 	{
-		$get_subpos= "SELECT distinct sub_po as sub_po FROM $pts.transaction_log WHERE style='$style' AND color='$color' AND plant_code='$plant_code'";
-		$main_query = "where style='$style' and color ='$color' AND plant_code='$plant_code' group by schedule";                  
+
+		$main_query = "where style='$style' and color ='$color' AND plant_code='$plant_code' group by schedule";   
+		if($_GET['size']!='')
+		{
+			$main_query =  $main_query.' ,size';  
+		}               
 	}
 	else if ($schedule != 'all' && $color == 'all')
 	{
-		$get_subpos= "SELECT distinct sub_po as sub_po FROM $pts.transaction_log WHERE style='$style' and schedule ='$schedule' AND plant_code='$plant_code'";
-		$main_query = "where style='$style' and schedule ='$schedule' AND plant_code='$plant_code' group by color";                  
+
+		$main_query = "where style='$style' and schedule ='$schedule' AND plant_code='$plant_code' group by color";  
+		if($_GET['size']!='')
+		{
+			$main_query =  $main_query.' ,size';  
+		}           
 	}
 	else
 	{
-		$get_subpos= "SELECT distinct sub_po as sub_po FROM $pts.transaction_log WHERE style='$style' AND color='$color' AND plant_code='$plant_code'";
+
 		$main_query = " where style='$style' and schedule ='$schedule' and color='$color' AND plant_code='$plant_code'";
 		if($_GET['size']!='')
 		{
@@ -222,36 +233,49 @@ else
 			$main_query =  $main_query.' limit 1';
 		}
 	}
-	$result1 = $link->query($get_subpos);
-	while($row2 = $result1->fetch_assoc())
-	{
-		$subpos[] = $row2['sub_po'];
-	}
-
-	$subpo_ids = "'" . implode( "','", $subpos) . "'";
-
-	$get_fg_id="SELECT DISTINCT finished_good_id AS finished_good_id  FROM $pts.`finished_good` WHERE sub_po IN ($subpo_ids);";
-	$result2 = $link->query($get_fg_id);
-	while($row3 = $result2->fetch_assoc())
-	{
-		$finished_good_ids[] = $row3['finished_good_id'];
-	}
-
-	$fg_ids = "'" . implode( "','", $finished_good_ids) . "'";
-
-	$get_fg_operation="SELECT DISTINCT operation_code AS operation_code  FROM $pts.`fg_operation` WHERE finished_good_id IN ($fg_ids);";
-	$result3 = $link->query($get_fg_operation);
-	while($row4 = $result3->fetch_assoc())
-	{
-		$operation_codes[] = $row4['operation_code'];
-	}
-	$operation_codes_no = implode(',',$operation_codes);
-	$operation_mapping="SELECT operation_code,operation_name FROM $pms.`operation_mapping` WHERE operation_code IN ($operation_codes_no) AND sequence=1 AND plant_code='$plant_code' and is_active = 1 ORDER BY priority ASC";
+	
+	$operation_mapping="SELECT operation_code,operation_name,priority FROM $pms.`operation_mapping` WHERE sequence=1 AND plant_code='$plant_code' and is_active = 1 and operations_to_display=1 ORDER BY priority ASC";
 	$result4 = $link->query($operation_mapping);
 	while($row5 = $result4->fetch_assoc())
 	{
 		$operation_ids[] = $row5['operation_code'];
 		$ops_get_code[$row5['operation_code']] = $row5['operation_name'];
+		$ops_get_pri[$row5['operation_code']] = $row5['priority'];
+	}
+	// Order quantity
+	if($schedule == 'all')
+	{
+		$order_qty_qry = "SELECT schedule,color_desc,sum(mo_quantity) as order_qty FROM oms.oms_products_info AS opi LEFT JOIN oms.oms_mo_details AS omd ON omd.mo_number=opi.mo_number where style='$style' AND plant_code='$plant_code' group by schedule,color_desc";
+		if($_GET['size']!='')
+		{
+			$order_qty_qry =  $order_qty_qry.' ,size_desc';  
+		}
+	}
+	else if ($schedule == 'all' && $color != 'all')
+	{
+		$order_qty_qry = "SELECT sum(mo_quantity) as order_qty FROM oms.oms_products_info AS opi LEFT JOIN oms.oms_mo_details AS omd ON omd.mo_number=opi.mo_number where style='$style' AND color_desc ='$color' AND plant_code='$plant_code' group by schedule,color_desc";
+		if($_GET['size']!='')
+		{
+			$order_qty_qry =  $order_qty_qry.' ,size_desc';  
+		}
+						
+	}
+	else if ($schedule != 'all' && $color == 'all')
+	{
+		$order_qty_qry = "SELECT sum(mo_quantity) as order_qty FROM oms.oms_products_info AS opi LEFT JOIN oms.oms_mo_details AS omd ON omd.mo_number=opi.mo_number where style='$style' AND schedule ='$schedule' AND plant_code='$plant_code' group by schedule,color_desc";
+		if($_GET['size']!='')
+		{
+			$order_qty_qry =  $order_qty_qry.' ,size_desc';  
+		}
+					
+	}
+	else
+	{
+		$order_qty_qry = "SELECT sum(mo_quantity) as order_qty FROM oms.oms_products_info AS opi LEFT JOIN oms.oms_mo_details AS omd ON omd.mo_number=opi.mo_number where style='$style' AND schedule ='$schedule' AND color_desc ='$color' AND plant_code='$plant_code' group by schedule,color_desc";
+		if($_GET['size']!='')
+		{
+			$order_qty_qry =  $order_qty_qry.' ,size_desc';  
+		}
 	}
 	$col_span = count($operation_ids);
 	$table_data = "<table id='excel_table' class = 'col-sm-12 table-bordered table-striped table-condensed cf'>
@@ -286,8 +310,7 @@ else
 	}
 	$table_data .= "</tr></thead><tbody>";
 
-	$sql_trans="SELECT style,schedule,color,size, group_concat(distinct barcode) as barcodes $op_string_data FROM $pts.transaction_log $main_query";
-	// echo $sql_trans;
+	$sql_trans="SELECT style,schedule,color,size $op_string_data FROM $pts.transaction_log $main_query";
 	// die();
 	$sql_trans_result = mysqli_query($link,$sql_trans);
 	while($row_main = mysqli_fetch_array($sql_trans_result))
@@ -297,47 +320,71 @@ else
 		$color = $row_main['color'];
 		$size = $row_main['size'];
 		$barcodes = $row_main['barcodes'];
-
-		$barcode_list = "'".str_replace(",","','",$barcodes)."'";
-
-		$order_qty_qry = "select sum(quantity) as quantity from $pts.barcode where barcode IN ($barcode_list) ";
-		
-		$sql_order_qty_result = mysqli_query($link,$order_qty_qry);
-		$order_qty=0;
-
-		while($row_main_qty = mysqli_fetch_array($sql_order_qty_result))
+		if($size_get != '')
 		{
-		$order_qty = $row_main_qty['quantity'];
+			$order_qty_qry = "SELECT sum(mo_quantity) as quantity FROM oms.oms_products_info AS opi LEFT JOIN oms.oms_mo_details AS omd ON omd.mo_number=opi.mo_number where schedule ='$schedule' AND color_desc ='$color' AND plant_code='$plant_code' AND size_desc='".$size."'";
+		}
+		else {
+			$order_qty_qry = "SELECT sum(mo_quantity) as quantity FROM oms.oms_products_info AS opi LEFT JOIN oms.oms_mo_details AS omd ON omd.mo_number=opi.mo_number where schedule ='$schedule' AND color_desc ='$color' AND plant_code='$plant_code'";
+		}
+		$order_qty_resu = mysqli_query($link,$order_qty_qry);
+		$order_qty=0;
+		while($row_main_qty = mysqli_fetch_array($order_qty_resu))
+		{
+			$order_qty = $row_main_qty['quantity'];
 		}
 		
 		$counter++;
 		$table_data .= "<tr><td>$counter</td><td>$schedule</td><td>$color</td>";
 		if($size_get != '')
 		{
-		$table_data .="<td>$size</td>";
+			$table_data .="<td>$size</td>";
 		}
 		$table_data .="<td>$order_qty</td>";
 		foreach ($operation_ids as $key => $value)
 		{
-		if(strlen($ops_get_code[$value]) > 0){
+			if(strlen($ops_get_code[$value]) > 0){
 
-		$table_data .= "<td>".$row_main['good_'.$value]."</td>";
-		$table_data .= "<td>".$row_main['rej_'.$value]."</td>";
+			$table_data .= "<td>".$row_main['good_'.$value]."</td>";
+			$table_data .= "<td>".$row_main['rej_'.$value]."</td>";
+			}
 		}
-		}
+		$ii=1;
 		foreach ($operation_ids as $key => $value)
 		{
-		if(strlen($ops_get_code[$value]) > 0){
-		$wip=$order_qty-($row_main['good_'.$value]+$row_main['rej_'.$value]);
-		if($wip <0){
-		$wip=0;
+			if($ii==1)
+			{
+				$diff = $order_qty -($row_main['good_'.$value]+$row_main['rej_'.$value]); 
+				if($diff < 0)  
+				{
+					$diff = 0;
+				}
+				$wip = $diff;
+				$ii=0;
+			}
+			else {
+				$operation_mapping="SELECT operation_code FROM $pms.`operation_mapping` WHERE sequence=1 AND plant_code='$plant_code' and is_active = 1 and priority < ".$ops_get_pri[$value]." and operations_to_display=1 ORDER BY priority desc limit 1";
+				$result4 = $link->query($operation_mapping);
+				while($row5 = $result4->fetch_assoc())
+				{
+					$ops_pre = $row5['operation_code'];
+				}
+				if(strlen($ops_pre) > 0)
+				{
+					$diff=$row_main['good_'.$ops_pre]-($row_main['good_'.$value]+$row_main['rej_'.$value]);
+					if($diff <0){
+					$diff=0;
+					}
+					$wip = $diff;
+				}
+
+			}			
+			
+			$table_data .= "<td>".$wip."</td>";
 		}
-		$table_data .= "<td>".$wip."</td>";
-		}
-		}
-		$table_data .= "</tr>";
 	}
-		echo $table_data."</tbody></table>";
+		$table_data .= "</tr>";
+	echo $table_data."</tbody></table>";
 }
 
 ?>

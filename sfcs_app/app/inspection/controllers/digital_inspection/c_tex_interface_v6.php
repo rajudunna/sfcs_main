@@ -2421,7 +2421,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		$insp_status="Red";		
 	}
 	
-	$get_status = "select status from $wms.inspection_population where parent_id=$parent_id and lot_no='".$temp[7]."' and store_in_id='$temp[0]' and plant_code='".$plant_code."'";
+	$get_status = "select status from $wms.inspection_population where parent_id=$parent_id and lot_no='".$temp[7]."' and store_in_id='".$temp[0]."' and plant_code='".$plant_code."'";
 	//echo $get_status;
 	$status_details_result=mysqli_query($link, $get_status) or exit("status details error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_status=mysqli_fetch_array($status_details_result))
@@ -2440,8 +2440,8 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	/*-----*/
 	if($temp[2]=='')
 	{
-		$get_details_points = "select rec_qty from $wms.`inspection_population` where store_in_id='$temp[0]' and plant_code='".$plant_code."' and status<>0";
-		$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
+		$get_details_points = "select rec_qty from $wms.`inspection_population` where store_in_id='".$temp[0]."' and plant_code='".$plant_code."' and status<>0";
+		$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($details_result_points)>0)
 		{
 			while($row522=mysqli_fetch_array($details_result_points))
@@ -2454,7 +2454,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 					$invoice_qty;
 				}
 			}
-			$get_min_value = "select width_s,width_m,width_e from $wms.roll_inspection_child where store_in_tid='$temp[0]' and plant_code='".$plant_code."'";
+			$get_min_value = "select width_s,width_m,width_e from $wms.roll_inspection_child where store_in_tid=$temp[0] and plant_code='".$plant_code."'";
 			$min_value_result=mysqli_query($link,$get_min_value) or exit("get_min_value Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row_min=mysqli_fetch_array($min_value_result))
 			{
@@ -2464,7 +2464,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 			}
 			$min_value = min($width_s,$width_m,$width_e);
 			$inch_value=round($min_value/(2.54),2);
-			$four_point_count = "select sum(points) as pnt from $wms.four_points_table where insp_child_id='".$temp[0]."' and plant_code='".$plant_code."'";
+			$four_point_count = "select sum(points) as pnt from $wms.four_points_table where insp_child_id=".$temp[0]." and plant_code='".$plant_code."'";
 			$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($status_details_result2)>0)
 			{	
@@ -3046,27 +3046,19 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			
 
 			if($partial_rej_qty[$i]>0 and $partial_rej_qty[$i]<$ele_t_length[$i] )// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
-			{	
-				$select_uuid="SELECT UUID() as uuid";
-				$uuid_result=mysqli_query($link_new, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($uuid_row=mysqli_fetch_array($uuid_result))
-				{
-					$uuid=$uuid_row['uuid'];
-				
-				}
-
-				 $sql= "insert INTO $wms.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,tid,qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason,ref_tid,plant_code,created_user,updated_user,updated_at)select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$uuid."\",\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\", tid,'".$plant_code."','".$username."','".$username."',NOW()  FROM $wms.store_in WHERE plant_code='$plant_code' and  tid='$ele_tid[$i]'";
+			{
+				 $sql= "insert INTO $wms.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason,ref_tid,plant_code,created_user,updated_user,updated_at)select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\", tid,'".$plant_code."','".$username."','".$username."',NOW()  FROM $wms.store_in WHERE plant_code='$plant_code' and  tid=".$ele_tid[$i];
 				   mysqli_query($link, $sql) or exit("Sql Error25=".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$new_tid=mysqli_insert_id($link);  
 					$sql22="update wms.store_in set barcode_number='".$plant_code."-".$new_tid."' where plant_code='$plant_code' and  tid=".$new_tid;
 					mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				  $qty_rec=$ele_t_length[$i]-$partial_rej_qty[$i];
-				  $sql1="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where plant_code='$plant_code' and  tid='$ele_tid[$i]'";
+				  $sql1="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where plant_code='$plant_code' and  tid=".$ele_tid[$i];
 				 mysqli_query($link, $sql1) or exit("Sql Error9=2222".mysqli_error($GLOBALS["___mysqli_ston"]));			
 			}
 			else
 			{
-				$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_user= '".$username."',updated_at=NOW() $add_query where plant_code='$plant_code' and  tid='$ele_tid[$i]'";
+				$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_user= '".$username."',updated_at=NOW() $add_query where plant_code='$plant_code' and  tid='".$ele_tid[$i]."'";
 				mysqli_query($link, $sql) or exit("Sql Error9=111".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
