@@ -939,7 +939,8 @@ if(isset($_POST['allocate']))
 			{
 			echo "<input type='hidden' id='srgp$doc_ref$j' value='".$sql_row['shrinkage_group']."'>";
 			echo "<tr bgcolor=\"$bg_color\" id=\"trchk$doc_ref$j\">";
-			$sql3="select tid,split_roll from $wms.store_in where plant_code='".$plant_code."' and tid=".$sql_row['tid'];
+			$sql3="select tid,split_roll from $wms.store_in where plant_code='".$plant_code."' and tid='".$sql_row['tid']."'";
+			// echo $sql3;
 			$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error22 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result3)>0)
 			{
@@ -953,8 +954,8 @@ if(isset($_POST['allocate']))
 				}
 			}
 			
-			$sql5="SELECT coalesce(sum(allocated_qty),0) as allocated_qty,roll_id,status FROM $wms.fabric_cad_allocation where roll_id=".$sql_row['tid']." and status='1' and plant_code='".$plant_code."'";
-				$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql5="SELECT coalesce(sum(allocated_qty),0) as allocated_qty,roll_id,status FROM $wms.fabric_cad_allocation where roll_id='".$sql_row['tid']."' and status='1' and plant_code='".$plant_code."'";
+				$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error131: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row5=mysqli_fetch_array($sql_result5))
 				{
 					$fab_cad_allocated_qty=round($sql_row5['allocated_qty'],2);
@@ -1027,8 +1028,8 @@ if(isset($_POST['allocate']))
 					<th style='color:black;'>Issued<br/>Qty</th>
 					</tr>";
 			for($m=0; $m < $n; $m++) {
-				$sql3="select tid,split_roll from $wms.store_in where plant_code='".$plant_code."' and tid=".$tid;
-				$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error22 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql3="select tid,split_roll from $wms.store_in where plant_code='".$plant_code."' and tid='".$tid."'";
+				$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error225 :$sql3 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result3)>0)
 				{
 					while($sql_row2=mysqli_fetch_array($sql_result3))
@@ -1036,7 +1037,7 @@ if(isset($_POST['allocate']))
 						$tid =$sql_row2['split_roll'];
 						if($sql_row2['split_roll'] != '') {
 							$sql_query ="SELECT * FROM $wms.store_in WHERE lot_no IN (SELECT lot_no FROM $wms.store_in WHERE tid IN (".$sql_row2['split_roll'].")) AND tid IN(".$sql_row['tid'].") AND plant_code='".$plant_code."'";
-							$sql_result_new=mysqli_query($link, $sql_query) or exit("Sql Error22 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$sql_result_new=mysqli_query($link, $sql_query) or exit("Sql Error223 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_result_new=mysqli_fetch_array($sql_result_new))
 								{
 									$tid =$sql_row2['split_roll'];
