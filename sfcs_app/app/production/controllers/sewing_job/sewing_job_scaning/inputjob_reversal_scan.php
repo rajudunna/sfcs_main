@@ -14,7 +14,6 @@
 	// }
 	echo '<input type="hidden" name="user_permission" id="user_permission" value="'.$value.'">';
 	//API related data
-	// $plant_code = $global_facility_code;
 	$company_num = $company_no;
 	$host= $api_hostname;
 	$port= $api_port_no;
@@ -321,12 +320,27 @@
 					console.log('response came');
 					if (res.status) {
 						$('#loading-image').hide();
-						swal('',res.internalMessage,'success');
+						swal({
+						title: "",
+						text: res.internalMessage,
+						type: "success",
+						timer: 6000
+						}).then(
+						function () {
+							location.reload();	
+						});
 					} else {
 						$('#loading-image').hide();
-						swal('',res.internalMessage,'error');
+						swal({
+						title: "",
+						text: res.internalMessage,
+						type: "error",
+						timer: 6000
+						}).then(
+						function () {
+							location.reload();	
+						});
 					}
-					location.reload();	
 				},
 				error: function(response){
 					$('#loading-image').hide();
