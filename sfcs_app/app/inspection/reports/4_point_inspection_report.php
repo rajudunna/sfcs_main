@@ -48,7 +48,8 @@ while ($row22 = mysqli_fetch_array($info_result))
 	$tot_ids[]=	$row22['store_in_tid'];
 }
 
-$get_details = "select supplier_invoice,store_in_id,supplier_batch,supplier_po,item_code,item_desc,item_name,rm_color,sfcs_roll_no,supplier_roll_no,lot_no,rec_qty,lot_no,status from $wms.`inspection_population` where store_in_id in (".implode(",",$tot_ids).") and plant_code='".$plant_code."'";
+$get_details = "select supplier_invoice,store_in_id,supplier_batch,supplier_po,item_code,item_desc,item_name,rm_color,sfcs_roll_no,supplier_roll_no,lot_no,rec_qty,lot_no,status from $wms.`inspection_population` where store_in_id in ('".implode("','" , $tot_ids)."') and plant_code='".$plant_code."'";
+
 //echo $get_details;
 $details_result = mysqli_query($link, $get_details) or exit("get_details Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1 = mysqli_fetch_array($details_result))
@@ -109,7 +110,7 @@ while ($row1112 = mysqli_fetch_array($details_result12))
 }
 $tot_points=0;
 $cnt=0;
-$get_inspection_population_info12 = "select insp_child_id,selected_point,SUM(points) AS tot from $wms.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") and plant_code='".$plant_code."' group by insp_child_id,selected_point";
+$get_inspection_population_info12 = "select insp_child_id,selected_point,SUM(points) AS tot from $wms.`four_points_table` where insp_child_id in ('".implode("','" , $tot_ids)."') and plant_code='".$plant_code."' group by insp_child_id,selected_point";
 $info_result12 = mysqli_query($link, $get_inspection_population_info12) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($info_result12)>0)
 {
@@ -1785,7 +1786,7 @@ tags will be replaced.-->
   <td colspan="2" class="xl8919758">Width</td>
 </tr>
  <?php
-          $get_shade_grp="SELECT batch_no,SUM(qty_rec) AS rec,shade_grp,COUNT(*) AS rolls,MIN(ref6) as width FROM $wms.store_in LEFT JOIN $wms.sticker_report ON $wms.sticker_report.lot_no=$wms.store_in.lot_no WHERE tid IN (".implode(",",$tot_ids).") GROUP BY batch_no,shade_grp";
+          $get_shade_grp="SELECT batch_no,SUM(qty_rec) AS rec,shade_grp,COUNT(*) AS rolls,MIN(ref6) as width FROM $wms.store_in LEFT JOIN $wms.sticker_report ON $wms.sticker_report.lot_no=$wms.store_in.lot_no WHERE tid IN ('".implode("','" , $tot_ids)."') GROUP BY batch_no,shade_grp";
 			   //echo $get_shade_grp;
 				$shade_grp_result = mysqli_query($link, $get_shade_grp) or exit("get_shade_grp Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($shade_grp_result)>0)
@@ -1928,7 +1929,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 	<td class=xl9319758 style='border-top:none;border-left:none'><?php echo $comment[$tot_ids[$i]]; ?></td>
 	<?php	
 	$count=0;$data='';
-	$get_inspection_population_info122 = "select code,points from $wms.`four_points_table` where insp_child_id=".$tot_ids[$i]." and plant_code='".$plant_code."'";
+	$get_inspection_population_info122 = "select code,points from $wms.`four_points_table` where insp_child_id='".$tot_ids[$i]."' and plant_code='".$plant_code."'";
 	$info_result122 = mysqli_query($link, $get_inspection_population_info122) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($info_result122)>0)
 	{
@@ -2030,7 +2031,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
   
   <?php
 	$count1=0;$data1='';
-	$get_inspection_population_info1221 = "select code,description from $wms.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") and plant_code='".$plant_code."' group by code";
+	$get_inspection_population_info1221 = "select code,description from $wms.`four_points_table` where insp_child_id in ('".implode("','" , $tot_ids)."') and plant_code='".$plant_code."' group by code";
 	//echo $get_inspection_population_info1221."<br>";
 	$info_result1221 = mysqli_query($link, $get_inspection_population_info1221) or exit("get_details Error25" . mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($info_result1221)>0)

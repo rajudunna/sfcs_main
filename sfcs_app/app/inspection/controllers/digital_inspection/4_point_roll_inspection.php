@@ -297,7 +297,7 @@ $flag = false;
 								$status=$row2['status'];
 								$main_points=0;
 									
-								$get_details_points = "select rec_qty from $wms.`inspection_population` where store_in_id=$store_in_id and plant_code='".$plant_code."'";
+								$get_details_points = "select rec_qty from $wms.`inspection_population` where store_in_id='$store_in_id' and plant_code='".$plant_code."'";
 								$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($row522=mysqli_fetch_array($details_result_points))
 								{ 
