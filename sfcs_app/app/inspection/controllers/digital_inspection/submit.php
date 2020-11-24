@@ -28,7 +28,7 @@ if(isset($_POST['data']))
                 if($value[$point_value]>0)
                 {
                     $points_val=$point_key*$value[$point_value];
-                    $insert_four_points .= "($store_in_id,'".$value['code']."','".$value['desc']."',$point_key,$points_val,'".$plant_code."','".$username."','".$username."',NOW()),";
+                    $insert_four_points .= "('".$store_in_id."','".$value['code']."','".$value['desc']."',$point_key,$points_val,'".$plant_code."','".$username."','".$username."',NOW()),";
                 }
             }
          }

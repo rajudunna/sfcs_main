@@ -341,8 +341,8 @@
 					{
                        $store_in_id[] = $row5212['store_in_id'];
 					}
-					$store_id = implode(",",$store_in_id);
-					$get_color_report = "select * from $wms.store_in where plant_code='$plant_code' and ref4='' and  lot_no in ($lotsString) AND tid in ($store_id)";
+					// $store_id = implode(",",$store_in_id);
+					$get_color_report = "select * from $wms.store_in where plant_code='$plant_code' and ref4='' and  lot_no in ($lotsString) AND tid in ('".implode("','" , $store_in_id)."')";
 					$result_color_report=mysqli_query($link, $get_color_report) or exit("Sql Error2.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($result_color_report)>0)
 					{

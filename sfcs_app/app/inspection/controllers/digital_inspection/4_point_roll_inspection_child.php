@@ -155,7 +155,7 @@ if (isset($_GET['parent_id']) or isset($_POST['parent_id'])) {
    echo "<input type='hidden' value= $store_id id='four_point_store_id'>";
 }
 $sno_points = $store_id;
-$get_inspection_population_info = "select inspected_per,inspected_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,inspection_status from $wms.`roll_inspection_child` where store_in_tid=$store_id and plant_code='".$plant_code."'";
+$get_inspection_population_info = "select inspected_per,inspected_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,inspection_status from $wms.`roll_inspection_child` where store_in_tid='$store_id' and plant_code='".$plant_code."'";
 
 $info_result = mysqli_query($link, $get_inspection_population_info) or exit("get_details Error--1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row22 = mysqli_fetch_array($info_result)) {
@@ -177,7 +177,7 @@ while ($row22 = mysqli_fetch_array($info_result)) {
     $inspection_status = $row22['inspection_status'];
 }
 
-$get_details = "select supplier_invoice,supplier_batch,supplier_po,item_code,item_desc,item_name,rm_color,sfcs_roll_no,supplier_roll_no,lot_no,rec_qty,status from $wms.`inspection_population` where store_in_id=$store_id and plant_code='".$plant_code."'";
+$get_details = "select supplier_invoice,supplier_batch,supplier_po,item_code,item_desc,item_name,rm_color,sfcs_roll_no,supplier_roll_no,lot_no,rec_qty,status from $wms.`inspection_population` where store_in_id='$store_id' and plant_code='".$plant_code."'";
 
 $details_result = mysqli_query($link, $get_details) or exit("get_details Error--2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1 = mysqli_fetch_array($details_result)) {
