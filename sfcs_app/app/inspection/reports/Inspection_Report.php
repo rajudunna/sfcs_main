@@ -104,6 +104,8 @@ if(isset($_POST['submit']))
 	$no_of_rows = mysqli_num_rows($sql_resultx);
 	if($no_of_rows > 0){
 		echo '<div id="main_div"><form action='.getFullURL($_GET['r'],'Inspection_Report_Excel.php','R').' method ="post" name="expo" id="expo">
+		<input type="hidden" name="plantcode" id="plantcode" value="'.$plantcode.'">
+	  <input type="hidden" name="username" id="username" value="'.$username.'">
 		<input type="hidden" name="fdate" value="'.$sdate.'"><input type="hidden" name="tdate" value="'.$edate.'"><input type="hidden" name="buyerdiv" value="'.$buyer_select.'"><input type="hidden" name="batch_no" value="'.$batch_search.'">
 		<input type="submit" name="export"  class="btn btn-primary pull-right" value="Export to Excel">
 		</form>';

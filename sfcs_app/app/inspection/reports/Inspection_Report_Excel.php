@@ -3,8 +3,8 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 // include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
 error_reporting(0);
-$plantcode=$_SESSION['plantCode'];
-$username=$_SESSION['userName'];
+// $plantcode=$_SESSION['plantCode'];
+// $username=$_SESSION['userName'];
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -73,6 +73,8 @@ if(isset($_POST['export']))
 
 $sdate=$_POST['fdate'];
 $edate=$_POST['tdate'];
+$plantcode=$_POST['plantcode'];
+$username=$_POST['username'];
 $batch_search=$_POST['batch_no'];
 $buyer_select=$_POST['buyerdiv'];
 $sql="SELECT DISTINCT buyer FROM $wms.sticker_report where plant_code='$plantcode'";

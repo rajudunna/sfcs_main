@@ -121,6 +121,8 @@ if(isset($_POST['filter']))
 {
     $sdate=$_POST['sdate'];
     $edate=$_POST['edate'];
+    $plant_code=$_POST['plantcode'];
+    $username=$_POST['username'];
     $batch_obj=$_POST["batch_obj"];
     //var_dump($_POST['supplier']);
     $supplier_ref_codes=$_POST['supplier'];
@@ -167,7 +169,7 @@ if(isset($_POST['filter']))
             }
         }
     
-        $suppliers_list_ref_query=" and supplier in (".implode("",$supplier_ref1).") ";     
+        $suppliers_list_ref_query=" and supplier in (".implode(" ",$supplier_ref1).") ";     
     }
     else
     {
@@ -191,11 +193,12 @@ if(isset($_POST['filter']))
     $url=getFullURL($_GET['r'],'supplier_per_charts.php','N');
     $url1=getFullURLLevel($_GET['r'],'reports/supplier_perf_v2_report.php',1,'N');
     echo "<div id='main_div'>";
-    echo "<a href=\"$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."\" onclick=\"return popitup('$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."')\"><button class='btn btn-info btn-sm'>Click Here For Charts</button></a>&nbsp;&nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$url1\"><button class='btn btn-info btn-sm'>Click Here For Log Report</button></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class='label label-success lb-lg'> Preformance Updated</span> &nbsp;&nbsp;||&nbsp;&nbsp; <span class='label label-danger lb-lg'>Performance Not Updated </span> ";
+    echo "<a href=\"$url&sdate=$sdate&edate=$edate&plantcode=$plant_code&username=$username&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."\" onclick=\"return popitup('$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."')\"><button class='btn btn-info btn-sm'>Click Here For Charts</button></a>&nbsp;&nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$url1\"><button class='btn btn-info btn-sm'>Click Here For Log Report</button></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class='label label-success lb-lg'> Preformance Updated</span> &nbsp;&nbsp;||&nbsp;&nbsp; <span class='label label-danger lb-lg'>Performance Not Updated </span> ";
     echo "<br>";
     echo "<b style='color:red' >Note:Please Fill All Fields to Update Supplier Performance Report </b>";
     // include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'supplier_perf_summary.php','R'));
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'controllers/supplier_perf_summary.php',1,'R')); 
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURL($_GET['r'],'controllers/supplier_perf_summary.php',1,'R')); 
+    
     echo "<form action='".getFullURL($_GET['r'],'supplier_perf_v2_update.php','N')."' 
      method='POST'>";
     echo "<div class='table-responsive'><div ><table cellspacing=\"0\" id=\"table1\" class=\"table table-bordered\" style='width: 5900px;'>";
@@ -214,8 +217,10 @@ if(isset($_POST['filter']))
         echo "<th>".$complaint_reason[$i]."</th>";
     }
     echo "<th>STATUS</th><th>IMPACT (YES/NO)</th></tr>";
-    $sql="select distinct supplier as sup from $wms.sticker_report WHERE DATE(grn_date) BETWEEN \"".$sdate."\" AND \"".$edate."\" ".$add_query." AND product_group=\"Fabric\" AND plant_code='".$plant_code."' ".$suppliers_list_ref_query." group by month(grn_date),batch_no ORDER BY supplier";
-    // echo "</br> Supplier Qry :".$sql."<br>";
+    $newstartDate = date("Ymd", strtotime($sdate));
+    $newendDate = date("Ymd", strtotime($edate));
+    $sql="select distinct supplier as sup from $wms.sticker_report WHERE DATE(grn_date) BETWEEN \"".$newstartDate."\" AND \"".$newendDate."\" ".$add_query." AND product_group=\"Fabric\" AND plant_code='".$plant_code."' ".$suppliers_list_ref_query." group by month(grn_date),batch_no ORDER BY supplier";
+    // echo "</br> Supplier Qry :".$sql."<br>";die();
 
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error123".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 $flag=false;
@@ -226,8 +231,8 @@ if(mysqli_num_rows($sql_result) > 0){
     {
         $supplier_name=$sql_row["sup"];
         
-        $sql1="select count(distinct batch_no) as batch_no from $wms.sticker_report WHERE DATE(grn_date) BETWEEN \"".$sdate."\" AND \"".$edate."\" ".$add_query." AND product_group=\"Fabric\" and supplier=\"".$supplier_name."\" and plant_code='".$plant_code."' group by month(grn_date),batch_no";
-        // echo $sql1."<br>";
+        $sql1="select count(distinct batch_no) as batch_no from $wms.sticker_report WHERE DATE(grn_date) BETWEEN \"".$newstartDate."\" AND \"".$newendDate."\" ".$add_query." AND product_group=\"Fabric\" and supplier=\"".$supplier_name."\" and plant_code='".$plant_code."' group by month(grn_date),batch_no";
+       // echo $sql1."<br>";
         
         $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
         while($sql_row1=mysqli_fetch_array($sql_result1))
