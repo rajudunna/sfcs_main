@@ -145,6 +145,8 @@ Start Date </label><input type="text" class="form-control" data-toggle="datepick
 <div class="col-md-2">
 <label>End Date </label><input  type="text" data-toggle='datepicker' class="form-control" size="8" name="edate" id="demo2"  value="<?php if(isset($_POST['edate'])) { echo $_POST['edate']; } else { echo date("Y-m-d"); } ?>">
 </div>
+<input type="hidden" name="plantcode" id="plantcode" value=<?php echo $plant_code ?>>
+<input type="hidden" name="username" id="username" value=<?php echo $username ?>>
 <div class="col-md-2">
 <label> Batch Ref </label><input type="text" name="batch_obj" class="form-control alpha" id="batch_obj" size=8 value="<?php if(isset($_POST['batch_obj'])) { echo $_POST['batch_obj']; }?>">
 </div>
