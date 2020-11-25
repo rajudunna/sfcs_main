@@ -388,7 +388,7 @@ if(isset($_POST['submit']))
 						
 					?>	
 					<?php
-					   $get_working_days="SELECT DATE_FORMAT(date,'%Y-%m-%d') AS pre_date,SUM(present) AS present FROM $bai_pro.pro_attendance WHERE DATE(date)<DATE(NOW()) GROUP BY DATE(date) HAVING present>0 ORDER BY date DESC LIMIT 1";
+					   $get_working_days="SELECT date AS pre_date,SUM(present) AS present FROM $bai_pro.pro_attendance WHERE date<DATE(NOW()) GROUP BY date HAVING present>0 ORDER BY date DESC LIMIT 1";
 					   $result_get_working_day=mysqli_query($link, $get_working_days) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					   while($sql_row11=mysqli_fetch_array($result_get_working_day))
 								 {
@@ -444,7 +444,7 @@ if(isset($_POST['submit']))
 					 ?>
 					 </table>
 					 <?php
-					 $get_working_days="SELECT DATE_FORMAT(date,'%Y-%m-%d') AS pre_date,SUM(present) AS present FROM $bai_pro.pro_attendance WHERE DATE(date)<DATE(NOW()) GROUP BY DATE(date) HAVING present>0 ORDER BY date DESC LIMIT 1";
+					 $get_working_days="SELECT date AS pre_date,SUM(present) AS present FROM $bai_pro.pro_attendance WHERE date<DATE(NOW()) GROUP BY date HAVING present>0 ORDER BY date DESC LIMIT 1";
 					 // var_dump($get_working_days);
 					 $result_get_working_day=mysqli_query($link, $get_working_days) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					 while($sql_row11=mysqli_fetch_array($result_get_working_day))
