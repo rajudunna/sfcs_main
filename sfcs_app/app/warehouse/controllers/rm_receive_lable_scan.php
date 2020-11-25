@@ -52,6 +52,9 @@ else
         
         <br/>
         <br/>
+        
+       <input type="hidden" name="plantcode" id="plantcode" value="<?php echo $plant_code ?>">
+       <input type="hidden" name="username" id="username" value="<?php echo $username ?>">
         <input type='text' name='barcode1' placeholder="Label Id" size=13><br/>
         <br/>
         <!-- <input type='text' name='barcode'  onkeypress='return numbersOnly(event)'> -->
@@ -70,10 +73,12 @@ else
                     $bar_code_new = $_POST['barcode1'];
                 }
                 $plant_name1=$_POST['plant_name'];
+                $plantcode=$_POST['plantcode'];
+                $username=$_POST['username'];
                 // $res_get_data_fm_cwh = $link_new->query($qry_get_data_fm_cwh);
             
                 //================ get barcode details from CWH DB =============
-                $qry_get_data_fm_cwh = "select tid from $wms.store_in where plant_code='".$plant_name1."' AND barcode_number='".$bar_code_new."'";
+                $qry_get_data_fm_cwh = "select tid,qty_rec,qty_ret,qty_issued,qty_allocated,ref5,lot_no,ref2,ref4,ref3,roll_joins,shrinkage_length,shrinkage_width,shrinkage_group,supplier_no,shade_grp,rejection_reason,roll_remarks,roll_status,partial_appr_qty from $wms.store_in where plant_code='".$plant_name1."' AND barcode_number='".$bar_code_new."'";
                 //echo  $qry_get_data_fm_cwh;
                 $res_get_data_fm_cwh = $link_new->query($qry_get_data_fm_cwh);
                 $barcode_data = array();
@@ -92,7 +97,6 @@ else
                         $tid_new = $row['tid'];
                         break;
                     }
-                    
                     if(count($barcode_data)>0)
                     {   
                         $actual_quentity_present = ($barcode_data['qty_rec']+$barcode_data['qty_ret']) - ($barcode_data['qty_issued'] + $barcode_data['qty_allocated']) ;
@@ -120,15 +124,22 @@ else
                         if($actual_quentity_present>0)
                         {                           
                                 //=================== check rmwh db with present tid ==================
-                                $qry_check_rm_db = "select * from $wms.store_in where plant_code='".$plant_code."' AND barcode_number='".$bar_code_new."'";
+                                $qry_check_rm_db = "select * from $wms.store_in where plant_code='".$plantcode."' AND barcode_number='".$bar_code_new."'";
                                 
                                 $res_check_rm_db = $link->query($qry_check_rm_db);
                                 if($res_check_rm_db->num_rows == 0)
                                 {
+                                    $select_uuid="SELECT UUID() as uuid";
+                                    $uuid_result=mysqli_query($link_new, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    while($uuid_row=mysqli_fetch_array($uuid_result))
+                                    {
+                                        $uuid=$uuid_row['uuid'];
+                                    
+                                    }
                                     // echo $res_check_rm_db->num_rows.'aaaaa';
                                     //=============== Insert Data in rmwh ==========================
-                                    $qry_insert_update_rmwh_data = "INSERT INTO $wms.`store_in`(`lot_no`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `remarks`, `log_stamp`, `status`,`ref2`,`ref3`,`ref4`,`ref5`,`ref6`,`log_user`,`barcode_number`,`ref_tid`,roll_joins,shrinkage_length,shrinkage_width,shrinkage_group,supplier_no,shade_grp,rejection_reason,roll_remarks,roll_status,partial_appr_qty,plant_code,created_user,updated_user) VALUES ('".$barcode_data['lot_no']."','".$actual_quentity_present."','0','0','".date('Y-m-d')."','Directly came from ".$plant_name1."','".date('Y-m-d H:i:s')."',0,'".$barcode_data['ref2']."','$ref3','".$barcode_data['ref4']."','$ref5','$ref6','".$username."^".date('Y-m-d H:i:s')."','".$bar_code_new."','".$tid_new."','".$barcode_data['roll_joins']."','".$barcode_data['shrinkage_length']."','".$barcode_data['shrinkage_width']."','".$barcode_data['shrinkage_group']."','".$barcode_data['supplier_no']."','".$barcode_data['shade_grp']."','".$barcode_data['rejection_reason']."','".$barcode_data['roll_remarks']."','".$barcode_data['roll_status']."','".$barcode_data['partial_appr_qty']."','".$plant_code."','".$username."','".$username."')"; 
-                                    // echo $qry_insert_update_rmwh_data."<br/>";
+                                    $qry_insert_update_rmwh_data = "INSERT INTO $wms.`store_in`(`tid`,`lot_no`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `remarks`, `log_stamp`, `status`,`ref2`,`ref3`,`ref4`,`ref5`,`ref6`,`log_user`,`barcode_number`,`ref_tid`,roll_joins,shrinkage_length,shrinkage_width,shrinkage_group,supplier_no,shade_grp,rejection_reason,roll_remarks,roll_status,partial_appr_qty,plant_code,created_user,updated_user) VALUES ('".$uuid."','".$barcode_data['lot_no']."','".$actual_quentity_present."','0','0','".date('Y-m-d')."','Directly came from ".$plant_name1."','".date('Y-m-d H:i:s')."',0,'".$barcode_data['ref2']."','$ref3','".$barcode_data['ref4']."','$ref5','$ref6','".$username."^".date('Y-m-d H:i:s')."','".$bar_code_new."','".$tid_new."','".$barcode_data['roll_joins']."','".$barcode_data['shrinkage_length']."','".$barcode_data['shrinkage_width']."','".$barcode_data['shrinkage_group']."','".$barcode_data['supplier_no']."','".$barcode_data['shade_grp']."','".$barcode_data['rejection_reason']."','".$barcode_data['roll_remarks']."','".$barcode_data['roll_status']."','".$barcode_data['partial_appr_qty']."','".$plantcode."','".$username."','".$username."')"; 
+                                     //echo $qry_insert_update_rmwh_data."<br/>";
     
                                     $res_insert_update_rmwh_data = $link->query($qry_insert_update_rmwh_data);
                                     
@@ -172,7 +183,7 @@ else
                                         break;
                                     }
                                     
-                                    $qry_insert_sticker_report1_data = "update $wms.`sticker_report` set rec_qty=\"".$rec_qty['qty_rec']."\",rec_no=\"".$sticker_data['rec_no']."\",inv_no=\"".$sticker_data['inv_no']."\",batch_no=\"".$sticker_data['batch_no']."\" where lot_no=\"".$sticker_data['lot_no']."\" AND plant_code=\"".$plant_code."\"";
+                                    $qry_insert_sticker_report1_data = "update $wms.`sticker_report` set rec_qty=\"".$rec_qty['qty_rec']."\",rec_no=\"".$sticker_data['rec_no']."\",inv_no=\"".$sticker_data['inv_no']."\",batch_no=\"".$sticker_data['batch_no']."\" where lot_no=\"".$sticker_data['lot_no']."\" AND plant_code=\"".$plantcode."\"";
                                     //echo $qry_insert_sticker_report1_data."<br/>";
                                     
                                     $qry_insert_sticker_report1_data1 = $link->query($qry_insert_sticker_report1_data);
@@ -182,10 +193,10 @@ else
                                     //$res_insert_update_rmwh_data = $conn1->query($qry_insert_update_rmwh_data);
                                     //=============== insert store_out & update store_in in cwh======================
                                                         
-                                    $qry_ins_stockout = "INSERT INTO $wms.`store_out`(tran_tid,qty_issued,date,updated_by,remarks,plant_code,created_user,updated_user) VALUES (".$tid_new.",".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_code."','".$plant_name1."','".$username."','".$username."')";
+                                    $qry_ins_stockout = "INSERT INTO $wms.`store_out`(tran_tid,qty_issued,date,updated_by,remarks,plant_code,created_user,updated_user) VALUES ('".$tid_new."',".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_code."','".$plant_name1."','".$username."','".$username."')";
                                     // echo $qry_ins_stockout."<br/>";
                                     $res_ins_stockout = $link_new->query($qry_ins_stockout);
-                                    $update_qty_store_in = "update $wms.store_in set qty_issued=qty_issued +".$actual_quentity_present." where plant_code='".$plant_name1."' AND barcode_number='".$bar_code_new."'";
+                                    $update_qty_store_in = "update $wms.store_in set qty_issued=".$barcode_data['qty_issued'] ."+".$actual_quentity_present." where plant_code='".$plant_name1."' AND barcode_number='".$bar_code_new."'";
                                     
                                    // echo $update_qty_store_in."<br/>";
                                     $res_update_qty_store_in = $link_new->query($update_qty_store_in);
