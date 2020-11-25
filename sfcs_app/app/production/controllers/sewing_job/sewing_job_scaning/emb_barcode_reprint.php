@@ -5,7 +5,9 @@
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 	// $url = getFullURLLEVEL($_GET['r'],'emb_reprint.php',0,'N');
 	$plant_code = $_SESSION['plantCode'];
+	// $plant_code = 'Q01';
 	$username = $_SESSION['userName'];
+	// var_dump($shifts_array);
 ?>
 
 <div class="panel panel-primary " id="bundlewise_scanBarcode">
@@ -20,12 +22,18 @@
             <div class="col-md-3">
                 <label>Shift:<span style="color:red">*</span></label>
                 <select class="form-control shift"  name="shift" id="shift" style="width:100%;" required>
-                    <option value="">Select Shift</option>
-                    <?php 
-                        for ($i=0; $i < sizeof($shifts_array); $i++) {?>
-                            <option  <?php echo 'value="'.$shifts_array[$i].'"'; if($_GET['shift']==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
-                        <?php }
-                    ?>
+                    <option value='' disabled selected>Select Shift</option>
+                <?php
+                $shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plant_code' and is_active=1";
+                $shift_sql_res=mysqli_query($link, $shift_sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($shift_row = mysqli_fetch_array($shift_sql_res))
+                {
+                    $shift_code=$shift_row['shift_code'];
+                    echo "<option value='".$shift_code."' >".$shift_code."</option>"; 
+                }
+                ?>
+
+                ?>
                 </select>
             </div>
 			<div class="col-md-3">
