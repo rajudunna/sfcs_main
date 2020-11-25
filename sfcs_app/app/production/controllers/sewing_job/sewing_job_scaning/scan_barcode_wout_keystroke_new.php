@@ -138,8 +138,9 @@ $(document).ready(function()
 		}
 		else
 		{
-			var barcode = $('#barcode').val();
-			var res = barcode.split('-');
+			var barcodeWithOp = $('#barcode').val();
+			var res = barcodeWithOp.split('-');
+			var barcode  = res[0];
 			var operation_id = res[1];
 		}
 
