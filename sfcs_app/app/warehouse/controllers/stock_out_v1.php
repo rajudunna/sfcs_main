@@ -12,6 +12,7 @@ CR# 213 / kirang / 2014-10-21 : Stock out option for Multiple Lots And Locations
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config_splitting_function.php',3,'R'));
 $plant_code = $_SESSION['plantCode'];
+// $plant_code = 'EKG'; 
 $username = $_SESSION['userName'];
 
 ?>
@@ -343,8 +344,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
   // }
   $remarks=$sql_row['remarks'];
   $user=$sql_row['updated_by'];
-			  $sql3="select lot_no,ref2,barcode_number from $wms.store_in where tid=$tran_tid and plant_code='".$plant_code."'";
-			  $result3=mysqli_query($link,$sql3) or die("Error = ".mysqli_error());
+			  $sql3="select lot_no,ref2,barcode_number from $wms.store_in where tid='".$tran_tid."' and plant_code='".$plant_code."'";
+			//   echo $sql3;
+			  $result3=mysqli_query($link,$sql3) or die("ErrorB = ".mysqli_error());
 			  while($row3=mysqli_fetch_array($result3))
 			  {
 				  //$lot_no1=$row3["lot_no"];
@@ -447,13 +449,15 @@ if(isset($_POST['put']))
   {
 	  if($qty_issued[$j]>0)
 	  {
-		  $sql="insert into $wms.store_out (tran_tid, qty_issued, style, schedule, cutno, date, remarks,updated_by,`plant_code`,`created_user`,`updated_user`,`updated_at`) values (".$tid[$j].",".$qty_issued[$j].",'".$style[$j]."','".$schedule[$j]."','".$cut[$j]."','".$date[$j]."','".$remarks[$j]."','".$username."_rm_issue','".$plant_code."','".$username."','".$username."',NOW())";
+		  $sql="insert into $wms.store_out (tran_tid, qty_issued, style, schedule, cutno, date, remarks,updated_by,`plant_code`,`created_user`,`updated_user`,`updated_at`) values ('".$tid[$j]."',".$qty_issued[$j].",'".$style[$j]."','".$schedule[$j]."','".$cut[$j]."','".$date[$j]."','".$remarks[$j]."','".$username."_rm_issue','".$plant_code."','".$username."','".$username."',NOW())";
+		//   echo $sql;
 		  $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 		  $qty_issued_new=0;
+
 		  
-		  $sql5="select qty_issued from $wms.store_in where tid=".$tid[$j]." and plant_code='".$plant_code."'";
+		  $sql5="select qty_issued from $wms.store_in where tid='".$tid[$j]."' and plant_code='".$plant_code."'";
 		  //mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
-		  $sql_result=mysqli_query($link,$sql5) or exit("Sql Error".mysqli_error());
+		  $sql_result=mysqli_query($link,$sql5) or exit("Sql Errortr".mysqli_error());
 		  $sql_num_check=mysqli_num_rows($sql_result);
 		  while($sql_row=mysqli_fetch_array($sql_result))
 		  {
@@ -464,16 +468,16 @@ if(isset($_POST['put']))
 		  //this is for new roll splitting logic
 
 		  if($qty_issued[$j]<=$available[$j]){
-			$val_ref[$j]=$available[$j];
-			 $issued_ref[$j]=$qty_issued[$j];
-			 $tid_ref[$j]= $tid[$j];
-		  
-			 	
-				if($issued_ref[$j]<=$val_ref[$j]){
-					$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid=$tid_ref[$j] AND plant_code='".$plant_code."'";
-					$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row3=mysqli_fetch_array($sql_result3))
-					{
+			  $val_ref[$j]=$available[$j];
+			  $issued_ref[$j]=$qty_issued[$j];
+			  $tid_ref[$j]= $tid[$j];
+			  
+			  
+			  if($issued_ref[$j]<=$val_ref[$j]){
+				  $query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid='".$tid_ref[$j]."' AND plant_code='".$plant_code."'";
+				  $sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+				  while($sql_row3=mysqli_fetch_array($sql_result3))
+				  {
 						$width_ref[$j]=$sql_row3['qty_rec'];
 						$qty_issued[$j]=$sql_row3['qty_issued'];
 						$qty_ret[$j]=$sql_row3['qty_ret'];
@@ -485,15 +489,16 @@ if(isset($_POST['put']))
 					// $issued_ref[$j]=$issued_qty[$j];
 					if(strtolower($roll_splitting) == 'yes' && $total_qty[$j] == 0)
     				{
-						$roll_splitting_new = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
-						$sql="update $wms.store_in set status=2, allotment_status=2,qty_allocated=qty_allocated-".$issued_ref[$j].",updated_at=NOW(),updated_user='".$username."'  where tid=".$tid_ref[$j]." and plant_code='".$plant_code."'";
-						mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$roll_splitting_new = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j],$plant_code,$username);
+						// echo $plant_code;
+						$sql="update $wms.store_in set status=2, allotment_status=2,qty_allocated=qty_allocated-".$issued_ref[$j].",updated_at=NOW(),updated_user='".$username."'  where tid='".$tid_ref[$j]."' and plant_code='".$plant_code."'";
+						mysqli_query($link, $sql) or exit("Sql Error359: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					} 
 				}
-				$sql3="update $wms.store_in set qty_issued=qty_issued+".$issued_ref[$j].",updated_at=NOW(),updated_user='".$username."' where tid=".$tid_ref[$j]." and plant_code='".$plant_code."'";
-				//echo $sql3."</br>";
+				$sql3="update $wms.store_in set qty_issued=qty_issued+".$issued_ref[$j].",updated_at=NOW(),updated_user='".$username."' where tid='".$tid_ref[$j]."' and plant_code='".$plant_code."'";
+				// echo $sql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	            $query_status="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid=$tid_ref[$j] and plant_code='".$plant_code."'";
+	            $query_status="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid='".$tid_ref[$j]."' and plant_code='".$plant_code."'";
 				//echo $query_status;
 				$query_status_res=mysqli_query($link, $query_status) or exit("Sql Error6: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($qry_status_result=mysqli_fetch_array($query_status_res))
