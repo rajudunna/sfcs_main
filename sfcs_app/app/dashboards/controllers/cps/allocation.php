@@ -1036,8 +1036,8 @@ if(isset($_POST['allocate']))
 					{
 						$tid =$sql_row2['split_roll'];
 						if($sql_row2['split_roll'] != '') {
-							$sql_query ="SELECT * FROM $wms.store_in WHERE lot_no IN (SELECT lot_no FROM $wms.store_in WHERE tid IN (".$sql_row2['split_roll'].")) AND tid IN(".$sql_row['tid'].") AND plant_code='".$plant_code."'";
-							$sql_result_new=mysqli_query($link, $sql_query) or exit("Sql Error223 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$sql_query ="SELECT * FROM $wms.store_in WHERE lot_no IN (SELECT lot_no FROM $wms.store_in WHERE tid IN ('".$sql_row2['split_roll']."')) AND tid IN('".$sql_row['tid']."') AND plant_code='".$plant_code."'";
+							$sql_result_new=mysqli_query($link, $sql_query) or exit("Sql Error223 :$sql_query ".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_result_new=mysqli_fetch_array($sql_result_new))
 								{
 									$tid =$sql_row2['split_roll'];
