@@ -3,8 +3,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R'));
-$plantcode=$_SESSION['plantCode'];
-$username = $_SESSION['userName'];
 ?>
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:x="urn:schemas-microsoft-com:office:excel"
@@ -1736,14 +1734,19 @@ table
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/supplier_db.php',1,'R')); 
+$plantcode=$_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 //Configuration
 if(strlen($lot_no)>0 and strlen($lot_ref)>0)
 {
+
 ?>
 <form id="myForm" name="input" action="?r=<?php echo $_GET['r']?>" method="post">
 	<?php
 echo "<input type='hidden' id='head_check' name='head_check' value=''>";
 echo "<input type='hidden' id='lot_ref' name='lot_ref' value='".$lot_ref."'>";
+echo "<input type=\"hidden\" name=\"plantcode\" id=\"plantcode\" value='".$plantcode."'>";
+echo "<input type=\"hidden\" name=\"username\" id=\"username\" value='".$username."'>";
 $sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item) as \"item_batch\", group_concat(distinct pkg_no) as \"pkg_no_batch\", group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no) as \"lot_ref_batch\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\",group_concat(distinct supplier) as \"supplier\" from $wms.sticker_report where plant_code='$plantcode' and lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and batch_no=\"".trim($lot_no)."\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1=".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1921,7 +1924,7 @@ tags will be replaced.-->
   <td height=26 class=xl9524082 dir=LTR width=80 style='height:20.1pt;  width:60pt'>Item Code</td>
   <td colspan=2 class=xl9624082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php echo $item; ?></td>
   <td colspan=2 rowspan=1 class=xl9624082 dir=LTR width=136 style='width:102pt'>Fabric  Description</td>
-  <td colspan=5 rowspan=1 class=xl9624082 dir=LTR width=372 style='width:279pt'><?php echo $item_name; ?></td>  <td colspan=2 class=xl9624082 dir=LTR width=136 style='border-left:none;  width:102pt'>Batch No</td>
+  <td colspan=5 rowspan=1 class=xl9624082 dir=LTR width=372 style='width:279pt;word-wrap: break-word;'><?php echo $item_name; ?></td>  <td colspan=2 class=xl9624082 dir=LTR width=136 style='border-left:none;  width:102pt'>Batch No</td>
   <td colspan=4 class=xl9624082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'><?php echo $batch_no; ?></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
@@ -2116,7 +2119,7 @@ tags will be replaced.-->
    <td class=xl11024082 colspan=2 rowspan=2><?php
    echo '<input type="hidden" id="print_report"  name="print_report" value="'.$print_report.'">';
     if($print_report>0) 
-   	{ echo '<h3><center><a class="btn btn-warning" href="'.getFullURLLevel($_GET['r'],'c_tex_report_print.php',0,'R').'?lot_no='.$lot_no.'&lot_ref='.$lot_ref.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
+   	{ echo '<h3><center><a class="btn btn-warning" href="'.getFullURLLevel($_GET['r'],'c_tex_report_print.php',0,'R').'?lot_no='.$lot_no.'&plantcode='.$plantcode.'&username='.$username.'&lot_ref='.$lot_ref.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
   
  <td class=xl11024082></td> 
  </tr>
@@ -2133,7 +2136,8 @@ tags will be replaced.-->
 if($num_rows>0 or $inspection_check==0 or $status==0)
   {
   	
-  	echo '<input type="hidden" id="lot_no"  name="lot_no" value="'.$lot_no.'">';
+	  echo '<input type="hidden" id="lot_no"  name="lot_no" value="'.$lot_no.'">';
+
 	// if(in_array($authorized,$has_permission) or in_array($update,$has_permission))
 	// {
 	//$update_access
@@ -2765,6 +2769,9 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			}
 			else
 			{
+				if($roll_status_ref[$i]=='0' || $roll_status_ref[$i]=='3'){
+					$rejection_reason[$i]='';
+				}
 				$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_user= '".$username."',updated_at=NOW() $add_query where plant_code='$plantcode' and  tid='$ele_tid[$i]'";
 				mysqli_query($link, $sql) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}

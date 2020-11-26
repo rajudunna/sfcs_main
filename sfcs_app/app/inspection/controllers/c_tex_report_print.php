@@ -1745,10 +1745,14 @@ function printpr()
 	if(isset($_POST['submit']))
 	{
 		$lot_no=$_POST['lot_no'];
+		$plant_code=$_POST['plantcode'];
+        $username=$_POST['username'];
 	}
 	else
 	{
 		$lot_no=urldecode($_GET['lot_no']);
+		$plant_code=urldecode($_GET['plantcode']);
+		$username=urldecode($_GET['username']);
 		$lot_ref=urldecode($_GET['lot_ref']);
 	}
 	
