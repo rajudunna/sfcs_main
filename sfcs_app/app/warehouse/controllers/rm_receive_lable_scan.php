@@ -182,7 +182,7 @@ else
                                     //$res_insert_update_rmwh_data = $conn1->query($qry_insert_update_rmwh_data);
                                     //=============== insert store_out & update store_in in cwh======================
                                                         
-                                    $qry_ins_stockout = "INSERT INTO $wms.`store_out`(tran_tid,qty_issued,date,updated_by,remarks,plant_code,created_user,updated_user) VALUES (".$tid_new.",".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_code."','".$plant_name1."','".$username."','".$username."')";
+                                    $qry_ins_stockout = "INSERT INTO $wms.`store_out`(tran_tid,qty_issued,date,updated_by,remarks,plant_code,created_user,updated_user) VALUES ('".$tid_new."',".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_code."','".$plant_name1."','".$username."','".$username."')";
                                     // echo $qry_ins_stockout."<br/>";
                                     $res_ins_stockout = $link_new->query($qry_ins_stockout);
                                     $update_qty_store_in = "update $wms.store_in set qty_issued=qty_issued +".$actual_quentity_present." where plant_code='".$plant_name1."' AND barcode_number='".$bar_code_new."'";
@@ -230,7 +230,7 @@ else
                                     while($row1 = $res_check_rm_db1->fetch_assoc()) 
                                     {
                                         $tid_old=$row1['tid'];
-                                        $delete_qry= "delete from $wms.store_out where plant_code='$plant_code' AND tran_tid=$tid_old";
+                                        $delete_qry= "delete from $wms.store_out where plant_code='$plant_code' AND tran_tid='".$tid_old."'";
                                         $delete_qry_result = $link->query($delete_qry);
                                     }
                                     
@@ -255,7 +255,7 @@ else
                                         break;
                                     }
                                     
-                                    $qry_ins_stockout = "INSERT INTO $wms.`store_out`(tran_tid,qty_issued,date,updated_by,remarks,plant_code) VALUES (".$tid_new.",".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_code."','".$plant_name1."')";
+                                    $qry_ins_stockout = "INSERT INTO $wms.`store_out`(tran_tid,qty_issued,date,updated_by,remarks,plant_code) VALUES ('".$tid_new."',".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_code."','".$plant_name1."')";
                                     // echo $qry_ins_stockout."<br/>";
                                     $res_ins_stockout = $link_new->query($qry_ins_stockout);
                                     

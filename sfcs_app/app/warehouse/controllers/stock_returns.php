@@ -255,7 +255,7 @@ if(isset($_POST['put']))
 			//echo $qty_issued>=$qty_returned_new;
 			if($qty_issued>=$qty_returned_new)
 			{
-				$sql="insert into $wms.store_returns (tran_tid, qty_returned, date, remarks, plant_code,created_user,updated_user,updated_by,updated_at) values (".$tid[$i].",".$qty_return[$i].",'".$date[$i]."','".$remarks[$i]."','".$plant_code."','$username','".$username."','".$username."',NOW())";
+				$sql="insert into $wms.store_returns (tran_tid, qty_returned, date, remarks, plant_code,created_user,updated_user,updated_by,updated_at) values ('".$tid[$i]."',".$qty_return[$i].",'".$date[$i]."','".$remarks[$i]."','".$plant_code."','$username','".$username."','".$username."',NOW())";
 				//echo "<br/>".$sql."<br/>";
 				//die();
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
