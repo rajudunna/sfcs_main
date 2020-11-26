@@ -443,7 +443,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		{
 			$master_po_details_id=$sql_row1['master_po_details_id'];
 			$style=$sql_row1['style'];
-			$sql7="select schedule,color,size,z_feature from $pps.mp_mo_qty where master_po_details_id='$master_po_details_id' and plant_code='$plantcode' group by schedule,color,size";
+			$sql7="select schedule,color,size,z_feature from $pps.mp_mo_qty where plant_code='$plantcode' and master_po_details_id='$master_po_details_id'  group by schedule,color,size";
 			//echo "<br>2=".$sql7."<br>";
 			$sql_result7=mysqli_query($link, $sql7) or exit("Sql Error2x".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row7=mysqli_fetch_array($sql_result7))
@@ -541,15 +541,15 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 				}else{
 					$act_rej=0;
 				}
-					$get_workstations_details="select GROUP_CONCAT(CONCAT(\"'\",resource_id,\"'\")) as workstations from $pts.transaction_log where schedule='$schedule_no' and color='$color' and style='$style' and size='$size' and plant_code='$plantcode' group by schedule,color";
+					$get_workstations_details="select resource_id from $pts.transaction_log where schedule='$schedule_no' and color='$color' and style='$style' and size='$size' and plant_code='$plantcode' group by resource_id";
 				$get_workstations_details_result = mysqli_query($link, $get_workstations_details) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
 				while($row122221= mysqli_fetch_array($get_workstations_details_result))
 					{
-						$workstations = $row122221['workstations'];
+						$workstations = $row122221['resource_id'];
 
 						$get_sections_query="select GROUP_CONCAT(workstation.workstation_code SEPARATOR ',') as workstation,
-						GROUP_CONCAT(sections.section_name SEPARATOR ',') as section from $pms.workstation left join $pms.sections on sections.section_id=workstation.section_id where workstation_id in ($workstations) and workstation.plant_code='$plantcode'";
+						GROUP_CONCAT(sections.section_name SEPARATOR ',') as section from $pms.workstation left join $pms.sections on sections.section_id=workstation.section_id where workstation_id ='$workstations' and workstation.plant_code='$plantcode'";
 						$get_sections_query_result = mysqli_query($link, $get_sections_query) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
 				     while($row1222211= mysqli_fetch_array($get_sections_query_result))

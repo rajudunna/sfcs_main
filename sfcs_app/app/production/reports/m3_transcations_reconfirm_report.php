@@ -208,8 +208,8 @@ onReady(function() {
 });
 </script>
 <?php 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 //$view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs); 
@@ -224,27 +224,27 @@ $username=$_SESSION['userName'];
          $sdate=$_POST['dat'];
          $edate=$_POST['dat1'];
          $schedule=$_POST['schedule'];
-
-         //  $sql="SELECT id,ref_no,response_status,mo_no,m3_bulk_tran_id FROM $bai_pro3.`m3_transactions` WHERE response_status='fail' AND m3_trail_count=4";
+         $status = M3TransStatusEnum::FAIL;
          if($schedule != '')
          {
-            $sql="SELECT `bai_pro3`.`m3_transactions`.id,m3_trail_count,response_status,op_des,`bai_pro3`.`m3_transactions`.mo_no,m3_bulk_tran_id,m3_ops_code,style,SCHEDULE,color,size,quantity FROM `bai_pro3`.`m3_transactions`  
-            LEFT JOIN `bai_pro3`.`mo_details` ON `bai_pro3`.`mo_details`.`mo_no`=`bai_pro3`.`m3_transactions`.`mo_no`
-            WHERE `bai_pro3`.`m3_transactions`.`response_status`='fail' AND `bai_pro3`.`m3_transactions`.`m3_trail_count`=4 and bai_pro3.mo_details.schedule='$schedule' ";
+            $sql="SELECT m3_transaction.m3_transaction_id,m3_transaction.m3_transaction_no,m3_transaction.api_fail_count,m3_transaction.status,fg_m3_transaction.operation,m3_transaction.mo_number,m3_transaction.m3_fail_trans_id,m3_transaction.ext_operation,finished_good.style,finished_good.schedule,finished_good.color,finished_good.size,m3_transaction.quantity FROM $pts.`m3_transaction`  
+            LEFT JOIN $pts.`fg_m3_transaction` ON m3_transaction.m3_transaction_id = fg_m3_transaction.m3_transaction_id
+            LEFT JOIN $pts.`finished_good` ON fg_m3_transaction.mo_number=finished_good.mo_number
+            WHERE m3_transaction.status ='".$status."' AND m3_transaction.`api_fail_count`=4 and finished_good.schedule='$schedule' and m3_transaction.plant_code = '".$plantcode."' group by m3_transaction.m3_transaction_id";
             $msg = "Data for the schedule - ".$schedule;
          }
          else
          {
-            $sql="SELECT `bai_pro3`.`m3_transactions`.id,m3_trail_count,response_status,op_des,`bai_pro3`.`m3_transactions`.mo_no,m3_bulk_tran_id,m3_ops_code,style,SCHEDULE,color,size,quantity FROM `bai_pro3`.`m3_transactions`  
-            LEFT JOIN `bai_pro3`.`mo_details` ON `bai_pro3`.`mo_details`.`mo_no`=`bai_pro3`.`m3_transactions`.`mo_no`
-            WHERE `bai_pro3`.`m3_transactions`.`response_status`='fail' AND `bai_pro3`.`m3_transactions`.`m3_trail_count`=4 and `bai_pro3`.`m3_transactions`.date_time between \"".$sdate." ".$shour."\" and \"".$edate." ".$ehour."\"";
+            $sql="SELECT m3_transaction.m3_transaction_id,m3_transaction.m3_transaction_no,m3_transaction.api_fail_count,m3_transaction.status,fg_m3_transaction.operation,m3_transaction.mo_number,m3_transaction.m3_fail_trans_id,m3_transaction.ext_operation,finished_good.style,finished_good.schedule,finished_good.color,finished_good.size,m3_transaction.quantity FROM $pts.`m3_transaction`  
+            LEFT JOIN $pts.`fg_m3_transaction` ON m3_transaction.m3_transaction_id = fg_m3_transaction.m3_transaction_id
+            LEFT JOIN $pts.`finished_good` ON fg_m3_transaction.mo_number=finished_good.mo_number
+            WHERE m3_transaction.status ='".$status."' AND m3_transaction.`api_fail_count`=4 and m3_transaction.plant_code = '".$plantcode."' and m3_transaction.created_at between \"".$sdate." ".$shour."\" and \"".$edate." ".$ehour."\"  group by m3_transaction.m3_transaction_id";
             $date_1 = $sdate;$date_2 = $edate;
             $date1= strtotime($date_1);$date2= strtotime($date_2);
             $msg = "Data from ".date('d-M-Y', $date1)." to ".date('d-M-Y', $date2);
          }
-         // echo $sql;
          // mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-         $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+         $sql_result=mysqli_query($link, $sql);
          $count=mysqli_num_rows($sql_result);
          if($count>0)
          {
@@ -256,24 +256,25 @@ $username=$_SESSION['userName'];
             echo '<div class="panel-body">
                      <div class="table-responsive">
                               <table  id="example1" name="example1" >
-                              <tr class="tblheading"><th>S.No</th><th>Mo No</th><th>ID</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th><th>Operation</th><th>M3 Operation Code</th><th>Tran_Id</th><th>Failed Reason</th><th>Failed Count</th><th>Response Status</th>';
+                              <tr class="tblheading"><th>S.No</th><th>Mo No</th><th>Trans.ID</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th><th>Operation</th><th>M3 Operation Code</th><th>Fail_Trans_Id</th><th>Failed Reason</th><th>Failed Count</th><th>Response Status</th>';
                         echo  '<th><input type="checkbox" onClick="checkAll()"/>Select All</th>
                         <form action="'.getFullURLLevel($_GET["r"],"m3_transcations_reconfirm_report.php","0","N").'" name="print" method="POST"> </tr> <input type="submit" value="Re-Confirm" class="btn btn-primary">';
             $i=1;
             while($sql_row=mysqli_fetch_array($sql_result))
             {
-                  
-               $id=$sql_row['id'];
-               $m3_bulk_tran_id=$sql_row['m3_bulk_tran_id'];
+               $get_op_name = mysqli_fetch_array(mysqli_query($link, "SELECT operation_name FROM $mdm.`operations` WHERE operation_code=".$sql_row['operation']));
+               $trans_id=$sql_row['m3_transaction_id'];
+               $id=$sql_row['m3_transaction_no'];
+               $m3_fail_trans_id=$sql_row['m3_fail_trans_id'];
                $style=$sql_row['style'];
-               $m3_ops_code=$sql_row['m3_ops_code'];
-               $schedule=$sql_row['SCHEDULE'];
+               $m3_ops_code=$sql_row['ext_operation'];
+               $schedule=$sql_row['schedule'];
                $color=$sql_row['color'];
                $size=$sql_row['size'];
                $mo_qty=$sql_row['quantity'];
-               $trail_count=$sql_row['m3_trail_count'];
-               $response_status=$sql_row['response_status']; 
-               $op_dec=$sql_row['op_des'];
+               $trail_count=$sql_row['api_fail_count'];
+               $response_status=$sql_row['status']; 
+               $op_dec=$get_op_name['operation_name'];
                // echo $m3_bulk_tran_id; 
                if($style==''){
                   $style="--";
@@ -306,21 +307,20 @@ $username=$_SESSION['userName'];
                   $mo_qty="--";
                }else{
                   $mo_qty;
-               }if($response_status=='fail'){
-               $response_status='Fail';
+               }               
+               if($response_status==M3TransStatusEnum::FAIL){
+                  $response_status=M3TransStatusEnum::FAIL;
                }else{
                   $response_status='--';
                }
 
-               $ndr = "SELECT response_message,transaction_id FROM $pps.`transactions_log` WHERE plant_code='$plantcode' and transaction_id=".$sql_row['m3_bulk_tran_id']." order by sno desc limit 1";
-               $sql_result1=mysqli_query($link, $ndr) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-               while($sql_row1=mysqli_fetch_array($sql_result1))
-               {
-                     $response=$sql_row1['response_message'];
-                     $tran_id=$sql_row1['transaction_id'];
-               }
-               echo "<tr><td>".$i++."</td><td>".$sql_row['mo_no']."</td><td>".$id."<td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$size."</td><td>".$mo_qty."</td><td>".$op_dec."</td><td>".$m3_ops_code."</td><td>".$tran_id."</td><td>".$response_status."</td><td>".$trail_count."</td><td>".$response."</td>";
-               echo "<td><input type='checkbox' name='bindingdata[]' value='".$id.'-'.$m3_bulk_tran_id."'></td>";
+               $response = mysqli_fetch_assoc(mysqli_query($link, "SELECT m3_fail_trans_no,response_message FROM $pts.`m3_fail_transaction` WHERE plant_code='$plantcode' and m3_fail_trans_id='".$m3_fail_trans_id."'"));
+               $response_message = $response['response_message'];
+               $m3_fail_tran_no = $response['m3_fail_trans_no'];
+               ['response_message'] ?? 'fail with no reason.';
+               
+               echo "<tr><td>".$i++."</td><td>".$sql_row['mo_number']."</td><td>".$id."<td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$size."</td><td>".$mo_qty."</td><td>".$op_dec."</td><td>".$m3_ops_code."</td><td>".$m3_fail_tran_no."</td><td>".$response_message."</td><td>".$trail_count."</td><td>".$response_status."</td>";
+               echo "<td><input type='checkbox' name='bindingdata[]' value='".$trans_id."'></td>";
 
             }  
 
@@ -359,20 +359,11 @@ $username=$_SESSION['userName'];
       $binddetails=$_POST['bindingdata'];
       $count1=count($binddetails);
 
-
          for($j=0;$j<$count1;$j++)
          {
             $id = $binddetails[$j];
-            $exp=explode("-",$id);
-            $id_status=$exp[0];
-            $reconfim_id=$exp[1]; 
-            echo $reconfim_id;
-            $update_sql="update $pps.`m3_transactions` set m3_trail_count=0,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and id=$id_status";
-            echo $update_sql;
+            $update_sql="update $pts.`m3_transaction` set api_fail_count=0,updated_user='$username',updated_at=NOW() where plant_code='$plantcode' and m3_transaction_id='".$binddetails[$j]."'";
             mysqli_query($link, $update_sql) or exit("Sql Update Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $update_bulk_sql="update $pts.`m3_bulk_transactions` set m3_trail_count=0,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and id='$reconfim_id'";
-            echo $update_bulk_sql;
-            mysqli_query($link, $update_bulk_sql) or exit("Sql Update bulk Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
          }
       header("Refresh:0"); 

@@ -157,11 +157,13 @@ if(isset($_POST['put']))
 	}
 	
 	$sql="select * from $wms.inspection_db where plant_code='$plantcode' and batch_ref=\"".trim($lot_no)."\"";
+	//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$inspection_check=mysqli_num_rows($sql_result);
 	
 
 	$sql="select *, if((length(ref5)=0 or length(ref6)=0 or length(ref3)=0 or length(ref4)=0),1,0) as \"print_check\" from $wms.store_in where plant_code='$plantcode' and lot_no in ($lot_ref) order by ref2+0";
+	//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$num_rows=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))

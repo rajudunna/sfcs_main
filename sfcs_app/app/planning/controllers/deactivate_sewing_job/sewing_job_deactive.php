@@ -60,10 +60,10 @@ if(isset($_POST['submit']) || $module)
     $selected_modle=$_POST['module'];
     if($module){
         $tasktype=TaskTypeEnum::SEWINGJOB;
-        $task_status=TaskStatusEnum::INPROGRESS;
-        $task_status1=TaskStatusEnum::HOLD;
+        $taskProgress = TaskProgressEnum::INPROGRESS;
+        $taskProgress1 = TaskProgressEnum::HOLD;
         $task_header_id=array();
-        $get_task_header_id="SELECT task_header_id,task_ref FROM $tms.task_header WHERE resource_id='$module' AND task_status='$task_status' or task_status='$task_status1'  AND task_type='$tasktype' AND plant_code='$plant_code'";
+        $get_task_header_id="SELECT task_header_id,task_ref FROM $tms.task_header WHERE resource_id='$module' AND (task_progress='$taskProgress' or task_progress='$taskProgress1')  AND task_type='$tasktype' AND plant_code='$plant_code'";
         $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
         {

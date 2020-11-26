@@ -7,7 +7,7 @@ $url = getFullURLLevel($_GET['r'], 'wip_dashboard_data.php', 0, 'R');
 $RELOAD_TIME = (int)$wpt_refresh_time;
 $dashboard_name = "WIP";
 $session_plant_code = $_SESSION['plantCode'];
-$session_plant_code = 'AIP';
+// $session_plant_code = 'AIP';
 $username =  $_SESSION['userName'];
 $result_sections = getSections($session_plant_code);
 
@@ -19,9 +19,7 @@ $sections_data = $result_sections['section_data'];
 $sections[] = array_column($sections_data, 'section_id');
 // var_dump($sections);
 $sections_str = implode(',', $sections[0]);
-
 ?>
-
 
 <div class='row'>
     <div class='panel panel-primary'>
@@ -33,6 +31,7 @@ $sections_str = implode(',', $sections[0]);
             <div class='row'>
                 <div class='col-sm-2'>
                     <input type="hidden" name="plant_code" id="plant_code" value="<?= $session_plant_code  ?>">
+                    <input type="hidden" name="user_name" id="user_name" value="<?= $username  ?>">
                     <label for='operations'>Sewing Operations</label>
                     <select class='form-control' name='operations' id='operations' onchange="load_data()">
                         <?php
@@ -85,7 +84,7 @@ $sections_str = implode(',', $sections[0]);
                             <?= "<a href=\"javascript:void(0)\" 
                                onclick=\"
                                 var op = $('#operations').val();
-                                Popup = window.open('$popup_url?section=$section_id&section_name=$section_display_name&operations='+op+'"."','Popup'); 
+                                Popup = window.open('$popup_url?section=$section_id&section_name=$section_display_name&plantCode=$session_plant_code&operations='+op+'"."','Popup'); 
                                 if (window.focus){
                                     Popup.focus()
                                 }
@@ -128,37 +127,46 @@ $sections_str = implode(',', $sections[0]);
                         call_ajax(sections[i], false);
                     }
                 }
+                function call_ajax(sectionToSend, sync_type) {
+                    var operationsToSend = $('#operations').val();
+                    var plant_codeToSend = $('#plant_code').val();
+                    var user_nameToSend = $('#user_name').val();
 
-                function call_ajax(section, sync_type) {
-                    var operations = $('#operations').val();
-                    var plant_code = $('#plant_code').val();
-
-                    $('#sec-load-' + section).css('display', 'block');
-                    $('#sec-' + section).html('');
-                    $('#sec-' + operations).html('');
+                    $('#sec-load-' + sectionToSend).css('display', 'block');
+                    $('#sec-' + sectionToSend).html('');
+                    $('#sec-' + operationsToSend).html('');
                     $.ajax({
-                        url: "<?= $url ?>?section=" + section + "&operations=" + operations + "&plant_code=" + plant_code
+                        type: "POST",
+                        url:"<?=$url?>",
+                        data:{
+                            section:sectionToSend,
+                            operations: operationsToSend,
+                            plant_code:plant_codeToSend,
+                            username:user_nameToSend,
+                            authToken:"<?php echo $_SESSION['authToken'];?>"
+                        },
+                      //  dataType: "json",
                     }).done(function(data) {
                         try {
                             console.log(data);
                             var sec_data = JSON.parse(data);
-                            $('#sec-' + section).html(sec_data.data);
+                            $('#sec-' + sectionToSend).html(sec_data.data);
                             $('body').append(sec_data.java_scripts);
-                            $('#sec-load-' + section).css('display', 'none');
+                            $('#sec-load-' + sectionToSend).css('display', 'none');
                             $('[data-toggle="tooltip"]').tooltip();
 
                             if (sync_type) {
-                                var ind = sections.indexOf(section);
+                                var ind = sections.indexOf(sectionToSend);
                                 if (sections[ind + 1]) {
                                     call_ajax(sections[ind + 1], true);
                                 }
                             }
                         } catch (err) {
                             if (sync_type) {
-                                $('#sec-' + section).html('<b>couldn\'t fetch the data.It will automatically refresh in <?= $RELOAD_TIME ?> mins</b>');
-                                $('#sec-load-' + section).css('display', 'none');
+                                $('#sec-' + sectionToSend).html('<b>couldn\'t fetch the data.It will automatically refresh in <?= $RELOAD_TIME ?> mins</b>');
+                                $('#sec-load-' + sectionToSend).css('display', 'none');
                                 if (sync_type) {
-                                    var ind = sections.indexOf(section);
+                                    var ind = sections.indexOf(sectionToSend);
                                     if (sections[ind + 1]) {
                                         call_ajax(sections[ind + 1], true);
                                     }
@@ -167,9 +175,9 @@ $sections_str = implode(',', $sections[0]);
                         }
                     }).fail(function() {
                         if (sync_type) {
-                            $('#sec-' + section).html('<b>Network Error.It will automatically refresh in <?= $RELOAD_TIME ?> mins.</b>');
-                            $('#sec-load-' + section).css('display', 'none');
-                            var ind = sec_id_ar.indexOf(section);
+                            $('#sec-' + sectionToSend).html('<b>Network Error.It will automatically refresh in <?= $RELOAD_TIME ?> mins.</b>');
+                            $('#sec-load-' + sectionToSend).css('display', 'none');
+                            var ind = sec_id_ar.indexOf(sectionToSend);
                             if (sections[ind + 1]) {
                                 call_ajax(sections[ind + 1], true);
                             }
@@ -178,10 +186,8 @@ $sections_str = implode(',', $sections[0]);
                     $("select").change(function() {
                         var val = $(this).find('option:selected').attr("name");
                         var val1 = $(this).find('option:selected').attr("value");
-                    
-                        document.getElementById("demo").innerHTML = 
-            "<a href='javascript:void(0)' onclick='window.open(\"<?= $popup_url1 ?>?operations=" + val1 + "\",\"Popup\");'>\
-                SELECTED SEWING OPERATION : " + val + "</a>";
+                        var plantcode='<?= $session_plant_code?>';                    
+                        document.getElementById("demo").innerHTML ="<a href='javascript:void(0)' onclick='window.open(\"<?= $popup_url1 ?>?operations=" + val1 + "&plantCode=" + plantcode + "\",\"Popup\");'>\SELECTED SEWING OPERATION : " + val + "</a>";
                     });
                 }
             </script>

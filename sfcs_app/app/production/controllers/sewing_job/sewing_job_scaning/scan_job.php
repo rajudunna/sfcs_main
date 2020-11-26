@@ -332,52 +332,27 @@
             }	
         }
 		var bearer_token;
-        const creadentialObj = {
-									grant_type: 'password',
-									client_id: 'pps-back-end',
-									client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
-									username: 'bhuvan',
-									password: 'bhuvan'
-								}
-        $.ajax({
-            method: 'POST',
-            url: "<?php echo $KEY_LOCK_IP?>",
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            xhrFields: { withCredentials: true },
-            contentType: "application/json; charset=utf-8",
-            transformRequest: function (Obj) {
-                var str = [];
-                for (var p in Obj)
-                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
-                return str.join("&");
-            },
-            data: creadentialObj
-        }).then(function (result) {
-            console.log(result);
-            bearer_token = result['access_token'];
-            $.ajax({
-				type: "POST",
-				url: '<?= $job_retrieval_url ?>',
-				headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
-				data: inputObj,
-				success: function (res) {      
-					$('#loading-image').hide();
-					if (res.status) {
-						var data=res.data
-						tableConstruction(data);
-					} else {
-						swal(res.internalMessage,'','error');
-						$('#loading-image').hide(); 
-					}                       
-				},
-				error: function(res){
-					$('#loading-image').hide();
-					swal('Error','in getting job info','error');
-				}
-			}); 
-        }).fail(function (result) {
-            console.log(result);
-        }) ;
+		bearer_token = '<?= $_SESSION['authToken'] ?>';
+		$.ajax({
+			type: "POST",
+			url: '<?= $job_retrieval_url ?>',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+			data: inputObj,
+			success: function (res) {      
+				$('#loading-image').hide();
+				if (res.status) {
+					var data=res.data
+					tableConstruction(data);
+				} else {
+					swal(res.internalMessage,'','error');
+					$('#loading-image').hide(); 
+				}                       
+			},
+			error: function(res){
+				$('#loading-image').hide();
+				swal('Error','in getting job info','error');
+			}
+		}); 
     }
 
 	function tableConstruction(data){
@@ -668,70 +643,45 @@
 			$('#flag_validation').val(0);
 			$('#smart_btn_arear').hide();
 			var bearer_token;
-			const creadentialObj = {
-									grant_type: 'password',
-									client_id: 'pps-back-end',
-									client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
-									username: 'bhuvan',
-									password: 'bhuvan'
-			                       }
+			bearer_token = '<?= $_SESSION['authToken'] ?>';
 			$.ajax({
-				method: 'POST',
-				url: "<?php echo $KEY_LOCK_IP?>",
-				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-				xhrFields: { withCredentials: true },
+				type: "POST",
+				url: '<?= $job_publish_url ?>',
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+				'Authorization': 'Bearer ' +  bearer_token },
+				data:  reportData,
 				contentType: "application/json; charset=utf-8",
-				transformRequest: function (Obj) {
-					var str = [];
-					for (var p in Obj)
-						str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
-					return str.join("&");
-				},
-				data: creadentialObj
-			}).then(function (result) {
-				console.log(result);
-				bearer_token = result['access_token'];
-				$.ajax({
-					type: "POST",
-					url: '<?= $job_publish_url ?>',
-					headers: { 'Content-Type': 'application/x-www-form-urlencoded',
-                    'Authorization': 'Bearer ' +  bearer_token },
-					data:  reportData,
-					contentType: "application/json; charset=utf-8",
-					dataType: "json",
-					success: function (res) {
-						if(res.status){
-							$('#dynamic_table1').html('');
-							$('#loading-image').hide();
-							document.getElementById('dynamic_table1').innerHTML = '';
-							document.getElementById('style_show').innerHTML = '';
-							document.getElementById('schedule_show').innerHTML = '';
-							document.getElementById('color_show').innerHTML = '';
-							document.getElementById('job_number').value = '';
-							document.getElementById('pre_data').innerHTML ='';
-							swal('',res.internalMessage,'success');
-							var data = res.data;
-							// if the job type is emb, then construct the response table by just using the input available data
-							if (job_type == '<?= OperationCategory::EMBELLISHMENT ?>' ) {
-								constructAndShowEMBResponseTable(reportData);
-							} else if (job_type == '<?= OperationCategory::SEWING ?>') {
-								constructAndShowSJResponseTable(data);
-							}
-						}else{
-							$('#smartbtn').attr('disabled', false);
-							$('.submission').show();
-							swal('',res.internalMessage,'error');
+				dataType: "json",
+				success: function (res) {
+					if(res.status){
+						$('#dynamic_table1').html('');
+						$('#loading-image').hide();
+						document.getElementById('dynamic_table1').innerHTML = '';
+						document.getElementById('style_show').innerHTML = '';
+						document.getElementById('schedule_show').innerHTML = '';
+						document.getElementById('color_show').innerHTML = '';
+						document.getElementById('job_number').value = '';
+						document.getElementById('pre_data').innerHTML ='';
+						swal('',res.internalMessage,'success');
+						var data = res.data;
+						// if the job type is emb, then construct the response table by just using the input available data
+						if (job_type == '<?= OperationCategory::EMBELLISHMENT ?>' ) {
+							constructAndShowEMBResponseTable(reportData);
+						} else if (job_type == '<?= OperationCategory::SEWING ?>') {
+							constructAndShowSJResponseTable(data);
 						}
-					},
-					error: function(res){
+					}else{
+						$('#smartbtn').attr('disabled', false);
 						$('.submission').show();
-						$('#loading-image').hide(); 
-						swal('','Network error','error');
+						swal('',res.internalMessage,'error');
 					}
-				});
-			}).fail(function (result) {
-				console.log(result);
-			}) ;	
+				},
+				error: function(res){
+					$('.submission').show();
+					$('#loading-image').hide(); 
+					swal('','Network error','error');
+				}
+			});	
 		}
 		
 	}

@@ -1,4 +1,4 @@
-	<?php
+<?php
 	// $alert_msg = $_REQUEST['error_msg'];
 	// if($alert_msg){
 	// 	echo "<script>swal('Enter data correctly.')</script>";
@@ -30,9 +30,8 @@
 			 
 			
 			$edit_url = getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
-		
 			$delete_url = getFullURL($_GET['r'],'delete_inspection_supplier_claim_reasons.php','N');
-			echo "<tr><td>".$sno++."</td><td>".$row["complaint_reason"]." </td><td>".$row["Complaint_clasification"]."</td><td>".$row["complaint_category"]."</td><td>".$cat_status."</td>
+			echo "<tr><td>".$sno++."</td><td>".chunk_split($row["complaint_reason"], 30, '<br/>')." </td><td>".chunk_split($row["Complaint_clasification"], 30, '<br/>')."</td><td>".chunk_split($row["complaint_category"], 30, '<br/>')."</td><td>".$cat_status."</td>
 			<td><a href='$edit_url&tid=$tid&complaint_reason=$complaint_reason&complaint_clasification=$complaint_clasification&complaint_category=$complaint_category&status=$cat_status' class='btn btn-warning btn-xs editor_edit'>Edit</a> / 
 			<a href='$delete_url&tid=$tid&complaint_reason=$complaint_reason&complaint_clasification=$complaint_clasification&complaint_category=$complaint_category&status=$cat_status' class='btn btn-danger btn-xs' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
 		}

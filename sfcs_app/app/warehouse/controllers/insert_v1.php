@@ -42,7 +42,7 @@ $username = $_SESSION['userName'];
 
 if(isset($_POST['submit']))
 {	
-	$sql="select lot_no from $wms.sticker_report where plant_code=\"".$plant_code."\" AND lot_no=\"".trim($_POST['lot_no'])."\" or rec_no=\"".trim($_POST['lot_no'])."\"";
+	$sql="select lot_no from $wms.sticker_report where (lot_no=\"".trim($_POST['lot_no'])."\" or rec_no=\"".trim($_POST['lot_no'])."\") AND plant_code=\"".$plant_code."\"";
 	$sql_result=mysqli_query($link, $sql);
 	// echo $sql.'<br>';
 	// echo "Rows".mysql_num_rows($sql_result);
@@ -71,7 +71,7 @@ if(strlen($lot_no)>0)
 try
 {	
 
-$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date,uom,grn_type,backup_status from $wms.sticker_report where plant_code=\"".$plant_code."\" AND lot_no=\"".trim($lot_no)."\"";
+$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date,uom,grn_type,backup_status from $wms.sticker_report where lot_no=\"".trim($lot_no)."\" AND plant_code=\"".$plant_code."\"";
 $sql_result=mysqli_query($link, $sql) or die(exception($sql));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -114,7 +114,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 }
 
-$sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where plant_code=\"".$plant_code."\" AND lot_no=\"".trim($lot_no)."\"";
+$sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where lot_no=\"".trim($lot_no)."\" AND plant_code=\"".$plant_code."\"";
 $sql_result=mysqli_query($link, $sql) or die(exception($sql));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))

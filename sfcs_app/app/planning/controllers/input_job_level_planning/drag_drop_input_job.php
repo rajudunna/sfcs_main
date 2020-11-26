@@ -738,7 +738,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 					}
 					$balance_qty=0;
 					//To check whether first operation of job scanned or not
-					$qry_toget_first_ops_qry = "SELECT original_quantity,good_quantity,rejected_quantity FROM $tms.task_job_transaction where task_jobs_id = '$task_jobs_id' and plant_code='$plant_code' and is_active=1 order by operation_seq asc limit 1";
+					$qry_toget_first_ops_qry = "SELECT original_quantity,good_quantity,rejected_quantity FROM $tms.task_job_status where task_jobs_id = '$task_jobs_id' and plant_code='$plant_code' and is_active=1 order by operation_seq asc limit 1";
 					$qry_toget_first_ops_qry_result = mysqli_query($link_new, $qry_toget_first_ops_qry) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
 					while ($row3 = mysqli_fetch_array($qry_toget_first_ops_qry_result)) {
 						$input_qty = $row3['good_quantity'];
@@ -775,7 +775,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 					}
 					//echo implode("','" , $jm_docket_line_id);
 					/**getting fabric req or not */
-					$get_fab_req_details="SELECT fabric_prorities_id FROM $pps.fabric_prorities WHERE jm_docket_line_id IN ('".implode("','" , $jm_docket_line_id)."') AND plant_code='$plant_code' AND is_active=1";
+					$get_fab_req_details="SELECT fabric_prorities_id FROM $pps.fabric_prorities WHERE plant_code='$plant_code' AND jm_docket_line_id IN ('".implode("','" , $jm_docket_line_id)."') AND is_active=1";
 					//echo $get_fab_req_details;
 					$get_fab_req_result=mysqli_query($link_new, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$resulted_rows = mysqli_num_rows($get_fab_req_result);

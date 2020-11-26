@@ -3,8 +3,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R'));
-$plantcode=$_SESSION['plantCode'];
-$username = $_SESSION['userName'];
 ?>
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:x="urn:schemas-microsoft-com:office:excel"
@@ -1736,14 +1734,19 @@ table
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/supplier_db.php',1,'R')); 
+$plantcode=$_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 //Configuration
 if(strlen($lot_no)>0 and strlen($lot_ref)>0)
 {
+
 ?>
 <form id="myForm" name="input" action="?r=<?php echo $_GET['r']?>" method="post">
 	<?php
 echo "<input type='hidden' id='head_check' name='head_check' value=''>";
 echo "<input type='hidden' id='lot_ref' name='lot_ref' value='".$lot_ref."'>";
+echo "<input type=\"hidden\" name=\"plantcode\" id=\"plantcode\" value='".$plantcode."'>";
+echo "<input type=\"hidden\" name=\"username\" id=\"username\" value='".$username."'>";
 $sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item) as \"item_batch\", group_concat(distinct pkg_no) as \"pkg_no_batch\", group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no) as \"lot_ref_batch\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\",group_concat(distinct supplier) as \"supplier\" from $wms.sticker_report where plant_code='$plantcode' and lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and batch_no=\"".trim($lot_no)."\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1=".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1921,7 +1924,7 @@ tags will be replaced.-->
   <td height=26 class=xl9524082 dir=LTR width=80 style='height:20.1pt;  width:60pt'>Item Code</td>
   <td colspan=2 class=xl9624082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php echo $item; ?></td>
   <td colspan=2 rowspan=1 class=xl9624082 dir=LTR width=136 style='width:102pt'>Fabric  Description</td>
-  <td colspan=5 rowspan=1 class=xl9624082 dir=LTR width=372 style='width:279pt'><?php echo $item_name; ?></td>  <td colspan=2 class=xl9624082 dir=LTR width=136 style='border-left:none;  width:102pt'>Batch No</td>
+  <td colspan=5 rowspan=1 class=xl9624082 dir=LTR width=372 style='width:279pt;word-wrap: break-word;'><?php echo $item_name; ?></td>  <td colspan=2 class=xl9624082 dir=LTR width=136 style='border-left:none;  width:102pt'>Batch No</td>
   <td colspan=4 class=xl9624082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'><?php echo $batch_no; ?></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
@@ -2116,7 +2119,7 @@ tags will be replaced.-->
    <td class=xl11024082 colspan=2 rowspan=2><?php
    echo '<input type="hidden" id="print_report"  name="print_report" value="'.$print_report.'">';
     if($print_report>0) 
-   	{ echo '<h3><center><a class="btn btn-warning" href="'.getFullURLLevel($_GET['r'],'c_tex_report_print.php',0,'R').'?lot_no='.$lot_no.'&lot_ref='.$lot_ref.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
+   	{ echo '<h3><center><a class="btn btn-warning" href="'.getFullURLLevel($_GET['r'],'c_tex_report_print.php',0,'R').'?lot_no='.$lot_no.'&plantcode='.$plantcode.'&username='.$username.'&lot_ref='.$lot_ref.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
   
  <td class=xl11024082></td> 
  </tr>
@@ -2133,7 +2136,8 @@ tags will be replaced.-->
 if($num_rows>0 or $inspection_check==0 or $status==0)
   {
   	
-  	echo '<input type="hidden" id="lot_no"  name="lot_no" value="'.$lot_no.'">';
+	  echo '<input type="hidden" id="lot_no"  name="lot_no" value="'.$lot_no.'">';
+
 	// if(in_array($authorized,$has_permission) or in_array($update,$has_permission))
 	// {
 	//$update_access
@@ -2746,19 +2750,29 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			
 			if($partial_rej_qty[$i]>0 and $partial_rej_qty[$i]<$ele_t_length[$i] )
 			// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
-			{
-				 $sql= "insert INTO $wms.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason,ref_tid,plant_code,created_user,updated_user,updated_at)select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\", tid,'".$plant_code."','".$username."','".$username."',NOW()  FROM $wms.store_in WHERE plant_code='$plantcode' and  tid=".$ele_tid[$i];
+			{	
+				$select_uuid="SELECT UUID() as uuid";
+				$uuid_result=mysqli_query($link_new, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($uuid_row=mysqli_fetch_array($uuid_result))
+				{
+					$uuid=$uuid_row['uuid'];
+				
+				}
+				 $sql= "insert INTO $wms.store_in (ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,tid,qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason,ref_tid,plant_code,created_user,updated_user,updated_at)select '$uuid',ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$uuid."\",\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\", tid,'".$plant_code."','".$username."','".$username."',NOW()  FROM $wms.store_in WHERE plant_code='$plantcode' and  tid='$ele_tid[$i]'";
 				   mysqli_query($link, $sql) or exit("Sql Error25=".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$new_tid=mysqli_insert_id($link);  
 					$sql22="update wms.store_in set barcode_number='".$plantcode."-".$new_tid."' where plant_code='$plantcode' and  tid=".$new_tid;
 					mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				  $qty_rec=$ele_t_length[$i]-$partial_rej_qty[$i];
-				  $sql1="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where plant_code='$plantcode' and  tid=".$ele_tid[$i];
+				  $sql1="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where plant_code='$plantcode' and  tid='$ele_tid[$i]'";
 				 mysqli_query($link, $sql1) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));			
 			}
 			else
 			{
-				$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_user= '".$username."',updated_at=NOW() $add_query where plant_code='$plantcode' and  tid=".$ele_tid[$i];
+				if($roll_status_ref[$i]=='0' || $roll_status_ref[$i]=='3'){
+					$rejection_reason[$i]='';
+				}
+				$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_user= '".$username."',updated_at=NOW() $add_query where plant_code='$plantcode' and  tid='$ele_tid[$i]'";
 				mysqli_query($link, $sql) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}

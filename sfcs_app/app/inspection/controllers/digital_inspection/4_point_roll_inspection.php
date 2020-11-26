@@ -297,7 +297,7 @@ $flag = false;
 								$status=$row2['status'];
 								$main_points=0;
 									
-								$get_details_points = "select rec_qty from $wms.`inspection_population` where store_in_id=$store_in_id and plant_code='".$plant_code."'";
+								$get_details_points = "select rec_qty from $wms.`inspection_population` where store_in_id='".$store_in_id."' and plant_code='".$plant_code."'";
 								$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($row522=mysqli_fetch_array($details_result_points))
 								{ 
@@ -309,7 +309,7 @@ $flag = false;
 										$invoice_qty;
 									}
 								}
-								$get_min_value = "select width_s,width_m,width_e from $wms.roll_inspection_child where store_in_tid=$store_in_id and plant_code='".$plant_code."'";
+								$get_min_value = "select width_s,width_m,width_e from $wms.roll_inspection_child where store_in_tid='".$store_in_id."' and plant_code='".$plant_code."'";
 								$min_value_result=mysqli_query($link,$get_min_value) or exit("get_min_value Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($row_min=mysqli_fetch_array($min_value_result))
 								{
@@ -323,7 +323,7 @@ $flag = false;
                                 // echo $inch_value."</br>";
                                 // echo $invoice_qty;
 								$back_color="";		
-								$four_point_count = "select sum(points) as pnt from $wms.four_points_table where insp_child_id=".$store_in_id." and plant_code='".$plant_code."'";
+								$four_point_count = "select sum(points) as pnt from $wms.four_points_table where insp_child_id='".$store_in_id."' and plant_code='".$plant_code."'";
 								$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								if(mysqli_num_rows($status_details_result2)>0)
 								{	

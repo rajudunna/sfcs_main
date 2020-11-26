@@ -416,7 +416,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 								{
 									// if(in_array($authorizeLevel_4,$has_permission))
                                     // {
-									echo "<td><a href=\"$link3?tid=$ref_tid&print_status=0\" onclick=\"return popitup('$link3?tid=$ref_tid&print_status=0')\"><button class='btn btn-success btn-xs'>Print</button></a></td>";
+									echo "<td><a href=\"$link3?tid=$ref_tid&plant_code=$plant_code&username=$username&print_status=0\" onclick=\"return popitup('$link3?tid=$ref_tid&plant_code=$plant_code&username=$username&print_status=0')\"><button class='btn btn-success btn-xs'>Print</button></a></td>";
 									// }
 									// else
 									// {

@@ -215,7 +215,7 @@ if(isset($_POST['submit']))
 	/**
 	 * getting po description
 	 */
-	$qryGetPodescrip="SELECT po_description FROM $pps.mp_sub_order WHERE po_number='$sub_po' AND plant_code='$plantcode' AND is_active=1";
+	$qryGetPodescrip="SELECT po_description FROM $pps.mp_sub_order WHERE  plant_code='$plantcode' AND po_number='$sub_po' AND is_active=1";
 	$poDescripResult=mysqli_query($link_new, $qryGetPodescrip) or exit("Error while getting po description ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($poDescripResult)>0){
 		while($poDescripRow=mysqli_fetch_array($poDescripResult))
@@ -235,7 +235,7 @@ if(isset($_POST['submit']))
 		}
 		/**getting sewing jobs based on job header ids*/
 		if($jmJobheaderids!=""){
-			$qryGetJobs="SELECT jm_jg_header_id,job_number FROM $pps.jm_jg_header WHERE jm_job_header IN ($jmJobheaderids) AND job_group_type='$taskType' OR job_group_type='$taskTypeSej' AND plant_code='$plantcode' AND is_active=1 ORDER BY job_number ASC";
+			$qryGetJobs="SELECT jm_jg_header_id,job_number FROM $pps.jm_jg_header WHERE jm_job_header IN ($jmJobheaderids) AND (job_group_type='$taskType' OR job_group_type='$taskTypeSej') AND plant_code='$plantcode' AND is_active=1 ORDER BY job_number ASC";
 			$jobsResult=mysqli_query($link_new, $qryGetJobs) or exit("Error while getting jm jg headers ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$qryCount=mysqli_num_rows($jobsResult);
 		}else{

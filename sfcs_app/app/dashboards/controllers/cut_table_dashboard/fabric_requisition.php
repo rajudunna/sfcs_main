@@ -25,7 +25,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$plant_code = $_POST['plantCode'];
 		$username = $_POST['userName'];
 		$ratio_comp_group_id = $_POST['ratio_comp_group_id'];
-		$sql2x="select * from $pps.fabric_prorities where jm_docket_line_id=\"".$doc_no."\" and plant_code='$plant_code'";
+		$sql2x="select * from $pps.fabric_prorities where plant_code='$plant_code' AND jm_docket_line_id=\"".$doc_no."\"";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows2=mysqli_num_rows($result2x);
 	} 
@@ -38,10 +38,11 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$plant_code = $_GET['plantCode'];
 		$username = $_GET['userName'];
 		$ratio_comp_group_id = $_GET['ratio_comp_group_id'];
-		$sql2x="select * from $pps.fabric_prorities where jm_docket_line_id=\"".$doc_no."\" and plant_code='$plant_code'";
+		$sql2x="select * from $pps.fabric_prorities where plant_code='$plant_code' AND jm_docket_line_id=\"".$doc_no."\"";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows2=mysqli_num_rows($result2x);	
 	}	
+	// var_dump('------------'.$plant_code);die();
 	$get_url = getFullURL($_GET['r'],'fabric_requisition.php',0,'R');
 	$get_url1 = getFullURLLevel($_GET['r'],'marker_length_popup.php',0,'R');
 	
@@ -420,7 +421,12 @@ error_reporting(0);
 if(isset($_POST["submit1"]))
 {
 	$log_time=date("Y")."-".date("m")."-".date("d")." ".date("H").":".date("i").":".date("s");
+	// $log_time=date();
+	// var_dump()
 	$req_time=$_POST["sdat"]." ".$_POST["mins"].":00";
+	// echo $log_time.'<br/>';
+	// echo $req_time;
+	// echo date("d");
 	$doc_nos=$_POST["doc"];
 	$group_docs=$_POST["group_docs"];
 	$secs=$_POST["secs"];
@@ -440,7 +446,8 @@ if(isset($_POST["submit1"]))
 	 {		
 		// $insert="Update $pps.`requested_dockets` set reference='".$ref[$i]."',created_user='".$username."',updated_user='".$username."',updated_at=NOW() where doc_no='".$dockets[$i]."'";
 		// mysqli_query($link, $insert) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$insert="insert into $pps.requested_dockets(docket_requested_id,jm_docket_line_id,reference,created_user,created_at,plant_code) values(\"".$uuid1."\",\"".$doc_nos."\",\"".$ref[$i]."\",\"".$username."\",NOW(),'$plant_code')";	
+		$insert="insert into $pps.requested_dockets(docket_requested_id,fabric_status,print_status,jm_docket_line_id,reference,created_user,created_at,plant_code) values(\"".$uuid1."\",0,'0000-00-00 00:00:00',\"".$doc_nos."\",\"".$ref[$i]."\",\"".$username."\",NOW(),'$plant_code')";
+		// var_dump($insert);die();	
 		
 	}
 	// var_dump($insert);
@@ -460,12 +467,15 @@ if(isset($_POST["submit1"]))
 	//Calculated time difference between two times
 	$date1 = $log_time;
 	$date2 = $req_time; 
+	// echo 'date2'.strtotime($date2);
+	// echo 'date1'.strtotime($date1);
 	//echo strtotime($date2) ."\n";
 	$diff = strtotime($date2) - strtotime($date1);
 	//echo $diff ."\n";
 	$diff_in_hrs = $diff/3600;
 	//print_r(round($diff_in_hrs,0));
 	$log_req_diff=round($diff_in_hrs,0);
+	// echo $log_req_diff;
 	$doc_nos_split=explode(",",$group_docs);
 	$host_name=str_replace(".brandixlk.org","",gethostbyaddr($_SERVER['REMOTE_ADDR']));
 	$note=date("Y-m-d H:i:s")."_".$username."_".$host_name."<br/>";
@@ -481,9 +491,10 @@ if(isset($_POST["submit1"]))
 	//for($i=0;$i<sizeof($doc_nos_split);$i++)
 	for($i=0;$i<1;$i++)
 	{
-		$sql1="select * from $pps.fabric_prorities where jm_docket_line_id=\"".$doc_nos."\" and plant_code='$plant_code'";
+		$sql1="select * from $pps.fabric_prorities where plant_code='$plant_code' AND jm_docket_line_id=\"".$doc_nos."\"";
 		$result=mysqli_query($link, $sql1) or die("Error = 123".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows=mysqli_num_rows($result);
+		// echo $log_req_diff;
 		//Date: 2013-10-09
 		//Time difference is grater than or equel to 3
 		//Then only system will accept the fabric request
@@ -526,6 +537,7 @@ echo "<h2>Already Requested Cut Jobs </h2>";
 echo "<div class='table-responsive'><table class=\"table table-bordered\" id=\"table1\" border=0 cellpadding=0 cellspacing=0>";
 echo "<tr><th>Module</th><th>Date</th><th>Time</th><th>Requested By</th><th>Style</th><th>Schedule</th><th>Color</th><th>Docket No</th><th>Job No</th><th>Fabric Status</th></tr>";
 $sql2="select fabric_prorities.section_id,fabric_prorities.req_time,fabric_prorities.jm_docket_line_id,jm_docket_lines.docket_line_number,fabric_prorities.work_station_id,fabric_prorities.created_user,fabric_prorities.issued_time from $pps.fabric_prorities left join $pps.jm_docket_lines on jm_docket_lines.jm_docket_line_id=fabric_prorities.jm_docket_line_id where (fabric_prorities.created_user=\"".$username."\"  or fabric_prorities.req_time!='') and  fabric_prorities.plant_code='$plant_code'  order by fabric_prorities.section_id,fabric_prorities.req_time,fabric_prorities.work_station_id";
+// echo $sql2;
 $result2=mysqli_query($link, $sql2) or die("Error12 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row2=mysqli_fetch_array($result2))
 {

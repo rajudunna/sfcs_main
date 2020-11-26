@@ -160,7 +160,7 @@ $count_rows=mysqli_num_rows($sql_result);
 		
 	}
 	$po_number1="'".implode("','",$po_number1)."'";
-	$po_del="select mp_mo_qty_id from $pps.mp_sub_mo_qty where po_number in($po_number1) and plant_code='$plant_code'";
+	$po_del="select mp_mo_qty_id from $pps.mp_sub_mo_qty where plant_code='$plant_code' and po_number in($po_number1)";
 	//echo $po_del."<br>";
 	$po_sql_result=mysqli_query($link, $po_del) or exit("Sql Error31 =".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count_rows1=mysqli_num_rows($po_sql_result);
@@ -171,7 +171,7 @@ $count_rows=mysqli_num_rows($sql_result);
 		
 	}
 	$mp_mo_qty_id="'".implode("','",$mp_mo_qty_id)."'";
-	$po_del_num="select master_po_details_id from $pps.mp_mo_qty where mp_mo_qty_id in ($mp_mo_qty_id) and plant_code='$plant_code'";
+	$po_del_num="select master_po_details_id from $pps.mp_mo_qty where plant_code='$plant_code' and mp_mo_qty_id in ($mp_mo_qty_id)";
 	//echo $po_del_num."<br>";
 	$po_sql_result45=mysqli_query($link, $po_del_num) or exit("Sql Error32 =".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count_rows45=mysqli_num_rows($po_sql_result45);
@@ -643,7 +643,7 @@ $count_rows=mysqli_num_rows($sql_result);
 					}
 				
 					
-					$qrytoGetMinOperation="SELECT sum(good_quantity) AS good_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id ='$task_jobsid' AND plant_code='$plant_code'";
+					$qrytoGetMinOperation="SELECT sum(good_quantity) AS good_quantity FROM $tms.`task_job_status` WHERE task_jobs_id ='$task_jobsid' AND plant_code='$plant_code'";
 					$minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting min operations data for job');
 					
 						while($minOperationResultRow = mysqli_fetch_array($minOperationResult)){
@@ -655,7 +655,7 @@ $count_rows=mysqli_num_rows($sql_result);
 					 * get MAX operation wrt jobs based on operation seq
 					 */
 					$qrytoGetMaxOperation="SELECT sum(good_quantity) AS good_quantity,
-					sum(rejected_quantity) AS rejected_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id = '$task_jobsid' AND plant_code='$plant_code'";
+					sum(rejected_quantity) AS rejected_quantity FROM $tms.`task_job_status` WHERE task_jobs_id = '$task_jobsid' AND plant_code='$plant_code'";
 					$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting max operations data for job');
 					
 						while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){

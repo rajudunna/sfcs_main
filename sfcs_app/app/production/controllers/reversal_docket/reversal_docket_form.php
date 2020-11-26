@@ -140,6 +140,7 @@
                             <tr>
                                 <?php 
                                     foreach($size_ratios as $size => $size_ratio) {
+                                        // $trimmed_size = str_replace('/','___',$size);
                                         echo "<td>$size</td>";
                                     }
                                 ?>
@@ -149,10 +150,14 @@
                             <tr>
                                 <?php 
                                     foreach($size_ratios as $size => $size_ratio) {
+                                        // explicity replacing the / symbol with 3 underscores ___
+                                        // $trimmed_size = str_replace('/','___',$size);
+                                        $trimmed_size =  preg_replace('/[^A-Za-z0-9\-]/', '___', $size);
+                                        // $trimmed_size = $size;
                                         echo "<td>
-                                            <input id='size_ratio_$size' type='hidden' value=$size_ratio readonly />
-                                            <input class='hidden_size hidden_size_act_qty' id='actual_size_qty_$size' type='number' value=$size_ratio readonly />
-                                            <input class='hidden_size rej' id='rejected_size_qty_$size' type='number' value=0 readonly />
+                                            <input id='size_ratio_$trimmed_size' type='hidden' value=$size_ratio readonly />
+                                            <input class='hidden_size hidden_size_act_qty' id='actual_size_qty_$trimmed_size' type='number' value=$size_ratio readonly />
+                                            <input class='hidden_size rej' id='rejected_size_qty_$trimmed_size' type='number' value=0 readonly />
                                         </td>";
                                     }
                                 ?>
@@ -177,6 +182,7 @@
 						<select class="form-control" palceholder='Please Select' name='rejection_code' id='rejection_code' style='width:100%'>
 						<option disabled selected>Please Select</option>
 						<?php
+
 							foreach($reasons as $reason) {
 								$reason_id = $reason['reason_id'];
 								$reason_code = $reason['internal_reason_code'];
@@ -378,24 +384,29 @@ if(isset($_GET['sidemenu'])){
 
     function constructExistingRejections(rejectionsInfo) {
         const sizes = Object.keys(rejectionsInfo);
-        sizes.forEach(size => {
-            $('#rejected_size_qty_'+size).val(0);
-            const sizeRejsInfo = rejectionsInfo[size].rejectionDetails;
-            const sizeRejQty = sizeLevelRejQty(sizeRejsInfo);
-            setTotalSizeRejQty(sizeRejQty, size);
-            if (sizeRejsInfo) {
-                sizeRejsInfo.forEach((rejInfo,index) => {
-                    const component = rejInfo.component;
-                    const quantity = rejInfo.reasonQty;
-                    const reason = rejInfo.reasonCode;
-                    const reasonDisplay = rejInfo.reasonDisplayString;
-                    const summaryRow = `<tr id='${size+''+index+''+summaryRowKey}'><td>${size}</td><td>${component}</td><td>${reasonDisplay}</td><td>${quantity}</td> \
-                            <td><button onclick='popRejReasonQty("${size}","${index}")' class='btn btn-xs btn-danger' data-toggle='tooltip' data-placement='top' title='Delete'> X </button></td> \
-                        </tr>`;
-                    $('#rejection_summary_table_body').append(summaryRow);
-                });
-            } 
-        });
+        if (sizes.length == 0) {
+            updateAllRejqtysToZero();
+        } else {
+            sizes.forEach(size => {
+                const trimmedSize = removeSpecialCharsFromSize(size);
+                $('#rejected_size_qty_'+trimmedSize).val(0);
+                const sizeRejsInfo = rejectionsInfo[size].rejectionDetails;
+                const sizeRejQty = sizeLevelRejQty(sizeRejsInfo);
+                setTotalSizeRejQty(sizeRejQty, size);
+                if (sizeRejsInfo) {
+                    sizeRejsInfo.forEach((rejInfo,index) => {
+                        const component = rejInfo.component;
+                        const quantity = rejInfo.reasonQty;
+                        const reason = rejInfo.reasonCode;
+                        const reasonDisplay = rejInfo.reasonDisplayString;
+                        const summaryRow = `<tr id='${size+''+index+''+summaryRowKey}'><td>${size}</td><td>${component}</td><td>${reasonDisplay}</td><td>${quantity}</td> \
+                                <td><button onclick='popRejReasonQty("${size}","${index}")' class='btn btn-xs btn-danger' data-toggle='tooltip' data-placement='top' title='Delete'> X </button></td> \
+                            </tr>`;
+                        $('#rejection_summary_table_body').append(summaryRow);
+                    });
+                } 
+            });
+        }
     }
 
     function sizeLevelRejQty(sizeRejectionDetails) {
@@ -419,19 +430,22 @@ if(isset($_GET['sidemenu'])){
     function updateActualSizeQtys(plies) {
         const sizes = Object.keys(sizesArray);
         sizes.forEach(size => {
-            const ratio = Number($('#size_ratio_'+size).val());
-            $('#actual_size_qty_'+size).val(ratio * plies);
+            const trimmedSize = removeSpecialCharsFromSize(size);
+            const ratio = Number($('#size_ratio_'+trimmedSize).val());
+            $('#actual_size_qty_'+trimmedSize).val(ratio * plies);
         });
     }
 
     function setTotalSizeRejQty(rejQty, size) {
-        $('#rejected_size_qty_'+size).val(rejQty);
+        const trimmedSize = removeSpecialCharsFromSize(size);
+        $('#rejected_size_qty_'+trimmedSize).val(rejQty);
     }
 
     function updateAllRejqtysToZero() {
         const sizes = Object.keys(sizesArray);
         sizes.forEach(size => {
-            $('#rejected_size_qty_'+size).val(0);
+            const trimmedSize = removeSpecialCharsFromSize(size);
+            $('#rejected_size_qty_'+trimmedSize).val(0);
         });
     }
 
@@ -474,7 +488,8 @@ if(isset($_GET['sidemenu'])){
 
 	// push the rejection ,reason and qty to the global rejections capturing object
 	function pushRejReasonQty(rej_size, rej_code, rej_text, component, quantity) {
-        const actualRejSizeQty = $('#actual_size_qty_'+rej_size).val();
+        const trimmedSize = removeSpecialCharsFromSize(rej_size);
+        const actualRejSizeQty = $('#actual_size_qty_'+trimmedSize).val();
 		if (quantity <= 0 || !rej_code || !component || !rej_size) {
 			getAlert('error', 'Select size, rejection reason, compnent and quantity');
 			return false;
@@ -541,6 +556,14 @@ if(isset($_GET['sidemenu'])){
 		sweetAlert('', message, mode);
 	}
 
+    function removeSpecialCharsFromSize(size) {
+        const size_new = JSON.parse(JSON.stringify(size));
+        const trimmedSize = size_new.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '___');
+        // const trimmedSize = size_new.replace('/', '___');
+        return trimmedSize;
+        // return size;
+    }
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 function reverseLay(id)
@@ -577,64 +600,39 @@ function reportCut(id) {
         });
     }
     let bearer_token;
-    const creadentialObj = {
-        grant_type: 'password',
-        client_id: 'pps-back-end',
-        client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
-        username: 'bhuvan',
-        password: 'bhuvan'
-    }
+    bearer_token = '<?= $_SESSION['authToken'] ?>';
     $.ajax({
-            method: 'POST',
-            url: "<?php echo $KEY_LOCK_IP?>",
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            xhrFields: { withCredentials: true },
+            type: "POST",
+            url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/cutReporting",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+            data:  reportData,
             contentType: "application/json; charset=utf-8",
-            transformRequest: function (Obj) {
-                var str = [];
-                for (var p in Obj)
-                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
-                return str.join("&");
-            },
-            data: creadentialObj
-    }).then(function (result) {
-        console.log(result);
-        bearer_token = result['access_token'];
-        $.ajax({
-                type: "POST",
-                url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/cutReporting",
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
-                data:  reportData,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (res) {            
-                    //console.log(res.data);
-                    if(res.status)
-                    {
-                        $('#post_post').hide();
-                        $('#reportcut').show();
-                        sweetAlert('Cut Reported Successfully!!!','','success');
-                        setTimeout(window.location = " <?='?r='.$_GET['r'] ?>", 2000);
-                    }
-                    else
-                    {
-                        $('#post_post').hide();
-                        $('#reportcut').show();
-                        swal(res.internalMessage);
-                    }                       
-                },
-                error: function(res){
-                    $('#loading-image').hide(); 
-                    // alert('failure');
-                    // console.log(response);
-                    swal('Error in Reporting Cut');
+            dataType: "json",
+            success: function (res) {            
+                //console.log(res.data);
+                if(res.status)
+                {
                     $('#post_post').hide();
                     $('#reportcut').show();
+                    sweetAlert('Cut Reported Successfully!!!','','success');
+                    setTimeout(window.location = " <?='?r='.$_GET['r'] ?>", 2000);
                 }
-        }); 
-    }).fail(function (result) {
-        console.log(result);
-    });
+                else
+                {
+                    $('#post_post').hide();
+                    $('#reportcut').show();
+                    swal(res.internalMessage);
+                }                       
+            },
+            error: function(res){
+                $('#loading-image').hide(); 
+                // alert('failure');
+                // console.log(response);
+                swal('Error in Reporting Cut');
+                $('#post_post').hide();
+                $('#reportcut').show();
+            }
+    }); 
 }
 
 function deleteCut(id) {
@@ -645,65 +643,39 @@ function deleteCut(id) {
     reportData.createdUser = '<?= $username ?>';
     reportData.plantCode = '<?= $plantcode ?>';
     var bearer_token;
-    const creadentialObj = {
-    grant_type: 'password',
-    client_id: 'pps-back-end',
-    client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
-    username: 'bhuvan',
-    password: 'bhuvan'
-    }
+    bearer_token = '<?= $_SESSION['authToken'] ?>';
     $.ajax({
-        method: 'POST',
-        url: "<?php echo $KEY_LOCK_IP?>",
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        xhrFields: { withCredentials: true },
+        type: "POST",
+        url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/deleteCutReporting",
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+        data:  reportData,
         contentType: "application/json; charset=utf-8",
-        transformRequest: function (Obj) {
-            var str = [];
-            for (var p in Obj)
-                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
-            return str.join("&");
-        },
-        data: creadentialObj
-    }).then(function (result) {
-        console.log(result);
-        bearer_token = result['access_token'];
-        $.ajax({
-            type: "POST",
-            url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/deleteCutReporting",
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
-            data:  reportData,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (res) {            
-                //console.log(res.data);
-                console.log(res.status);
-                if(res.status)
-                {
-                    $('#post_post').hide();
-                    $('#deletecut').show();
-                    sweetAlert('Cut deleted Successfully!!!','','success');
-                    setTimeout(window.location = " <?='?r='.$_GET['r'] ?>", 2000);
-                }
-                else
-                {
-                    $('#post_post').hide();
-                    $('#deletecut').show();
-                    swal(res.internalMessage);
-                }                       
-            },
-            error: function(res){
-                $('#loading-image').hide(); 
-                // alert('failure');
-                // console.log(response);
-                swal('Error in Reporting Cut');
+        dataType: "json",
+        success: function (res) {            
+            //console.log(res.data);
+            if(res.status)
+            {
                 $('#post_post').hide();
                 $('#deletecut').show();
+                sweetAlert('Cut deleted Successfully!!!','','success');
+                setTimeout(window.location = " <?='?r='.$_GET['r'] ?>", 2000);
             }
-        });    
-    }).fail(function (result) {
-        console.log(result);
-    }) ;
+            else
+            {
+                $('#post_post').hide();
+                $('#deletecut').show();
+                swal(res.internalMessage);
+            }                       
+        },
+        error: function(res){
+            $('#loading-image').hide(); 
+            // alert('failure');
+            // console.log(response);
+            swal('Error in Reporting Cut');
+            $('#post_post').hide();
+            $('#deletecut').show();
+        }
+    });    
 }
 
 function validatingReverseQty(id) {

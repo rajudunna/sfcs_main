@@ -2421,7 +2421,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		$insp_status="Red";		
 	}
 	
-	$get_status = "select status from $wms.inspection_population where parent_id=$parent_id and lot_no='".$temp[7]."' and store_in_id=$temp[0] and plant_code='".$plant_code."'";
+	$get_status = "select status from $wms.inspection_population where parent_id=$parent_id and lot_no='".$temp[7]."' and store_in_id='".$temp[0]."' and plant_code='".$plant_code."'";
 	//echo $get_status;
 	$status_details_result=mysqli_query($link, $get_status) or exit("status details error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_status=mysqli_fetch_array($status_details_result))
@@ -2440,7 +2440,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	/*-----*/
 	if($temp[2]=='')
 	{
-		$get_details_points = "select rec_qty from $wms.`inspection_population` where store_in_id=$temp[0] and plant_code='".$plant_code."' and status<>0";
+		$get_details_points = "select rec_qty from $wms.`inspection_population` where store_in_id='".$temp[0]."' and plant_code='".$plant_code."' and status<>0";
 		$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($details_result_points)>0)
 		{
@@ -2989,7 +2989,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 		}
 		
 		$sql="update $wms.inspection_db set pur_gsm=\"$pur_gsm\",consumption=\"".$consumption_ref."\",act_gsm=\"$act_gsm\",pur_width=\"$pur_width\",act_width=\"$act_width\",sp_rem=\"$sp_rem\",qty_insp=\"$qty_insp\",gmt_way=\"$gmt_way\",pts=\"$pts\",fallout=\"$fallout\",skew=\"$skew\",skew_cat=\"$skew_cat\",shrink_l=\"$shrink_l\",shrink_w=\"$shrink_w\",supplier=\"$supplier\",updated_user= '".$username."',updated_at=NOW() where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
-		 echo "Upadte Qry :".$sql;
+		// echo "Upadte Qry :".$sql;
 
 		// exit;
 		mysqli_query($link, $sql) or exit("Sql Error8=".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3058,7 +3058,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			}
 			else
 			{
-				$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_user= '".$username."',updated_at=NOW() $add_query where plant_code='$plant_code' and  tid=".$ele_tid[$i];
+				$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_user= '".$username."',updated_at=NOW() $add_query where plant_code='$plant_code' and  tid='".$ele_tid[$i]."'";
 				mysqli_query($link, $sql) or exit("Sql Error9=111".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}

@@ -117,7 +117,7 @@ function getMpMoQty($po_number,$plant_code){
     global $pps;
     $schedule='';
     $schedule_temp=array();
-    $qry_mp_sub_mo_qty="SELECT mp_mo_qty_id FROM $pps.mp_sub_mo_qty WHERE po_number='$po_number' AND plant_code='$plant_code'";
+    $qry_mp_sub_mo_qty="SELECT mp_mo_qty_id FROM $pps.mp_sub_mo_qty WHERE plant_code='$plant_code' AND po_number='$po_number' ";
     $mp_sub_mo_qty_result=mysqli_query($link_new, $qry_mp_sub_mo_qty) or exit("Sql Errorat_mp_sub_mo_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
         $mp_sub_mo_qty_num=mysqli_num_rows($mp_sub_mo_qty_result);
         /**By using above query we will get master po details mo quantity id to get schedules*/
@@ -286,7 +286,7 @@ function getDocketInfo($doc_num,$doc_type,$plant_code){
     global $link_new;
     global $wms;
     global $pps;
-    $sql1="SELECT plan_lot_ref from $pps.requested_dockets where jm_docket_line_id='$doc_num' and plant_code='$plant_code' and plan_lot_ref!=''";
+    $sql1="SELECT plan_lot_ref from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_line_id='$doc_num' and plan_lot_ref!=''";
     $sql_result1=mysqli_query($link_new, $sql1) or exit("Sql Error at Doscket123 roll details".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sql_num1=mysqli_num_rows($sql_result1);
         if($sql_num1>0){
@@ -508,7 +508,7 @@ function getMpSchedulewise($get_schedule,$plantcode){
         $master_po_details_id=array_unique($master_po_details_id);
     /**Based master po details id we can get masetr po number */    
     $master_po_number=array();
-    $qry_mp_color_details="SELECT master_po_number FROM $pps.mp_color_detail WHERE master_po_details_id IN ('".implode("','" , $master_po_details_id)."') AND plant_code='$plantcode' AND is_active=1";
+    $qry_mp_color_details="SELECT master_po_number FROM $pps.mp_color_detail WHERE plant_code='$plantcode' AND master_po_details_id IN ('".implode("','" , $master_po_details_id)."') AND is_active=1";
     $mp_color_details_result=mysqli_query($link_new, $qry_mp_color_details) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
     $mp_color_details_num=mysqli_num_rows($mp_color_details_result);
     if($mp_color_details_num>0){
@@ -600,7 +600,7 @@ function getCutDetails($sub_po,$plantcode){
     global $pps;
     $cuts=array();
     /**By using po's we are getting*/
-    $qry_cut_numbers="SELECT cut_number FROM $pps.jm_cut_job WHERE po_number='$sub_po' AND plant_code='$plantcode' AND is_active=1";
+    $qry_cut_numbers="SELECT cut_number FROM $pps.jm_cut_job WHERE plant_code='$plantcode' AND po_number='$sub_po' AND is_active=1";
     $toget_cut_result=mysqli_query($link_new, $qry_cut_numbers) or exit("Sql Error at cutnumbers".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_cut_num=mysqli_num_rows($toget_cut_result);
     if($toget_cut_num>0){
@@ -672,7 +672,7 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
     global $pps; 
     $docs=array();
     //qry to get cutjobid
-    $qry_cut_numbers="SELECT jm_cut_job_id FROM $pps.jm_cut_job WHERE po_number='$sub_po' AND plant_code='$plantcode' AND is_active=1";
+    $qry_cut_numbers="SELECT jm_cut_job_id FROM $pps.jm_cut_job WHERE plant_code='$plantcode' AND po_number='$sub_po' AND is_active=1";
     //echo "</br>Cut jobs : ".$qry_cut_numbers;
     $toget_cut_result=mysqli_query($link_new, $qry_cut_numbers) or exit("Sql Error at cutnumbers".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_cut_num=mysqli_num_rows($toget_cut_result);
@@ -684,7 +684,7 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
     }
     $cut_job_id = implode("','", $cut_job_id);
      //qry to get dockets using cut_job_id
-    $qry_get_dockets="SELECT jm_docket_id From $pps.jm_dockets WHERE jm_cut_job_id in ('$cut_job_id') AND plant_code='$plantcode' AND is_active=1 order by docket_number ASC";
+    $qry_get_dockets="SELECT jm_docket_id From $pps.jm_dockets WHERE plant_code='$plantcode' AND jm_cut_job_id in ('$cut_job_id') AND is_active=1 order by docket_number ASC";
     $toget_dockets_result=mysqli_query($link_new, $qry_get_dockets) or exit("Sql Error at dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_dockets_num=mysqli_num_rows($toget_dockets_result);
     if($toget_dockets_num>0){
@@ -725,10 +725,12 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
     global $tms;
     global $TaskTypeEnum;
     global $TaskStatusEnum;
+    global $TaskProgressEnum;
     global $username;
     
     $check_type=TaskTypeEnum::SEWINGJOB;
-    $taskStatus=TaskStatusEnum::INPROGRESS;
+    $taskStatus=TaskStatusEnum::OPEN;
+    $taskprogress=TaskProgressEnum::INPROGRESS;
     try
     {
         $list_db=array();
@@ -763,7 +765,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                 $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskheader) or exit("Sql Error at taskheader".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                 /**Update qry for priority */
-                $qryUpdateJobsPriority="UPDATE $tms.task_jobs SET priority=NULL,updated_at=NOW() WHERE task_job_reference='$items[1]' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                $qryUpdateJobsPriority="UPDATE $tms.task_jobs SET priority=0,updated_at=NOW() WHERE task_job_reference='$items[1]' AND task_type='$tasktype' AND plant_code='$plantcode'";
                 $UpdateJobsPriority_result=mysqli_query($link_new, $qryUpdateJobsPriority) or exit("Sql Error at TaskjObs priority Update".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                 /**insert records into jobs_movement_track*/
@@ -845,7 +847,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                 if(is_null($resource_id)){
                     /** */
                     /**resource id update */
-                    $Qry_update_header="UPDATE $tms.task_header SET resource_id='$items[0]',task_status='$taskStatus',priority='$j',task_progress='$taskStatus' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                    $Qry_update_header="UPDATE $tms.task_header SET resource_id='$items[0]',priority='$j',task_progress='$taskprogress',planned_date_time=NOW() WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
                     // echo "</br>".$items[1]."-".$Qry_update_header."</br>";
 
                     $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at update task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -883,7 +885,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                             $Qry_taskheader_result=mysqli_query($link_new, $Qry_insert_taskheader) or exit("Sql Error at insert task_header1".mysqli_error($GLOBALS["___mysqli_ston"]));
                             
                             /**update resource id tasks jobs with task_header*/
-                            $Qry_update_taskjobs="UPDATE $tms.task_jobs SET priority=NULL,task_header_id='$uuid' WHERE task_jobs_id IN ('$taskJobsImplode') AND task_type='$tasktype' AND plant_code='$plantcode'";
+                            $Qry_update_taskjobs="UPDATE $tms.task_jobs SET priority=0,task_header_id='$uuid' WHERE task_jobs_id IN ('$taskJobsImplode') AND task_type='$tasktype' AND plant_code='$plantcode'";
                             $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskjobs) or exit("Sql Error at update task_jobs1".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
                     }
@@ -1015,8 +1017,8 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                                     if($task_header_id!=''){
                                         /**update query task header table to update workstation */
                                         /**resource id update */
-                                        $Qry_update_header="UPDATE $tms.task_header SET resource_id='$workStationId',task_status='$taskStatus',priority='$j',task_progress='$taskStatus' WHERE task_header_id='$header_id' AND task_type='$cutJobType' AND resource_id IS NULL AND plant_code='$plantcode'";
-                                        // echo "</br>".$items[1]."-".$Qry_update_header."</br>";
+                                        $Qry_update_header="UPDATE $tms.task_header SET resource_id='$workStationId',priority='$j',task_progress='$taskprogress',planned_date_time=NOW() WHERE task_header_id='$header_id' AND task_type='$cutJobType' AND resource_id IS NULL AND plant_code='$plantcode'";
+                                        // echo "</br>".$items[1]."-".$Qry_update_header."2</br>";
 
                                         $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at update task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     }
@@ -1025,7 +1027,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                                 if($tasktype == $check_type)
                                 {
                                     /**if it is  sewing jobs*/
-                                    $qryGetCutjobs = "SELECT jm_cut_job_id FROM $pps.jm_dockets WHERE jm_docket_id='$jmDocketId' AND plant_code='$plantcode' AND is_active=1";
+                                    $qryGetCutjobs = "SELECT jm_cut_job_id FROM $pps.jm_dockets WHERE plant_code='$plantcode' AND jm_docket_id='$jmDocketId' AND is_active=1";
                                     $resultGetCutJob = mysqli_query($link_new,$qryGetCutjobs) or die(exception($qryGetCutjobs));
                                     if (mysqli_num_rows($resultGetCutJob) > 0) {
                                         while($cutJobRow=mysqli_fetch_array($resultGetCutJob)) 
@@ -1060,7 +1062,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                                                 /**update query task header table to update workstation */
                                                 /**resource id update */
                                                 $j=1;
-                                                $Qry_update_header="UPDATE $tms.task_header SET resource_id='$workStationId',task_status='$taskStatus',priority='$j',task_progress='$taskStatus' WHERE task_header_id='$task_header_id' AND task_type='$cutEmbJobType' AND resource_id IS NULL AND plant_code='$plantcode'";
+                                                $Qry_update_header="UPDATE $tms.task_header SET resource_id='$workStationId',priority='$j',task_progress='$taskprogress',planned_date_time=NOW() WHERE task_header_id='$task_header_id' AND task_type='$cutEmbJobType' AND resource_id IS NULL AND plant_code='$plantcode'";
                                                 // echo "</br>".$items[1]."-".$Qry_update_header."</br>";
 
                                                 $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at update task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1248,7 +1250,7 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
       global $pps;
       global $tms;
       global $TaskTypeEnum;
-      global $TaskStatusEnum;
+      global $TaskProgressEnum;
         
       $check_type=TaskTypeEnum::SEWINGJOB;
       if($check_type == $tasktype)
@@ -1260,11 +1262,11 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
         $job_group_type=TaskTypeEnum::PLANNEDEMBELLISHMENTJOB;
       }   
       
-     $taskStatus=TaskStatusEnum::INPROGRESS;
+     $taskProgress = TaskProgressEnum::INPROGRESS;
       //Qry to fetch task_header_id from task_header
       $task_header_id=array();
       $task_header_log_time=array();
-      $get_task_header_id="SELECT task_header_id,updated_at FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='".$taskStatus."' AND task_type='$tasktype' AND plant_code='$plantcode' AND is_active=1";
+      $get_task_header_id="SELECT task_header_id,updated_at FROM $tms.task_header WHERE resource_id='$work_id' AND task_progress='".$taskProgress."' AND task_type='$tasktype' AND plant_code='$plantcode' AND is_active=1";
     //   echo $get_task_header_id."<br/>";
       $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
@@ -1361,7 +1363,7 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
 function getPoDetaials($po_number,$plant_code){
     global $link_new;
     global $pps;
-    $QryPODetails="SELECT po_description FROM $pps.mp_sub_order WHERE po_number='$po_number' AND plant_code='$plant_code' AND is_active=1";
+    $QryPODetails="SELECT po_description FROM $pps.mp_sub_order WHERE plant_code='$plant_code' AND po_number='$po_number' AND is_active=1";
     $ResultPoDetails=mysqli_query($link_new, $QryPODetails) or exit("Sql Error at PO details".mysqli_error($GLOBALS["___mysqli_ston"]));
     $PoDetails_num=mysqli_num_rows($ResultPoDetails);
     if($PoDetails_num>0){
@@ -1643,11 +1645,12 @@ function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId, $limit) {
     global $tms;
     global $link_new;
     global $taskType;
-    global $taskStatus;
+    global $taskProgress;
     try{
         $taskType = TaskTypeEnum::SEWINGJOB;
-        $taskStatus = TaskStatusEnum::INPROGRESS;
-        $jobsQuery = "select tj.task_jobs_id,tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."' ORDER BY tj.`priority`";
+        $taskProgress = TaskProgressEnum::INPROGRESS;
+        
+        $jobsQuery = "select tj.task_jobs_id,tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_progress = '".$taskProgress."' ORDER BY tj.`priority`";
         // if ($limit) {
         //     $jobsQuery .= " limit 0,$limit";
         // }

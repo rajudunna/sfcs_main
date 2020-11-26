@@ -56,7 +56,7 @@ function getjobreversaldetails($job_number,$plant_code)
     }
 
     // get all the Style color related Operaitons for sewing category
-    $style_color_query="SELECT style,color,operations_version_id FROM $pps.`mp_color_detail` WHERE master_po_number='$mp_number' AND plant_code='$plant_code'";
+    $style_color_query="SELECT style,color,operations_version_id FROM $pps.`mp_color_detail` WHERE  plant_code='$plant_code' AND master_po_number='$mp_number'";
     $style_color_result=mysqli_query($link_new, $style_color_query) or exit("Sql Error at style_color_query".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row3=mysqli_fetch_array($style_color_result))
     {

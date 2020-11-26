@@ -125,70 +125,45 @@ $(document).ready(function()
 		var plant_code = $('#plant_code').val();
 		
 		var bearer_token;
-        const creadentialObj = {
-        grant_type: 'password',
-        client_id: 'pps-back-end',
-        client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
-        username: 'bhuvan',
-        password: 'bhuvan'
-        }
-        $.ajax({
-            method: 'POST',
-            url: "<?php echo $KEY_LOCK_IP?>",
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            xhrFields: { withCredentials: true },
-            contentType: "application/json; charset=utf-8",
-            transformRequest: function (Obj) {
-                var str = [];
-                for (var p in Obj)
-                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
-                return str.join("&");
-            },
-            data: creadentialObj
-        }).then(function (result) {
-            console.log(result);
-            bearer_token = result['access_token'];
-            var bundet;
-			const data={
-							"barcode": barcode,
-							"plantCode": plant_code,
-							"operationCode": operation_id,
-							"createdUser": '<?= $username ?>',
-							"shift": '<?=$shift ?>',
-							"reportAsFullGood": true
-						}
-				$.ajax({
-					type: "POST",
-					url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportPanelFormBarcodeReversal",
-					headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
-					data: data,
-					success: function (res) {            
-						//console.log(res.data);
-						if(res.status)
-						{
-							
-							tableConstruction(res);
-							$('#loading-image').hide();
-							swal(res.internalMessage);
-							
-						}
-						else
-						{
-							$('#loading-image').hide();
-							swal(res.internalMessage);
-							
-						}
-
-					},
-					error: function(res){
-						$('#loading-image').hide();
-						swal('Error in getting data');
+		bearer_token = '<?= $_SESSION['authToken'] ?>';
+		var bundet;
+		const data={
+						"barcode": barcode,
+						"plantCode": plant_code,
+						"operationCode": operation_id,
+						"createdUser": '<?= $username ?>',
+						"shift": '<?=$shift ?>',
+						"reportAsFullGood": true
 					}
-				});
-        }).fail(function (result) {
-            console.log(result);
-        });
-		
+		$.ajax({
+			type: "POST",
+			url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportPanelFormBarcodeReversal",
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+			data: data,
+			success: function (res) {            
+				//console.log(res.data);
+				if(res.status)
+				{
+					
+					tableConstruction(res);
+					$('#loading-image').hide();
+					swal(res.internalMessage);
+					
+				}
+				else
+				{
+					$('#loading-image').hide();
+					swal(res.internalMessage);
+					
+				}
+
+			},
+			error: function(res){
+				$('#loading-image').hide();
+				swal('Error in getting data');
+			}
+		});
+	
 		// var bundet;
 		// const data={
 		// 				"barcode": barcode,

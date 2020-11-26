@@ -1,8 +1,8 @@
 <?php
-	error_reporting(0);
+	// error_reporting(0);
+	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 	$plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
-	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 	$sum ='';
 	$asum ='';  
 	foreach($sizes_array as $size)
@@ -50,7 +50,7 @@
 	$op_count = count($operation_ids);
 
 	$today=date("Y-m-d"); 
-	$sql_trans="SELECT style,schedule,color,size, group_concat(distinct barcode) as barcodes $op_string_data FROM $pts.transaction_log where plant_code='$plant_code' group by style, schedule, color,size";
+	$sql_trans="SELECT style,schedule,color,size,sub_po, group_concat(distinct barcode) as barcodes $op_string_data FROM $pts.transaction_log where plant_code='$plant_code' group by style, schedule, color,size";
 	$sql_trans_result = mysqli_query($link,$sql_trans);
 	while($row_main = mysqli_fetch_array($sql_trans_result))
 	{			
@@ -59,9 +59,10 @@
 		$color = $row_main['color'];
 		$size = $row_main['size'];
 		$barcodes = $row_main['barcodes'];
+		$sub_po = $row_main['sub_po'];
 		$barcode_list = "'".str_replace(",","','",$barcodes)."'";
 
-		$order_qty_qry = "select COUNT(finished_good_id) as quantity from $pts.finished_good where style = '$style' AND schedule='$schedule' AND color='$color' AND size='$size' AND plant_code = '$plant_code'";
+		$order_qty_qry = "select SUM(quantity) as quantity from $pps.mp_mo_qty where schedule='$schedule' AND color='$color' AND size='$size' AND mp_qty_type='ORIGINAL_QUANTITY' AND plant_code = '$plant_code'";
 		$sql_order_qty_result = mysqli_query($link,$order_qty_qry);
 		$order_qty=0;
 		while($row_main_qty = mysqli_fetch_array($sql_order_qty_result))
@@ -98,13 +99,35 @@
 				}
 				$single_data['wip'.$op_value]= $wip_quantity_val;
 			}else {
-				$wip_quantity_val=$order_qty-($row_main['good_'.$op_value]+$row_main['rej_'.$op_value]);
-				if($wip_quantity_val < 0){
+				if($op_value != $lay_op || $op_value != $cut_op)
+				{
 					$wip_quantity_val=0;
-				}
-				$single_data['good'.$op_value] = $row_main['good_'.$op_value];
-				$single_data['rej'.$op_value] = $row_main['rej_'.$op_value];
-				$single_data['wip'.$op_value]= $wip_quantity_val;
+					$previous_ops='';
+					// //To get finished_good id
+					$get_finishedgood_id="SELECT finished_good_id FROM $pts.finished_good WHERE sub_po='$sub_po' AND plant_code='$plant_code' limit 1";
+					$fgid_result=mysqli_query($link, $get_finishedgood_id) or exit("Sql Error34".$get_finishedgood_id."".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($fg_row=mysqli_fetch_array($fgid_result))
+					{
+					 $fgid=$fg_row['finished_good_id'];
+					}
+					//To get previousoperation
+					$get_prev_ops="SELECT previous_operation FROM $pts.fg_operation WHERE plant_code='$plant_code' AND operation_code='$op_value' AND finished_good_id='$fgid'";
+					$prev_ops_result=mysqli_query($link, $get_prev_ops) or exit("Sql Error345".$get_prev_ops."".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$prevopsresult=mysqli_num_rows($prev_ops_result);
+					if($prevopsresult>0){
+						while($prevops_row=mysqli_fetch_array($prev_ops_result))
+						{
+						 $previous_ops=$prevops_row['previous_operation'];
+						}	
+					}
+					$wip_quantity_val=($row_main['good_'.$previous_ops]+$row_main['rej_'.$op_value])-($row_main['good_'.$op_value]+$row_main['rej_'.$op_value]);
+					if($wip_quantity_val < 0){
+						$wip_quantity_val=0;
+					}
+					$single_data['good'.$op_value] = $row_main['good_'.$op_value];
+					$single_data['rej'.$op_value] = $row_main['rej_'.$op_value];
+					$single_data['wip'.$op_value]= $wip_quantity_val;
+			    }
 			}
 		}
 		array_push($main_data,$single_data);

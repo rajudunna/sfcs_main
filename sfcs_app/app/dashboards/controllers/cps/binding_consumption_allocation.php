@@ -296,7 +296,7 @@ echo "</tr>";
 	}
 
 	//to get component po_num and ratio id from
-	$qry_jm_cut_job="SELECT ratio_id,po_number FROM $pps.jm_cut_job WHERE jm_cut_job_id='$jm_cut_job_id' AND plant_code='$plant_code'";
+	$qry_jm_cut_job="SELECT ratio_id,po_number FROM $pps.jm_cut_job WHERE plant_code='$plant_code' AND jm_cut_job_id='$jm_cut_job_id'";
 	$jm_cut_job_result=mysqli_query($link_new, $qry_jm_cut_job) or exit("Sql Errorat_jm_cut_job".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$jm_cut_job_num=mysqli_num_rows($jm_cut_job_result);
 	if($jm_cut_job_num>0){

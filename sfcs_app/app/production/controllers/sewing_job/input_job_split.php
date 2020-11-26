@@ -41,7 +41,7 @@
                     $mp_mo_details_id = implode("','", $mp_mo_details_id);
                     
                     //qry to get po_numbers wrt master po details qty id
-                    $qry_MpSubMoQty="SELECT po_number FROM $pps.mp_sub_mo_qty WHERE mp_mo_qty_id IN ('$mp_mo_details_id') AND plant_code='$plant_code'";
+                    $qry_MpSubMoQty="SELECT po_number FROM $pps.mp_sub_mo_qty WHERE plant_code='$plant_code' AND mp_mo_qty_id IN ('$mp_mo_details_id')";
                     $MpSubMoQty_result=mysqli_query($link_new, $qry_MpSubMoQty) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $MpSubMoQty_num=mysqli_num_rows($MpSubMoQty_result);
                     if($MpSubMoQty_num>0){
@@ -52,7 +52,7 @@
                         $po_number_id = implode("','", $po_number_id);
 
                         //qry to get po and description wrt po number
-                        $qry_MpSubOrder="SELECT po_number,po_description FROM $pps.mp_sub_order WHERE po_number IN ('$po_number_id') AND plant_code='$plant_code'";
+                        $qry_MpSubOrder="SELECT po_number,po_description FROM $pps.mp_sub_order WHERE plant_code='$plant_code' AND po_number IN ('$po_number_id')";
                         $MpSubOrder_result=mysqli_query($link_new, $qry_MpSubOrder) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
                         $MpSubOrder_num=mysqli_num_rows($MpSubOrder_result);
                         if($MpSubOrder_num>0){
@@ -93,59 +93,34 @@
         var inputObj = {"poNumber":po,"plantCode":plant_code};
         var split_jobs = "<?php echo getFullURL($_GET['r'],'split_jobs.php','R'); ?>";
         var bearer_token;
-        const creadentialObj = {
-        grant_type: 'password',
-        client_id: 'pps-back-end',
-        client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
-        username: 'bhuvan',
-        password: 'bhuvan'
-        }
+        bearer_token = '<?= $_SESSION['authToken'] ?>';
         $.ajax({
-            method: 'POST',
-            url: "<?php echo $KEY_LOCK_IP?>",
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            xhrFields: { withCredentials: true },
-            contentType: "application/json; charset=utf-8",
-            transformRequest: function (Obj) {
-                var str = [];
-                for (var p in Obj)
-                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
-                return str.join("&");
-            },
-            data: creadentialObj
-        }).then(function (result) {
-            console.log(result);
-            bearer_token = result['access_token'];
-            $.ajax({
-                type: "POST",
-                url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/getJobNumbersByPo",
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
-                data: inputObj,
-                success: function (res) {            
-                    console.log(res);
-                    if(res.status)
-                    {
-                        var data = res.data;
-                        console.log(data);
-                        var sewing_job_list ='<h5><b><u>Select Sewing Job :</u></b></h5>';
-                        $.each(data.job_number, function( index, sewing_job ) {
-                            sewing_job_list = sewing_job_list + '<input type="button" class="btn btn-info" onclick=sendData(this.value,"'+po_desc+'") value='+sewing_job+'>';
-                        });
-                        console.log(sewing_job_list);
-                        $('#dynamic_table').html(sewing_job_list);
-                    }
-                    else
-                    {
-                        swal(res.internalMessage);
-                    }                       
-                },
-                error: function(res){
-                    swal('Error in getting data');
+            type: "POST",
+            url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/getJobNumbersByPo",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+            data: inputObj,
+            success: function (res) {            
+                console.log(res);
+                if(res.status)
+                {
+                    var data = res.data;
+                    console.log(data);
+                    var sewing_job_list ='<h5><b><u>Select Sewing Job :</u></b></h5>';
+                    $.each(data.job_number, function( index, sewing_job ) {
+                        sewing_job_list = sewing_job_list + '<input type="button" class="btn btn-info" onclick=sendData(this.value,"'+po_desc+'") value='+sewing_job+'>';
+                    });
+                    console.log(sewing_job_list);
+                    $('#dynamic_table').html(sewing_job_list);
                 }
-            }); 
-        }).fail(function (result) {
-            console.log(result);
-        }) ;
+                else
+                {
+                    swal(res.internalMessage);
+                }                       
+            },
+            error: function(res){
+                swal('Error in getting data');
+            }
+        }); 
     }
     function sendData(sewing_job,po){
         var schedule = $('#schedule1').val();

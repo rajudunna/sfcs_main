@@ -294,7 +294,8 @@ $(document).ready(function(){
 			type:'POST',
 			data:{dataset :ItemArray,style:sty_id,schedule:sch_id,color:color_id,cutnum:cut_no,batch_refer:batch_ref,section:section,plantcode:plantcode,username:username},          
 			success: function (data) 
-			{                           
+			{                 
+                     
 				$("#loading-image").hide();
 				if(data!=''){
 						swal({
@@ -477,7 +478,7 @@ $(document).ready(function(){
 
 
                     }
-                    $sql1111="select jm_docket_line_id from $pps.jm_docket_lines where jm_docket_line_id IN ('".implode("','" , $jm_docket_id)."') and plant_code='$plant_code'";
+                    $sql1111="select jm_docket_line_id from $pps.jm_docket_lines where plant_code='$plant_code' AND jm_docket_line_id IN ('".implode("','" , $jm_docket_id)."')";
                 //    echo "<option value=\"0\" selected>".$sql1111."</option>";
                     $sql_result111=mysqli_query($link, $sql1111) or die("Error".$sql111.mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row111=mysqli_fetch_array($sql_result111))
@@ -486,7 +487,7 @@ $(document).ready(function(){
 
 
                     }
-                        $sql12="select group_concat(plan_lot_ref) as plan_lot_ref from $pps.requested_dockets where  jm_docket_line_id IN ('".implode("','" , $jm_docket_line_id)."') AND (fabric_status=5 or LENGTH(plan_lot_ref) > 0)";
+                        $sql12="select group_concat(plan_lot_ref) as plan_lot_ref from $pps.requested_dockets where (fabric_status=5 or LENGTH(plan_lot_ref) > 0) AND jm_docket_line_id IN ('".implode("','" , $jm_docket_line_id)."')";
                         //echo "<option value=\"0\" selected>".$sql12."</option>";
                         $sql_result12=mysqli_query($link, $sql12) or die("Error".$sql12.mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($sql_row12=mysqli_fetch_array($sql_result12))
@@ -819,7 +820,7 @@ $(document).ready(function(){
                             $reason_code_db = array();
                            
                             $sql_reason="select reason_id,internal_reason_code,internal_reason_description from $mdm.reasons where department_type='RMWAREHOUSE'  order by internal_reason_description";
-                            echo $sql_reason;
+                            //echo $sql_reason;
 							$sql_result=mysqli_query($link, $sql_reason) or die(exception($sql_reason));
 							$count = mysqli_num_rows($sql_result);
 							

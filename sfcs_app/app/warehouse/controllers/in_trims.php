@@ -111,7 +111,7 @@ echo "<br><div>
 						echo "<div id='status'>Status: <span class='label label-success'>Success!</span> $code</div>";
 						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"in_trims.php?location=$location\"; }</script>";
 					}else{
-						$sql1="select * from $wms.store_in_deleted where tid=\"$code\" and plant_code='".$plant_code."'";
+						$sql1="select * from $wms.store_in_deleted where tid='$code' and plant_code='".$plant_code."'";
 						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($sql_result1)>0)
 						{
@@ -175,7 +175,7 @@ echo "<br><div>
 					}
 					else
 					{
-						$sql1="select * from $wms.store_in_deleted where tid=\"$code\" and plant_code='".$plant_code."'";
+						$sql1="select * from $wms.store_in_deleted where tid='$code' and plant_code='".$plant_code."'";
 						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($sql_result1)>0)
 						{

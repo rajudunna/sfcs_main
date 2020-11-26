@@ -794,7 +794,7 @@ if(isset($_POST['allocate_new']))
 					}
 					else
 					{
-						$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid=$tid_ref[$j] and plant_code='$plant_code'";
+						$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid='$tid_ref[$j]' and plant_code='$plant_code'";
 						$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row3=mysqli_fetch_array($sql_result3))
 						{
@@ -802,15 +802,21 @@ if(isset($_POST['allocate_new']))
 						}
 					}
 					
+					$select_uuid="SELECT UUID() as uuid";
+					$uuid_result=mysqli_query($link_new, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($uuid_row=mysqli_fetch_array($uuid_result))
+					{
+						$uuid=$uuid_row['uuid'];
 					
+					}
 					
 					if($process_cat==1)
 					{
-						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at,plant_code) values('".$doc_ref[$i]."','".$tid_ref[$j]."','".$width_ref[$j]."','normal','".$issued_ref[$j]."','1','$username','$username',NOW(),'$plant_code')";
+						$sql="insert into $wms.fabric_cad_allocation(tran_id,doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at,plant_code) values('".$uuid."','".$doc_ref[$i]."','".$tid_ref[$j]."','".$width_ref[$j]."','normal','".$issued_ref[$j]."','1','$username','$username',NOW(),'$plant_code')";
 					}
 					else
 					{
-						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at) values('".$doc_ref[$i]."','".$tid_ref[$j]."','".$width_ref[$j]."','recut','".$issued_ref[$j]."','1','$username','$username',NOW(),'$plant_code')";
+						$sql="insert into $wms.fabric_cad_allocation(tran_id,doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at) values('".$uuid."','".$doc_ref[$i]."','".$tid_ref[$j]."','".$width_ref[$j]."','recut','".$issued_ref[$j]."','1','$username','$username',NOW(),'$plant_code')";
 					}					
 					mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
@@ -820,7 +826,7 @@ if(isset($_POST['allocate_new']))
 					} 
 					else 
 					{						
-						$sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty,qty_allocated from $wms.store_in where roll_status in (0,2) and tid=\"$tid_ref[$j]\" and plant_code='$plant_code'";
+						$sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty,qty_allocated from $wms.store_in where roll_status in (0,2) and tid='".$tid_ref[$j]."' and plant_code='$plant_code'";
 						$sql_result=mysqli_query($link, $sql1) or exit("Sql Error--15".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
@@ -838,7 +844,7 @@ if(isset($_POST['allocate_new']))
 						{
 							$status=1;
 						}
-						$sql121="update $wms.store_in set qty_allocated=qty_allocated+".$issued_ref[$j].",status=$status,allotment_status=$status,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and tid=".$tid_ref[$j];
+						$sql121="update $wms.store_in set qty_allocated=qty_allocated+".$issued_ref[$j].",status=$status,allotment_status=$status,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and tid='".$tid_ref[$j]."'";
 						mysqli_query($link, $sql121) or exit("$sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 						
 					}				
@@ -1016,7 +1022,7 @@ if(isset($_POST['allocate']))
 		}
 		$shrinkaage='';
 		$pur_width='A';
-		$sql007="select reference from $pps.requested_dockets where jm_docket_line_id=\"".$doc_no[$i]."\" and plant_code='$plant_code'";
+		$sql007="select reference from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_line_id=\"".$doc_no[$i]."\"";
 		
 		$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row007=mysqli_fetch_array($sql_result007))
@@ -1232,7 +1238,7 @@ if(isset($_POST['allocate']))
 			{
 			echo "<input type='hidden' id='srgp$doc_ref$j' value='".$sql_row['shrinkage_group']."'>";
 			echo "<tr bgcolor=\"$bg_color\" id=\"trchk$doc_ref$j\">";
-			$sql3="select tid,split_roll from $wms.store_in where  plant_code='$plant_code' and tid=".$sql_row['tid'];
+			$sql3="select tid,split_roll from $wms.store_in where  plant_code='$plant_code' and tid='".$sql_row['tid']."'";
 			$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error22 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result3)>0)
 			{
@@ -1249,7 +1255,7 @@ if(isset($_POST['allocate']))
 			
 			/* Added new code to track allocated quantities 20140621*/
 			
-			$sql1="SELECT GROUP_CONCAT(CONCAT(IF(doc_type='normal','D','R'),doc_no)) AS doc_nos,ROUND(SUM(allocated_qty),2) AS allocated_qty FROM $wms.fabric_cad_allocation WHERE roll_id=".$sql_row['tid']." and plant_code='$plant_code'";
+			$sql1="SELECT GROUP_CONCAT(CONCAT(IF(doc_type='normal','D','R'),doc_no)) AS doc_nos,ROUND(SUM(allocated_qty),2) AS allocated_qty FROM $wms.fabric_cad_allocation WHERE roll_id='".$sql_row['tid']."' and plant_code='$plant_code'";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
@@ -1259,7 +1265,7 @@ if(isset($_POST['allocate']))
 			}
 
 
-			$sql5="SELECT coalesce(sum(allocated_qty),0) as allocated_qty,roll_id,status FROM $wms.fabric_cad_allocation where roll_id=".$sql_row['tid']." and status='1' and plant_code='$plant_code'";
+			$sql5="SELECT coalesce(sum(allocated_qty),0) as allocated_qty,roll_id,status FROM $wms.fabric_cad_allocation where roll_id='".$sql_row['tid']."' and status='1' and plant_code='$plant_code'";
 		
 			$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error131: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row5=mysqli_fetch_array($sql_result5))
@@ -1335,7 +1341,7 @@ if(isset($_POST['allocate']))
 					<th style='color:black;'>Issued<br/>Qty</th>
 					</tr>";
 			for($m=0; $m < $n; $m++) {
-				$sql3="select tid,split_roll from $wms.store_in where  plant_code='$plant_code' and tid=".$tid ;
+				$sql3="select tid,split_roll from $wms.store_in where  plant_code='$plant_code' and tid='".$sql_row['tid']."'" ;
 				$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error22 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result3)>0)
 				{
@@ -1343,7 +1349,7 @@ if(isset($_POST['allocate']))
 					{
 						$tid =$sql_row2['split_roll'];
 						if($sql_row2['split_roll'] != '') {
-							$sql_query ="SELECT * FROM $wms.store_in left join $wms.sticker_report on sticker_report.lot_no=store_in.lot_no WHERE lot_no IN (SELECT lot_no FROM $wms.store_in WHERE tid IN (".$sql_row2['split_roll'].")) AND tid IN(".$sql_row['tid'].") and plant_code='$plant_code'";
+							$sql_query ="SELECT * FROM $wms.store_in left join $wms.sticker_report on sticker_report.lot_no=store_in.lot_no WHERE lot_no IN (SELECT lot_no FROM $wms.store_in WHERE tid='".$sql_row2['split_roll']."') AND tid='".$sql_row['tid']."' and plant_code='$plant_code'";
 							$sql_result_new=mysqli_query($link, $sql_query) or exit("Sql Error22 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_result_new=mysqli_fetch_array($sql_result_new))
 								{
