@@ -1521,7 +1521,7 @@ if(isset($_POST["trans_action"])){
                                         while($buyer_qry_row=mysqli_fetch_array($buyer_qry_result)){
                                                 $buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
                                             }
-                                        $qry_nop="select (present+jumper) as nop FROM $bai_pro.pro_attendance where module='".$b_module[$i]."' and date='".$bac_dat."' and shift='".$shift."'";
+                                        $qry_nop="select ((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance where module='".$b_module[$i]."' and date='".$bac_dat."' and shift='".$shift."'";
                                         $qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
                                         {
@@ -2610,7 +2610,7 @@ if(isset($_POST["trans_action"])){
                                                         {
                                                             $buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
                                                         }
-                                                        $qry_nop="select (present+jumper) as nop FROM $bai_pro.pro_attendance WHERE module=".$b_module[$key]." and date='".$bac_dat."' and shift='".$b_shift."'";
+                                                        $qry_nop="select ((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance WHERE module=".$b_module[$key]." and date='".$bac_dat."' and shift='".$b_shift."'";
                                                         $qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
                                                         while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
                                                         {

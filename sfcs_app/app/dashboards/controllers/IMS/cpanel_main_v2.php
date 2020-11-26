@@ -272,12 +272,8 @@ width:350px;
 function loadpopup(url)
 { 
     var shift = document.getElementById('shift').value;
-    if(shift)
-    {
-        url = url+'&shift='+shift;
-        window.open(url,'Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;
-    }
-    else
+    var permission = document.getElementById('user_permission').value;
+    if(!shift)
     {
         swal({
             title: "Warning!",
@@ -286,6 +282,20 @@ function loadpopup(url)
         }).then(function() {
             // window.close();
         });
+    }
+    else if(permission=='false'){
+        swal({
+            title: "Warning!",
+            text: "No access for Sewing job Scanning",
+            type: "warning"
+        }).then(function() {
+            // window.close();
+        });
+    }
+    else
+    {
+        url = url+'&shift='+shift;
+        window.open(url,'Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;
     }
 }
 setTimeout(function()
@@ -400,6 +410,16 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 $application='IMS_OUT';
+  $has_permission=haspermission($_GET['r']);
+
+	if(in_array($update,$has_permission))
+	{
+		$permission = "true";
+	}
+	else
+	{
+		$permission = "false";
+  }
 
 $scanning_query="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
 $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -470,6 +490,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
               }
           ?>
         </select>   
+        <input type='hidden' name='user_permission' id='user_permission' value=<?=$permission ?>>
       </div> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
       <div class="form-group">
         Schedule Track: <input type="text" name="schedule" id="schedule"  class="form-control" onkeyup="blink_new3(this.value)" size="10">

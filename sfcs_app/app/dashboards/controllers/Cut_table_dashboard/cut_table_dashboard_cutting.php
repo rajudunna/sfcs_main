@@ -29,16 +29,17 @@ $('div[rel=tooltip]').mouseover(function(e) {
 }).mousemove(function(e) {
 
   //Keep changing the X and Y axis for the tooltip, thus, the tooltip move along with the mouse
-  console.log('y = '+e.pageY+' : '+e.view.parent.pageYOffset);
-  console.log(e);
-
+  console.log('y = '+e.pageY+' : '+e.view.parent.pageYOffset );
+  console.log(e.pageY - $(this).offset().top + + $(window).scrollTop());
+// console.log($(this).offset().top-$(window).scrollTop());
   //e.pageY + 0.5 * e.view.parent.pageYOffset
-  $('#tooltip').css('top',$(this).offset.top-$(window).scrollTop());
+  $('#tooltip').css('top',e.pageY - 75);
   $('#tooltip').css('left',$(this).offset.left - 255 );
-   $('#tooltip').css('margin-left','20px' );
+   $('#tooltip').css('margin-left','-38px' );
    $('#tooltip').css('text-align','left' );
-   $('#tooltip').css('margin-top','25px' );
+   $('#tooltip').css('margin-top','10px' );
    $('#tooltip').css('position', 'absolute' );
+   $('#tooltip').css('display', 'block' );
    $('#tooltip').css('z-index', '999999' );
 }).mouseout(function() {
 

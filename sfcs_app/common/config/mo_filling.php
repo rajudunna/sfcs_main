@@ -291,28 +291,30 @@
 			$op_codes = $row['codes'];
 		}   
 		
-		$op_codes_query = "SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref 
-						WHERE category = '$sewing_cat'";
+		// $op_codes_query = "SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref 
+						// WHERE category = '$sewing_cat'";
+		// $op_codes_result = mysqli_query($link,$op_codes_query) or exit('Problem in getting the op codes for sewing');   
+		// while($row = mysqli_fetch_array($op_codes_result)){
+			// $ops[]=$row['operation_code'];
+			// $op_namem[$row['operation_code']]=$row['operation_name'];
+		// }
+		
+		$jobs_style_query = "Select DISTINCT(order_col_des) AS color,order_style_no AS style from $bai_pro3.packing_summary_input where 
+							order_del_no = '$schedule'";
+		$jobs_style_result = mysqli_query($link,$jobs_style_query);
+		while($row = mysqli_fetch_array($jobs_style_result)){
+			$style = $row['style'];
+			$colors[] = $row['color'];
+		}
+		
+		$colors_new=implode("','",$colors);
+		$op_codes_query = "SELECT tsm.operation_code AS operation_code,tor.operation_name AS operation_name FROM brandix_bts.tbl_style_ops_master tsm LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE  style= '$style' AND color in('$colors_new') AND tor.category= '$sewing_cat' GROUP BY tsm.operation_code ORDER BY LENGTH(tsm.operation_order)";
 		$op_codes_result = mysqli_query($link,$op_codes_query) or exit('Problem in getting the op codes for sewing');   
 		while($row = mysqli_fetch_array($op_codes_result)){
 			$ops[]=$row['operation_code'];
 			$op_namem[$row['operation_code']]=$row['operation_name'];
 		}
-		
-		$jobs_style_query = "Select order_style_no as style from $bai_pro3.packing_summary_input where 
-							TRIM(order_del_no) = '$schedule' limit 1";
-		$jobs_style_result = mysqli_query($link,$jobs_style_query);
-		while($row = mysqli_fetch_array($jobs_style_result)){
-			$style = $row['style'];
-		}
-		
-		$jobs_col_query = "Select distinct(order_col_des) as color from $bai_pro3.packing_summary_input 
-						where order_del_no ='$schedule' ";
-		$jobs_col_result = mysqli_query($link,$jobs_col_query);
-		while($row = mysqli_fetch_array($jobs_col_result)){
-			$colors[] = $row['color'];
-		}
-
+        //$ops=array_values(array_unique($ops));
 		foreach($colors as $col){
 			$trimmed_color = trim($col);
 			$jobs_sizes_query = "Select distinct(size_code) as size from $bai_pro3.packing_summary_input 
@@ -351,7 +353,7 @@
 						for($k=0;$k<sizeof($ops);$k++)
 						{
 							{
-								$sql1231="SELECT * FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' 
+								$sql1231="SELECT tid,carton_act_qty FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' 
 											and  sref_id = $sref_id and trim(order_col_des) = '$trimmed_color'
 											and type_of_sewing>0 ";
 								$result1231=mysqli_query($link, $sql1231) or 
@@ -370,7 +372,7 @@
 					{
 						$last_mo = max($mo_no);
 						$bal=0;$qty_tmp=0;
-						$sql1234 = "SELECT * FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' and sref_id = $sref_id
+						$sql1234 = "SELECT tid,carton_act_qty FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' and sref_id = $sref_id
 						and trim(order_col_des) = '$trimmed_color'
 						and type_of_sewing=1";
 						$result1234=mysqli_query($link, $sql1234) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -439,9 +441,9 @@
 							}   
 						}
 						//Excess allocate to Last MO
-						$qty1 = $qty;
+						//$qty1 = $qty;
 						$bal=0;$qty_tmp=0;$qty=0;
-						$sql12341="SELECT * FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' 
+						$sql12341="SELECT tid,carton_act_qty FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' 
 									and sref_id = $sref_id and trim(order_col_des) = '$trimmed_color' and type_of_sewing<>1";       
 						$result12341=mysqli_query($link, $sql12341) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						if(mysqli_num_rows($result12341)>0)
@@ -680,17 +682,17 @@
 		$operation_codes = array();
 		
 
-		foreach($category as $key => $value)
-		{
-			$fetching_ops_with_category = "SELECT operation_code,short_cut_code FROM brandix_bts.tbl_orders_ops_ref 
-											WHERE category = '".$category[$key]."'";
-			$result_fetching_ops_with_cat = mysqli_query($link,$fetching_ops_with_category) or exit("Bundles Query Error 1423");
-			while($row=mysqli_fetch_array($result_fetching_ops_with_cat))
-			{
-				$operation_codes[] = $row['operation_code'];
-				$short_key_code[] = $row['short_cut_code'];
-			}
-		}
+		// foreach($category as $key => $value)
+		// {
+			// $fetching_ops_with_category = "SELECT operation_code,short_cut_code FROM brandix_bts.tbl_orders_ops_ref 
+											// WHERE category = '".$category[$key]."'";
+			// $result_fetching_ops_with_cat = mysqli_query($link,$fetching_ops_with_category) or exit("Bundles Query Error 1423");
+			// while($row=mysqli_fetch_array($result_fetching_ops_with_cat))
+			// {
+				// $operation_codes[] = $row['operation_code'];
+				// $short_key_code[] = $row['short_cut_code'];
+			// }
+		// }
 		$cut_done_qty = array();
 
 		//logic to insert into bundle_creation_data with doc,size and operation_wise
@@ -705,12 +707,26 @@
 			$sql_query_size_code = mysqli_query($link,$get_exact_size_code) or exit("Bundles Query Error 1423");
 			while($row_size=mysqli_fetch_array($sql_query_size_code))
 			{
+				$orders_styleno=$row_size['order_style_no'];
+				$orders_colorno=$row_size['order_col_des'];
 				for($ii=0;$ii<sizeof($sizes_array);$ii++)
 				{
 					if($row_size["title_size_".$sizes_array[$ii].""]<>"")
 					{
 						$check_upto[]=$sizes_array[$ii];
 					}
+				}
+			}
+            foreach($category as $key => $value)
+			{
+				//$fetching_ops_with_category = "SELECT operation_code,short_cut_code FROM brandix_bts.tbl_orders_ops_ref 
+												//WHERE category = '".$category[$key]."'";
+				$fetching_ops_with_category ="SELECT tsm.operation_code AS operation_code,tor.short_cut_code AS short_cut_code FROM brandix_bts.tbl_style_ops_master tsm LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE  style= '$orders_styleno' AND color='$orders_colorno' AND tor.category= '".$category[$key]."' ORDER BY LENGTH(tsm.operation_order)";								
+				$result_fetching_ops_with_cat = mysqli_query($link,$fetching_ops_with_category) or exit("Bundles Query Error 1423");
+				while($row_new_ops=mysqli_fetch_array($result_fetching_ops_with_cat))
+				{
+					$operation_codes[] = $row_new_ops['operation_code'];
+					$short_key_code[] = $row_new_ops['short_cut_code'];
 				}
 			}			
 			//this block only works for filling while schedule clubbing

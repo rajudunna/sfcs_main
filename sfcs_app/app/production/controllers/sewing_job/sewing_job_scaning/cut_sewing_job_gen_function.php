@@ -330,19 +330,32 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 							$input_job_num_rand=$schedule.date("ymd").$input_job_no;
 							for($jj=0;$jj<sizeof($cps_ids1);$jj++)
 							{
-								if($fill_qty[$cps_ids1[$jj]][$j]>0)
-								{
-									$sql_cps_query="select * from $bai_pro3.cps_log where doc_no=$docket_no and id=$cps_ids1[$jj]";
-									$sql_resutlt_cps=mysqli_query($link, $sql_cps_query) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
-									if(mysqli_num_rows($sql_resutlt_cps)>0){
-
-										$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,barcode_sequence,type_of_sewing)VALUES(".$docket_no.", '".$sizes[$cps_ids1[$jj]]."', ".$fill_qty[$cps_ids1[$jj]][$j].", '".$input_job_no."', '".$input_job_num_rand."', '".$destination."', 1, '".$size_codes[$cps_ids1[$jj]]."','N', '-1', $inserted_id,$bundle_seq,$j)";
-										$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
+								do{
+									if($fill_qty[$cps_ids1[$jj]][$j]>0)
+									{
+										$logic_qty=0;
+										if($fill_qty[$cps_ids1[$jj]][$j] >= $plan_bundleqty)
+										{
+											$logic_qty = $plan_bundleqty;
+										} 
+										else 
+										{
+											$logic_qty = $fill_qty[$cps_ids1[$jj]][$j];
+										}
 										
-										$count++;
-										$bundle_seq++;	
-									}						
-								}
+										$sql_cps_query="select * from $bai_pro3.cps_log where doc_no=$docket_no and id=$cps_ids1[$jj]";
+										$sql_resutlt_cps=mysqli_query($link, $sql_cps_query) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
+										if(mysqli_num_rows($sql_resutlt_cps)>0){
+
+											$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,barcode_sequence,type_of_sewing)VALUES(".$docket_no.", '".$sizes[$cps_ids1[$jj]]."', ".$logic_qty.", '".$input_job_no."', '".$input_job_num_rand."', '".$destination."', 1, '".$size_codes[$cps_ids1[$jj]]."','N', '-1', $inserted_id,$bundle_seq,$j)";
+											$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
+											$fill_qty[$cps_ids1[$jj]][$j]=$fill_qty[$cps_ids1[$jj]][$j]-$logic_qty;
+											$count++;
+											$bundle_seq++;	
+										}						
+									}
+									
+								}while($fill_qty[$cps_ids1[$jj]][$j]>0);
 							}
 							$input_job_num++;					
 						}
@@ -484,19 +497,36 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 						for($jj=0;$jj<sizeof($cps_ids);$jj++)
 						{
 							// var_dump($fill_qty[$cps_ids[$jj]][$j],'fill_qtyt<br/>');
-							if($fill_qty[$cps_ids[$jj]][$j]>0)
-							{
-								$sql_cps_query="select * from $bai_pro3.cps_log where doc_no=$docket_no and id=$cps_ids[$jj]";
-								$sql_resutlt_cps=mysqli_query($link, $sql_cps_query) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
-								if(mysqli_num_rows($sql_resutlt_cps)>0){
-									// echo "hello<br>";
-									$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,barcode_sequence,type_of_sewing)VALUES(".$docket_no.", '".$sizes[$cps_ids[$jj]]."', ".$fill_qty[$cps_ids[$jj]][$j].", '".$input_job_no."', '".$input_job_num_rand."', '".$destination."', 1, '".$size_codes[$cps_ids[$jj]]."','N', '-1', $inserted_id,$bundle_seq,$j)";
-									// echo $ins_qry."<br>";
-									$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
+							
+								if($fill_qty[$cps_ids[$jj]][$j]>0)
+								{
+								
+								
+									$sql_cps_query="select * from $bai_pro3.cps_log where doc_no=$docket_no and id=$cps_ids[$jj]";
+									$sql_resutlt_cps=mysqli_query($link, $sql_cps_query) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
+									if(mysqli_num_rows($sql_resutlt_cps)>0)
+									{
+									  do
+							           {
+											$logic_qty=0;
+											if($fill_qty[$cps_ids[$jj]][$j] >= $plan_bundleqty)
+											{
+												$logic_qty = $plan_bundleqty;
+											} 
+											else 
+											{
+												$logic_qty = $fill_qty[$cps_ids[$jj]][$j];
+											}
+											// echo "hello<br>";
+											$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,barcode_sequence,type_of_sewing)VALUES(".$docket_no.", '".$sizes[$cps_ids[$jj]]."', ".$logic_qty.", '".$input_job_no."', '".$input_job_num_rand."', '".$destination."', 1, '".$size_codes[$cps_ids[$jj]]."','N', '-1', $inserted_id,$bundle_seq,$j)";
+											// echo $ins_qry."<br>";
+											$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
+											$fill_qty[$cps_ids[$jj]][$j]=$fill_qty[$cps_ids[$jj]][$j]-$logic_qty;
+											$count++;
+											$bundle_seq++;							
+									 }while($fill_qty[$cps_ids[$jj]][$j]>0);
+								    }
 									
-									$count++;
-									$bundle_seq++;							
-								}
 							}
 						}
 						$input_job_num++;					

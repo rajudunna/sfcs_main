@@ -1111,6 +1111,7 @@ else
 
                             $remarks_code = "";                             
                             $select_send_qty = "SELECT (send_qty+recut_in+replace_in)as send_qty, recevied_qty,rejected_qty, left_over,original_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = $b_tid[$key] AND operation_id = $b_op_id";
+							//echo $select_send_qty;
                             $result_select_send_qty = $link->query($select_send_qty);
                             if($result_select_send_qty->num_rows >0)
                             {
@@ -1124,6 +1125,64 @@ else
 
                                 }
                             }
+							if($b_send_qty==0)
+							{  
+								$check_ops = "SELECT tor.operation_code FROM `$brandix_bts`.`tbl_style_ops_master` tm 
+                                LEFT JOIN brandix_bts.`tbl_orders_ops_ref` tor ON tor.`operation_code`=tm.`operation_code`
+								WHERE tm.`style` ='$style' AND tm.`color` = '$mapped_color'
+                                AND category = 'sewing' AND display_operations='yes' and tor.operation_code>1 ORDER BY operation_order*1 LIMIT 1";
+                                $result_check_ops = $link->query($check_ops);
+								while($row_check_ops = $result_check_ops->fetch_assoc()) 
+								{
+									$check_operation=$row_check_ops['operation_code'];
+								}
+								if($check_operation==$b_op_id)
+								{
+									$presnt_ops_check = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE bundle_number = $b_tid[$key] AND operation_id = $b_op_id";
+									$result_presnt_check = $link->query($presnt_ops_check);
+									if($result_presnt_check->num_rows >0)
+									{	while($row_presnt_check = $result_presnt_check->fetch_assoc()) 
+										{
+											$b_original_qty_check = $row_presnt_check['original_qty'];
+											$sql_presnt_ops="UPDATE brandix_bts.bundle_creation_data SET send_qty =$b_original_qty_check WHERE bundle_number = $b_tid[$key] AND operation_id = $b_op_id";
+											$result_presnt_ops = $link->query($sql_presnt_ops) or exit('query error in updating');
+											$b_send_qty = $b_original_qty_check;
+											$b_rep_qty[$key] =  $b_original_qty_check;
+											$insert_prsntqry_check="INSERT INTO `bai_pro3`.`bundle_operations` (`bundle_no`, `operation`, `quantity`, `date_time`, `username`)VALUES($b_tid[$key],$b_op_id,$b_original_qty_check,NOW(),'$username')";
+											$insert_prsntqry_ops = $link->query($insert_prsntqry_check) or exit('query error in inserting');
+										}
+									}
+								}
+								else
+								{
+									$select_send_qty_prev = "SELECT recevied_qty FROM $brandix_bts.bundle_creation_data WHERE bundle_number = $b_tid[$key] AND operation_id = $pre_ops_code";
+									$result_select_send_prev = $link->query($select_send_qty_prev);
+                                   // echo $select_send_qty_prev;
+									if($result_select_send_prev->num_rows >0)
+									{
+										while($row_prev = $result_select_send_prev->fetch_assoc()) 
+										{
+											$b_old_rep_qty_prev= $row_prev['recevied_qty'];
+											
+											if($b_old_rep_qty_prev > 0)
+											{
+												$select_ops_check = "SELECT * FROM $brandix_bts.bundle_creation_data WHERE bundle_number = $b_tid[$key] AND operation_id = $b_op_id";
+												$result_ops_check = $link->query($select_ops_check);
+												if($result_ops_check->num_rows >0)
+												{	
+													$sql_next_ops="UPDATE brandix_bts.bundle_creation_data SET send_qty =$b_old_rep_qty_prev WHERE bundle_number = $b_tid[$key] AND operation_id = $b_op_id";
+													$result_next_ops = $link->query($sql_next_ops) or exit('query error in updating');
+													$b_send_qty = $b_old_rep_qty_prev;
+													$b_rep_qty[$key] =  $b_old_rep_qty_prev;
+													$insert_qry_check="INSERT INTO `bai_pro3`.`bundle_operations` (`bundle_no`, `operation`, `quantity`, `date_time`, `username`)VALUES($b_tid[$key],$b_op_id,$b_old_rep_qty_prev,NOW(),'$username')";
+													$insert_qry_ops = $link->query($insert_qry_check) or exit('query error in inserting');
+												}
+											}
+										}
+									}
+								}
+								
+							}
                                 $final_rep_qty = $b_old_rep_qty_new + $b_send_qty - ($b_old_rep_qty_new + $b_old_rej_qty_new); 
 
                                 $final_rej_qty = $b_old_rej_qty_new;
@@ -1693,7 +1752,7 @@ else
                     while($buyer_qry_row=mysqli_fetch_array($buyer_qry_result)){
                             $buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
                         }
-                    $qry_nop="select (present+jumper) as nop FROM $bai_pro.pro_attendance where module='".$b_module[$i]."' and date='".$bac_dat."' and shift='".$shift."'";
+                    $qry_nop="select ((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance where module='".$b_module[$i]."' and date='".$bac_dat."' and shift='".$shift."'";
                     $qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
                     {

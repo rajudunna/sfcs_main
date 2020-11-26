@@ -81,7 +81,7 @@ function updateM3Transactions($ref_id,$op_code,$qty)
                 // 763 mo filling for new operation start
                 // To get last operation in sewing category for that style and color
                     $application='sewing';
-                    $get_last_opn_sewing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY LENGTH(tbl_style_ops_master.operation_order) DESC LIMIT 1";
+                    $get_last_opn_sewing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY CAST(tbl_style_ops_master.operation_order AS CHAR) DESC LIMIT 1";
                     $result_last_opn_sewing=mysqli_query($link, $get_last_opn_sewing) or exit("error while fetching pre_op_code_b4_carton_ready");
                     if (mysqli_num_rows($result_last_opn_sewing) > 0)
                     {
@@ -100,13 +100,21 @@ function updateM3Transactions($ref_id,$op_code,$qty)
 
                         if ($count > 0)
                         {
-                            $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $to_update_qty, cumulative_qty = cumulative_qty + $to_update_qty where mo_no= '$mo_number'";
+                            $update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $to_update_qty, cumulative_qty = cumulative_qty + $to_update_qty where mo_no= '$mo_number'";
+							mysqli_query($link,$update_tbl_carton_ready);
                         }
                         else
                         {
-                            $insert_update_tbl_carton_ready = "INSERT INTO $bai_pro3.tbl_carton_ready (operation_id, mo_no, remaining_qty, cumulative_qty) VALUES ('$op_code', '$mo_number', '$to_update_qty', '$to_update_qty');";
+                            $insert_tbl_carton_ready = "INSERT INTO $bai_pro3.tbl_carton_ready (operation_id, mo_no, remaining_qty, cumulative_qty) VALUES ('$op_code', '$mo_number', '$to_update_qty', '$to_update_qty')";
+							mysqli_query($link,$insert_tbl_carton_ready);
+                            $affectced_rows=mysqli_affected_rows($link);
+                            if($affectced_rows == -1)
+                            {
+                                $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $to_update_qty, cumulative_qty = cumulative_qty + $to_update_qty where mo_no= '$mo_number'";
+                                mysqli_query($link,$insert_update_tbl_carton_ready);
+                            }
                         }
-                        mysqli_query($link,$insert_update_tbl_carton_ready);
+                        //mysqli_query($link,$insert_update_tbl_carton_ready);
                     }                                                                                      
                 // 763 mo filling for new operation end
                 $dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and operation_code=$op_code";

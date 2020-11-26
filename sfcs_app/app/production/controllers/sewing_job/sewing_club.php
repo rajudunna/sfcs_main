@@ -14,13 +14,26 @@ include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'
        var valueSelected = this.value;
 	  window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(valueSelected)))
     });
-	 $("#schedule").change(function(){
+	$("#schedule").change(function(){
         //alert("The text has been changed.");
 		var optionSelected = $("option:selected", this);
        var valueSelected2 = this.value;
 	   var style1 = $("#style").val();
 	   window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style1)))+"&schedule="+valueSelected2
-	  });
+	});
+	$("#submit_val").click(function(){
+	var style_val = $("#style").val();
+	var sch_val = $("#schedule").val();
+	if(style_val == null || sch_val == null)
+	{
+		sweetAlert('Please Select  Style,Schedule','','warning');
+		return false;
+	}
+	else
+	{
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style_val)))+"&schedule="+sch_val+"&submit_val=submit_val";
+	}
+  });
 });
 </script>
 <head>
@@ -32,6 +45,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'
 <body>
 <form>
 <?php
+$decode_style = $_GET['style'];
 $style=style_decode($_GET['style']);
 $schedule=$_GET['schedule']; 
 if(isset($_POST['myval']))
@@ -60,11 +74,23 @@ if(isset($_POST['myval']))
             mysqli_query($link, $bcd_update) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));			
 		}
 		update_barcode_sequences($input_job_random_min);
-		echo "<script>sweetAlert('Following Sewing Jobs Clubbed Sucessfully','','success');</script>";
+		//echo "<script>sweetAlert('Following Sewing Jobs Clubbed Sucessfully','','success');</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+			function Redirect() {
+			sweetAlert('Following Sewing Jobs Clubbed Sucessfully','','success');
+			location.href = \"".getFullURLLevel($_GET['r'], "sewing_club.php", "0", "N")."&style=$decode_style&schedule=$schedule&submit_val=submit_val1\";
+			}
+			</script>";
 	}	
 	else
 	{
-		echo "<script>sweetAlert('Please Select More than One Sewing Job to Club','','warning');</script>";			
+		//echo "<script>sweetAlert('Please Select More than One Sewing Job to Club','','warning');</script>";	
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+		function Redirect() {
+		sweetAlert('Please Select More than One Sewing Job to Club','','warning');
+		location.href = \"".getFullURLLevel($_GET['r'], "sewing_club.php", "0", "N")."&style=$decode_style&schedule=$schedule&submit_val=submit_val2\";
+		}
+		</script>";	
 	}
 }
 ?>
@@ -102,16 +128,18 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
 	}
 }
-
 echo "	</select>
 	 </div>";
+echo "&nbsp;&nbsp;";
+echo "<div class='col-md-3 col-sm-3'><input type='button' name='submit_val' id='submit_val' class='btn btn-success' value='Show' style='margin-top: 18px;'></div>";
 ?>
 </form>
 
 </div>
+<br/>
 <?php
-if($style != "" && $schedule != "")
-{	
+if($style != null && $schedule != null && isset($_GET['submit_val']))
+{
 	?>
 	<div class="panel panel-primary">
 		<div class="panel-body">
