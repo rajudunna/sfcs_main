@@ -1734,7 +1734,7 @@ table
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/supplier_db.php',1,'R')); 
-$plantcode='EKG';
+$plantcode=$_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 //Configuration
 if(strlen($lot_no)>0 and strlen($lot_ref)>0)
