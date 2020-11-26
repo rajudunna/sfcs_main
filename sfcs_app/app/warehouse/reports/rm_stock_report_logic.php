@@ -108,7 +108,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 		$invoice=$row_1["inv_no"];
 	}
     $current_date=date('Y-m-d');
-    $sqly="select sum(ROUND(qty_issued,2)) as qty FROM `$wms`.`store_out` where plant_code='$plantcode' and tran_tid=$tid and date=\"$current_date\" ";
+    $sqly="select sum(ROUND(qty_issued,2)) as qty FROM `$wms`.`store_out` where plant_code='$plantcode' and tran_tid='".$tid."' and date=\"$current_date\" ";
     $sql_result1y =$link->query($sqly);
     if(mysqli_num_rows($sql_result1y)> 0) {
         while ($rowy = $sql_result1y->fetch_assoc())
@@ -128,7 +128,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 		}
 	}
 	
-	$sqlz="select sum(ROUND(qty_returned,2)) as qty FROM `$wms`.`store_returns` where plant_code='$plantcode' and tran_tid=$tid and date=\"$current_date\"";
+	$sqlz="select sum(ROUND(qty_returned,2)) as qty FROM `$wms`.`store_returns` where plant_code='$plantcode' and tran_tid='".$tid."' and date=\"$current_date\"";
     $sql_result1z =$link->query($sqlz);
     if(mysqli_num_rows($sql_result1z)> 0) {
         while ($rowz = $sql_result1z->fetch_assoc())

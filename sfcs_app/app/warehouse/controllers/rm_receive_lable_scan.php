@@ -241,7 +241,7 @@ else
                                     while($row1 = $res_check_rm_db1->fetch_assoc()) 
                                     {
                                         $tid_old=$row1['tid'];
-                                        $delete_qry= "delete from $wms.store_out where plant_code='$plant_code' AND tran_tid=$tid_old";
+                                        $delete_qry= "delete from $wms.store_out where plant_code='$plant_code' AND tran_tid='".$tid_old."'";
                                         $delete_qry_result = $link->query($delete_qry);
                                     }
                                     
@@ -266,7 +266,7 @@ else
                                         break;
                                     }
                                     
-                                    $qry_ins_stockout = "INSERT INTO $wms.`store_out`(tran_tid,qty_issued,date,updated_by,remarks,plant_code) VALUES (".$tid_new.",".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_code."','".$plant_name1."')";
+                                    $qry_ins_stockout = "INSERT INTO $wms.`store_out`(tran_tid,qty_issued,date,updated_by,remarks,plant_code) VALUES ('".$tid_new."',".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_code."','".$plant_name1."')";
                                     // echo $qry_ins_stockout."<br/>";
                                     $res_ins_stockout = $link_new->query($qry_ins_stockout);
                                     
