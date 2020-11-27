@@ -655,12 +655,7 @@ $(document).ready(function(){
 							$company_no=$sql_row141["company_code"];
 						}
 
-						$sql = "SELECT mo_number FROM $pps.`jm_cut_job` jc 
-						LEFT JOIN $pps.`jm_cut_bundle` jcb ON jcb.jm_cut_job_id=jc.jm_cut_job_id
-						LEFT JOIN $pps.`jm_cut_bundle_details` jcbd ON jcbd.jm_cut_bundle_id=jcb.jm_cut_bundle_id
-						LEFT JOIN $pps.`jm_product_logical_bundle` jplb ON jplb.jm_ppb_id=jcbd.jm_ppb_id
-						LEFT JOIN $pps.`jm_pplb_mo_qty` jpmq ON jpmq.jm_pplb_id=jplb.jm_pplb_id
-						WHERE jc.cut_number=$inp_4";
+						$sql ="SELECT mo_number FROM $pps.finished_good fg LEFT JOIN $pps.jm_product_logical_bundle jplb ON jplb.jm_pplb_id=fg.jm_pplb_id WHERE fg.cut_number=$inp_4 AND fg.plant_code='$plant_code'";
 					
 						$sql_result=mysqli_query($link, $sql) or die(exception($sql));
 						$MIRecords = array();

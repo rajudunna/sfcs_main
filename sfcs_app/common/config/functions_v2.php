@@ -1734,7 +1734,7 @@ function getOpsWiseJobQtyInfo($schedule, $bundle_types) {
     {   
         $pplb = $sql_row_sql_result_sql_sql_plb['external_ref_id'];
         $pplb_barcode =  $sql_row_sql_result_sql_sql_plb['parent_barcode'];
-        $sql_bundle_type = "SELECT bundle_type, ppb.fg_color, ppb.size FROM $pps.`jm_cut_bundle_details` ppb LEFT JOIN $pps.`jm_product_logical_bundle` pplb ON pplb.`jm_ppb_id` = ppb.jm_ppb_id
+        $sql_bundle_type = "SELECT bundle_type, ppb.fg_color, ppb.size FROM $pps.`jm_product_bundle` ppb LEFT JOIN $pps.`jm_product_logical_bundle` pplb ON pplb.`jm_ppb_id` = ppb.jm_ppb_id
         WHERE pplb.jm_pplb_id = '$pplb'";
         $sql_result_sql_bundle_type=mysqli_query($link_new,$sql_bundle_type) or exit("Sql Error5".mysqli_error());
         while($sql_row_bundle_type = mysqli_fetch_array($sql_result_sql_bundle_type))
