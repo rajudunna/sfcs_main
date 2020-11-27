@@ -6,7 +6,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/me
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/header_scripts.php',1,'R')); 
 $table_csv = '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
 $excel_form_action = '../'.getFullURLLevel($_GET['r'],'common/php/export_excel.php',1,'R');
-$plantcode=$_SESSION['plantCode'];
+// $plantcode=$_SESSION['plantCode'];
+$plantcode='Q01';
 $username=$_SESSION['userName'];
 // $plantcode='AIP';
 
@@ -315,8 +316,6 @@ if(isset($_POST['submit']) && $reptype == 1)
 	LEFT JOIN $pps.`jm_docket_lines` jdl ON jdl.jm_docket_line_id = lpl.jm_docket_line_id
 	LEFT JOIN $pps.`jm_docket_bundle` jdb ON jdb.jm_docket_line_id = jdl.jm_docket_line_id
 	LEFT JOIN $pps.`jm_docket_logical_bundle` jdlb ON jdlb.jm_docket_bundle_id = jdb.jm_docket_bundle_id
-	LEFT JOIN $pps.`jm_cut_bundle` jcb ON jcb.jm_cut_bundle_id = jdb.jm_docket_bundle_id
-	LEFT JOIN $pps.`jm_cut_bundle_details` jcbd ON jcbd.jm_cut_bundle_id = jcb.jm_cut_bundle_id
 	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdl.jm_docket_id
 	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = jd.jm_cut_job_id 
 	WHERE DATE(lpl.created_at) between \"$from_date\" and  \"$to_date\" and lpl.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND lpl.shift in ($shift)
@@ -537,15 +536,13 @@ $reptype == $_POST['reptype'];
 if(isset($_POST['submit']) && $reptype==2)
 { 
 
-$sql = "SELECT GROUP_CONCAT(distinct(lpl.lp_lay_id)) as lp_lay_id,GROUP_CONCAT(distinct(jcj.cut_number)) as cut_number,sum(jcb.quantity) AS pcs,sum(jdlb.quantity) as quantity,sum(jdl.plies) as plies,GROUP_CONCAT(distinct(lpl.po_number)) as po_number,GROUP_CONCAT(distinct(jd.ratio_comp_group_id)) as ratio_comp_group_id,lpl.workstation_id,GROUP_CONCAT(distinct(lpl.shift)) as shift 
+$sql = "SELECT GROUP_CONCAT(distinct(lpl.lp_lay_id)) as lp_lay_id,GROUP_CONCAT(distinct(jcj.cut_number)) as cut_number,sum(jdlb.quantity) as quantity,sum(jdl.plies) as plies,GROUP_CONCAT(distinct(lpl.po_number)) as po_number,GROUP_CONCAT(distinct(jd.ratio_comp_group_id)) as ratio_comp_group_id,lpl.workstation_id,GROUP_CONCAT(distinct(lpl.shift)) as shift 
 	FROM $pps.`lp_lay` lpl 
 	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = lpl.po_number
 	LEFT JOIN $pps.`lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
 	LEFT JOIN $pps.`jm_docket_lines` jdl ON jdl.jm_docket_line_id = lpl.jm_docket_line_id
 	LEFT JOIN $pps.`jm_docket_bundle` jdb ON jdb.jm_docket_line_id = jdl.jm_docket_line_id
 	LEFT JOIN $pps.`jm_docket_logical_bundle` jdlb ON jdlb.jm_docket_bundle_id = jdb.jm_docket_bundle_id
-	LEFT JOIN $pps.`jm_cut_bundle` jcb ON jcb.jm_cut_bundle_id = jdb.jm_docket_bundle_id
-	LEFT JOIN $pps.`jm_cut_bundle_details` jcbd ON jcbd.jm_cut_bundle_id = jcb.jm_cut_bundle_id
 	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdl.jm_docket_id
 	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = jd.jm_cut_job_id 
 	WHERE DATE(lpl.created_at) between \"$from_date\" and  \"$to_date\" and lpl.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND lpl.shift in ($shift)
