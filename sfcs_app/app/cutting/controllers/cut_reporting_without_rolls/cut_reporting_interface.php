@@ -46,10 +46,10 @@ echo '<input type="hidden" name="good_report" id="good_report" value="'.$good_re
 echo '<input type="hidden" name="reject_report" id="reject_report" value="'.$reject_report.'">';
 if(isset($_GET['doc_no'])){
     $docket_line_id=$_GET['doc_no'];
-    $get_docket_number="SELECT docket_line_number FROM $pps.jm_docket_lines WHERE jm_docket_line_id='$docket_line_id'";
+    $get_docket_number="SELECT docket_number FROM $pps.jm_dockets WHERE jm_docket_id='$docket_line_id'";
     $sql_result121=mysqli_query($link, $get_docket_number) or exit("Sql Error get_docket_number".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row_doc = mysqli_fetch_array($sql_result121)){
-        $doc_no = $row_doc['docket_line_number'];
+        $doc_no = $row_doc['docket_number'];
     }
     // $cut_table = $_GET['module'];
     $cut_table = $_GET['module'];

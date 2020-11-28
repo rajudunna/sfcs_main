@@ -102,7 +102,7 @@ function getCheckList($get_style,$get_schedule,$plantcode){
                         $jm_dockets_id = implode("','", $jm_dockets_idss);
                     }
                     //qry to get dockets in through dockets id
-                    $qry_get_docketlines="SELECT group_concat(docket_line_number) as docket_line_number FROM $pps.jm_docket_lines WHERE jm_docket_id IN ('$jm_dockets_id') AND plant_code='$plantcode'";
+                    $qry_get_docketlines="SELECT group_concat(docket_number) as docket_line_number FROM $pps.jm_dockets WHERE jm_docket_id IN ('$jm_dockets_id') AND plant_code='$plantcode'";
                     $qry_get_docketlines_result=mysqli_query($link_new, $qry_get_docketlines) or exit("Sql Error at docket lines".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $docketlines_num=mysqli_num_rows($qry_get_docketlines_result);
                     if($docketlines_num>0){

@@ -2115,11 +2115,11 @@ function printpr()
   <td rowspan="2" colspan="11" class=xl764118 style='border-bottom:.5pt solid black;' >Inspection Comments:
   
   <?php
- $docket_query = "select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number='$doc' and plant_code='".$plant_code."'";
+ $docket_query = "select jm_docket_id from $pps.jm_dockets where docket_number='$doc' and plant_code='".$plant_code."'";
  $docket_query_result = mysqli_query($link_new,$docket_query);
  while($sql_row1=mysqli_fetch_array($docket_query_result))
  {
-	 $jm_docket_line_id = $sql_row1['jm_docket_line_id'];
+	 $jm_docket_line_id = $sql_row1['jm_docket_id'];
  }
 //function to get docket 
 

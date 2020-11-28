@@ -118,11 +118,11 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 								{
 									// var_dump($sql_row2['order_style_no']);
 									// var_dump($sql_row2['order_del_no']);
-									$docket_qry="SELECT docket_line_number FROM $pps.jm_docket_lines WHERE plant_code='".$plant_code."' AND jm_docket_line_id='".$sql_row['doc_no']."'";
+									$docket_qry="SELECT docket_number FROM $pps.jm_dockets WHERE plant_code='".$plant_code."' AND jm_docket_id='".$sql_row['doc_no']."'";
 									$docket_qry_result=mysqli_query($link, $docket_qry) or die(exception($docket_qry));
 									while($sql_row01=mysqli_fetch_array($docket_qry_result))
 									{
-										$docket_line_number = $sql_row01['docket_line_number'];
+										$docket_line_number = $sql_row01['docket_number'];
 									}
 									echo "<tr><td>".$index."</td>";
 									echo "<td>".$docket_line_number."</td>";
@@ -177,11 +177,11 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                                 $table1_rows++;
                                 $i = $sql_row['id'];
 								$index+=1;
-								$docket_qry="SELECT docket_line_number FROM $pps.jm_docket_lines WHERE plant_code='".$plant_code."' AND jm_docket_line_id='".$sql_row['doc_no']."'";
+								$docket_qry="SELECT docket_number FROM $pps.jm_dockets WHERE plant_code='".$plant_code."' AND jm_docket_id='".$sql_row['doc_no']."'";
 								$docket_qry_result=mysqli_query($link, $docket_qry) or die(exception($docket_qry));
 								while($sql_row01=mysqli_fetch_array($docket_qry_result))
 								{
-									$docket_line_number = $sql_row01['docket_line_number'];
+									$docket_line_number = $sql_row01['docket_number'];
 								}
                                 echo "<tr><td>".$index."</td>";
                                 echo "<td>".$docket_line_number."</td>";
@@ -214,11 +214,11 @@ if(isset($_POST['formSubmit']))
 		$username = $_POST['username'];
 		
 		
-		$docket_qry="SELECT jm_docket_line_id FROM $pps.jm_docket_lines WHERE docket_line_number='$doc_no' and plant_code='".$plant_code."'";
+		$docket_qry="SELECT jm_docket_id FROM $pps.jm_dockets WHERE docket_number='$doc_no' and plant_code='".$plant_code."'";
 		$docket_qry_result=mysqli_query($link, $docket_qry) or die(exception($docket_qry));
 		while($sql_row01=mysqli_fetch_array($docket_qry_result))
 		{
-			$jm_docket_line_id = $sql_row01['jm_docket_line_id'];
+			$jm_docket_line_id = $sql_row01['jm_docket_id'];
 		}
   
         $fabric_status_qry="SELECT fabric_status FROM $pps.requested_dockets WHERE plant_code='".$plant_code."' and jm_docket_line_id='$jm_docket_line_id'";

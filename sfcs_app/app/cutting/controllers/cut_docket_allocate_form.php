@@ -237,14 +237,14 @@ if(isset($_POST['submit']))
 					$jm_dockets = implode("','", $jm_docketss);
 				}
 				//qry to get dockets in through dockets id
-				$qry_get_docketlines="SELECT jm_docket_line_id,docket_line_number FROM $pps.jm_docket_lines WHERE plant_code='$plant_code' AND jm_docket_id IN ('$jm_dockets') order by docket_line_number";
+				$qry_get_docketlines="SELECT jm_docket_id,docket_number FROM $pps.jm_dockets WHERE plant_code='$plant_code' AND jm_docket_id IN ('$jm_dockets') order by docket_line_number";
 				// echo $qry_get_docketlines;
 				$qry_get_docketlines_result=mysqli_query($link_new, $qry_get_docketlines) or exit("Sql Error at docket lines".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$docketlines_num=mysqli_num_rows($qry_get_docketlines_result);
 				if($docketlines_num>0){
 					while($docketline_row=mysqli_fetch_array($qry_get_docketlines_result))
 					{
-						$docket_nos[] = $docketline_row['docket_line_number']; 
+						$docket_nos[] = $docketline_row['docket_number']; 
 					}
 					$doc = implode(",", $docket_nos);
 					$data['cut']['doc_no'] = $doc;
