@@ -229,8 +229,8 @@ if(isset($_POST['submit']))
 			{
 				$jm_docket_line_id=$sql_row_doclineid['jm_docket_id'];
 				
-				//getting details from jm_docket_bundle
-				$get_det_qry="SELECT size FROM $pps.`jm_docket_bundle` WHERE plant_code='$plant_code' AND jm_docket_line_id='$jm_docket_line_id'";
+				//getting details from jm_docket_cg_bundle
+				$get_det_qry="SELECT size FROM $pps.`jm_docket_cg_bundle` WHERE plant_code='$plant_code' AND jm_docket_line_id='$jm_docket_line_id'";
 				$get_det_qry_result=mysqli_query($link, $get_det_qry) or exit("Sql Error while getting details".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row_det=mysqli_fetch_array($get_det_qry_result))
 				{
@@ -275,8 +275,8 @@ if(isset($_POST['submit']))
 						echo "<td>".$docket_line_number."</td>";
 						for($i=0;$i<sizeof(array_unique($sizesarr));$i++)
 						{
-							//getting details from jm_docket_bundle
-							$get_det_qry="SELECT sum(quantity) as quantity FROM $pps.`jm_docket_bundle` WHERE plant_code='$plant_code' AND jm_docket_line_id='$jm_docket_line_id' and size='".$sizesarr[$i]."'";
+							//getting details from jm_docket_cg_bundle
+							$get_det_qry="SELECT sum(quantity) as quantity FROM $pps.`jm_docket_cg_bundle` WHERE plant_code='$plant_code' AND jm_docket_line_id='$jm_docket_line_id' and size='".$sizesarr[$i]."'";
 							$get_det_qry_result=mysqli_query($link, $get_det_qry) or exit("Sql Error while getting details".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row_det=mysqli_fetch_array($get_det_qry_result))
 							{
