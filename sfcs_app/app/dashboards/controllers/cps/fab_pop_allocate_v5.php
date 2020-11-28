@@ -953,7 +953,7 @@ if(isset($_POST['allocate']))
 			$temp=$_POST["pms".$doc[$i]];
 			$pms_lot=array();
 		}
-		$sql1211="update $pps.jm_docket_lines set marker_version_id='$marker_version', updated_user='$username',updated_at=NOW() where jm_docket_line_id='$doc_no[$i]'";
+		$sql1211="update $pps.jm_dockets set marker_version_id='$marker_version', updated_user='$username',updated_at=NOW() where jm_docket_id='$doc_no[$i]'";
 		// echo 	$sql1211;die();			//echo $sql1211;
 		mysqli_query($link, $sql1211) or exit("Sql Error3: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(strlen($temp)>0)
@@ -1043,11 +1043,11 @@ if(isset($_POST['allocate']))
 			// 	$shrinkaage='N/A';
 			// 	$pur_width='N/A';
 			// }
-			$sql11x11="SELECT docket_line_number FROM $pps.jm_docket_lines where plant_code='$plant_code' and jm_docket_line_id='$doc_no[$i]'";
+			$sql11x11="SELECT docket_number FROM $pps.jm_dockets where plant_code='$plant_code' and jm_docket_id='$doc_no[$i]'";
 			$sql_result11x11=mysqli_query($link, $sql11x11) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row111x11=mysqli_fetch_array($sql_result11x11))
 			{
-			$docket_line_no=$row111x11["docket_line_number"];
+			$docket_line_no=$row111x11["docket_number"];
 
 			}  
 			if($docket_line_no!='' && $plant_code!=''){

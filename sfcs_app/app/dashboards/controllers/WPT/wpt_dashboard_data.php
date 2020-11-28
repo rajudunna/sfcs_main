@@ -294,7 +294,7 @@ if($section){
                         ($row['plies']) ? $reportedPlies = $row['plies'] * $sizeRatioSum: $reportedPlies = 0;
                        
                         // Get original plies for the docket
-                        $docketLineQuery = "select plies from $pps.jm_docket_lines where jm_docket_line_id = '".$docketId."' and plant_code='".$plantCode."'";
+                        $docketLineQuery = "select plies from $pps.jm_dockets where jm_docket_id = '".$docketId."' and plant_code='".$plantCode."'";
                         $docketResult = mysqli_query($link_new,$docketLineQuery) or exit('Problem in getting docket data');                        
                         $row = mysqli_fetch_assoc($docketResult);
                         ($row['plies']) ? $docketPlies = $row['plies'] * $sizeRatioSum: $docketPlies = 0;
