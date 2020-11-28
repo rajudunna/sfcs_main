@@ -458,7 +458,7 @@ td,th
 	 $hour_filter=$_POST['hour_filter'];//slected hour  
     $style_break=($_POST['secstyles']==1) ? $_POST['secstyles'] : 0 ; //style break
     $hourly_break=($_POST['option1']==1) ? $_POST['option1'] : 0;//hourly Break 
-    $current_hr='10';
+    $current_hr=date('H');
 	$current_date=date('Y-m-d');
 	$sql2="SELECT operation_code  FROM $brandix_bts.`tbl_orders_ops_ref` where category='sewing'";
 	$result2=mysqli_query($link, $sql2) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
