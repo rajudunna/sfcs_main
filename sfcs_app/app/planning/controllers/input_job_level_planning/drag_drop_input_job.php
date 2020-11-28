@@ -764,7 +764,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 
 					/**getting docket line id's */
 					$jm_docket_line_id=array();
-					$qrydocketLinesIDs="SELECT jm_docket_line_id FROM $pps.jm_docket_lines WHERE docket_line_number IN ($docketno) AND plant_code='$plant_code' AND is_active=1";
+					$qrydocketLinesIDs="SELECT jm_docket_id FROM $pps.jm_dockets WHERE docket_number IN ($docketno) AND plant_code='$plant_code' AND is_active=1";
 					$toget_qty_qry_result=mysqli_query($link_new, $qrydocketLinesIDs) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$getRows=mysqli_num_rows($toget_qty_qry_result);
 					if($getRows>0){

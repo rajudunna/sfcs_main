@@ -415,7 +415,7 @@ if ((isset($_GET['sdate']) && isset($_GET['edate']))||(isset($_POST['sdate'])&& 
                             `lp_lay`.`po_number`= mp_sub_order.`po_number` WHERE `mp_sub_order`.`master_po_number` IN ('".$po_number."')";
                             $sql_result1 = mysqli_query($link, $lay_jm_docket_lines) or exit("Sql Error1 in cut Qty" . mysqli_error($GLOBALS["___mysqli_ston"]));
                             while ($sql_row1 = mysqli_fetch_array($sql_result1)) {
-                                $sql_jm_docket="SELECT plies,jm_docket_id FROM $pps.jm_docket_lines WHERE jm_docket_line_id = '".$sql_row1['jm_docket_line_id']."'";
+                                $sql_jm_docket="SELECT plies,jm_docket_id FROM $pps.jm_dockets WHERE jm_docket_id = '".$sql_row1['jm_docket_line_id']."'";
                                 $sql_result2 = mysqli_query($link, $sql_jm_docket) or exit("Sql Error2 in cut Qty" . mysqli_error($GLOBALS["___mysqli_ston"]));
                                 while ($sql_row2 = mysqli_fetch_array($sql_result2)) {
                                     $sql_cg="SELECT component_group_id, ratio_id FROM $pps.lp_ratio_component_group 
