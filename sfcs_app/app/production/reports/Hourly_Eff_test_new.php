@@ -458,7 +458,7 @@ td,th
 	 $hour_filter=$_POST['hour_filter'];//slected hour  
     $style_break=($_POST['secstyles']==1) ? $_POST['secstyles'] : 0 ; //style break
     $hourly_break=($_POST['option1']==1) ? $_POST['option1'] : 0;//hourly Break 
-    $current_hr=date('H');
+    $current_hr='10';
 	$current_date=date('Y-m-d');
 	$sql2="SELECT operation_code  FROM $brandix_bts.`tbl_orders_ops_ref` where category='sewing'";
 	$result2=mysqli_query($link, $sql2) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -493,6 +493,16 @@ td,th
 				while($sql_row32121=mysqli_fetch_array($sql_result32121)) 
 				{
 					$end_time_exact=$sql_row32121['val'];
+				}
+				if($end_time_exact=="")
+				{
+					// Exact Start time
+					$sql3212="SELECT end_time as val FROM $bai_pro3.tbl_plant_timings where time_value='".($sql_row_hr['end_time']-1)."'";
+					$sql_result3212=mysqli_query($link, $sql3212) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					while($sql_row3212=mysqli_fetch_array($sql_result3212)) 
+					{
+						$end_time_exact=$sql_row3212['val'];
+					}
 				}
 				if($current_date == $date)
 				{
@@ -567,23 +577,7 @@ td,th
 	//teams based looping start    
 	for($k=0;$k<sizeof($teams);$k++)
 	{
-		$shift=$teams[$k];
-		$sql_nop="select (present+jumper) as avail,absent from $bai_pro.pro_attendance where date=\"$date\" and module=\"$mod\" and shift=\"$shift\""; 
-		// echo $sql_nop."<br>";
-		$sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if(mysqli_num_rows($sql_result_nop) > 0) 
-		{ 
-			while($sql_row_nop=mysqli_fetch_array($sql_result_nop)) 
-			{ 
-			   $nop=$sql_row_nop["avail"];
-			   $nop_shift=$nop_shift+$nop; 
-			} 
-		}
-		else
-		{ 
-			  $nop=0; 
-			  $nop_shift=$nop_shift+$nop; 
-		}
+		$shift=$teams[$k];		
 		//if current date == given date start 
 		if($current_date == $date)
 		{
@@ -648,6 +642,17 @@ td,th
 					while($sql_row32121=mysqli_fetch_array($sql_result32121)) 
 					{
 						$end_time_exact1=$sql_row32121['val'];
+					}
+					
+					if($end_time_exact1=="")
+					{
+						// Exact Start time
+						$sql3212="SELECT end_time as val FROM $bai_pro3.tbl_plant_timings where time_value='".($sql_row_hr['end_time']-1)."'";
+						$sql_result3212=mysqli_query($link, $sql3212) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+						while($sql_row3212=mysqli_fetch_array($sql_result3212)) 
+						{
+							$end_time_exact1=$sql_row3212['val'];
+						}
 					}
 					$time1 = strtotime($start_time_exact1);
 					$time2 = strtotime($end_time_exact1);
@@ -841,25 +846,33 @@ for ($j=0;$j<sizeof($sections);$j++)
 			$schedules[$mod]=0;
 			$style_name[$mod]=0;
 			$smv[$mod]=0;
-		}		
+		}
+		
 		echo "<tr><td>".$section_name."</td><td>".$mod."</td>";
 		// $max=0; 
-		$sql2="select sum(present+jumper) as nop from $bai_pro.pro_attendance where date='".$date."' and module=$mod and  shift in ($team)"; 
+		$sql2="select sum((present+jumper)-absent) as nop from $bai_pro.pro_attendance where date='".$date."' and module='".$mod."' and  shift in ($team)"; 
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		if(mysqli_num_rows($result6)>0)
 		{
 			while($sql_row2=mysqli_fetch_array($sql_result2)) 
 			{ 
-				$nop=$sql_row2['nop']; 
+				if($sql_row2['nop']<>"")
+				{
+					$nop_shift=$sql_row2['nop']; 
+				}else {
+					$nop_shift=0;
+				}
+				
 			}
 		}		
 		else
 		{
-			$nop=0;
-		}	
-		$clha_shift=0; 
+			$nop_shift=0;
+		}
+		// echo $mod."==".$nop_shift."==".$hoursa_shift."<br>";
+		$clha_shift=$nop_shift*$hoursa_shift; 
 		$hoursa=0; 
-		$nop_shift=0;
+		//$nop_shift=0;
 		//$hoursa_shift=0;
 		$diff_time=0;
 		$current_date=date("Y-m-d");
@@ -882,7 +895,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 			{ 
 				$sql31="SELECT sum(recevied_qty) as sum,sum((recevied_qty*sfcs_smv)/60) as sth,round(sum(((recevied_qty*sfcs_smv)/60)/($nop_shift*$hoursa_shift)*100),2) as eff FROM $brandix_bts.`bundle_creation_data_temp` 
 				WHERE date_time BETWEEN ('$date ".$hr_start[$i]."') and ('$date ".$hr_end[$i]."') and shift in ($team) and assigned_module='".$mod."' and sfcs_smv>0 and  operation_id in ('$operation_codes')";
-				//echo $sql31."<br>";
+				// echo $sql31."<br>";
 				$result31=mysqli_query($link, $sql31) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($result31)>0)
 				{	
@@ -1275,7 +1288,7 @@ if($style_break==1)
 		$mod_style=$sql_row['style']; 
 		$mod_no=$sql_row['mods'];
 		$nops=0;		
-		$sql212="select sum(present+jumper) as nop from $bai_pro.pro_attendance where date='".$date."' and module in ($mod_no) and  shift in ($team)"; 
+		$sql212="select sum((present+jumper)-absent) as nop from $bai_pro.pro_attendance where date='".$date."' and module in ($mod_no) and  shift in ($team)"; 
 		$sql_result212=mysqli_query($link, $sql212) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		if(mysqli_num_rows($sql_result212)>0)
 		{
