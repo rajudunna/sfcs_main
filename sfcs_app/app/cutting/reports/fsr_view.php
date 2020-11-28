@@ -314,7 +314,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = lpl.po_number
 	LEFT JOIN $pps.`lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
 	LEFT JOIN $pps.`jm_docket_lines` jdl ON jdl.jm_docket_line_id = lpl.jm_docket_line_id
-	LEFT JOIN $pps.`jm_docket_bundle` jdb ON jdb.jm_docket_line_id = jdl.jm_docket_line_id
+	LEFT JOIN $pps.`jm_docket_cg_bundle` jdb ON jdb.jm_docket_line_id = jdl.jm_docket_line_id
 	LEFT JOIN $pps.`jm_docket_logical_bundle` jdlb ON jdlb.jm_docket_bundle_id = jdb.jm_docket_bundle_id
 	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdl.jm_docket_id
 	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = jd.jm_cut_job_id 

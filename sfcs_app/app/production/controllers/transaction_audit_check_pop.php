@@ -77,7 +77,7 @@ if(isset($_POST['submit']))
 	echo "<tr><th>Docket ID</th><th width=\"150\">What</th><th>Who</th><th>When</th></tr>";
 	// getting docket line ids for a schedule
 	$sql_docket = "SELECT DISTINCT dl.jm_docket_line_id, dl.`docket_line_number` FROM $pps.`jm_docket_lines` dl
-	LEFT JOIN $pps.`jm_docket_bundle` db ON db.`jm_docket_line_id` = dl.`jm_docket_line_id`
+	LEFT JOIN $pps.`jm_docket_cg_bundle` db ON db.`jm_docket_line_id` = dl.`jm_docket_line_id`
 	LEFT JOIN $pps.`jm_docket_logical_bundle` dlb ON dlb.`jm_docket_bundle_id` = db.`jm_docket_bundle_id`
 	LEFT JOIN $pps.`jm_product_logical_bundle` plb ON plb.`jm_pplb_id` = dlb.`jm_pplb_id`
 	WHERE plb.`feature_value` = '$schedule'";
