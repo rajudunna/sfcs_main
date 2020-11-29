@@ -1157,7 +1157,10 @@ if($status_sew=='open')
 					{
 						$bulk_insert_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$username.'","'.$bundle_status.'",1),';
 						
-						$stat_update_qry_rej = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '".$bundle_status_rej."' where bundle_number =$b_tid[$key] and operation_id in ($post_ops_rej_val) ";
+						if(sizeof($post_ops_rej_val)>0)
+						{
+							$stat_update_qry_rej = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '".$bundle_status_rej."' where bundle_number =$b_tid[$key] and operation_id in ($post_ops_rej_val) ";
+						}
 						
 					}
 					//m3 operations............. 
@@ -1264,7 +1267,7 @@ if($status_sew=='open')
 					$final_query_000_temp = $bulk_insert_temp;
 				}
 				//echo $bulk_insert.'<br>';
-				if($bundle_status_rej == 5)
+				if($bundle_status_rej == 5 && sizeof($post_ops_rej_val)>0)
 				{
 					$status_res_qry_rej = $link->query($stat_update_qry_rej) or exit('Query error in updating BCD status 5');
 				}
@@ -1410,7 +1413,7 @@ if($status_sew=='open')
 							$query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = '".$final_rep_qty."',bundle_qty_status= 0 where bundle_number =$b_tid[$key] and operation_id = ".$post_ops_code;
 							$result_query = $link->query($query_post) or exit('query error in updating2');
 						}
-						if($bundle_status_rej1 == 5)
+						if($bundle_status_rej1 == 5 && sizeof($post_ops_rej_val)>0)
 						{
 							$stat_update_qry_rej2 = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '".$bundle_status_rej1."' where bundle_number =$b_tid[$key] and operation_id in ($post_ops_rej_val) ";
 							$status_res_qry_rej2 = $link->query($stat_update_qry_rej2) or exit('Query error1 in updating BCD status 5');
@@ -1560,11 +1563,16 @@ if($status_sew=='open')
 					
 					}
 
-					if($recevied_bundle_qty == 0 && $final_val1 == $reported_qty)
+					if($recevied_bundle_qty == 0 && $final_val1 == $reported_qty && sizeof($post_ops_rej_val)>0)
 					{
 						$bundle_status = 5;
 						$stat_update_qry_rej1 = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key] and operation_id in ($post_ops_rej_val) ";
 						$status_res_qry_rej1 = $link->query($stat_update_qry_rej1) or exit('Query error2 in updating BCD status 5');
+
+						$bundle_status = 1;
+						$status_update_query = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
+						$status_result_query = $link->query($status_update_query) or exit('query error in updating status');
+
 					}
 				}
 			}
