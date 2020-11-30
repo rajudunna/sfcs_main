@@ -184,7 +184,7 @@
 						    $color=implode("','" , $main_color);
 						}
 						$size_total_qty=[];
-						$sql="SELECT GROUP_CONCAT(DISTINCT jm_job_bundles.size) as size FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_pplb_id`=jm_product_logical_bundle.jm_pplb_id WHERE feature_value in($schedule) AND jm_job_bundles.fg_color in ('".$color."') AND jm_job_bundles.plant_code='$plant_code'";
+						$sql="SELECT GROUP_CONCAT(DISTINCT jm_job_bundles.size) as size FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_pplb_id`=jm_product_logical_bundle.jm_pplb_id WHERE schedule in($schedule) AND jm_job_bundles.fg_color in ('".$color."') AND jm_job_bundles.plant_code='$plant_code'";
 						$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($row=mysqli_fetch_array($sql_result))
 						{

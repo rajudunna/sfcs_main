@@ -122,11 +122,11 @@ if(isset($_POST['submit']) || $module)
                     $color=$mp_color_detail_row['color'];
                   }
                 
-                  $get_schedule="SELECT feature_value FROM $pps.`jm_product_logical_bundle` LEFT JOIN $pps.`jm_job_bundles` ON jm_job_bundles.`jm_pplb_id` = jm_product_logical_bundle.jm_pplb_id WHERE jm_jg_header_id='$key' AND jm_job_bundles.plant_code='$plant_code'";
+                  $get_schedule="SELECT schedule FROM $pps.`jm_product_logical_bundle` LEFT JOIN $pps.`jm_job_bundles` ON jm_job_bundles.`jm_pplb_id` = jm_product_logical_bundle.jm_pplb_id WHERE jm_jg_header_id='$key' AND jm_job_bundles.plant_code='$plant_code'";
                   $get_schedule_result=mysqli_query($link_new, $get_schedule) or exit("Sql Error at get_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
                   while($schedule_row=mysqli_fetch_array($get_schedule_result))
                   {
-                     $schedule=$schedule_row['feature_value'];
+                     $schedule=$schedule_row['schedule'];
                   } 
                   
                   //to get dockets

@@ -175,7 +175,7 @@ function check_val()
                                                $opcodes=implode(',',$operation_codes);
                                              
                                                 //echo "</br>SQL Operation : ".$sql_operation."</br>";       
-                                                $get_color1="SELECT fg_color FROM `$pps`.`jm_product_logical_bundle` WHERE feature_value='$schedule' and plant_code='$plant_code'";
+                                                $get_color1="SELECT fg_color FROM `$pps`.`jm_product_logical_bundle` WHERE schedule='$schedule' and plant_code='$plant_code'";
                                                 $get_color_result1=mysqli_query($link,$get_color1) or exit($get_color_result."Error at something");
                                                     if( mysqli_num_rows( $get_color_result1 )==0)
                                                     {
@@ -218,14 +218,14 @@ function check_val()
                                              ?>
                                          <?php  
 
-                                         $get_color="SELECT fg_color FROM `$pps`.`jm_product_logical_bundle` WHERE feature_value='$schedule' and plant_code='$plant_code'";
+                                         $get_color="SELECT fg_color FROM `$pps`.`jm_product_logical_bundle` WHERE schedule='$schedule' and plant_code='$plant_code'";
                                          $get_color_result=mysqli_query($link,$get_color) or exit($get_color_result."Error at something");
                                          while($row_21 = mysqli_fetch_assoc( $get_color_result)){
 
                                         $color =  $row_21['fg_color'];
                                          }
                                                 // $openbundle_sql="SELECT jm_pplb_id FROM `$pps`.`jm_job_bundles` WHERE fg_color='".$color."' AND  plant_code='$plant_code' ";
-                                                    $openbundle_sql="SELECT jm_pplb_id FROM `$pps`.`jm_product_logical_bundle` WHERE feature_value='$schedule' and fg_color='".$color."' AND  plant_code='$plant_code' ";
+                                                    $openbundle_sql="SELECT jm_pplb_id FROM `$pps`.`jm_product_logical_bundle` WHERE schedule='$schedule' and fg_color='".$color."' AND  plant_code='$plant_code' ";
                                                     //  echo $openbundle_sql;
                                                     $select_bundlenum=mysqli_query($link,$openbundle_sql) or exit($openbundle_sql."Error at something");
                                                     $operation_bundles=array();$bundle_qty_stats_bundles = array();
