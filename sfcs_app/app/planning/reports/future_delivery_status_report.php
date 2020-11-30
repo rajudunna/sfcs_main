@@ -83,7 +83,7 @@ $table_flag = false;
 			$color=$get_style_col_row['color'];
 		}
 		//getting jm_product_logical_bundle_id
-		$get_jplbid_qry="SELECT jm_pplb_id FROM $pps.`jm_product_logical_bundle` WHERE plant_code='$plantcode' AND feature_value='$schedule' AND po_number='$po_number'";
+		$get_jplbid_qry="SELECT jm_pplb_id FROM $pps.`jm_product_logical_bundle` WHERE plant_code='$plantcode' AND schedule='$schedule' AND po_number='$po_number'";
 		$get_jplbid_qry_result=mysqli_query($link, $get_jplbid_qry) or die ("sql error getting details from jm_product_logical_bundle".$sql.mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($get_jplbid_row=mysqli_fetch_array($get_jplbid_qry_result))
 		{

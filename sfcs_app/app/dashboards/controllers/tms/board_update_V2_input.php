@@ -153,11 +153,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			}
 			//getting jm_docket_line_id
 			$doc_no_ref=array();
-			$get_line_qry="select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number in(".$doc_no.")";
+			$get_line_qry="select jm_docket_id from $pps.jm_dockets where docket_number in(".$doc_no.")";
 			$get_line_qry_result = mysqli_query($link_new, $get_line_qry) or exit("Sql Error getting dockline" . mysqli_error($GLOBALS["___mysqli_ston"]));
 			while ($row_line = mysqli_fetch_array($get_line_qry_result)) 
 			{
-				$doc_no_ref[]=$row_line['jm_docket_line_id'];
+				$doc_no_ref[]=$row_line['jm_docket_id'];
 			}
 			$doc_no_ref_input = implode("','",$doc_no_ref);
 			

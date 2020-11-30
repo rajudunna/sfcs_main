@@ -421,13 +421,13 @@ if(isset($_POST['submit']))
 
 					// to get fabric not allocated qty
 					$tot_qty=0;
-					$Qry_get_cut_details="SELECT docket_line_number,lp_lay_id,lay_status, lp_lay.plies as actualplies, jm_docket_lines.created_at as docket_date, lp_lay.created_at as cut_date, lp_lay.cut_report_status, lay_number, shift  FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_docket_lines` ON jm_docket_lines.`jm_docket_line_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_docket_lines.plant_code='$plant_code'";
+					$Qry_get_cut_details="SELECT docket_number,lp_lay_id,lay_status, lp_lay.plies as actualplies, jm_dockets.created_at as docket_date, lp_lay.created_at as cut_date, lp_lay.cut_report_status, lay_number, shift  FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_dockets` ON jm_dockets.`jm_docket_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_dockets.plant_code='$plant_code'";
 					$sql_result6=mysqli_query($link, $Qry_get_cut_details) or die("Error".$Qry_get_cut_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	
 										while($fabnotallocated=mysqli_fetch_array($sql_result6))
 										{
-											$docket_no=$fabnotallocated['docket_line_number'];
+											$docket_no=$fabnotallocated['docket_number'];
 											$actual_plies=$fabnotallocated['actualplies'];
 												//To get docket_details
 												$result_docket_qty=getDocketInformation($docket_no,$plant_code);
@@ -673,7 +673,7 @@ if(isset($_POST['submit']))
 		<div class="col-sm-12">
 							<?php
 									$tot_qty=0;
-									$Qry_get_cut_details="SELECT docket_line_number,lp_lay_id,lay_status, lp_lay.plies as actualplies, jm_docket_lines.created_at as docket_date, lp_lay.created_at as cut_date, lp_lay.cut_report_status, lay_number, shift  FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_docket_lines` ON jm_docket_lines.`jm_docket_line_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_docket_lines.plant_code='$plant_code' order by docket_line_number";
+									$Qry_get_cut_details="SELECT docket_number,lp_lay_id,lay_status, lp_lay.plies as actualplies, jm_dockets.created_at as docket_date, lp_lay.created_at as cut_date, lp_lay.cut_report_status, lay_number, shift  FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_dockets` ON jm_dockets.`jm_docket_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_dockets.plant_code='$plant_code' order by docket_number";
 									$sql_result6=mysqli_query($link, $Qry_get_cut_details) or die("Error".$Qry_get_cut_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 									if(mysqli_num_rows($sql_result6))
 									{

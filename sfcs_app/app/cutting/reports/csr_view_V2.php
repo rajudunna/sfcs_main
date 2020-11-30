@@ -214,12 +214,12 @@ function verify_date(){
 					{
 						$attribute_value=$sql_row9['attribute_value'];
 					
-						$sql2="SELECT jm_docket_lines.jm_docket_id,jm_docket_lines.plies,jm_docket_lines.jm_docket_line_id,jm_docket_lines.docket_line_number,jm_cut_job.cut_number,lp_ratio_component_group.ratio_id,lp_ratio_size.size,lp_ratio_size.size_ratio,jm_cut_job.po_number,jm_docket_bundle.jm_docket_bundle_id,jm_docket_bundle.component_name
+						$sql2="SELECT jm_docket_lines.jm_docket_id,jm_docket_lines.plies,jm_docket_lines.jm_docket_line_id,jm_docket_lines.docket_line_number,jm_cut_job.cut_number,lp_ratio_component_group.ratio_id,lp_ratio_size.size,lp_ratio_size.size_ratio,jm_cut_job.po_number,jm_docket_cg_bundle.jm_dcgb_id,jm_docket_cg_bundle.cg_name
 						FROM $pps.jm_docket_lines 
 						LEFT JOIN $pps.jm_dockets ON jm_dockets.jm_docket_id=jm_docket_lines.jm_docket_id LEFT JOIN $pps.jm_cut_job ON  jm_cut_job.
 						jm_cut_job_id=jm_dockets.jm_cut_job_id LEFT JOIN $pps.lp_ratio_component_group ON lp_ratio_component_group.lp_ratio_cg_id
-						=jm_dockets.ratio_comp_group_id LEFT JOIN $pps.jm_docket_bundle ON jm_docket_bundle.jm_docket_line_id=jm_docket_lines.jm_docket_line_id LEFT JOIN $pps.lp_ratio_size ON lp_ratio_size.ratio_id=lp_ratio_component_group.ratio_id  
-						WHERE jm_docket_lines.plant_code='$plantcode' AND docket_type='NORMAL' AND jm_docket_lines.docket_line_number IN  ($attribute_value) GROUP BY lp_ratio_size.size,jm_docket_bundle.component_name";
+						=jm_dockets.ratio_comp_group_id LEFT JOIN $pps.jm_docket_cg_bundle ON jm_docket_cg_bundle.jm_docket_line_id=jm_docket_lines.jm_docket_line_id LEFT JOIN $pps.lp_ratio_size ON lp_ratio_size.ratio_id=lp_ratio_component_group.ratio_id  
+						WHERE jm_docket_lines.plant_code='$plantcode' AND docket_type='NORMAL' AND jm_docket_lines.docket_line_number IN  ($attribute_value) GROUP BY lp_ratio_size.size,jm_docket_cg_bundle.cg_name";
 						$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$rows=mysqli_num_rows($sql_result2);
 						$total=0;
@@ -234,8 +234,8 @@ function verify_date(){
 								$po_number=$sql_row2['po_number'];
 								$plies=$sql_row2['plies'];
 								$jm_docket_line_id=$sql_row2['jm_docket_line_id'];
-								$jm_docket_bundle_id=$sql_row2['jm_docket_bundle_id'];
-								$category_name=$sql_row2['component_name'];
+								$jm_dcgb_id=$sql_row2['jm_dcgb_id'];
+								$category_name=$sql_row2['cg_name'];
 
 							
 							
@@ -251,7 +251,7 @@ function verify_date(){
 								// 	$category=$result_category['category'];	
 								// }
 								
-								$qry_mp_mo_qty="SELECT jm_pplb_id FROM $pps.jm_docket_logical_bundle WHERE plant_code='$plantcode' AND `jm_docket_bundle_id`='$jm_docket_bundle_id'";
+								$qry_mp_mo_qty="SELECT jm_pplb_id FROM $pps.jm_docket_component_panel WHERE plant_code='$plantcode' AND `jm_docket_bundle_id`='$jm_dcgb_id'";
 								$qry_mp_mo_qty_result=mysqli_query($link_new, $qry_mp_mo_qty) or exit("Sql Errorat 34_mp_mo_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row5=mysqli_fetch_array($qry_mp_mo_qty_result))
 								{
@@ -349,12 +349,12 @@ function verify_date(){
 							{
 								$attribute_value=$sql_row9['attribute_value'];
 							
-								$sql2="SELECT jm_docket_lines.jm_docket_id,jm_docket_lines.plies,jm_docket_lines.jm_docket_line_id,jm_docket_lines.docket_line_number,jm_cut_job.cut_number,lp_ratio_component_group.ratio_id,lp_ratio_size.size,lp_ratio_size.size_ratio,jm_cut_job.po_number,jm_docket_bundle.jm_docket_bundle_id,jm_docket_bundle.component_name
+								$sql2="SELECT jm_docket_lines.jm_docket_id,jm_docket_lines.plies,jm_docket_lines.jm_docket_line_id,jm_docket_lines.docket_line_number,jm_cut_job.cut_number,lp_ratio_component_group.ratio_id,lp_ratio_size.size,lp_ratio_size.size_ratio,jm_cut_job.po_number,jm_docket_cg_bundle.jm_dcgb_id,jm_docket_cg_bundle.cg_name
 								FROM $pps.jm_docket_lines 
 								LEFT JOIN $pps.jm_dockets ON jm_dockets.jm_docket_id=jm_docket_lines.jm_docket_id LEFT JOIN $pps.jm_cut_job ON  jm_cut_job.
 								jm_cut_job_id=jm_dockets.jm_cut_job_id LEFT JOIN $pps.lp_ratio_component_group ON lp_ratio_component_group.lp_ratio_cg_id
-								=jm_dockets.ratio_comp_group_id LEFT JOIN $pps.jm_docket_bundle ON jm_docket_bundle.jm_docket_line_id=jm_docket_lines.jm_docket_line_id LEFT JOIN $pps.lp_ratio_size ON lp_ratio_size.ratio_id=lp_ratio_component_group.ratio_id  
-								WHERE jm_docket_lines.plant_code='$plantcode' AND docket_type='RECUT' AND jm_docket_lines.docket_line_number IN  ($attribute_value) GROUP BY lp_ratio_size.size,jm_docket_bundle.component_name";
+								=jm_dockets.ratio_comp_group_id LEFT JOIN $pps.jm_docket_cg_bundle ON jm_docket_cg_bundle.jm_docket_line_id=jm_docket_lines.jm_docket_line_id LEFT JOIN $pps.lp_ratio_size ON lp_ratio_size.ratio_id=lp_ratio_component_group.ratio_id  
+								WHERE jm_docket_lines.plant_code='$plantcode' AND docket_type='RECUT' AND jm_docket_lines.docket_line_number IN  ($attribute_value) GROUP BY lp_ratio_size.size,jm_docket_cg_bundle.cg_name";
 								$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$rows=mysqli_num_rows($sql_result2);
 								$total=0;
@@ -369,8 +369,8 @@ function verify_date(){
 										$po_number=$sql_row2['po_number'];
 										$plies=$sql_row2['plies'];
 										$jm_docket_line_id=$sql_row2['jm_docket_line_id'];
-										$jm_docket_bundle_id=$sql_row2['jm_docket_bundle_id'];
-										$category_name=$sql_row2['component_name'];
+										$jm_dcgb_id=$sql_row2['jm_dcgb_id'];
+										$category_name=$sql_row2['cg_name'];
 		
 									
 									
@@ -386,7 +386,7 @@ function verify_date(){
 										// 	$category=$result_category['category'];	
 										// }
 										
-										$qry_mp_mo_qty="SELECT jm_pplb_id FROM $pps.jm_docket_logical_bundle WHERE plant_code='$plantcode' AND `jm_docket_bundle_id`='$jm_docket_bundle_id'";
+										$qry_mp_mo_qty="SELECT jm_pplb_id FROM $pps.jm_docket_component_panel WHERE plant_code='$plantcode' AND `jm_docket_bundle_id`='$jm_dcgb_id'";
 										$qry_mp_mo_qty_result=mysqli_query($link_new, $qry_mp_mo_qty) or exit("Sql Errorat 34_mp_mo_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
 										while($sql_row5=mysqli_fetch_array($qry_mp_mo_qty_result))
 										{
@@ -483,8 +483,8 @@ function verify_date(){
 					while($sql_row99=mysqli_fetch_array($sql_result99))
 					{
 						$attribute_value=$sql_row99['attribute_value'];
-						$sql11="SELECT component_name,docket_line_number,jm_docket_bundle.jm_docket_line_id FROM $pps.jm_docket_bundle LEFT JOIN $pps.jm_docket_lines ON 
-						jm_docket_bundle.jm_docket_line_id=jm_docket_lines.jm_docket_line_id 
+						$sql11="SELECT component_name,docket_line_number,jm_docket_cg_bundle.jm_docket_line_id FROM $pps.jm_docket_cg_bundle LEFT JOIN $pps.jm_docket_lines ON 
+						jm_docket_cg_bundle.jm_docket_line_id=jm_docket_lines.jm_docket_line_id 
 						WHERE jm_docket_lines.plant_code='$plantcode' AND jm_docket_lines.docket_type='NORMAL' AND jm_docket_lines.docket_line_number IN ($attribute_value) GROUP BY component_name";
 						//mysqli_query($link, $sql2) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error222".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -586,8 +586,8 @@ function verify_date(){
 					while($sql_row99=mysqli_fetch_array($sql_result99))
 					{
 						$attribute_value=$sql_row99['attribute_value'];
-						$sql11="SELECT component_name,docket_line_number,jm_docket_bundle.jm_docket_line_id FROM $pps.jm_docket_bundle LEFT JOIN $pps.jm_docket_lines ON 
-						jm_docket_bundle.jm_docket_line_id=jm_docket_lines.jm_docket_line_id 
+						$sql11="SELECT component_name,docket_line_number,jm_docket_cg_bundle.jm_docket_line_id FROM $pps.jm_docket_cg_bundle LEFT JOIN $pps.jm_docket_lines ON 
+						jm_docket_cg_bundle.jm_docket_line_id=jm_docket_lines.jm_docket_line_id 
 						WHERE jm_docket_lines.plant_code='$plantcode' AND jm_docket_lines.docket_type='RECUT' AND jm_docket_lines.docket_line_number IN ($attribute_value) GROUP BY component_name";
 						//mysqli_query($link, $sql2) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error222".mysqli_error($GLOBALS["___mysqli_ston"]));

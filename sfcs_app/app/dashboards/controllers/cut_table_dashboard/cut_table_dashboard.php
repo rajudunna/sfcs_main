@@ -988,11 +988,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     //   $input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
     
       $doc_no=$sql_row1['jm_docket_line_id'];
-      $sql11x11="SELECT docket_line_number FROM $pps.jm_docket_lines where plant_code='$plant_code' and jm_docket_line_id='$doc_no'";
+      $sql11x11="SELECT docket_number FROM $pps.jm_dockets where plant_code='$plant_code' and jm_docket_id='$doc_no'";
       $sql_result11x11=mysqli_query($link, $sql11x11) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($row111x11=mysqli_fetch_array($sql_result11x11))
       {
-        $docket_num=$row111x11["docket_line_number"];
+        $docket_num=$row111x11["docket_number"];
 
       }
       if($docket_num!=" " && $plant_code!=' '){

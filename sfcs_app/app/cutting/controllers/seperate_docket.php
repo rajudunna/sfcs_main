@@ -132,11 +132,11 @@ th{
                                         $docket_number = $sql_row1['doc_no'];
                                     }
                                     /**getting jm dockenline UUID wrt docket number */
-                                    $qryJmDocketLines="SELECT jm_docket_line_id FROM $pps.jm_docket_lines WHERE docket_line_number='$docket_number' AND plant_code='$plant_code' AND is_active=1";
+                                    $qryJmDocketLines="SELECT jm_docket_id FROM $pps.jm_dockets WHERE docket_number='$docket_number' AND plant_code='$plant_code' AND is_active=1";
                                     $jmDocketLinesresult = mysqli_query($link_new,$qryJmDocketLines);
                                     while($sql_row1=mysqli_fetch_array($jmDocketLinesresult))
                                     {
-                                        $jm_docket_line_id = $sql_row1['jm_docket_line_id'];
+                                        $jm_docket_line_id = $sql_row1['jm_docket_id'];
                                     }
 
                                     $path=$DOCKET_SERVER_IP."/printDocket/".$jm_docket_line_id;

@@ -781,11 +781,11 @@ if(isset($_POST['allocate']))
 		//Table to show all list of available items
 		if(sizeof($lot_db_2)>0)
 		{
-			$docket_query = "select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number='$doc_ref' and plant_code='".$plant_code."'";
+			$docket_query = "select jm_docket_id from $pps.jm_dockets where docket_number='$doc_ref' and plant_code='".$plant_code."'";
 			$docket_query_result = mysqli_query($link_new,$docket_query);
 			while($sql_row1=mysqli_fetch_array($docket_query_result))
 			{
-				$jm_docket_line_id = $sql_row1['jm_docket_line_id'];
+				$jm_docket_line_id = $sql_row1['jm_docket_id'];
 			}
         echo "<input type=\"hidden\" name=\"row_id1\" value=\"".$row_id."\">";
 		echo "<input type=\"hidden\" name=\"style_ref1\" value=\"".$style_ref."\">";

@@ -142,7 +142,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
             {
                 $doc_no_ref_explode=explode(",",$doc_no_ref);
                 $num_docs=sizeof($doc_no_ref_explode);
-                $sqlDocketLineIds="SELECT GROUP_CONCAT(CONCAT('''', jm_docket_line_id, '''' ))AS docket_line_ids FROM $pps.`jm_docket_lines` WHERE docket_line_number IN ($doc_no_ref)";
+                $sqlDocketLineIds="SELECT GROUP_CONCAT(CONCAT('''', jm_docket_id, '''' ))AS docket_line_ids FROM $pps.`jm_dockets` WHERE docket_number IN ($doc_no_ref)";
                 $sql_resultsqlDocketLineIds=mysqli_query($link, $sqlDocketLineIds) or exit("Sql Error1000".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($docket_row123=mysqli_fetch_array($sql_resultsqlDocketLineIds))
                 {
@@ -150,7 +150,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                 }
                 if($docket_line_ids)
                 {
-                    $sql1x1="select * from $pps.jm_docket_lines where lay_status<>'DONE' and docket_line_number in ($doc_no_ref)";
+                    $sql1x1="select * from $pps.jm_dockets where lay_status<>'DONE' and docket_number in ($doc_no_ref)";
                     $sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error81".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($sql_result1x1)>0)
                     {

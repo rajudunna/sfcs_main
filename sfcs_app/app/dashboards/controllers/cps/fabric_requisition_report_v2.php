@@ -184,11 +184,11 @@ if($cat!=''){
 			{
 				$section=$row111["section_name"];
 			}
-			$docket_query="select docket_line_number from $pps.jm_docket_lines where plant_code='$plant_code' AND jm_docket_line_id='$jm_docket_line_id'";
+			$docket_query="select docket_number from $pps.jm_dockets where plant_code='$plant_code' AND jm_docket_id='$jm_docket_line_id'";
 			$docket_query_result=mysqli_query($link,$docket_query) or die("Error1 = ".mysqli_error());
 			while($row1112=mysqli_fetch_array($docket_query_result))
 			{
-				$docket_number=$row1112["docket_line_number"];
+				$docket_number=$row1112["docket_number"];
 			}
 			$sql1111="select workstation_code from $pms.workstation where workstation_id='$workstation_id' and plant_code='$plant_code'";
 			$sql_result1111=mysqli_query($link,$sql1111) or die("Error1 = ".mysqli_error());
