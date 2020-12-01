@@ -388,18 +388,26 @@ if(isset($_POST['submit']))
 						
 					?>	
 					<?php
-					   $get_working_days="SELECT date AS pre_date,SUM(present) AS present FROM $bai_pro.pro_attendance WHERE date<DATE(NOW()) GROUP BY date HAVING present>0 ORDER BY date DESC LIMIT 1";
-					   $result_get_working_day=mysqli_query($link, $get_working_days) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-					   while($sql_row11=mysqli_fetch_array($result_get_working_day))
-								 {
-								 $final_date=$sql_row11['pre_date'];
-  
-								 }
-								
-								if($date==$final_date || $now_date==$date){
-									echo'<input type="submit" id="submit" class="btn btn-primary" value="Submit" >';
-								}
-								echo $final_date;
+					   
+					    $get_cur_day_cnt="SELECT DATE AS pre_date,COUNT(*) AS cnt FROM $bai_pro.pro_attendance WHERE DATE=\"$now_date\" AND present > 0";
+						$result_get_cur_day_cnt=mysqli_query($link, $get_cur_day_cnt) or exit ("Sql Error: $get_cur_day_cnt".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row_cnt=mysqli_fetch_array($result_get_cur_day_cnt))
+							{
+								$cur_day_cnt=$sql_row_cnt['cnt'];
+  							}
+					   	$new_day_row=$cur_day_cnt+1;
+					   					   
+						$get_prev_day="SELECT date FROM $bai_pro.pro_attendance WHERE present > 0 ORDER BY DATE DESC LIMIT $new_day_row,1";
+						$result_get_prev_day=mysqli_query($link, $get_prev_day) or exit ("Sql Error: $get_prev_day".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row_date=mysqli_fetch_array($result_get_prev_day))
+							{
+								$prev_date=$sql_row_date['date'];
+  							}
+					   					  					
+						if($prev_date==$date || $now_date==$date)
+						{
+							echo'<input type="submit" id="submit" class="btn btn-primary" value="Submit" >';
+						}
 					}
 				
 					echo "</form>";
@@ -444,18 +452,27 @@ if(isset($_POST['submit']))
 					 ?>
 					 </table>
 					 <?php
-					 $get_working_days="SELECT date AS pre_date,SUM(present) AS present FROM $bai_pro.pro_attendance WHERE date<DATE(NOW()) GROUP BY date HAVING present>0 ORDER BY date DESC LIMIT 1";
-					 // var_dump($get_working_days);
-					 $result_get_working_day=mysqli_query($link, $get_working_days) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-					 while($sql_row11=mysqli_fetch_array($result_get_working_day))
-							   {
-							   $final_date=$sql_row11['pre_date'];
-
-							   }
+					 
+							   
+						$get_cur_day_cnt="SELECT DATE AS pre_date,COUNT(*) AS cnt FROM $bai_pro.pro_attendance WHERE DATE=\"$now_date\" AND present > 0";
+						$result_get_cur_day_cnt=mysqli_query($link, $get_cur_day_cnt) or exit ("Sql Error: $get_cur_day_cnt".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row_cnt=mysqli_fetch_array($result_get_cur_day_cnt))
+							{
+								$cur_day_cnt=$sql_row_cnt['cnt'];
+  							}
+					   	$new_day_row=$cur_day_cnt+1;
+					   					   
+						$get_prev_day="SELECT date FROM $bai_pro.pro_attendance WHERE present > 0 ORDER BY DATE DESC LIMIT $new_day_row,1";
+						$result_get_prev_day=mysqli_query($link, $get_prev_day) or exit ("Sql Error: $get_prev_day".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row_date=mysqli_fetch_array($result_get_prev_day))
+							{
+								$prev_date=$sql_row_date['date'];
+  							}
 							 
-							   if($date==$final_date ||$now_date==$date){
-								echo'<input type="submit" id="submit" class="btn btn-primary" value="Submit" >';
-							   }
+						if($prev_date==$date || $now_date==$date)
+						{
+							echo'<input type="submit" id="submit" class="btn btn-primary" value="Submit" >';
+						}
 			
 	
 			         ?>	
