@@ -1463,16 +1463,19 @@ while($sql_row=mysqli_fetch_array($sql_result))
 @page narrow {size: 9in 11in}
 @page rotated {size: landscape}
 DIV {page: narrow}
-TABLE {page: rotated}
+/*TABLE {page: rotated}*/
 #non-printable { display: none; }
 #printable { display: block; }
 #logo { display: block; }
 body { zoom:75%;}
 #ad{ display:none;}
 #leftbar{ display:none;}
-#Book1_14212{ width:75%; margin-left:20px;}
+#Book1_14212{ width:95%; margin-left:20px;}
 }
 div.solid {border-style: solid;}
+.panel-body{
+	margin-top: 30px;
+}
 </style>
 
 <script>
@@ -1511,10 +1514,10 @@ tags will be replaced.-->
 
 <div id="Book1_14212" class="solid" align=center x:publishsource="Excel">
 
-<table border=0 cellpadding=0 cellspacing=0 width=960 style='border-collapse:collapse;table-layout:fixed;width:720pt'>
+<table border=0 cellpadding=0 cellspacing=0 width=1000 style='border-collapse:collapse;table-layout:fixed;width:720pt'>
  <col width=64 style='width:48pt'>
  <col class=xl6614212 width=64 style='width:48pt'>
- <col class=xl1514212 width=64 span=12 style='width:48pt'>
+ <col class=xl1514212 width=64 span=12 style='width:68pt'>
  <col class=xl6714212 width=64 style='width:48pt'>
  <tr height=20 style='height:15.0pt'>
   <td height=20 class=xl6314212 width=64 style='height:15.0pt;width:48pt'>&nbsp;</td>
@@ -1656,7 +1659,7 @@ tags will be replaced.-->
   border-left:none'><?php echo $color_explode[1]; ?></td>
   <td class=xl1514212></td>
   <td colspan=2 class=xl11014212 style='border-right:.5pt solid black'>Reason:</td>
-  <td colspan=3 class=xl10314212 style='border-right:.5pt solid black'><?php echo $reason; ?></td>
+  <td colspan=3 class=xl10314212 style='border-right:.5pt solid black'><?php echo $reason;/*wordwrap($reason,25,"<br>\n"); */ ?></td>
   <td class=xl1514212></td>
   <td class=xl6714212>&nbsp;</td>
  </tr>

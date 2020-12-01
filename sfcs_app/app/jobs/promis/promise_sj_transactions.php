@@ -41,32 +41,55 @@ if($conn)
 		$uid[$row_user['username']] = $row_user['uid'];
 	}
 	$i=0;
-	$get_details = "select * from $bai_pro3.promisdata where trans_date ='$date'";
+	$get_details = "select ref_no,m3_ops_code,mo_no,CAST(date_time AS DATE) AS trans_date,module_no AS division_code,
+	quantity AS quantity,log_user,id,
+	reason,CASE WHEN CAST(date_time AS TIME) BETWEEN '08:45:00' AND '09:44:59' THEN 1 WHEN CAST(date_time AS TIME) BETWEEN '09:45:00' AND '10:44:59' THEN 2 WHEN CAST(date_time AS TIME) BETWEEN '10:45:00' AND '11:44:59' THEN 3 WHEN CAST(date_time AS TIME) BETWEEN '11:45:00' AND '12:59:59' THEN 4 WHEN CAST(date_time AS TIME) BETWEEN '13:00:00' AND '14:14:59' THEN 5 WHEN CAST(date_time AS TIME) BETWEEN '14:15:00' AND '15:14:59' THEN 6 WHEN CAST(date_time AS TIME) BETWEEN '15:15:00' AND '16:14:59' THEN 7 WHEN CAST(date_time AS TIME) BETWEEN '16:15:00' AND '16:59:59' THEN 8 WHEN CAST(date_time AS TIME) BETWEEN '17:00:00' AND '18:00:00' THEN 9 ELSE 10 END AS slot_id from $bai_pro3.m3_transactions where api_type='opn' and promis_status=0 and date_time between '$date 00:00:00' and '$date 23:59:59'";
 	$result1=mysqli_query($link, $get_details) or die ("Error1.1=".$get_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 	$log.="<tr><th></th><th>".$get_details."</th><th></th></tr>";	
 	while($row1=mysqli_fetch_array($result1))
 	{
-		$i++;
-		$operation_id = $row1['operation_id'];
-		$unique_id = $row1['bundle_number'];
-		$co_no = $row1['co_id'];
-		$color_code = $row1['colour_code'];
-		$color_desc = $row1['colour_desc'];
-		$size_code = $row1['size_code'];
-		$size_desc = $row1['size_desc'];
-		$schedule = $row1['schedule_id'];
-		$z_code = $row1['z_name'];
-		$z_desc = $row1['z_desc'];
-		$mo_number = $row1['mo_number'];
+		$i++;		
+		$operation_id = $row1['m3_ops_code'];
+		$mo_number = $row1['mo_no'];
 		$reported_quantity = $row1['quantity'];
 		$module = $row1['division_code'];
-		$bundle_no = $row1['bundle_number'];
-		$user_id = $row1['user_id'];
-		$reason = $row1['rejection_reason'];
+		$user_id = $row1['log_user'];
+		$reason = $row1['reason'];
 		$time = $row1['slot_id'];
-		$gate_pass_no = $row1['gate_pass_no'];
-		$id = $row1['unique_id'];
+		//$gate_pass_no = $row1['gate_pass_no'];
+		$id = $row1['id'];
 		$trans_date = $row1['trans_date'];
+		
+		//To get user barcode
+		$barcode_sql = "select ref_no from $bai_pro3.mo_operation_quantites where id=".$row1['ref_no'];
+		$barcode_res = $link->query($barcode_sql);
+		while($result_row = $barcode_res->fetch_assoc())
+		{
+			$unique_id = $result_row['ref_no'];
+			$bundle_no = $result_row['ref_no'];
+		}
+		//To get user barcode
+		$gate_pass_no=0;
+		$gatepass_sql = "select gate_id as gate_pass_no from $brandix_bts.gatepass_track where bundle_no=$bundle_no";
+		$gatepass_sql_res = $link->query($gatepass_sql);
+		while($result_val = $gatepass_sql_res->fetch_assoc())
+		{
+			$gate_pass_no = $result_val['gate_pass_no'];
+		}
+		//To Info
+		$mo_data = "select mos.REFERENCEORDER AS co_id,mos.COLORCODE AS colour_code,mos.COLOURDESC AS colour_desc,mos.SIZECODE AS size_code,mos.SIZEDESC AS size_desc,mos.SCHEDULE AS schedule_id,mos.ZCODE AS z_name,mos.ZDESC AS z_desc from $m3_inputs.mo_details mos where MONUMBER='$mo_number'";
+		$result_mo_data = $link->query($mo_data);
+		while($row_mo = $result_mo_data->fetch_assoc())
+		{
+			$co_no = $row_mo['co_id'];
+			$color_code = $row_mo['colour_code'];
+			$color_desc = $row_mo['colour_desc'];
+			$size_code = $row_mo['size_code'];
+			$size_desc = $row_mo['size_desc'];
+			$schedule = $row_mo['schedule_id'];
+			$z_code = $row_mo['z_name'];
+			$z_desc = $row_mo['z_desc'];
+		}
 		
 		if($reason <> '')
 		{
@@ -122,7 +145,7 @@ if($conn)
 				$status='Failed';
 				if($odbc_result){
 					$status='Success';
-					$sql_update="UPDATE $bai_pro3.`m3_transactions` SET `promis_status` = 1 WHERE `id` = ".$id."";
+					$sql_update="UPDATE $bai_pro3.m3_transactions SET promis_status = 1 WHERE id = ".$id;
 					$sql_result=mysqli_query($link, $sql_update) or exit("Updatting issue".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 				$log.="<tr><th>".$i."</th><th>".$inserting_qry."</th><th>".$status."</th></tr>";	
@@ -166,7 +189,7 @@ if($conn)
 				$status='Failed';
 				if($odbc_result1){
 					$status='Success';
-					$sql_update="UPDATE $bai_pro3.`m3_transactions` SET `promis_status` = 1 WHERE `id` = ".$id."";
+					$sql_update="UPDATE $bai_pro3.m3_transactions SET promis_status = 1 WHERE id = ".$id;
 					$sql_result=mysqli_query($link, $sql_update) or exit("Updatting issue".mysqli_error($GLOBALS["___mysqli_ston"]));		
 				}
 				$log.="<tr><th>".$i."</th><th>".$inserting_qry."</th><th>".$status."</th></tr>";	

@@ -550,7 +550,7 @@
                             // else
                             // {
 								
-								
+								$input_module_new="";
 								$sql_input_module="SELECT input_module FROM  $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='".$sql_row["input_job_no_random"]."'";
                                 //echo $sql_input_module."<br>";
                                 $result_module=mysqli_query($link, $sql_input_module) or die("Error-".$sql_input_module."-".mysqli_error($GLOBALS["___mysqli_ston"])); 

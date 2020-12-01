@@ -221,7 +221,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
   $lot_ref=$sql_row['lot_no'];
   $current_date=date('Y-m-d');
 
-  $sql_mrn="SELECT sum(ROUND(iss_qty,2)) as mrn_qty FROM `bai_rm_pj2`.`mrn_out_allocation`  WHERE  lable_id = \"$tid\"  GROUP BY lable_id";
+  $sql_mrn="SELECT sum(iss_qty,2) as mrn_qty FROM `bai_rm_pj2`.`mrn_out_allocation`  WHERE  lable_id = \"$tid\"  GROUP BY lable_id";
 //   echo $sql_mrn;
 	$sql_result_mrn =$link->query($sql_mrn);
 	if(mysqli_num_rows($sql_result_mrn)> 0) {
@@ -229,7 +229,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			// $qty_issued=$available+$row_mrn["mrn_qty"];
 			//$available=round(($available-$row_mrn["mrn_qty"]),2);
-			$available2 = round(($available2- $row_mrn["mrn_qty"]),2);
+			$available2 = ($available2- $row_mrn["mrn_qty"]);
 		}
 	}
   echo "<tr>";
@@ -566,7 +566,6 @@ if(isset($_POST['put']))
   echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
   echo("<script>location.href = '".getFullURLLevel($_GET['r'],'stock_out_v1.php',0,'N')."&lot_no=$lot_no_new';</script>");
 }
-
 
 ?>
 
