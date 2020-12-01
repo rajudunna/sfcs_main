@@ -18,38 +18,36 @@ while($sql_row_cut=mysqli_fetch_array($get_cut_number_qry_result))
 	$cut_number=$sql_row_cut['cut_number'];
 	$jm_cut_job_id=$sql_row_cut['jm_cut_job_id'];
 	
-	//getting docket id
-	$get_docid_qry="SELECT jm_docket_id FROM $pps.`jm_dockets` WHERE plant_code='$plant_code' AND jm_cut_job_id='$jm_cut_job_id'";
-	$get_docid_qry_result=mysqli_query($link, $get_docid_qry) or exit("Sql Error while getting docket id".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row_docid=mysqli_fetch_array($get_docid_qry_result))
+	//getting docket id's based on jm_cut_docket_map
+	$getDokcetids="SELECT jm_cut_job_id FROM $pps.jm_cut_docket_map WHERE plant_code='$plant_code' AND jm_cut_job_id='$jm_cut_job_id'";
+	$getDokcetids_result=mysqli_query($link, $getDokcetids) or exit("Sql Error while getting docket id".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sqlDocketmap=mysqli_fetch_array($getDokcetids_result))
 	{
-		$jm_docket_id=$sql_row_docid['jm_docket_id'];
-		
-		//getting jm docket line id
-		$get_docline_qry="SELECT jm_docket_line_id FROM $pps.`jm_docket_lines` WHERE plant_code='$plant_code' AND jm_docket_id='$jm_docket_id'";
-		$get_docline_qry_result=mysqli_query($link, $get_docline_qry) or exit("Sql Error while getting doclineid".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row_doclineid=mysqli_fetch_array($get_docline_qry_result))
+		$jm_cut_job_id=$sqlDocketmap['jm_cut_job_id'];
+		$get_docid_qry="SELECT jm_docket_id FROM $pps.`jm_dockets` WHERE plant_code='$plant_code' AND jm_cut_job_id='$jm_cut_job_id'";
+		$get_docid_qry_result=mysqli_query($link, $get_docid_qry) or exit("Sql Error while getting docket id".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row_docid=mysqli_fetch_array($get_docid_qry_result))
 		{
-			$jm_docket_line_id=$sql_row_doclineid['jm_docket_line_id'];
-			
-			//getting details from jm_docket_cg_bundle
-			$get_det_qry="SELECT size FROM $pps.`jm_docket_cg_bundle` WHERE plant_code='$plant_code' AND jm_docket_line_id='$jm_docket_line_id'";
-			$get_det_qry_result=mysqli_query($link, $get_det_qry) or exit("Sql Error while getting details".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row_det=mysqli_fetch_array($get_det_qry_result))
-			{
-				$sizesarr[]=$sql_row_det['size'];
-			}
+				$jm_docket_id=$sql_row_docid['jm_docket_id'];	
+				//getting details from jm_docket_cg_bundle
+				$get_det_qry="SELECT size FROM $pps.`jm_docket_cg_bundle` WHERE plant_code='$plant_code' AND jm_docket_id='$jm_docket_id'";
+				$get_det_qry_result=mysqli_query($link, $get_det_qry) or exit("Sql Error while getting details".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row_det=mysqli_fetch_array($get_det_qry_result))
+				{
+					$sizesarr[]=$sql_row_det['size'];
+				}	
 		}
 	}
+	
 }
 
-$get_doclinenum_qry="SELECT jm_docket_line_id FROM $pps.`jm_docket_lines` WHERE docket_line_number='$doc_no' AND plant_code='$plant_code'";
+$get_doclinenum_qry="SELECT jm_docket_id FROM $pps.`jm_dockets` WHERE docket_line_number='$doc_no' AND plant_code='$plant_code'";
 $get_doclinenum_qry_result=mysqli_query($link, $get_doclinenum_qry) or exit("Sql Error while getting cutno".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row_jmline=mysqli_fetch_array($get_doclinenum_qry_result))
 {
-	$jm_docket_line_id=$sql_row_jmline['jm_docket_line_id'];
+	$jm_docket_id=$sql_row_jmline['jm_docket_id'];
 	
-	$get_bundle_no="SELECT dcgb_number FROM $pps.`jm_docket_cg_bundle` WHERE jm_docket_line_id='$jm_docket_line_id' AND plant_code='$plant_code'";
+	$get_bundle_no="SELECT dcgb_number FROM $pps.`jm_docket_cg_bundle` WHERE jm_docket_id='$jm_docket_id' AND plant_code='$plant_code'";
 	$get_bundle_no_result=mysqli_query($link, $get_bundle_no) or exit("Sql Error while getting cutno".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row_bunno=mysqli_fetch_array($get_bundle_no_result))
 	{
@@ -584,11 +582,11 @@ for($j=0;$j<sizeof(array_unique($sizesarr));$j++)
             <td class=xl73305a>Quantity</td>";
         	for($i=$temp_len1;$i<$temp_len;$i++) 
 			{
-				$get_doclinenum_qry="SELECT jm_docket_line_id FROM $pps.`jm_docket_lines` WHERE docket_line_number='$doc_no' AND plant_code='$plant_code'";
+				$get_doclinenum_qry="SELECT jm_docket_id FROM $pps.`jm_dockets` WHERE docket_line_number='$doc_no' AND plant_code='$plant_code'";
 				$get_doclinenum_qry_result=mysqli_query($link, $get_doclinenum_qry) or exit("Sql Error while getting cutno".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row_jmline=mysqli_fetch_array($get_doclinenum_qry_result))
 				{
-					$jm_docket_line_id=$sql_row_jmline['jm_docket_line_id'];
+					$jm_docket_line_id=$sql_row_jmline['jm_docket_id'];
 					
 					$get_bundle_no="SELECT sum(quantity) as quantity FROM $pps.`jm_docket_cg_bundle` WHERE jm_docket_line_id='$jm_docket_line_id' AND plant_code='$plant_code' and size='".$sizesarr[$j]."'";
 					$get_bundle_no_result=mysqli_query($link, $get_bundle_no) or exit("Sql Error while getting cutno".mysqli_error($GLOBALS["___mysqli_ston"]));
