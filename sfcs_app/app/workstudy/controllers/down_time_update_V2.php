@@ -295,7 +295,7 @@ $action_url = getFullURL($_GET['r'],'down_time_update_V2.php','N');
                                        <div class="controls col-sm-9">
 
                                  <?php
-								echo"<SELECT name=\"start_time\" id=\"start_time\" onchange=\"calculate\" class=\"form-control\" required>";
+								echo"<SELECT name=\"start_time\" id=\"start_time\" onchange=\"calculate()\" class=\"form-control\" required>";
 
 								echo"<option value=\"0\" name=\"start_time\">Select Start Time</option>
 								";
