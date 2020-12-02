@@ -7,21 +7,183 @@
   $has_permission=haspermission($url_r); 
 ?>
 <script type="text/javascript">
-  jQuery(document).ready(function($){
-  $('#schedule,#docket').keypress(function (e) {
-  var regex = new RegExp("^[0-9\]+$");
-  var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
-  if (regex.test(str)) {
-  return true;
-  }
-  e.preventDefault();
-  return false;
-  });
-  });
- 
-
+jQuery(document).ready(function($) {
+    $('#schedule,#docket').keypress(function(e) {
+        var regex = new RegExp("^[0-9\]+$");
+        var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+        if (regex.test(str)) {
+            return true;
+        }
+        e.preventDefault();
+        return false;
+    });
+});
 </script>
+<script>
+$(document).ready(function() {
+    //Select all anchor tag with rel set to tooltip
+    $('div[rel=tooltip]').mouseover(function(e) {
 
+        //Grab the title attribute's value and assign it to a variable
+        var tip = $(this).attr('data-title');
+
+        //Remove the title attribute's to avoid the native tooltip from the browser
+        $(this).attr('data-title', '');
+
+        //Append the tooltip template and its value
+        $(this).append('<div id="tooltip"><div class="tipHeader"></div><div class="tipBody">' + tip +
+            '</div><div class="tipFooter"></div></div>');
+
+    }).mousemove(function(e) {
+
+        //Keep changing the X and Y axis for the tooltip, thus, the tooltip move along with the mouse
+        console.log('y = ' + e.pageY + ' : ' + e.view.parent.pageYOffset);
+        console.log(e);
+
+        //e.pageY + 0.5 * e.view.parent.pageYOffset
+        $('#tooltip').css('top', $(this).offset.top - $(window).scrollTop());
+        $('#tooltip').css('left', $(this).offset.left - 255);
+        $('#tooltip').css('margin-left', '50px');
+        $('#tooltip').css('text-align', 'left');
+        $('#tooltip').css('margin-top', '20px');
+        $('#tooltip').css('position', 'absolute');
+        $('#tooltip').css('z-index', '999999');
+    }).mouseout(function() {
+
+        //Put back the title attribute's value
+        $(this).attr('data-title', $('.tipBody').html());
+
+        //Remove the appended tooltip template
+        $(this).children('div#tooltip').remove();
+
+    });
+
+});
+</script>
+<style>
+.tooltip {
+
+    outline: none;
+    cursor: auto;
+    text-decoration: none;
+    position: relative;
+    color: #333;
+
+}
+
+.tooltip span {
+    margin-left: -1500em;
+    position: absolute;
+
+}
+
+.tooltip:hover span {
+    border-radius: 5px 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+    font-family: Calibri, Tahoma, Geneva, sans-serif;
+    position: absolute;
+    left: 0em;
+    top: 0em;
+    z-index: 99;
+    margin-left: -100px;
+    width: 150px;
+    margin-top: -100px;
+
+
+
+}
+
+.tooltip:hover img {
+    border: 0;
+    margin: -10px 0 0 -55px;
+    float: left;
+    position: absolute;
+}
+
+.tooltip:hover em {
+    font-family: Candara, Tahoma, Geneva, sans-serif;
+    font-size: 1.2em;
+    font-weight: bold;
+    display: block;
+    padding: 0.2em 0 0.6em 0;
+}
+
+.classic {
+    padding: 0.8em 1em;
+}
+
+.custom {
+    padding: 0.5em 0.8em 0.8em 2em;
+}
+
+* html a:hover {
+    background: transparent;
+}
+
+.classic {
+    background: #000;
+    border: 1px solid #FFF;
+    font-weight: bold;
+}
+
+.critical {
+    background: #FFCCAA;
+    border: 1px solid #FF3334;
+}
+
+.help {
+    background: #9FDAEE;
+    border: 1px solid #2BB0D7;
+}
+
+.info {
+    background: #9FDAEE;
+    border: 1px solid #2BB0D7;
+}
+
+.warning {
+    background: #FFFFAA;
+    border: 1px solid #FFAD33;
+}
+
+
+/* Tooltip */
+.red-tooltip+.tooltip>.tooltip-inner {
+    background-color: black;
+    width: 350px;
+}
+
+#tooltip {
+    position: absolute;
+    z-index: 9999;
+    color: #fff;
+    font-size: 12px;
+    width: 220px;
+    pointer-events: none;
+
+}
+
+#tooltip .tipHeader {
+    height: 8px;
+    /*background:url('<?= getFullURL($_GET['r'],'common/images/tipHeader.gif',2,'R');?>') no-repeat;*/
+    font-size: 0px;
+}
+
+
+#tooltip .tipBody {
+    background-color: #000;
+    padding: 5px 5px 5px 15px;
+}
+
+#tooltip .tipFooter {
+    height: 8px;
+    /*background:url('<?= getFullURL($_GET['r'],'common/images/tipFooter.gif',2,'R');?>') no-repeat;*/
+}
+</style>
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));  
@@ -43,211 +205,214 @@ set_time_limit(200000);
 ?>
 <script type="text/javascript" src="../../../../common/js/jquery.js"></script>
 <script type="text/javascript">
-<!--
-spe=700;
-na=document.all.tags("blink");
-swi=1;
-bringBackBlinky();
-function bringBackBlinky() {
-    if (swi == 1) {
-    sho="visible";
-    swi=0;
-    }
-    else {
-    sho="hidden";
-    swi=1;
-}
-for(i=0;i<na.length;i++) {
-    na[i].style.visibility=sho;
-}
-setTimeout("bringBackBlinky()", spe);
-}
--->
-function redirect_view()
-{
-  y=document.getElementById('view_div').value;
-  window.location = "<?= getFullURL($_GET['r'],'embellishment_dashboard_send_operation.php','N') ?>"+"&view=2&view_div="+y;
+function redirect_view() {
+    y = document.getElementById('view_div').value;
+    window.location = "<?= getFullURL($_GET['r'],'embellishment_dashboard_send_operation.php','N') ?>" +
+        "&view=2&view_div=" + y;
 }
 
-function redirect_dash()
-{
-  x=document.getElementById('view_cat').value;
-  y=document.getElementById('view_div').value;
-  z=document.getElementById('view_dash').value;
-  window.location = "<?= getFullURL($_GET['r'],'embellishment_dashboard_send_operation.php','N') ?>"+"&view="+z+"&view_cat="+x+"&view_div="+y;
+function redirect_dash() {
+    x = document.getElementById('view_cat').value;
+    y = document.getElementById('view_div').value;
+    z = document.getElementById('view_dash').value;
+    window.location = "<?= getFullURL($_GET['r'],'embellishment_dashboard_send_operation.php','N') ?>" + "&view=" + z +
+        "&view_cat=" + x + "&view_div=" + y;
 }
-function blink_new3(x)
-{
-	$("div[id='S"+x+"']").each(function() {
-	
-	$(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
-	});
+
+function blink_new3(x) {
+    $("div[id='S" + x + "']").each(function() {
+
+        $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(
+                100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+            .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+            .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+            .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+            .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+            .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+    });
 }
-function blink_new(x)
-{	
-	$("div[id='D"+x+"']").each(function() {
-	
-	$(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
-	});
+
+function blink_new(x) {
+    $("div[id='D" + x + "']").each(function() {
+
+        $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(
+                100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+            .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+            .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+            .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+            .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+            .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+    });
 }
 </script>
 
 <style>
-
 /*blink css for req time exceeding */
 @-webkit-keyframes blinker {
-from {opacity: 1.0;}
-to {opacity: 0.0;}
-}
-.blink{
-  text-decoration: blink;
-  -webkit-animation-name: blinker;
-  -webkit-animation-duration: 0.6s;
-  -webkit-animation-iteration-count:infinite;
-  -webkit-animation-timing-function:ease-in-out;
-  -webkit-animation-direction: alternate;
+    from {
+        opacity: 1.0;
+    }
+
+    to {
+        opacity: 0.0;
+    }
 }
 
-body
-{
-  background-color:#eeeeee;
-  color: #000000;
-  font-family: Arial;
-}
-a {text-decoration: none;}
-
-table
-{
-  border-collapse:collapse;
-}
-.new td
-{
-  border: 1px solid red;
-  white-space:nowrap;
-  border-collapse:collapse;
+.blink {
+    text-decoration: blink;
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 0.6s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-direction: alternate;
 }
 
-.new th
-{
-  border: 1px solid red;
-  white-space:nowrap;
-  border-collapse:collapse;
+body {
+    background-color: #eeeeee;
+    color: #000000;
+    font-family: Arial;
 }
 
-.bottom th,td
-{
-  border-bottom: 1px solid white; 
-  padding-bottom: 5px;
-  padding-top: 5px;
+a {
+    text-decoration: none;
 }
-a{
-text-decoration:none;
-color: white;
+
+table {
+    border-collapse: collapse;
+}
+
+.new td {
+    border: 1px solid red;
+    white-space: nowrap;
+    border-collapse: collapse;
+}
+
+.new th {
+    border: 1px solid red;
+    white-space: nowrap;
+    border-collapse: collapse;
+}
+
+.bottom th,
+td {
+    border-bottom: 1px solid white;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+a {
+    text-decoration: none;
+    color: white;
 }
 
 .orange {
-  max-width:130px; min-width:20px;
-  height:20px;
-  background-color: #FFA500;
-  display:block;
-  float: left;
-  margin: 2px;
-  border: 1px solid #000000;
-  height: 25px;
-  width: 250px;
-  /* padding: 4px; */
+    max-width: 130px;
+    min-width: 20px;
+    height: 20px;
+    background-color: #FFA500;
+    display: block;
+    float: left;
+    margin: 2px;
+    border: 1px solid #000000;
+    height: 25px;
+    width: 250px;
+    /* padding: 4px; */
 }
 
 .orange a {
-  display:block;
-  float: left;
-  width:100%;
-  height:100%;
-  text-decoration:none;
+    display: block;
+    float: left;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
 }
 
 .orange a:hover {
-  text-decoration:none;
-  background-color: #FFA500;
+    text-decoration: none;
+    background-color: #FFA500;
 }
+
 .red {
-  max-width:130px; min-width:20px;
-  height:20px;
-  background-color:#FF0000;
-  display:block;
-  float: left;
-  margin: 2px;
-  border: 1px solid #000000;
-  height: 25px;
-  width: 250px;
-  /* padding: 4px; */
+    max-width: 130px;
+    min-width: 20px;
+    height: 20px;
+    background-color: #FF0000;
+    display: block;
+    float: left;
+    margin: 2px;
+    border: 1px solid #000000;
+    height: 25px;
+    width: 250px;
+    /* padding: 4px; */
 }
 
 .red a {
-  display:block;
-  float: left;
-  width:100%;
-  height:100%;
-  text-decoration:none;
+    display: block;
+    float: left;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
 }
 
 .red a:hover {
-  text-decoration:none;
-  background-color:#FF0000;
+    text-decoration: none;
+    background-color: #FF0000;
 }
+
 .blue {
-  max-width:130px; min-width:20px;
-  height:20px;
-  background-color: #15a5f2;
-  display:block;
-  float: left;
-  margin: 2px;
-  border: 1px solid #000000;
-  height: 25px;
-  width: 250px;
-  /* padding: 4px; */
+    max-width: 130px;
+    min-width: 20px;
+    height: 20px;
+    background-color: #15a5f2;
+    display: block;
+    float: left;
+    margin: 2px;
+    border: 1px solid #000000;
+    height: 25px;
+    width: 250px;
+    /* padding: 4px; */
 }
 
 .blue a {
-  display:block;
-  float: left;
-  width:100%;
-  height:100%;
-  text-decoration:none;
+    display: block;
+    float: left;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
 }
 
 .blue a:hover {
-  text-decoration:none;
-  background-color: #15a5f2;
+    text-decoration: none;
+    background-color: #15a5f2;
 }
 
 
 .yash {
-  max-width:130px; min-width:20px;
-  height:20px;
-  background-color: #999999;
-  display:block;
-  float: left;
-  margin: 2px;
-  border: 1px solid #000000;
-  height: 25px;
-  width: 250px;
-  /* padding: 4px; */
+    max-width: 130px;
+    min-width: 20px;
+    height: 20px;
+    background-color: #999999;
+    display: block;
+    float: left;
+    margin: 2px;
+    border: 1px solid #000000;
+    height: 25px;
+    width: 250px;
+    /* padding: 4px; */
 }
 
 .yash a {
-  display:block;
-  float: left;
-  width:100%;
-  height:100%;
-  text-decoration:none;
+    display: block;
+    float: left;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
 }
 
 .yash a:hover {
-  text-decoration:none;
-  background-color: #999999;
+    text-decoration: none;
+    background-color: #999999;
 }
-
 </style>
 <?php
 
@@ -330,14 +495,17 @@ echo '</div>';
 echo '<br><br>';
 ?>
 <div>
-    <div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #FFA500;color: white;margin-left: 10px;">
-    <div>Partially Send to Embellishment Jobs</div>
+    <div
+        style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #FFA500;color: white;margin-left: 10px;">
+        <div>Partially Send to Embellishment Jobs</div>
     </div>&nbsp;&nbsp;&nbsp;
-    <div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #15a5f2;color: white;margin-left: 30px;">
-    <div>Cut Completed Jobs</div>
+    <div
+        style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #15a5f2;color: white;margin-left: 30px;">
+        <div>Cut Completed Jobs</div>
     </div>
-    <div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #999999;color: white;margin-left: 30px;">
-    <div>Cut Not Completed Jobs</div>
+    <div
+        style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #999999;color: white;margin-left: 30px;">
+        <div>Cut Not Completed Jobs</div>
     </div>
     <div style="clear: both;"> </div>
 </div>
@@ -582,17 +750,17 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $club_c_code=array_unique($club_c_code);
           $club_docs=array_unique($club_docs);
 
-          $title=str_pad("Style:".trim($style),80)."\n".str_pad("CO:".trim($co_no),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),50)."\n".str_pad("Cut_No:".implode(", ",$club_c_code),80)."\n".str_pad("DOC No:".implode(", ",$club_docs),80)."\n".str_pad("Total Plan Qty:".$orginal_qty,80)."\n".str_pad("Actual Cut Qty:".$total,80)."\n".str_pad("Send Qty:".($send_qty-$reject_qty_s),80)."\n".str_pad("Rejected Qty:".($reject_qty_s),80)."\n".str_pad("Received Qty:".($receive_qty-$reject_qty_r),80)."\n".str_pad("Plan_Time:".$log_time,50)."\n";
+          $title=str_pad("Style:".trim($style),80)."</br>".str_pad("CO:".trim($co_no),80)."</br>".str_pad("Schedule:".$schedule,80)."</br>".str_pad("Color:".trim(implode(",",$colors_db)),50)."</br>".str_pad("Cut_No:".implode(", ",$club_c_code),80)."</br>".str_pad("DOC No:".implode(", ",$club_docs),80)."</br>".str_pad("Total Plan Qty:".$orginal_qty,80)."</br>".str_pad("Actual Cut Qty:".$total,80)."</br>".str_pad("Send Qty:".($send_qty-$reject_qty_s),80)."</br>".str_pad("Rejected Qty:".($reject_qty_s),80)."</br>".str_pad("Received Qty:".($receive_qty-$reject_qty_r),80)."</br>".str_pad("Plan_Time:".$log_time,50)."</br>";
 
           $clr=trim(implode(',',$colors_db),50);
         
-          echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id'  style='font-size:12px;color:white; text-align:center; float:left;' title='$title'>";
+          echo "<div data-title='$title' rel='tooltip'><div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id'  style='font-size:12px;color:white; text-align:center; float:left;'>";
           if($cut_new=="DONE"){
-            echo   "<span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(".implode(", ",$club_c_code).")-OP:$send_op_code</span>";
+            echo   "<a onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;' >$schedule(".implode(", ",$club_c_code).")-OP:$send_op_code</a>";
           }else{
-            echo "$schedule(".implode(", ",$club_c_code).")-OP:$send_op_code";
+            echo "<a>$schedule(".implode(", ",$club_c_code).")-OP:$send_op_code</a>";
           }
-          echo "</div></div><br>";    
+          echo "</div></div></div><br>";      
 		}		  
         }
       }   
@@ -610,7 +778,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 if((in_array($authorized,$has_permission)))
 {
   echo "<script>";
-  echo "blink_new_priority('".implode(",",$blink_docs)."');";
+  // echo "blink_new_priority('".implode(",",$blink_docs)."');";
   echo "</script>";
 }
 ?>
@@ -627,26 +795,32 @@ if((in_array($authorized,$has_permission)))
 ?>
 
 <script>
-function loadpopup(url){ 
-  var shift = document.getElementById('shift').value;
-  if(shift){
-    url = url+'&shift='+shift;
-    window.open(url,'Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;
-  }else{
+function loadpopup(url) {
+    var shift = document.getElementById('shift').value;
+    if (shift) {
+        url = url + '&shift=' + shift;
+        window.open(url, 'Popup',
+            'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'
+            );
+        if (window.focus) {
+            Popup.focus()
+        }
+        return false;
+    } else {
         swal({
-                title: "Warning!",
-                text: "Please select shift",
-                type: "warning"
-            }).then(function() {
-                // window.close();
-            });
-  }
-}
-setTimeout(function(){
-   var shift = document.getElementById('shift').value; 
-   var url = window.location.href+'&shift='+shift;
-    if(shift){
-      window.location.href = url;    
+            title: "Warning!",
+            text: "Please select shift",
+            type: "warning"
+        }).then(function() {
+            // window.close();
+        });
     }
-   }, 120000);
+}
+setTimeout(function() {
+    var shift = document.getElementById('shift').value;
+    var url = window.location.href + '&shift=' + shift;
+    if (shift) {
+        window.location.href = url;
+    }
+}, 120000);
 </script>

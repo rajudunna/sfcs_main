@@ -352,6 +352,12 @@ if(isset($_POST['submit']))
 		$section=$sql_row2['section']; 
 				
 		$check=0; 
+		$sql_sections="SELECT section_display_name FROM `bai_pro3`.`sections_master` where sec_name=$section"; 
+		$sql_result_sec=mysqli_query($link, $sql_sections) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		while($sql_row_sec=mysqli_fetch_array($sql_result_sec)) 
+		{
+			$section_name=$sql_row_sec['section_display_name'];
+		}
 			
 		$sql_new="select distinct shift from $bai_pro.grand_rep where section=$section and date between \"$sdate\" and \"$edate\""; 
 		$sql_result_new=mysqli_query($link, $sql_new) or exit("Sql Error77".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -363,7 +369,7 @@ if(isset($_POST['submit']))
 			echo "<tr>"; 
 			if($check==0) 
 			{ 
-				echo "<td rowspan=$rowspan>$section</td>"; 
+				echo "<td rowspan=$rowspan>$section_name</td>"; 
 				$check=1; 
 			} 
 			echo "<td>$shift</td>"; 

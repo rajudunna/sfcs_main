@@ -306,18 +306,18 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
 
                 $doc_str = '';
                 if($org_doc_no != '' || $org_doc_no > 0)
-                    $doc_str = "<v><c>Org Doc no</c> : $org_doc_no</v>
-                                <v><c>Doc no</c> : $actual_doc</v>";
+                    $doc_str = "<v>Org Doc no : $org_doc_no</v>
+                                <v>Doc no : $actual_doc</v>";
                 else 
-                    $doc_str = "<v><c>Doc no</c> : $actual_doc</v>";   
+                    $doc_str = "<v>Doc no : $actual_doc</v>";   
 
-                $tool_tip_text = "<p style=\"width : 500px\">
-                                    <v><c>Style</c> : $style</v><v><c>Schedule No</c> : $schedule</v>
-                                    <v><c>Colors</c> : $color</v>$doc_str
-                                    <v><c>Cut No : </c> $cut_str</v>
-                                    <v><c>Docket Qty : </c>$doc_qty</v>
-                                    <v><c>Sewing  Job Qty</c> : $job_qty</v>
-                                    <v><c>Cut Remaining Qty </c>: $rem_qty</v>
+                $tool_tip_text = "<p style=\"width : 500px\" >
+                                    <v>Style : $style</v><v>Schedule No : $schedule</v>
+                                    <v>Colors : $color</v>$doc_str
+                                    <v>Cut No :  $cut_str</v>
+                                    <v>Docket Qty : $doc_qty</v>
+                                    <v>Sewing  Job Qty : $job_qty</v>
+                                    <v>Cut Remaining Qty : $rem_qty</v>
                                 </p>";
                 $href= "$url&module=$module&section=$section&doc_no=$doc_no&pop_restriction=$pop_restriction&group_docs=$doc_no";
                 $docs_data.="<span class='block'>

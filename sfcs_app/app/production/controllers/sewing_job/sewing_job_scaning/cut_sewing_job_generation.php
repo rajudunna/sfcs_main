@@ -79,7 +79,7 @@ if(isset($_POST) && isset($_POST['del_recs'])){
     echo 'success';
 }
 function calculate_ratio($doc,$link){
-    $sum_ratio_query = "SELECT SUM(cut_quantity) as ratio from bai_pro3.cps_log where doc_no in (".implode(',',$doc).")
+    $sum_ratio_query = "SELECT SUM(cut_quantity) as ratio from bai_pro3.cps_log where doc_no in ($doc)
     and operation_code = 15";
     $sum_ratio_result = mysqli_query($link,$sum_ratio_query);
     $row = mysqli_fetch_array($sum_ratio_result);
@@ -332,7 +332,7 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
                 //Till here 
                 $display_qty = 0;
                 $bundle_qty = 0;
-                $display_qty = calculate_ratio($old_doc_nos,$link);
+                $display_qty = calculate_ratio($old_doc_nos[0],$link);
                 $bundle_qty = $old_pplice[0];
                 echo "<input id='".$old_ratio."_display_qty' type='hidden' value='$display_qty'>";
                 echo "<input id='".$old_ratio."_bundle_qty' type='hidden' value='$bundle_qty'>";
@@ -377,7 +377,7 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
         }
         $display_qty = 0;
         $bundle_qty = 0;
-        $display_qty = calculate_ratio($old_doc_nos,$link);
+        $display_qty = calculate_ratio($old_doc_nos[0],$link);
         $bundle_qty = $old_pplice[0];
         echo "<input id='".$old_ratio."_display_qty' type='hidden' value='$display_qty'>";
         echo "<input id='".$old_ratio."_bundle_qty' type='hidden' value='$bundle_qty'>";
@@ -699,18 +699,34 @@ function delet(docs_id){
 					$("#generate_message").css("display","none");
                     // console.log(res);
 					document.getElementById("loading-image").style.display = "none";
-					if(res) {
+					if(res) 
+                    {
 						
-						if(res['status'] == true){
+						if(res['status'] == true)
+                        {
                             sweetAlert('Cut Sewing jobs generated successfully','','');
                             var optionSelected = $("option:selected", this);
                             var color = $("#color").val();
                             var style = $("#style").val();
                             var schedule = $("#schedule").val();
                             window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style)))+"&schedule="+schedule+"&color="+window.btoa(unescape(encodeURIComponent(color)))
-                        } else {
+                        } 
+                        else 
+                        {
+                            var val1 = res['final'];
+                            if(val1 == 'first_cut')
+                            {
+                                sweetAlert('Cannot Proceed sewing Jobs because selection is Fisrt Cut',' Lay Plan Not Prepared for Complete Qty.','');
+                                var optionSelected = $("option:selected", this);
+                                var color = $("#color").val();
+                                var style = $("#style").val();
+                                var schedule = $("#schedule").val();
+                                setTimeout(function(){window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style)))+"&schedule="+schedule+"&color="+window.btoa(unescape(encodeURIComponent(color)))} , 2000);
+							}
+
 							var data = $.parseJSON(res);
-							if(data['final'] == 'validating'){
+							if(data['final'] == 'validating')
+                            {
 								sweetAlert('Cut Sewing jobs already generating for the same schedule','Please wait','');
 						        //$("#markers").prop("disabled", true);
 								var optionSelected = $("option:selected", this);
@@ -719,18 +735,11 @@ function delet(docs_id){
 								var schedule = $("#schedule").val();
 								window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style)))+"&schedule="+schedule+"&color="+window.btoa(unescape(encodeURIComponent(color)))
 								
-							}
-							else{
-							sweetAlert('Cannot Proceed sewing Jobs because selection is Fisrt Cut',' Lay Plan Not Prepared for Complete Qty.','');
-                            var optionSelected = $("option:selected", this);
-                            var color = $("#color").val();
-                            var style = $("#style").val();
-                            var schedule = $("#schedule").val();
-                            setTimeout(function(){window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style)))+"&schedule="+schedule+"&color="+window.btoa(unescape(encodeURIComponent(color)))} , 2000);
 							}	
                         }
-					} else {
-						
+					} 
+                    else 
+                    {
 						sweetAlert('Cut Sewing jobs generation failed','','');
 						$("#markers").prop("disabled", false);
 					}

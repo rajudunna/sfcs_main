@@ -50,6 +50,70 @@ else
 {
 	$color=color_decode($_GET['color']);
 }
+$test_orders1=0;
+if($_GET['test_orders'])
+{
+   $test_orders1=$_GET['test_orders'];
+}
+if($test_orders1==1)
+{
+	$sql111="select order_tid from $bai_pro3.bai_orders_db where order_del_no = '$schedule' 
+	and order_style_no = '$style' and order_col_des= '$color'";
+	$result11 = mysqli_query($link,$sql111) or exit("Unable to get the color codes");
+	while($row1111 = mysqli_fetch_array($result11))
+	{
+		$order_tids = $row1111['order_tid'];
+	}
+
+	$insert_sync_log = "INSERT INTO $brandix_bts.order_sync_log(`date_time`, `order_tid`, `style`,  `color`, `schedule`, `status`) VALUES(NOW(), '$order_tids', '$style', '$color', '$schedule', '$test_orders1')";
+	$result_insert = mysqli_query($link,$insert_sync_log) or exit("insert to get the order sync");
+	$sync_log_id = mysqli_insert_id($link);
+
+	$layPlanQuerys="SELECT doc_no FROM $bai_pro3.plandoc_stat_log as plandoc_stat_log
+	LEFT JOIN $bai_pro3.cat_stat_log as cat_stat_log ON plandoc_stat_log.cat_ref = cat_stat_log.tid
+	WHERE cat_stat_log.category IN ($in_categories) AND  plandoc_stat_log.order_tid='$order_tids'";
+	// echo $layPlanQuerys; 
+	$result77=mysqli_query($link, $layPlanQuerys) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$starts=0;
+	while($ls=mysqli_fetch_array($result77))
+	{
+		$starts++;
+		$doc_nos[]=$ls['doc_no'];
+	}
+	$doc_nums="'".implode("', '",$doc_nos)."'";
+	  
+	$inserted_id_querys = "select count(id) as id from $brandix_bts.tbl_cut_master where doc_num in($doc_nums)";
+	//echo $inserted_id_querys ;
+	$inserted_id_results=mysqli_query($link, $inserted_id_querys) or ("Sql error1111");
+	while($inserted_id_detailss=mysqli_fetch_array($inserted_id_results))
+	{
+		$layplan_id_sync=$inserted_id_detailss['id'];
+	}
+	
+	if($starts==$layplan_id_sync)
+	{
+		$update_sync_log = " UPDATE `brandix_bts`.`order_sync_log` SET `status_change` = '4' where id = $sync_log_id";
+		mysqli_query($link, $update_sync_log);
+	}
+	else
+	{
+		$update_sync_log = " UPDATE `brandix_bts`.`order_sync_log` SET `status_change` = '5' where id = $sync_log_id";
+		mysqli_query($link, $update_sync_log);
+
+	    //$orders_var=11;
+		$main_colors = color_encode($color);
+	    $main_styles = style_encode($style);
+		$main_tran_order_tid_new=order_tid_encode($order_tids);
+		
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+            function Redirect() {
+                location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&order_tid=$main_tran_order_tid_new&color=$main_colors&style=$main_styles&schedule=$schedule\";
+                }
+            </script>";
+			$starts=0;
+	}
+	
+}
 
 $excess_cut = $_GET['excess_cut'];
 $query = "SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' AND order_col_des='$color'";
@@ -1447,7 +1511,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//Encoding order_tid
 	$main_tran_order_tid=order_tid_encode($tran_order_tid);
 	//Encoding color & style
-	$main_style = style_decode($style);
+	$main_style = style_encode($style);
 	$main_color = color_encode($color);
 	echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$main_tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&style=$main_style&schedule=$schedule&color=$main_color\">Add Ratios</a></center></td>";
 	$sql17="select * from bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and recut_lay_plan='no'";

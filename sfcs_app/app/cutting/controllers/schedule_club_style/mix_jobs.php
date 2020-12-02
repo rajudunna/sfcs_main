@@ -758,6 +758,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 						from $bai_pro3.plandoc_stat_log where cat_ref='$cat_ref' and order_tid='".$order_tid."' and doc_no='".$sql_row1['doc_no']."'";
 						$sql_result351=mysqli_query($link, $sqlx351) or exit(message_sql()); 
 						$docn=mysqli_insert_id($link);
+						/*
 						$sql_tt1="select count(*)+1 as cnt from  $bai_pro3.plandoc_stat_log where order_tid='".$sql_row1['order_tid']."'";
 						$sql_resulttt1=mysqli_query( $link, $sql_tt1) or exit(message_sql());
 						while($sql_rowx1212=mysqli_fetch_array($sql_resulttt1)) 
@@ -766,7 +767,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 							$sql471_tt="update $bai_pro3.plandoc_stat_log set acutno=$doc_cnt,pcutno=$doc_cnt where doc_no='$docn'"; 
 							$sql_result471_tt=mysqli_query( $link, $sql471_tt) or exit(message_sql()); 
 						}
-
+                        */
 						$size_p=explode(",",$sql_row1['size']);
 						$size_q=explode(",",$sql_row1['ratio']);
 						for($j=0;$j<sizeof($size_p);$j++)

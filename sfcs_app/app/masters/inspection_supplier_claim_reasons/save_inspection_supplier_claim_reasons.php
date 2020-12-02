@@ -91,11 +91,11 @@
                 <select id="active_status" class="form-control" data-role="select" selected="selected" required="required" name="status"  data-parsley-errors-container="#errId4">
                 <?php
                     if($status=="Active"){
-                        echo '<option value="0" selected>Active</option>';
-                        echo '<option value="1">In-Active</option>';
+                        echo '<option value="1" selected>Active</option>';
+                        echo '<option value="0">In-Active</option>';
                     }else{
-                        echo '<option value="0">Active</option>';
-                        echo '<option value="1" selected>In-Active</option>';
+                        echo '<option value="1">Active</option>';
+                        echo '<option value="0" selected>In-Active</option>';
                     }
 
                 ?>

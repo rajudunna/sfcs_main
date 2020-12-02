@@ -55,7 +55,7 @@
 					<label>Style: </label>";
 						// Style
 						echo "<select name=\"style\" id=\"style\" class='form-control' onchange=\"firstbox();\" required>";
-						$sql="select * from $bai_pro3.pac_stat group by style order by style*1";
+						$sql="select * from $bai_pro3.pac_stat group by style order by style";
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 						echo "<option value=''>Select Style</option>";
 						while($sql_row=mysqli_fetch_array($sql_result))
@@ -115,7 +115,7 @@
 				
 								
 					//end logic
-					$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where schedule=$schedule AND style='$style'"; 
+					$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where schedule='$schedule' AND style='$style'"; 
 					$get_pack_id_res=mysqli_query($link, $get_pack_id) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$row = mysqli_fetch_row($get_pack_id_res);
 					$pack_id=$row[0];

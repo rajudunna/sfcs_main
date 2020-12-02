@@ -3,6 +3,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
 //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 
 //$has_perm=haspermission($_GET['r']);
@@ -127,6 +128,14 @@ if(isset($_GET['tid']))
 		$schedule = $sql_row['qms_schedule'];
 		$form = $sql_row['form'];
 	}
+
+	$url = '?r='.$_GET['r'];
+	$job_deacive = "SELECT * FROM $bai_pro3.job_deactive_log where schedule = '$schedule' and input_job_no_random='$input_job_no' and remove_type = '3'";
+	$job_deacive_res=mysqli_query($link, $job_deacive) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($job_deacive_res)>0){
+		echo "<script>swal('Sewing Job Deactivated!','','warning');window.location = '".$url."'</script>"; 
+		return false;
+	}
 	
 	$emb_cut_check_flag = 0;
 	$ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code=$operation_id";
@@ -244,11 +253,115 @@ if(isset($_GET['tid']))
 		}
 	}
 	// die();
-	$bts_update="update $brandix_bts.bundle_creation_data set rejected_qty=rejected_qty-".$qms_qty." where bundle_number='".$bundle_no_ref."' and input_job_no_random_ref='".$input_job_no."' and operation_id='".$operation_id."' and assigned_module='".$module_ref."' and size_id='".$qms_size."'";
+	$bts_update="update $brandix_bts.bundle_creation_data set rejected_qty=rejected_qty-".$qms_qty." where bundle_number='".$bundle_no_ref."' and operation_id='".$operation_id."' and input_job_no_random_ref='".$input_job_no."'  and assigned_module='".$module_ref."' and size_id='".$qms_size."'";
 	// echo $bts_update."<br>";
 	mysqli_query($link, $bts_update) or die("Sql error".$bts_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	// echo $bts_update.'</br>';
-	$bts_insert="insert into $brandix_bts.bundle_creation_data_temp(cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,rejected_qty,docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id) select cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,'".(-1*$qms_qty)."',docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id from $brandix_bts.bundle_creation_data_temp where bundle_number='".$bundle_no_ref."' and input_job_no_random_ref='".$input_job_no."' and operation_id='".$operation_id."' and assigned_module='".$module_ref."' and size_id='".$qms_size."' limit 1";
+
+	//5176 rejection reversal - appear in IPS and IMS 
+	$application_ips='IPS';
+	$scanning_query_ips="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application_ips'";
+	$scanning_result_ips=mysqli_query($link, $scanning_query_ips)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row_ips=mysqli_fetch_array($scanning_result_ips))
+	{
+		$operation_name=$sql_row_ips['operation_name'];
+		$operation_code=$sql_row_ips['operation_code'];
+	}
+	if($operation_code == 'Auto'){
+		$get_ips_op = get_ips_operation_code($link,$style,$color);
+		$operation_code=$get_ips_op['operation_code'];
+		$operation_name=$get_ips_op['operation_name'];
+	}
+
+	$application_ims = 'IMS_OUT';
+	$scanning_query_ims="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application_ims'";
+	$scanning_result_ims=mysqli_query($link, $scanning_query_ims)or exit("scanning_error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row_ims=mysqli_fetch_array($scanning_result_ims))
+	{
+		$ims_code=$sql_row_ims['operation_code'];
+	}
+						
+	$sql="SELECT COALESCE(SUM(send_qty),0) AS send_qty,COALESCE(SUM(recevied_qty),0) AS rec_qty,COALESCE(SUM(rejected_qty),0) AS rej_qty,bundle_qty_status from $brandix_bts.bundle_creation_data where bundle_number='".$bundle_no_ref."' and operation_id='".$operation_id."' and input_job_no_random_ref='".$input_job_no."'  and assigned_module='".$module_ref."' and size_id='".$qms_size."'";
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		$send_qty=$sql_row["send_qty"];
+		$qty_val = $sql_row["rec_qty"] + $sql_row["rej_qty"];
+		$bundle_status = $sql_row["bundle_qty_status"];
+	}
+	
+	if($qms_qty>0)
+	{
+		if($bundle_status == 1)
+		{
+			$status_update_query = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '0' where bundle_number =$bundle_no_ref and operation_id = ".$operation_id;
+			$status_result_query = $link->query($status_update_query) or exit('query error in updating status');
+		}
+
+		if($operation_id == $operation_code)
+		{
+			$checking_qry_plan_dashboard = "SELECT * FROM `$bai_pro3`.`plan_dashboard_input` WHERE input_job_no_random_ref = '$input_job_no'";
+            $result_checking_qry_plan_dashboard = $link->query($checking_qry_plan_dashboard);
+            if(mysqli_num_rows($result_checking_qry_plan_dashboard) == 0)
+            {   
+                $insert_qry_ips = "INSERT INTO `$bai_pro3`.`plan_dashboard_input` 
+                SELECT * FROM `$bai_pro3`.`plan_dashboard_input_backup`
+                WHERE input_job_no_random_ref = '$input_job_no' order by input_trims_status desc limit 1";
+				mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$affectced_rows_ips=mysqli_affected_rows($link);
+				
+				if($affectced_rows_ips > 0)
+				{
+					$sqlx="delete from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref='".$input_job_no."'";
+					mysqli_query($link, $sqlx) or exit("delete_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
+
+			}
+		}
+	
+		if($operation_id == $ims_code)
+		{
+			$checking_qry_ims_dashboard = "SELECT * FROM `$bai_pro3`.`ims_log` WHERE pac_tid= $bundle_no_ref ";
+            $result_checking_qry_ims_dashboard = $link->query($checking_qry_ims_dashboard);
+            if(mysqli_num_rows($result_checking_qry_ims_dashboard) == 0)
+            {
+				$update_status_query = "update $bai_pro3.ims_log_backup set ims_status = '' where pac_tid= $bundle_no_ref ";
+				mysqli_query($link,$update_status_query) or exit('query error in updating status ims_log_backup');
+
+				$ims_backup="insert into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where pac_tid= $bundle_no_ref";
+				mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$affectced_rows_ims=mysqli_affected_rows($link);
+
+				if($affectced_rows_ims > 0)
+				{
+					$ims_delete="delete from $bai_pro3.ims_log_backup where pac_tid= $bundle_no_ref";
+					mysqli_query($link,$ims_delete) or exit("While Delete ims_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
+			}
+		}
+	}
+
+	if($send_qty > 0 && $qty_val == 0)
+	{
+		$operations_qry="select operation_code from $brandix_bts.tbl_orders_ops_ref where category ='sewing' AND display_operations='yes'";
+		$operations_res=mysqli_query($link,$operations_qry) or exit("Sql Error_operations".mysqli_error());
+		while($row_res=mysqli_fetch_array($operations_res))
+		{
+			$operations[] = $row_res['operation_code'];
+		}
+		$sewing_operations = implode ( ", ", $operations);
+
+		$check_bcd="select * from $brandix_bts.bundle_creation_data WHERE operation_id in ($sewing_operations) and assigned_module='$module_ref' and bundle_qty_status=5";
+		$result_status= mysqli_query($link, $check_bcd);
+		if(mysqli_num_rows($result_status) > 0)
+		{
+			$status_update_query = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '0' where bundle_number =$bundle_no_ref and operation_id in ($sewing_operations) and bundle_qty_status = 5";
+				$status_result_query = $link->query($status_update_query) or exit('query error in updating status');
+		}
+	}
+
+
+	$bts_insert="insert into $brandix_bts.bundle_creation_data_temp(cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,rejected_qty,docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id) select cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,'".(-1*$qms_qty)."',docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id from $brandix_bts.bundle_creation_data_temp where bundle_number='".$bundle_no_ref."' and operation_id='".$operation_id."' and input_job_no_random_ref='".$input_job_no."'  and assigned_module='".$module_ref."' and size_id='".$qms_size."' limit 1";
 	// echo $bts_insert;
 	mysqli_query($link,$bts_insert) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	
@@ -313,8 +426,11 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 	}
 
 	 $sewing_cat = 'sewing';
+	 $cutting_cat = 'cutting';
+	 $embs_cat = 'Send PF';
+	 $embr_cat = 'Receive PF';
 	$op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
-						WHERE trim(category) = '$sewing_cat' ";
+						WHERE trim(category) in ('$sewing_cat','$cutting_cat','$embs_cat','$embr_cat') ";
 	$op_code_result = mysqli_query($link, $op_code_query) or exit("No Operations Found for Sewing");
 	while($row=mysqli_fetch_array($op_code_result)) 
 	{

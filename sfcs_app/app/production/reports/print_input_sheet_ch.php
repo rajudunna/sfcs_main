@@ -549,12 +549,35 @@
                             // }
                             // else
                             // {
+								
+								$input_module_new="";
+								$sql_input_module="SELECT input_module FROM  $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='".$sql_row["input_job_no_random"]."'";
+                                //echo $sql_input_module."<br>";
+                                $result_module=mysqli_query($link, $sql_input_module) or die("Error-".$sql_input_module."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                if(mysqli_num_rows($result_module)>0)
+                                {									
+									while($sql_row_module=mysqli_fetch_array($result_module))
+									{   
+											$input_module_new=$sql_row_module["input_module"];
+									}
+								}
+								else
+								{ 
+							      $sql_input_module="SELECT input_module FROM  $bai_pro3.plan_dashboard_input_backup WHERE input_job_no_random_ref='".$sql_row["input_job_no_random"]."'";
+                                  $result_module=mysqli_query($link, $sql_input_module) or die("Error-".$sql_input_module."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+								  while($sql_row_module=mysqli_fetch_array($result_module))
+								  {   
+											$input_module_new=$sql_row_module["input_module"];
+								  }
+									
+								}
                                 $sqlwip12="SELECT color,size_title,size_id,assigned_module,MIN(DATE(IF(operation_id = $operation_in_code,date_time,0))) AS input_date,
                                 SUM(IF(operation_id = $operation_in_code,recevied_qty,0)) AS input,
                                 SUM(IF(operation_id = $operation_out_code,recevied_qty,0)) AS output FROM 
                                 $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref='".$sql_row["input_job_no_random"]."' GROUP BY color,size_title";
                                 // echo $sqlwip12;
                                 $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$cnt_new=mysqli_num_rows($sql_resultwip12);
                                 while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
                                 {
                                 ?>
@@ -567,8 +590,8 @@
                                     else
                                     {echo $sql_rowwip12["input_date"]; }
                                     ?></td>
-                                    <td><?php echo $sql_rowwip12["assigned_module"]; ?></td>
-                                    <?php $temp_module=$sql_rowwip12["assigned_module"]; ?>
+                                    <td><?php echo $input_module_new; ?></td>
+                                    <?php $temp_module=$input_module_new; ?>
                                     <td><?php echo $sql_rowwip12["color"]; ?></td>
                                     <td><?php echo $sql_rowwip12["size_title"]; ?></td>
                                     <td><?php echo $sql_rowwip12["input"]; ?></td>
@@ -629,24 +652,27 @@
                             echo "</table>";
                             echo "</div>";
                             $tot=0;  
-                            //echo "Testing".$temp_module;
+                            //echo "Testing".$cnt_new;
                             $temp_jobno=$sql_row["job"];
-                            if ($temp_module=="0" || $temp_module=="")
+                            if ($cnt_new=="0" || $cnt_new=="")
                             {
-                                $sql5555="SELECT input_module FROM  $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref IN (SELECT DISTINCT input_job_no_random FROM packing_summary_input WHERE order_del_no='$temp_schedule' AND input_job_no='$temp_jobno' )";
+                                // $sql5555="SELECT input_module FROM  $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref IN (SELECT DISTINCT input_job_no_random FROM packing_summary_input WHERE order_del_no='$temp_schedule' AND input_job_no='$temp_jobno' )";
                                 // echo $sql5555."<br>";
-                                $result5555=mysqli_query($link, $sql5555) or die("Error-".$sql5555."-".mysqli_error($GLOBALS["___mysqli_ston"]));           
-                                while($sql_row5555=mysqli_fetch_array($result5555))
-                                {
+                                // $result5555=mysqli_query($link, $sql5555) or die("Error-".$sql5555."-".mysqli_error($GLOBALS["___mysqli_ston"]));           
+                                // while($sql_row5555=mysqli_fetch_array($result5555))
+                                // {
+									if($input_module_new!='' || $input_module_new>0)
+									{
                                     ?>
                                     <span style="background-color:#009900;font-weight:bold;color:white">
                                     <?php   
-                                        echo "Planned module : ".$sql_row5555["input_module"];
+                                        echo "Planned module : ".$input_module_new;
                                     ?>
                                     </span>
                                     <?php
+									}
                                     
-                                }
+                               // }
                             }
                             echo "</td>";
                             $total_qty1=0;

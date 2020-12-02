@@ -158,23 +158,37 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 	if($shift_new!='All')
 	{
 		$shift_value="and bac_shift in ('".$shift_new."')";
+		$shift_value1="and shift in ('".$shift_new."')";
+		
 	}
 	else 
 	{
 		$shift_value="";
+		$shift_value1="";
 	}
 	if($module!=0)
 	{
+		$modules=array();
 		$section_value="and bac_sec =$module";
+		$get_section="select module_name from $bai_pro3.module_master where section='$module'";
+		//echo $get_section;
+		$sql_result24=mysqli_query($link, $get_section) or exit("Sql Error34".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row24=mysqli_fetch_array($sql_result24))
+		{
+		  $modules[]=$sql_row24['module_name'];
+		}
+		$modulesData = "'" . implode("', '", $modules ) ."'";
+		$section_value1 = "and assigned_module in ($modulesData)";
 	}
 	else 
 	{
 		$section_value="";
+		$section_value1="";
 	}
-	foreach($sizes_array as $key=>$size)
-	{
-		$append.= " SUM(size_$size) as size_$size,";
-	}
+	// foreach($sizes_array as $key=>$size)
+	// {
+		// $append.= " SUM(size_$size) as size_$size,";
+	// }
 	$sql22121="SELECT start_time,end_time FROM $bai_pro3.tbl_plant_timings where time_value='$hour_from'"; 
 	$sql_result22121=mysqli_query($link, $sql22121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($rows1231=mysqli_fetch_array($sql_result22121))
@@ -187,13 +201,14 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 	{
 		$end_check=$rows125['end_time'];
 	}
-	$sql="select tid from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and time(log_time) BETWEEN ('".$start_check."') and ('".$end_check."')";
+	$sql="select id from $brandix_bts.bundle_creation_data_temp where date_time between '".$sdate." ".$start_check."' and '".$edate." ".$end_check."' ".$shift_value1." ".$section_value1." and sfcs_smv>0";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error311".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_result)>0)
 	{
 		echo "<div>";
 		echo "<div  class ='table-responsive'>";
-		echo "<table id=\"table1\"  border=1 class=\"table\" cellpadding=\"0\" cellspacing=\"0\" style='margin-top:10pt;'><thead><tr class='tblheading' style='color:white;'><th>Date</th><th>Time<th>Module</th><th>Section</th><th>Shift</th><th>Style</th><th>Schedule</th><th>Color</th><th>Cut No</th><th>Input Job No</th><th>Size</th><th>SMV</th><th>Quantity</th><th>SAH</th></tr></thead><tbody>";
+		echo "<table id=\"table1\"  border=1 class=\"table\" cellpadding=\"0\" cellspacing=\"0\" style='margin-top:10pt;'><thead><tr class='tblheading' style='color:white;'>
+		<th>Operation Code</th><th>Operation Name</th><th>Date</th><th>Time<th>Module</th><th>Section</th><th>Shift</th><th>Style</th><th>Schedule</th><th>Color</th><th>Cut No</th><th>Input Job No</th><th>Size</th><th>SMV</th><th>Quantity</th><th>SAH</th></tr></thead><tbody>";
 		$total_qty=0;
 		do{
 			for($ii=$hour_from;$ii<=$hour_to;$ii++)
@@ -207,9 +222,12 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 					$day_part=$rows12['day_part'];
 					$start_hour=$rows12['start_time'];
 					$end_hour=$rows12['end_time'];
-					$time_query=" AND TIME(log_time) BETWEEN ('".$rows12['start_time']."') and ('".$rows12['end_time']."')";
+					//$time_query=" AND TIME(log_time) BETWEEN ('".$rows12['start_time']."') and ('".$rows12['end_time']."')";
+					$time_query1="date_time BETWEEN ('".$sdate." ".$rows12['start_time']."') and ('".$sdate." ".$rows12['end_time']."') and";
 				}
-				$sql1="select smv,nop,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,$append log_time from $bai_pro.bai_log where bac_date='".$sdate."' $time_query $shift_value $section_value  GROUP BY bac_sec,bac_no,bac_style,delivery,jobno,bac_shift,color,ims_doc_no ORDER BY bac_style,delivery,bac_shift,jobno*1";
+				/*
+
+				$sql1="select smv,nop,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,$append log_time,ope_code from $bai_pro.bai_log where bac_date='".$sdate."' $time_query $shift_value $section_value  GROUP BY bac_sec,bac_no,bac_style,delivery,jobno,bac_shift,color,ims_doc_no ORDER BY bac_style,delivery,bac_shift,jobno*1";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result1)>0)
 				{
@@ -225,6 +243,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 						{
 							$section_name=$sql_row44['section_display_name'];
 						}
+						$opcode=$sql_row['ope_code'];
 						$date=$sql_row['bac_date'];
 						$shift=$sql_row['bac_shift'];
 						$qty=$sql_row['bac_Qty'];
@@ -262,7 +281,8 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 							$order_tid=$sql_row1['order_tid'];
 							$cutno=$sql_row1['acutno'];
 						}
-						if(mysqli_num_rows($sql_result2)==0){
+						if(mysqli_num_rows($sql_result2)==0)
+						{
 							$sql15="select * from $bai_pro3.plandoc_stat_log_archive where doc_no=$doc_no";
 							$sql_result1212=mysqli_query($link, $sql15) or exit("Sql Error5--".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row112=mysqli_fetch_array($sql_result1212))
@@ -270,7 +290,8 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 								$order_tid=$sql_row112['order_tid'];
 								$cutno=$sql_row112['acutno'];
 							}
-						}					
+						}						
+						
 						$sql12="select order_style_no,order_del_no,order_col_des,color_code,style_id from $bai_pro3.bai_orders_db where order_del_no=\"".$schedule."\" and order_tid=\"".$order_tid."\"";
 						$sql_result122=mysqli_query($link, $sql12) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_no_rows=mysqli_num_rows($sql_result122);
@@ -294,6 +315,13 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 						{
 							$bgcolor="WHITE";
 						} 
+
+						$operationQuery = "SELECT operation_name FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code= $opcode";
+						$sql_opcode=mysqli_query($link, $operationQuery) or exit("Sql Error888".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_result_fetch = mysqli_fetch_array($sql_opcode))
+						{
+								$operationName = $sql_result_fetch["operation_name"];
+						}
 						for($k=0;$k<sizeof($sizes_val);$k++)
 						{
 							$finalized_size_qty = $sizes[$sizes_val[$k]];
@@ -301,23 +329,111 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 							$sql_result001=mysqli_query($link, $getting_title_size) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_result_fetch = mysqli_fetch_array($sql_result001)){
 								$finalized_title_size_value = $sql_result_fetch["size"];
-							}
+							}							
+							
 							$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
-							echo "<tr bgcolor=\"$bgcolor\"><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$module</td><td>$section_name</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>$display_prefix1</td><td>$finalized_title_size_value</td><td>$smv</td><td>".$sizes[$sizes_val[$k]]."</td><td>".$sah[$sizes_val[$k]]."</td></tr>";
+							
+							
+							echo "<tr bgcolor=\"$bgcolor\"><td>$operationName</td><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$module</td><td>$section_name</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>$display_prefix1</td><td>$finalized_title_size_value</td><td>$smv</td><td>".$sizes[$sizes_val[$k]]."</td><td>".$sah[$sizes_val[$k]]."</td></tr>";
 							$total_qty=$total_qty+$sizes[$sizes_val[$k]];							
 							$total_qty_sah=$total_qty_sah+$sah[$sizes_val[$k]];							
-						}				
-						unset($sah);
-						unset($sizes_val);
-						unset($sizes);				
+						}	
 					}
 				}
+
+
 				//$time_query='';
+				//To get ims_out operation from operation routing
+				$appilication="IMS_OUT";
+				$get_operation="select operation_code from $brandix_bts.tbl_ims_ops where appilication = 'IMS_OUT'";
+				//echo $get_operation;
+				$sql_result233=mysqli_query($link, $get_operation) or exit("Sql Error3333".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row233=mysqli_fetch_array($sql_result233))
+				{
+                  $ims_out_ops=$sql_row233['operation_code'];
+				}
+				*/
+				//echo $ims_out_ops;
+				//$output_qty = 0;
+				$tblQuery = "select operation_code from $brandix_bts.tbl_orders_ops_ref where category = 'sewing'";
+				$sql_result23=mysqli_query($link, $tblQuery) or exit("Sql Error898".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row29=mysqli_fetch_array($sql_result23))
+				{
+					$operations[]=$sql_row29['operation_code'];
+				}
+					$sewing_operations = implode(',', $operations);
+				$bcd_qry="select sfcs_smv,assigned_module,schedule,date(date_time),cut_number,
+				shift,input_job_no,sum(recevied_qty) as qty,operation_id,style,docket_number,
+				size_title,color,input_job_no_random_ref from $brandix_bts.bundle_creation_data_temp where $time_query1
+				sfcs_smv > 0 $shift_value1 $section_value1 and operation_id in ($sewing_operations) GROUP BY operation_id,
+				assigned_module,style,schedule,input_job_no,shift,color,docket_number,size_title ORDER BY style,schedule,shift,operation_id,input_job_no*1";
+				$sql_result23=mysqli_query($link, $bcd_qry) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql_result23)>0)
+				{
+					$count = mysqli_num_rows($sql_result23);
+					while($sql_row23=mysqli_fetch_array($sql_result23))
+					{
+					  $style=$sql_row23['style'];
+					  $schedule=$sql_row23['schedule'];
+					  $assigned_module=$sql_row23['assigned_module'];
+					  $smv=round($sql_row23['sfcs_smv'],3);
+					  $size_title=$sql_row23['size_title'];
+					  $color=$sql_row23['color'];
+					  $docket_number=$sql_row23['docket_number'];
+					  $scanned_date=$sql_row23['scanned_date'];
+					  $shift=$sql_row23['shift'];
+					  $input_job_no=$sql_row23['input_job_no'];
+					  $output_qtys= $sql_row23['qty'];
+					  $opcode=$sql_row23['operation_id'];
+					  $cut_number=$sql_row23['cut_number'];
+					  $input_job_no_random_ref=$sql_row23['input_job_no_random_ref'];
+					  //To get section from module master
+					  $get_section="select section from $bai_pro3.module_master where module_name='$assigned_module'";
+					  $sql_result24=mysqli_query($link, $get_section) or exit("Sql Error34".mysqli_error($GLOBALS["___mysqli_ston"]));
+					  while($sql_row24=mysqli_fetch_array($sql_result24))
+					  {
+						$section=$sql_row24['section'];
+					  }
+						$type=echo_title("$bai_pro3.pac_stat_log_input_job","type_of_sewing","input_job_no_random",$sql_row23['input_job_no_random_ref'],$link);
+						$sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","id",$type,$link);
+						$display = $sewing_prefi.leading_zeros($input_job_no,3);
+					  //To get section name from sections_master
+					  $get_section_name="select section_display_name from $bai_pro3.sections_master where sec_name='$section'";
+					  $sql_result25=mysqli_query($link, $get_section_name) or exit("Sql Error34".mysqli_error($GLOBALS["___mysqli_ston"]));
+					  while($sql_row25=mysqli_fetch_array($sql_result25))
+					  {
+						$section_name=$sql_row25['section_display_name'];
+					  }
+					  
+					  $sql143="select color_code from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."' and order_col_des='".$color."'";
+					  $sql_result132=mysqli_query($link, $sql143) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+					  while($sql_row132=mysqli_fetch_array($sql_result132))
+					  {
+						$color_code=$sql_row132['color_code'];
+					  }
+					   $sahs=round($output_qtys*$smv/60,3);
+
+					   $operationQuery = "SELECT operation_name FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code= $opcode";
+							$sql_opcode=mysqli_query($link, $operationQuery) or exit("Sql Error888".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($sql_result_fetch = mysqli_fetch_array($sql_opcode)){
+									$operationName = $sql_result_fetch["operation_name"];
+								}
+					   //echo $operationQuery;
+					   echo "<tr bgcolor=\"$bgcolor\"><td>$opcode</td><td>$operationName</td><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$assigned_module</td><td>$section_name</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".chr($color_code).leading_zeros($cut_number,3)."</td><td>$display</td><td>$size_title</td><td>$smv</td>
+					   <td>".$output_qtys."</td><td>".$sahs."</td></tr>";
+					   $total_qty=$total_qty+$output_qtys;							
+					   $total_qty_sah=$total_qty_sah+$sahs;	
+					   
+					}
+				}
+				// unset($sah);
+				// unset($sizes_val);
+				// unset($sizes);	
 			}			
 			$sdate = date ("Y-m-d", strtotime("+1 days", strtotime($sdate)));			
 		}
 		while (strtotime($sdate) <= strtotime($edate)); 
-		echo "<tr style='background-color:#FFFFCC;' class='total_excel' id='total_excel'><td colspan=12>Total</td><td id='table1Tot1'>$total_qty</td><td id='table1Tot2'>$total_qty_sah</td></tr></tbody></table></div></div>";
+		echo "<tr style='background-color:#FFFFCC;' class='total_excel' id='total_excel'><td colspan=14>Total</td><td id='table1Tot1'>$total_qty</td><td id='table1Tot2'>$total_qty_sah</td></tr></tbody></table></div></div>";
 	}
 	else
 	{
@@ -355,7 +471,7 @@ var fnsFilters = {
 		btn_reset_text: "Clear",
 	col_operation: {						
 						id: ["table1Tot1","table1Tot2"],
-						col: [12,13],  
+						col: [14,15],  
 						operation: ["sum","sum"],
 						decimal_precision: [1,1],
 						write_method: ["innerHTML","innerHTML"] 

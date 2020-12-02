@@ -1,6 +1,7 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R')); ?>
-
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/functions.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); ?>
 
 <!-- <meta http-equiv="cache-control" content="no-cache">
 <style type="text/css" media="screen">
@@ -134,6 +135,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<td>$mo_status</td>";
 	
 		$customer=substr($customer,0,((strlen($customer)-2)*-1));
+		$main_color = color_encode($color);
+		$main_style = style_encode($style);
 		
 		$url = getFullURLLevel($_GET['r'],'lay_plan_preparation/main_interface.php',1,'N');
 		if($customer!="VS")
@@ -142,16 +145,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				if($flag==1)
 				{
-					echo "<td><a href=\"$url&color=$color&style=$style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
+					echo "<td><a href=\"$url&color=$main_color&style=$main_style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
 				}
 				else
 				{
-					echo "<td><a href=\"$url&color=$color&style=$style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
+					echo "<td><a href=\"$url&color=$main_color&style=$main_style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
 				}
 			}
 			else
 			{
-					echo "<td><a href=\"$url&color=$color&style=$style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
+					echo "<td><a href=\"$url&color=$main_color&style=$main_style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
 			}
 			
 		}
@@ -159,16 +162,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			if($flag==0)
 			{
-				echo "<td><a href=\"$url&color=$color&style=$style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
+				echo "<td><a href=\"$url&color=$main_color&style=$main_style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
 			}
 			else
 			{
-				echo "<td><a href=\"$url&color=$color&style=$style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
+				echo "<td><a href=\"$url&color=$main_color&style=$main_style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
 			}
 		}
 		else
 		{
-			echo "<td><a href=\"$url&color=$color&style=$style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
+			echo "<td><a href=\"$url&color=$main_color&style=$main_style&schedule=$schedule\" class='btn btn-info btn-sm'>GO</a></td>";
 		}
 	
 		echo "</tr>";

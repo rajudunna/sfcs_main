@@ -60,9 +60,9 @@ $result_oper = $link->query($qry_get_operation_name);
 					</select>
 				</div>
 				<div class="form-group col-md-3">
-					<label for="title">Select Sewing Job Number:</label>
+					<label for="title">Select Job / Docket / Carton:</label>
 					<select name="bundle" class="form-control" id='bundle' style="style">
-					<option value='0'>Select Sewing Job Number</option>
+					<option value='0'>Select Job / Docket / Carton</option>
 					</select>
 				</div>
 			</div>
@@ -71,7 +71,7 @@ $result_oper = $link->query($qry_get_operation_name);
 			<hr>
 			<div class="row">
 				<div class="col-md-3 col-md-offset-3">
-						<label for="bunno">Sewing Job Number:</label>
+						<label for="bunno">Sewing Job / Docket / Carton No:</label>
 						<input type="text" class="form-control" id="bunno" name="bunno" readonly="true" style="height: 100px;width: 500px;text-align:  center;font-size: 60px;color: mediumseagreen;">
 				</div>
 			</div>
@@ -79,6 +79,7 @@ $result_oper = $link->query($qry_get_operation_name);
 			<div class="table-responsive" style="height: 500px;">
 				<table id ="dynamic_table1" class="table table-hover table-striped">
 						<thead>
+							<th style="text-align:center;">Bundle / Docket / Carton</th>
 							<th style="text-align:center;">Size</th>
 							<th style="text-align:center;">Operation Code</th>
 							<th style="text-align:center;">Operation</th>
@@ -117,7 +118,7 @@ $(document).ready(function(){
 					data: {oper_name: $('#oper_name').val()},
 					success: function(response)
 					{
-						console.log(response);
+						// console.log(response);
 						var data = jQuery.parseJSON(response);
 						//console.log(data);
 						var oper_code = data["operation_code"];
@@ -133,10 +134,10 @@ $(document).ready(function(){
 	$("#bundle").change(function()
 	{
 		$('#loading-image').show();
-		var color_name = $('#color option:selected').text();
-		var style_name = $('#pro_style option:selected').text();
+		var color_name = window.btoa(unescape(encodeURIComponent(($('#color option:selected').text()))));
+		var style_name = window.btoa(unescape(encodeURIComponent(($('#pro_style option:selected').text()))));
 		var schedule_name = $('#schedule option:selected').text();
-		var bundle_number = $('#bundle option:selected').text();
+		var bundle_number = $('#bundle option:selected').val();
 		// alert(bundle_number);
 		var params1 =[color_name,style_name,schedule_name,bundle_number];
 			$.ajax
@@ -163,8 +164,15 @@ $(document).ready(function(){
 								// var markup="<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 								 // $("#dynamic_table1").append(markup);
 							 // }
-							 // var id = data[i]['bundle_number'];	
-							var markup ="<tr class='dynamic_data'><td style='text-align:center;'>"+data[i]['size_title'].toUpperCase()+"</td><td style='text-align:center;'>"+data[i]['operation_id']+"</td><td style='text-align:center;'>"+data[i]['operation_name']+"</td><td style='text-align:center;'>"+data[i]['remarks']+"</td><td style='text-align:center;'><b style='margin-left: 184px; display:none;'><font color='green'>SEND:&nbsp;"+data[i]['send_qty']+' </font></b><b><font color=blue> &nbsp;&nbsp;  RECEIVED:&nbsp;'+data[i]['recevied_qty']+'</font></b><b style="display:none;"><font color=gold> &nbsp;&nbsp;  MISSING:&nbsp;'+data[i]['missing_qty']+'</font></b><b><font color=red> &nbsp;&nbsp;  REJECTED:&nbsp;'+data[i]['rejected_qty']+"</font></b></td></tr>";
+							if(data[i]['category'] == 'sewing')
+							{
+								var id = data[i]['bundle_number'];
+							}
+							else
+							{
+								var id = data[i]['input_job_no'];
+							}
+							var markup ="<tr class='dynamic_data'></td><td style='text-align:center;'>"+id+"</td><td style='text-align:center;'>"+data[i]['size_title'].toUpperCase()+"</td><td style='text-align:center;'>"+data[i]['operation_id']+"</td><td style='text-align:center;'>"+data[i]['operation_name']+"</td><td style='text-align:center;'>"+data[i]['remarks']+"</td><td style='text-align:center;'><b style='margin-left: 184px; display:none;'><font color='green'>SEND:&nbsp;"+data[i]['send_qty']+' </font></b><b><font color=blue> &nbsp;&nbsp;  RECEIVED:&nbsp;'+data[i]['recevied_qty']+'</font></b><b style="display:none;"><font color=gold> &nbsp;&nbsp;  MISSING:&nbsp;'+data[i]['missing_qty']+'</font></b><b><font color=red> &nbsp;&nbsp;  REJECTED:&nbsp;'+data[i]['rejected_qty']+"</font></b></td></tr>";
 							 
 							 
 								//s_no++;
@@ -181,13 +189,13 @@ $(document).ready(function(){
 	{
 		$('#loading-image').show();
 		$(".dynamic_data").html(" ");
-		var pro_style_schedule = $('#pro_style option:selected').text();
+		var pro_style_schedule = window.btoa(unescape(encodeURIComponent(($('#pro_style option:selected').text()))));
 		$('#schedule').empty();
 		$('select[name="schedule"]').append('<option value="0">Select Schedule</option>');
 		$('#color').empty();
 		$('select[name="color"]').append('<option value="0">Select Color</option>');
 		$('#bundle').empty();
-		$('select[name="bundle"]').append('<option value="0">Select Sewing Job Number</option>');
+		$('select[name="bundle"]').append('<option value="0">Select Job / Docket / Carton No</option>');
 
 		$.ajax
 			({
@@ -218,7 +226,7 @@ $(document).ready(function(){
 		$(".dynamic_data").html(" ");
 		$('select[name="color"]').append('<option value="0">Select Color</option>');
 		$('#bundle').empty();
-		$('select[name="bundle"]').append('<option value="0">Select Sewing Job Number</option>');
+		$('select[name="bundle"]').append('<option value="0">Select Job / Docket / Carton No</option>');
 		$('#loading-image').show();
 		var pro_schedule_color = $('#schedule option:selected').text();
 		$.ajax
@@ -243,11 +251,11 @@ $(document).ready(function(){
 	{
 		$('#bundle').empty();
 		$("#dynamic_data").html("");
-		$('select[name="bundle"]').append('<option value="0">Select Sewing Job Number</option>');
+		$('select[name="bundle"]').append('<option value="0">Select Job / Docket / Carton No</option>');
 		$('#loading-image').show();
 		//$('#loading-image').show();
-		var color_name = $('#color option:selected').text();
-		var style_name = $('#pro_style option:selected').text();
+		var color_name = window.btoa(unescape(encodeURIComponent(($('#color option:selected').text()))));
+		var style_name = window.btoa(unescape(encodeURIComponent(($('#pro_style option:selected').text()))));
 		var schedule_name = $('#schedule option:selected').text();
 		// var params1 =[color_name,style_name,schedule_name];
 		$.ajax
