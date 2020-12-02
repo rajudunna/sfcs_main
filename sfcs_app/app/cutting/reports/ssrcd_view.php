@@ -733,15 +733,14 @@ if(isset($_POST['submit']))
 											$doc_req=$total_order_qty*$consumption;
 
 											 // get the docket info
-											$docket_info_query = "SELECT doc_line.plies, doc_line.fg_color,doc_line.docket_line_number,
+											$docket_info_query = "SELECT doc.plies, doc.fg_color,doc.docket_number,
 											doc.marker_version_id, doc.ratio_comp_group_id,
-											cut.cut_number, cut.po_number,doc_line.jm_docket_line_id,
+											cut.cut_number, cut.po_number,
 											ratio_cg.component_group_id as cg_id, ratio_cg.ratio_id, ratio_cg.master_po_details_id
-											FROM $pps.jm_docket_lines doc_line 
-											LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = doc_line.jm_docket_id
+											FROM $pps.jm_dockets doc
 											LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
 											LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
-											WHERE doc_line.plant_code = '$plant_code' AND doc_line.docket_line_number='$docket_no' AND doc_line.is_active=true";
+											WHERE doc.plant_code = '$plant_code' AND doc.docket_number='$docket_no' AND doc.is_active=true";
 										$docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 											while($row = mysqli_fetch_array($docket_info_result))
