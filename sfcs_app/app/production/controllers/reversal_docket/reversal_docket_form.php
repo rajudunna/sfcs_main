@@ -17,15 +17,15 @@
         $size_ratios = [];
         $unsorted_size_ratios = [];
         $lay_info_query = "SELECT lay.plies AS lay_plies, lay.shift, lay.lp_lay_id, dl.plies AS docket_plies, cut_report_status, dl.jm_docket_line_id, dl.jm_docket_id 
-                FROM $pps.jm_docket_lines dl 
-                LEFT JOIN $pps.lp_lay lay ON lay.jm_docket_line_id = dl.jm_docket_line_id 
+                FROM $pps.jm_dockets dl 
+                LEFT JOIN $pps.lp_lay lay ON lay.jm_docket_line_id = dl.jm_docket_id 
                 WHERE docket_line_number = $docket_number ORDER BY lay.created_at";
         $layInfo = mysqli_query($link,$lay_info_query);
         if($layInfo->num_rows == 0)
         {
             echo "<script>sweetAlert('In-valid docket number given Or Lay not yet reported for this docket','warning');</script>";
         } else {
-            $doc_id_query = "SELECT jm_docket_id FROM $pps.jm_docket_lines where docket_line_number = $docket_number ";
+            $doc_id_query = "SELECT jm_docket_id FROM $pps.jm_dockets where docket_number = $docket_number ";
             $doc_id_result = mysqli_query($link, $doc_id_query);
             while($row = mysqli_fetch_array($doc_id_result)){
                 $docket_id = $row['jm_docket_id'];
@@ -315,7 +315,7 @@ if(isset($_POST['reversesubmit']))
    $updateLayQty = "UPDATE $pps.lp_lay set plies = plies - $lay_plies where lp_lay_id = '$lay_id'";
    mysqli_query($link, $updateLayQty) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-   $updateDocketQty = "UPDATE $pps.jm_docket_lines set lay_status = 'OPEN' where jm_docket_line_id = '$docket_number'";
+   $updateDocketQty = "UPDATE $pps.jm_dockets set lay_status = 'OPEN' where jm_docket_id = '$docket_number'";
    mysqli_query($link, $updateDocketQty) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
    $url = '?r='.$_GET['r'].'&sidemenu=false';
    echo "<script> sweetAlert('Lay Reversed Successfully!!!','','success'); setTimeout(window.location = '$url', 2000); </script>"; 
