@@ -216,7 +216,7 @@ if(isset($_POST['submit']))
 		$jm_cut_job_id=$sql_row_cut['jm_cut_job_id'];
 		
 		//getting docket id
-		$get_docid_qry="SELECT jm_docket_id FROM $pps.`jm_dockets` WHERE plant_code='$plant_code' AND jm_cut_job_id='$jm_cut_job_id'";
+		$get_docid_qry="SELECT jm_docket_id FROM $pps.`jm_cut_docket_map` WHERE plant_code='$plant_code' AND jm_cut_job_id='$jm_cut_job_id'";
 		$get_docid_qry_result=mysqli_query($link, $get_docid_qry) or exit("Sql Error while getting docket id".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row_docid=mysqli_fetch_array($get_docid_qry_result))
 		{
@@ -256,7 +256,7 @@ if(isset($_POST['submit']))
 				$jm_cut_job_id=$sql_row_cut['jm_cut_job_id'];
 				
 				//getting docket id
-				$get_docid_qry="SELECT jm_docket_id FROM $pps.`jm_dockets` WHERE plant_code='$plant_code' AND jm_cut_job_id='$jm_cut_job_id'";
+				$get_docid_qry="SELECT jm_docket_id FROM $pps.`jm_cut_docket_map` WHERE plant_code='$plant_code' AND jm_cut_job_id='$jm_cut_job_id'";
 				$get_docid_qry_result=mysqli_query($link, $get_docid_qry) or exit("Sql Error while getting docket id".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row_docid=mysqli_fetch_array($get_docid_qry_result))
 				{

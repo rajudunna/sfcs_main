@@ -374,12 +374,12 @@ if(isset($_POST['submit']))
 	$lay_id=array();
 	$tot_cutable_qty=0;
 	//Actual Consumption
-	$Qry_get_cut_details="SELECT docket_number,lp_lay_id FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_dockets` ON jm_dockets.`jm_docket_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_dockets.plant_code='$plant_code'";
+	$Qry_get_cut_details="SELECT docket_number,jm_ad_id FROM $pps.`jm_actual_docket` LEFT JOIN $pps.`jm_dockets` ON jm_dockets.`jm_docket_id` = jm_actual_docket.jm_docket_id WHERE po_number='$sub_po' AND jm_dockets.plant_code='$plant_code'";
 	$sql_result5=mysqli_query($link, $Qry_get_cut_details) or die("Error".$Qry_get_cut_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row5=mysqli_fetch_array($sql_result5))
 	{
 		$docket_no=$row5['docket_number'];
-		$lay_id[]=$row5['lp_lay_id'];
+		$lay_id[]=$row5['jm_ad_id'];
 		
 		$result_docket_qty=getDocketInformation($docket_no,$plant_code);
 		$get_docket_qty=$result_docket_qty['docket_quantity'];
@@ -558,13 +558,13 @@ if(isset($_POST['submit']))
 	<th>Pct</th>
 	</tr>";
 	$tot_qty=0;
-	$Qry_get_cut_details="SELECT docket_line_number,lp_lay_id,lay_status FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_dockets` ON jm_dockets.`jm_docket_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_dockets.plant_code='$plant_code'";
+	$Qry_get_cut_details="SELECT docket_number,jm_ad_id,cut_report_status FROM $pps.`jm_actual_docket` LEFT JOIN $pps.`jm_dockets` ON jm_dockets.`jm_docket_id` = jm_actual_docket.jm_docket_id WHERE po_number='$sub_po' AND jm_dockets.plant_code='$plant_code'";
 	$sql_result6=mysqli_query($link, $Qry_get_cut_details) or die("Error".$Qry_get_cut_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row6=mysqli_fetch_array($sql_result6))
 	{
 		$docket_no=$row6['docket_number'];
-		$lay_id=$row6['lp_lay_id'];
-		$cut_status=$row6['lay_status'];
+		$lay_id=$row6['jm_ad_id'];
+		$cut_status=$row6['cut_report_status'];
 
 			//To get docket_details
 			$result_docket_qty=getDocketInformation($docket_no,$plant_code);

@@ -421,7 +421,7 @@ if(isset($_POST['submit']))
 
 					// to get fabric not allocated qty
 					$tot_qty=0;
-					$Qry_get_cut_details="SELECT docket_number,lp_lay_id,lay_status, lp_lay.plies as actualplies, jm_dockets.created_at as docket_date, lp_lay.created_at as cut_date, lp_lay.cut_report_status, lay_number, shift  FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_dockets` ON jm_dockets.`jm_docket_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_dockets.plant_code='$plant_code'";
+					$Qry_get_cut_details="SELECT docket_number,jm_ad_id, jm_actual_docket.plies as actualplies, jm_dockets.created_at as docket_date, jm_actual_docket.created_at as cut_date, jm_actual_docket.cut_report_status, lay_number, shift  FROM $pps.`jm_actual_docket` LEFT JOIN $pps.`jm_dockets` ON jm_dockets.`jm_docket_id` = jm_actual_docket.jm_docket_id WHERE po_number='$sub_po' AND jm_dockets.plant_code='$plant_code'";
 					$sql_result6=mysqli_query($link, $Qry_get_cut_details) or die("Error".$Qry_get_cut_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	
@@ -436,15 +436,14 @@ if(isset($_POST['submit']))
 												$doc_req=$total_order_qty*$consumption;
 	
 												 // get the docket info
-												$docket_info_query = "SELECT doc_line.plies, doc_line.fg_color,doc_line.docket_line_number,
+												$docket_info_query = "SELECT doc.plies, doc.fg_color,doc.docket_number,
 												doc.marker_version_id, doc.ratio_comp_group_id,
-												cut.cut_number, cut.po_number,doc_line.jm_docket_line_id,
+												cut.cut_number, cut.po_number,
 												ratio_cg.component_group_id as cg_id, ratio_cg.ratio_id, ratio_cg.master_po_details_id
-												FROM $pps.jm_docket_lines doc_line 
-												LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = doc_line.jm_docket_id
+												FROM $pps.jm_dockets doc
 												LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
 												LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
-												WHERE doc_line.plant_code = '$plant_code' AND doc_line.docket_line_number='$docket_no' AND doc_line.is_active=true";
+												WHERE doc.plant_code = '$plant_code' AND doc.docket_number='$docket_no' AND doc.is_active=true";
 											$docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 												while($row = mysqli_fetch_array($docket_info_result))
@@ -673,7 +672,7 @@ if(isset($_POST['submit']))
 		<div class="col-sm-12">
 							<?php
 									$tot_qty=0;
-									$Qry_get_cut_details="SELECT docket_number,lp_lay_id,lay_status, lp_lay.plies as actualplies, jm_dockets.created_at as docket_date, lp_lay.created_at as cut_date, lp_lay.cut_report_status, lay_number, shift  FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_dockets` ON jm_dockets.`jm_docket_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_dockets.plant_code='$plant_code' order by docket_number";
+									$Qry_get_cut_details="SELECT docket_number,jm_ad_id, jm_actual_docket.plies as actualplies, jm_dockets.created_at as docket_date, jm_actual_docket.created_at as cut_date, jm_actual_docket.cut_report_status,shift  FROM $pps.`jm_actual_docket` LEFT JOIN $pps.`jm_dockets` ON jm_dockets.`jm_docket_id` = jm_actual_docket.jm_docket_id WHERE po_number='$sub_po' AND jm_dockets.plant_code='$plant_code' order by docket_number";
 									$sql_result6=mysqli_query($link, $Qry_get_cut_details) or die("Error".$Qry_get_cut_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 									if(mysqli_num_rows($sql_result6))
 									{
@@ -718,12 +717,12 @@ if(isset($_POST['submit']))
 									{
 										$docket_no=$row6['docket_line_number'];
 										$lay_id=$row6['lp_lay_id'];
-										$cut_status=$row6['lay_status'];
+										//$cut_status=$row6['lay_status'];
 										$actual_plies=$row6['actualplies'];
 										// $docket_date=$row6['docket_date'];
 										$cut_date=$row6['cut_date'];
 										$cut_report_status=$row6['cut_report_status'];
-										$lay_number=$row6['lay_number'];
+										//$lay_number=$row6['lay_number'];
 										$shift=$row6['shift'];
 								
 											//To get docket_details
@@ -733,15 +732,14 @@ if(isset($_POST['submit']))
 											$doc_req=$total_order_qty*$consumption;
 
 											 // get the docket info
-											$docket_info_query = "SELECT doc_line.plies, doc_line.fg_color,doc_line.docket_line_number,
+											$docket_info_query = "SELECT doc.plies, doc.fg_color,doc.docket_number,
 											doc.marker_version_id, doc.ratio_comp_group_id,
-											cut.cut_number, cut.po_number,doc_line.jm_docket_line_id,
+											cut.cut_number, cut.po_number,
 											ratio_cg.component_group_id as cg_id, ratio_cg.ratio_id, ratio_cg.master_po_details_id
-											FROM $pps.jm_docket_lines doc_line 
-											LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = doc_line.jm_docket_id
+											FROM $pps.jm_dockets doc
 											LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
 											LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
-											WHERE doc_line.plant_code = '$plant_code' AND doc_line.docket_line_number='$docket_no' AND doc_line.is_active=true";
+											WHERE doc.plant_code = '$plant_code' AND doc.docket_number='$docket_no' AND doc.is_active=true";
 										$docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 											while($row = mysqli_fetch_array($docket_info_result))

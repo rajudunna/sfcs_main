@@ -225,7 +225,7 @@ if(isset($_POST['submit']))
 		
 			foreach($cut_job_id as $key1 => $cut_job){
 				//qry to get dockets using cut_job_id
-				$qry_get_dockets="SELECT jm_docket_id From $pps.jm_dockets WHERE plant_code='$plant_code' AND jm_cut_job_id in ('$cut_job') order by docket_number ASC";
+				$qry_get_dockets="SELECT jm_docket_id From $pps.jm_dockets LEFT JOIN $pps.jm_cut_docket_map ON jm_dockets.jm_docket_id=jm_cut_docket_map.jm_docket_id WHERE jm_cut_docket_map.plant_code='$plant_code' AND jm_cut_docket_map.jm_cut_job_id in ('$cut_job') order by docket_number ASC";
 				$toget_dockets_result=mysqli_query($link_new, $qry_get_dockets) or exit("Sql Error at dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$toget_dockets_num=mysqli_num_rows($toget_dockets_result);
 				if($toget_dockets_num>0)
@@ -237,7 +237,7 @@ if(isset($_POST['submit']))
 					$jm_dockets = implode("','", $jm_docketss);
 				}
 				//qry to get dockets in through dockets id
-				$qry_get_docketlines="SELECT jm_docket_id,docket_number FROM $pps.jm_dockets WHERE plant_code='$plant_code' AND jm_docket_id IN ('$jm_dockets') order by docket_line_number";
+				$qry_get_docketlines="SELECT jm_docket_id,docket_number FROM $pps.jm_dockets WHERE plant_code='$plant_code' AND jm_docket_id IN ('$jm_dockets') order by docket_number";
 				// echo $qry_get_docketlines;
 				$qry_get_docketlines_result=mysqli_query($link_new, $qry_get_docketlines) or exit("Sql Error at docket lines".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$docketlines_num=mysqli_num_rows($qry_get_docketlines_result);

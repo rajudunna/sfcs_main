@@ -16,10 +16,10 @@
         $components = [];
         $size_ratios = [];
         $unsorted_size_ratios = [];
-        $lay_info_query = "SELECT lay.plies AS lay_plies, lay.shift, lay.lp_lay_id, dl.plies AS docket_plies, cut_report_status, dl.jm_docket_line_id, dl.jm_docket_id 
+        $lay_info_query = "SELECT jad.plies AS lay_plies, jad.shift, jad.jm_ad_id, dl.plies AS docket_plies, cut_report_status, dl.jm_docket_id 
                 FROM $pps.jm_dockets dl 
-                LEFT JOIN $pps.lp_lay lay ON lay.jm_docket_line_id = dl.jm_docket_id 
-                WHERE docket_line_number = $docket_number ORDER BY lay.created_at";
+                LEFT JOIN $pps.jm_actual_docket jad ON jad.jm_docket_id = dl.jm_docket_id 
+                WHERE docket_number = $docket_number ORDER BY jad.created_at";
         $layInfo = mysqli_query($link,$lay_info_query);
         if($layInfo->num_rows == 0)
         {
@@ -32,7 +32,7 @@
             }
             // get the sizes involved in the docket
             $doc_info_query = "SELECT fg_color, doc.plies, ratio_comp_group_id, ratio_id FROM $pps.jm_dockets doc
-            LEFT JOIN  $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
+            LEFT JOIN  $pps.lp_ratio_component_group lrcg ON lrcg.component_group_id = doc.ratio_comp_group_id
             WHERE doc.jm_docket_id = '$docket_id' ";
             $doc_info_result = mysqli_query($link, $doc_info_query);
             while ($row1 = mysqli_fetch_array($doc_info_result)) {   
@@ -261,7 +261,7 @@ if(isset($_POST['formSubmit']))
                         $s_no = 1;
                         while($row = mysqli_fetch_array($layInfo)){
                             $docket_id = $row['jm_docket_id'];
-                            $lay_id = '"'.$row['lp_lay_id'].'"';
+                            $lay_id = '"'.$row['jm_ad_id'].'"';
                             $plies = $row['lay_plies'];
                             echo "<tr><td>$docket_number</td>";
                             echo "<td>$s_no</td>";

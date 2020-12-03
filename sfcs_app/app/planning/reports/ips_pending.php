@@ -149,7 +149,7 @@ $plantCode = $_SESSION['plantCode'];
 									$pendingJob = $jobsArray[$style][$schedules][$colors]["pendingJob"] . "," . $pendingJob;
 								}
 								// Get count of lay status(open)
-								$sql_get_cut_report_status = "SELECT COUNT(lay_status) AS lay_status_count FROM $pps.jm_dockets  where lay_status ='OPEN' AND docket_number IN($docketNos) AND plant_code = '" . $plantCode . "'";
+								$sql_get_cut_report_status = "SELECT COUNT(cut_report_status) AS lay_status_count FROM $pps.jm_actual_docket  where cut_report_status ='OPEN' AND actual_docket_number IN($docketNos) AND plant_code = '" . $plantCode . "'";
 								$res_get_cuts = mysqli_query($link, $sql_get_cut_report_status) or exit("Sql Error1--3" . mysqli_error($GLOBALS["___mysqli_ston"]));
 
 								$row_get_cuts_count = mysqli_fetch_row($res_get_cuts);

@@ -111,7 +111,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 								LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.`jm_cut_job_id`=dm.`jm_cut_job_id`
 								LEFT JOIN $pps.`mp_sub_order` mso ON mso.`po_number`=jcj.`po_number`
 								LEFT JOIN $pps.`mp_color_detail` mcd ON mcd.`master_po_number`=mso.`master_po_number`
-								WHERE jd.`jm_docket_line_id`='".$doc_no."' and jd.plant_code='".$plant_code."'";
+								WHERE jd.`jm_docket_id`='".$doc_no."' and jd.plant_code='".$plant_code."'";
 				
 								$sql_result2 = mysqli_query($link,$query2) or die(exception($query2));;
 								while($sql_row2=mysqli_fetch_array($sql_result2)) 

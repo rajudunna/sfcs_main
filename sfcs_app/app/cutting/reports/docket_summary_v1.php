@@ -100,13 +100,12 @@ $username=$_SESSION['userName'];
 			/**
 			 * getting dockets wrt taskjobs
 			 */
-			$qrydocketLines="SELECT docLine.jm_docket_line_id,docLine.fg_color,docLine.docket_line_number,docLine.is_binding,docLine.jm_docket_id,ratio_cg.component_group_id as cg_id,docLine.plies, ratio_cg.ratio_id,ratio_cg.fabric_saving,docLine.lay_status,l.date_n_time AS fab_ready_time,cut.cut_number,cut.po_number ,doc.ratio_comp_group_id
-			FROM $pps.jm_docket_lines docLine 
-			LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = docLine.jm_docket_id
+			$qrydocketLines="SELECT doc.fg_color,doc.docket_number,doc.is_binding,doc.jm_docket_id,ratio_cg.component_group_id as cg_id,doc.plies, ratio_cg.ratio_id,ratio_cg.fabric_saving,l.date_n_time AS fab_ready_time,cut.cut_number,cut.po_number ,doc.ratio_comp_group_id
+			FROM $pps.jm_dockets doc
 			LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
 			LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
-			LEFT JOIN $pps.log_rm_ready_in_pool l ON docLine.jm_docket_id=l.jm_docket_line_id
-			WHERE docLine.plant_code='$plantcode' AND DATE(docLine.created_at) BETWEEN '$sdate' AND '$edate'";
+			LEFT JOIN $pps.log_rm_ready_in_pool l ON doc.jm_docket_id=l.jm_docket_id
+			WHERE doc.plant_code='$plantcode' AND DATE(doc.created_at) BETWEEN '$sdate' AND '$edate'";
 			//echo $qrydocketLines;
 			$docketLinesResult=mysqli_query($link_new, $qrydocketLines) or exit("Sql Error at getting taskJobs".mysqli_error($GLOBALS["___mysqli_ston"]));
             $docketLinesNum=mysqli_num_rows($docketLinesResult);
@@ -126,7 +125,6 @@ $username=$_SESSION['userName'];
 				<th>User log time</th><th>Fab. requested time</th><th>Fab. Ready time</th><th>Fab. Issued time</th><th>Docket print status</th><th>Docket printed user</th><th>Actual cut status</th></tr></thead>";
 				while($taskJobsRow=mysqli_fetch_array($docketLinesResult))
                 {
-                    $jm_docket_line_id=$taskJobsRow['jm_docket_line_id']; 
                     $doc_no=$taskJobsRow['docket_line_number']; 
 					$is_binding=$taskJobsRow['is_binding'];
 					$doc_no = $taskJobsRow['docket_line_number'];
@@ -178,7 +176,7 @@ $username=$_SESSION['userName'];
 					/**
 					 * getting print_status,fabric_status info 
 					 */
-					$qryrequestedDockets="SELECT print_status,fabric_status,updated_user,created_at FROM $pps.requested_dockets WHERE plant_code='$plantcode' AND jm_docket_line_id='$jm_docket_line_id'";
+					$qryrequestedDockets="SELECT print_status,fabric_status,updated_user,created_at FROM $pps.requested_dockets WHERE plant_code='$plantcode' AND jm_docket_id='$jm_docket_id'";
 					$requestedDocketsResult=mysqli_query($link_new, $qryrequestedDockets) or exit("Sql Error at getting requested Dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$requestedDockets=mysqli_num_rows($requestedDocketsResult);
 					if($requestedDockets>0){
@@ -194,7 +192,7 @@ $username=$_SESSION['userName'];
 					/**
 					 * getting fabric priorities 
 					 */
-					$qryfabricPriorities="SELECT created_user,created_at,req_time,issued_time FROM $pps.fabric_prorities WHERE plant_code='$plantcode' AND jm_docket_line_id='$jm_docket_line_id'";
+					$qryfabricPriorities="SELECT created_user,created_at,req_time,issued_time FROM $pps.fabric_prorities WHERE plant_code='$plantcode' AND jm_docket_id='$jm_docket_id'";
 					$fabricPrioritiesResult=mysqli_query($link_new, $qryfabricPriorities) or exit("Sql Error at getting requested Dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$fabricPriorities=mysqli_num_rows($fabricPrioritiesResult);
 					if($fabricPriorities>0){
