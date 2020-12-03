@@ -89,7 +89,7 @@ function getCheckList($get_style,$get_schedule,$plantcode){
                     $table .= "<td>".$sno."</td>";
                     $table .= "<td>".$cut_num."</td>";
                     // qry to get dockets using cut_job_id
-                    $qry_get_dockets="SELECT jm_docket_id From $pps.jm_dockets WHERE plant_code='$plantcode' AND jm_cut_job_id  = '$cut_job_id' order by docket_number ASC";
+                    $qry_get_dockets="SELECT jm_docket_id From $pps.jm_dockets LEFT JOIN $pps.jm_cut_docket_map ON jm_dockets.jm_docket_id=jm_cut_docket_map.jm_docket_id WHERE plant_code='$plantcode' AND jm_cut_job_id  = '$cut_job_id' order by docket_number ASC";
                     $toget_dockets_result=mysqli_query($link_new, $qry_get_dockets) or exit("Sql Error at dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $toget_dockets_num=mysqli_num_rows($toget_dockets_result);
                     if($toget_dockets_num>0){
@@ -102,7 +102,7 @@ function getCheckList($get_style,$get_schedule,$plantcode){
                         $jm_dockets_id = implode("','", $jm_dockets_idss);
                     }
                     //qry to get dockets in through dockets id
-                    $qry_get_docketlines="SELECT group_concat(docket_number) as docket_line_number FROM $pps.jm_dockets WHERE jm_docket_id IN ('$jm_dockets_id') AND plant_code='$plantcode'";
+                    $qry_get_docketlines="SELECT group_concat(docket_number) as docket_number FROM $pps.jm_dockets WHERE jm_docket_id IN ('$jm_dockets_id') AND plant_code='$plantcode'";
                     $qry_get_docketlines_result=mysqli_query($link_new, $qry_get_docketlines) or exit("Sql Error at docket lines".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $docketlines_num=mysqli_num_rows($qry_get_docketlines_result);
                     if($docketlines_num>0){
