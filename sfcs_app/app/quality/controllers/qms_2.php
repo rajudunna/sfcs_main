@@ -253,11 +253,26 @@ if(isset($_GET['tid']))
 		}
 	}
 	// die();
-	$bts_update="update $brandix_bts.bundle_creation_data set rejected_qty=rejected_qty-".$qms_qty." where bundle_number='".$bundle_no_ref."' and operation_id='".$operation_id."' and input_job_no_random_ref='".$input_job_no."'  and assigned_module='".$module_ref."' and size_id='".$qms_size."'";
-	// echo $bts_update."<br>";
-	mysqli_query($link, $bts_update) or die("Sql error".$bts_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
+	$sql_module="SELECT * from $brandix_bts.bundle_creation_data where bundle_number='".$bundle_no_ref."' and operation_id='".$operation_id."' and input_job_no_random_ref='".$input_job_no."'  and assigned_module='".$module_ref."' and size_id='".$qms_size."'";
+	$sql_result_module=mysqli_query($link, $sql_module) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($sql_result_module) == 0)
+    {
+		$sql_module1="SELECT assigned_module from $brandix_bts.bundle_creation_data where bundle_number='".$bundle_no_ref."' and operation_id='".$operation_id."' and input_job_no_random_ref='".$input_job_no."'  and size_id='".$qms_size."'";
+		$sql_result_module1=mysqli_query($link, $sql_module1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row_mod=mysqli_fetch_array($sql_result_module1))
+		{
+			$module_ref1=$sql_row_mod['assigned_module'];
+		}
+	}
+	else
+	{
+		$module_ref1=$module_ref;
+	}
+		$bts_update="update $brandix_bts.bundle_creation_data set rejected_qty=rejected_qty-".$qms_qty." where bundle_number='".$bundle_no_ref."' and operation_id='".$operation_id."' and input_job_no_random_ref='".$input_job_no."'  and assigned_module='".$module_ref1."' and size_id='".$qms_size."'";
+		// echo $bts_update."<br>";
+		mysqli_query($link, $bts_update) or die("Sql error".$bts_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	// echo $bts_update.'</br>';
-
+	
 	//5176 rejection reversal - appear in IPS and IMS 
 	$application_ips='IPS';
 	$scanning_query_ips="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application_ips'";
@@ -281,7 +296,7 @@ if(isset($_GET['tid']))
 		$ims_code=$sql_row_ims['operation_code'];
 	}
 						
-	$sql="SELECT COALESCE(SUM(send_qty),0) AS send_qty,COALESCE(SUM(recevied_qty),0) AS rec_qty,COALESCE(SUM(rejected_qty),0) AS rej_qty,bundle_qty_status from $brandix_bts.bundle_creation_data where bundle_number='".$bundle_no_ref."' and operation_id='".$operation_id."' and input_job_no_random_ref='".$input_job_no."'  and assigned_module='".$module_ref."' and size_id='".$qms_size."'";
+	$sql="SELECT COALESCE(SUM(send_qty),0) AS send_qty,COALESCE(SUM(recevied_qty),0) AS rec_qty,COALESCE(SUM(rejected_qty),0) AS rej_qty,bundle_qty_status from $brandix_bts.bundle_creation_data where bundle_number='".$bundle_no_ref."' and operation_id='".$operation_id."' and input_job_no_random_ref='".$input_job_no."'  and assigned_module='".$module_ref1."' and size_id='".$qms_size."'";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -351,12 +366,12 @@ if(isset($_GET['tid']))
 		}
 		$sewing_operations = implode ( ", ", $operations);
 
-		$check_bcd="select * from $brandix_bts.bundle_creation_data WHERE operation_id in ($sewing_operations) and assigned_module='$module_ref' and bundle_qty_status=5";
+		$check_bcd="select * from $brandix_bts.bundle_creation_data WHERE bundle_number =$bundle_no_ref and operation_id in ($sewing_operations) and bundle_qty_status=5";
 		$result_status= mysqli_query($link, $check_bcd);
 		if(mysqli_num_rows($result_status) > 0)
 		{
 			$status_update_query = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '0' where bundle_number =$bundle_no_ref and operation_id in ($sewing_operations) and bundle_qty_status = 5";
-				$status_result_query = $link->query($status_update_query) or exit('query error in updating status');
+			$status_result_query = $link->query($status_update_query) or exit('query error in updating status');
 		}
 	}
 
