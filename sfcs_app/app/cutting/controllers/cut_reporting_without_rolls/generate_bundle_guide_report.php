@@ -227,10 +227,10 @@ if(isset($_POST['submit']))
 			$get_docline_qry_result=mysqli_query($link, $get_docline_qry) or exit("Sql Error while getting doclineid".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row_doclineid=mysqli_fetch_array($get_docline_qry_result))
 			{
-				$jm_docket_line_id=$sql_row_doclineid['jm_docket_id'];
+				$jm_docket_id=$sql_row_doclineid['jm_docket_id'];
 				
 				//getting details from jm_docket_cg_bundle
-				$get_det_qry="SELECT size FROM $pps.`jm_docket_cg_bundle` WHERE plant_code='$plant_code' AND jm_docket_line_id='$jm_docket_line_id'";
+				$get_det_qry="SELECT size FROM $pps.`jm_docket_cg_bundle` WHERE plant_code='$plant_code' AND jm_docket_id='$jm_docket_id'";
 				$get_det_qry_result=mysqli_query($link, $get_det_qry) or exit("Sql Error while getting details".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row_det=mysqli_fetch_array($get_det_qry_result))
 				{
@@ -267,16 +267,16 @@ if(isset($_POST['submit']))
 					$get_docline_qry_result=mysqli_query($link, $get_docline_qry) or exit("Sql Error while getting doclineid".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row_doclineid=mysqli_fetch_array($get_docline_qry_result))
 					{
-						$jm_docket_line_id=$sql_row_doclineid['jm_docket_id'];
-						$docket_line_number=$sql_row_doclineid['docket_number'];
+						$jm_docket_id=$sql_row_doclineid['jm_docket_id'];
+						$docket_number=$sql_row_doclineid['docket_number'];
 						
 						echo "<tr>";
 						echo "<td>".$cut_number."</td>";
-						echo "<td>".$docket_line_number."</td>";
+						echo "<td>".$docket_number."</td>";
 						for($i=0;$i<sizeof(array_unique($sizesarr));$i++)
 						{
 							//getting details from jm_docket_cg_bundle
-							$get_det_qry="SELECT sum(quantity) as quantity FROM $pps.`jm_docket_cg_bundle` WHERE plant_code='$plant_code' AND jm_docket_line_id='$jm_docket_line_id' and size='".$sizesarr[$i]."'";
+							$get_det_qry="SELECT sum(quantity) as quantity FROM $pps.`jm_docket_cg_bundle` WHERE plant_code='$plant_code' AND jm_docket_id='$jm_docket_id' and size='".$sizesarr[$i]."'";
 							$get_det_qry_result=mysqli_query($link, $get_det_qry) or exit("Sql Error while getting details".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row_det=mysqli_fetch_array($get_det_qry_result))
 							{
@@ -284,7 +284,7 @@ if(isset($_POST['submit']))
 							}
 							echo "<td>".$quantity."</td>";
 						}
-						echo "<td><a href=\"$path?doc_no=".$docket_line_number."&plant_code=".$plant_code."&style=".$style."&schedule=".$schedule."&color=".$color."&mpo=".$mpo."&ponum=".$ponum."&cut_number=".$cut_number."\" onclick=\"Popup1=window.open('$path?doc_no=".$docket_line_number."&plant_code=".$plant_code."&style=".$style."&schedule=".$schedule."&color=".$color."&mpo=".$mpo."&ponum=".$ponum."&cut_number=".$cut_number."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print</a></td>";
+						echo "<td><a href=\"$path?doc_no=".$docket_number."&plant_code=".$plant_code."&style=".$style."&schedule=".$schedule."&color=".$color."&mpo=".$mpo."&ponum=".$ponum."&cut_number=".$cut_number."\" onclick=\"Popup1=window.open('$path?doc_no=".$docket_number."&plant_code=".$plant_code."&style=".$style."&schedule=".$schedule."&color=".$color."&mpo=".$mpo."&ponum=".$ponum."&cut_number=".$cut_number."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-sm btn-primary'>Print</a></td>";
 						echo "</tr>";
 					}
 				}

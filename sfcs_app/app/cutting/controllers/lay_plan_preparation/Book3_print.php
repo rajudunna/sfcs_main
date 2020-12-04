@@ -2613,7 +2613,7 @@ $tot_bind_len=0;
 // {
 	if($print_status=="0" || $print_status == "")
     {
-		$sql="update $pps.requested_dockets set print_status=\"".date("Y-m-d")."\" where jm_docket_line_id='$doc_num'";
+		$sql="update $pps.requested_dockets set print_status=\"".date("Y-m-d")."\" where jm_docket_id='$doc_num'";
  	    // echo $sql;
 	    mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	

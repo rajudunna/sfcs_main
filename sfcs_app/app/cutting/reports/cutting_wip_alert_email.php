@@ -232,7 +232,7 @@ foreach($departments as $department)    //section Loop -start
 		if($dokcetno!=''){
 			/**here we have condition that cut status done*/
 			$qrylpLay="SELECT sum(jac.plies) as plies,GROUP_CONCAT(CONCAT('''', ratio_cg.ratio_id, '''' ))AS ratio_id FROM $pps.jm_dockets jd 
-			LEFT JOIN $pps.jm_actual_docket jac ON jd.jm_docket_line_id=jac.jm_docket_line_id
+			LEFT JOIN $pps.jm_actual_docket jac ON jd.jm_docket_id=jac.jm_docket_id
 			LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = jd.ratio_comp_group_id 
 			WHERE jd.docket_number IN (".$dokcetno.") AND jac.cut_report_status != 'OPEN' AND jd.plant_code='$plantCode'";	
 			$qrylpLayResult=mysqli_query($link_new, $qrylpLay) or exit("$qrylpLay".mysqli_error($GLOBALS["___mysqli_ston"]));

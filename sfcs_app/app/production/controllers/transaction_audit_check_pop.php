@@ -84,7 +84,7 @@ if(isset($_POST['submit']))
 	$sql_result_sql_docket=mysqli_query($link,$sql_docket) or exit("Sql Error15".mysqli_error());
 	while($sql_row_docket=mysqli_fetch_array($sql_result_sql_docket))
 	{
-		$task_job_ref = $sql_row_docket['jm_docket_line_id'];
+		$task_job_ref = $sql_row_docket['jm_docket_id'];
 		$sql="SELECT th.resource_id, th.created_user, th.created_at FROM $tms.`task_jobs` tj LEFT JOIN $tms.`task_header` th ON th.`task_header_id` = tj.`task_header_id`
 		WHERE th.`resource_id` IS NOT NULL AND `task_job_reference` = '$task_job_ref'";
 		mysqli_query($link,$sql) or exit("Sql Error14".mysqli_error());
@@ -101,7 +101,7 @@ if(isset($_POST['submit']))
 					$workstationCode = $workstaton_type_row['workstation_code'];
 				}	
 				echo "<tr>";
-				echo "<td>".$sql_row_docket['docket_line_number']."</td>";
+				echo "<td>".$sql_row_docket['docket_number']."</td>";
 				echo "<td>".$workstationCode."</td>";
 				echo "<td>".$sql_row_work['created_user']."</td>";
 				echo "<td>".$sql_row_work['created_at']."</td>";

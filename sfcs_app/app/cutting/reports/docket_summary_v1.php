@@ -125,9 +125,8 @@ $username=$_SESSION['userName'];
 				<th>User log time</th><th>Fab. requested time</th><th>Fab. Ready time</th><th>Fab. Issued time</th><th>Docket print status</th><th>Docket printed user</th><th>Actual cut status</th></tr></thead>";
 				while($taskJobsRow=mysqli_fetch_array($docketLinesResult))
                 {
-                    $doc_no=$taskJobsRow['docket_line_number']; 
+                    $doc_no=$taskJobsRow['docket_number']; 
 					$is_binding=$taskJobsRow['is_binding'];
-					$doc_no = $taskJobsRow['docket_line_number'];
 					$jm_docket_id = $taskJobsRow['jm_docket_id'];
 					$cg_id = $taskJobsRow['cg_id'];
 					$plies =  $taskJobsRow['plies'];

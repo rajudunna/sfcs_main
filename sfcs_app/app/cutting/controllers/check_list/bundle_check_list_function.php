@@ -106,12 +106,12 @@ function getCheckList($get_style,$get_schedule,$plantcode){
                     $qry_get_docketlines_result=mysqli_query($link_new, $qry_get_docketlines) or exit("Sql Error at docket lines".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $docketlines_num=mysqli_num_rows($qry_get_docketlines_result);
                     if($docketlines_num>0){
-                        $docket_line_number = '';
+                        $docket_number = '';
                         while($docketline_row=mysqli_fetch_array($qry_get_docketlines_result))
                         {
-                            $docket_line_number=$docketline_row['docket_line_number']; 
+                            $docket_number=$docketline_row['docket_number']; 
                         }
-                        $table .= "<td>".$docket_line_number."</td>";
+                        $table .= "<td>".$docket_number."</td>";
                     }
 
                     //Qry to fetch jm_job_header_id from jm_jobs_header
@@ -152,7 +152,7 @@ function getCheckList($get_style,$get_schedule,$plantcode){
                     $table .= "<td>".$fg_colorsss."</td>";
                     $table .= "<td>".$cnt."</td>";
                     $table .= "<td>".$qty."</td>";
-                    $table .= "<td ><a class='btn btn-warning' href='$url1?style=$get_style&schedule=$get_schedule&doc_no=".$docket_line_number."&org_doc_no=".$docket_line_number."&acutno=".$cut_num."&color_code=".$m['color_code']."&plantcode=".$plantcode."&cut_job_id=".$cut_job_id."'' onclick=\"return popitup2('$url1?style=$get_style&schedule=$get_schedule&doc_no=".$docket_line_number."&org_doc_no=".$docket_line_number."&acutno=".$cut_num."&color_code=".$m['color_code']."&plantcode=".$plantcode."&cut_job_id=".$cut_job_id."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Check List</a>
+                    $table .= "<td ><a class='btn btn-warning' href='$url1?style=$get_style&schedule=$get_schedule&doc_no=".$docket_number."&org_doc_no=".$docket_number."&acutno=".$cut_num."&color_code=".$m['color_code']."&plantcode=".$plantcode."&cut_job_id=".$cut_job_id."'' onclick=\"return popitup2('$url1?style=$get_style&schedule=$get_schedule&doc_no=".$docket_number."&org_doc_no=".$docket_number."&acutno=".$cut_num."&color_code=".$m['color_code']."&plantcode=".$plantcode."&cut_job_id=".$cut_job_id."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Check List</a>
                     </td>";
                     $sno++;
                     $table .= "</tr>";

@@ -234,16 +234,16 @@ if(isset($_POST['show']))
 											while($get_pending_docket_row=mysqli_fetch_array($get_pending_dockets_result))
 											{
 												if($get_pending_docket_row['cut_report_status']=='OPEN'){
-													$pending_dockets_list[] = $component_group_name.':'.$get_docket_row['docket_line_number'];
+													$pending_dockets_list[] = $component_group_name.':'.$get_docket_row['docket_number'];
 													$completed = 1;
 												} 
 												else if($get_pending_docket_row['cut_report_status']=='DONE'){
-													$completed_dockets_list[] =$component_group_name.':'.$get_docket_row['docket_line_number'];
+													$completed_dockets_list[] =$component_group_name.':'.$get_docket_row['docket_number'];
 													$completed = 1;
 												} 
 											}
 										}else {
-											$open_dockets_list[] =$component_group_name.':'.$get_docket_row['docket_line_number'];
+											$open_dockets_list[] =$component_group_name.':'.$get_docket_row['docket_number'];
 										}
 									}
 									

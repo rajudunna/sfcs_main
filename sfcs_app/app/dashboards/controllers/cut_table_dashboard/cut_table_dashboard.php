@@ -973,7 +973,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       // echo $sql1;
   // close style wise display 
     //NEw check
-    $requested_dockets="select * from $pps.requested_dockets left join $pps.fabric_prorities on requested_dockets.jm_docket_line_id=fabric_prorities.jm_docket_line_id where fabric_prorities.work_station_id='$section_mods' and fabric_prorities.plant_code='$plant_code' and (fabric_prorities.issued_time='0000-00-00 00:00:00' or fabric_prorities.issued_time is null)";
+    $requested_dockets="select * from $pps.requested_dockets left join $pps.fabric_prorities on requested_dockets.jm_docket_id=fabric_prorities.jm_docket_id where fabric_prorities.work_station_id='$section_mods' and fabric_prorities.plant_code='$plant_code' and (fabric_prorities.issued_time='0000-00-00 00:00:00' or fabric_prorities.issued_time is null)";
     $sql_result1=mysqli_query($link, $requested_dockets) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     // echo $sql1."<br>";
     $sql_num_check=mysqli_num_rows($sql_result1);
@@ -987,7 +987,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     //   $rm_update_new=strtolower(chop($sql_row1['rm_date']));
     //   $input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
     
-      $doc_no=$sql_row1['jm_docket_line_id'];
+      $doc_no=$sql_row1['jm_docket_id'];
       $sql11x11="SELECT docket_number FROM $pps.jm_dockets where plant_code='$plant_code' and jm_docket_id='$doc_no'";
       $sql_result11x11=mysqli_query($link, $sql11x11) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($row111x11=mysqli_fetch_array($sql_result11x11))
@@ -1005,7 +1005,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $req_date_time=$sql_row1['req_time'];
           $log_time=$sql_row1['log_time'];
           $lay_time=$sql_row1['req_time'];
-          $get_order_joins="select plan_lot_ref,fabric_status,print_status from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_line_id=\"$doc_no\"";
+          $get_order_joins="select plan_lot_ref,fabric_status,print_status from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_id=\"$doc_no\"";
           $sql_result=mysqli_query($link, $get_order_joins) or exit("Sql Error27".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($sql_row1236=mysqli_fetch_array($sql_result))
         {
@@ -1031,7 +1031,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     //   }
       
      
-      $doc_no_ref[]=$sql_row1['jm_docket_line_id'];
+      $doc_no_ref[]=$sql_row1['jm_docket_id'];
     //   $bundle_location="";
     //   if(sizeof(explode("$",$sql_row1['bundle_location']))>1)
     //   {
@@ -1293,7 +1293,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		$length =$result_docketinfo['length'];
 		$shrinkage =$result_docketinfo['shrinkage'];
     $width =$result_docketinfo['width'];
-    $docket_number =$result_docketinfo['docket_line_number'];
+    $docket_number =$result_docketinfo['docket_number'];
     $po_number =$result_docketinfo['sub_po'];
     
 		

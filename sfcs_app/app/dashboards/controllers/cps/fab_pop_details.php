@@ -348,7 +348,7 @@ echo "<th>Color</th>";
 echo "<th>Job No</th>";
 echo "</tr>";
 
-$check_sql = "SELECT * from $pps.fabric_prorities left join $pps.jm_dockets on jm_dockets.jm_docket_id=fabric_prorities.jm_docket_line_id where fabric_prorities.jm_docket_line_id='$doc_no' and fabric_prorities.plant_code='$plant_code'";
+$check_sql = "SELECT * from $pps.fabric_prorities left join $pps.jm_dockets on jm_dockets.jm_docket_id=fabric_prorities.jm_docket_id where fabric_prorities.jm_docket_id='$doc_no' and fabric_prorities.plant_code='$plant_code'";
 // if($check_sql_res_check >0){
 // 	$sql1="SELECT order_style_no,order_del_no,order_col_des,color_code,acutno,order_tid,order_style_no,order_del_no,clubbing from $bai_pro3.cut_tbl_dash_doc_summ where doc_no=$doc_no";
 // }else{
@@ -511,7 +511,7 @@ echo "<div class='table-responsive'><table class='table table-bordered'><tr><th>
 //    	$sql1="SELECT order_cat_doc_mk_mix.order_tid,order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing as clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,$bai_pro3.fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix_v2 as order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid in (select distinct order_tid from $bai_pro3.plan_doc_summ where order_style_no=\"$style_ref\" and order_del_no=\"$del_ref\" and clubbing=$clubbing) and order_cat_doc_mk_mix.doc_no=$doc_no and order_cat_doc_mk_mix.acutno=$cut_no_ref  and org_doc_no <=1";
 //    }
 // }
-$sql1="select * from $pps.fabric_prorities left join $pps.jm_dockets on jm_dockets.jm_docket_id=fabric_prorities.jm_docket_line_id where fabric_prorities.jm_docket_line_id='$doc_no' and fabric_prorities.plant_code='$plant_code'";
+$sql1="select * from $pps.fabric_prorities left join $pps.jm_dockets on jm_dockets.jm_docket_id=fabric_prorities.jm_docket_id where fabric_prorities.jm_docket_id='$doc_no' and fabric_prorities.plant_code='$plant_code'";
 //echo "getting req qty : ".$sql1."</br>";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result1);
@@ -533,7 +533,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	
 	if($style_flag==0)
 	{
-        $docno_lot=$sql_row1['jm_docket_line_id'];
+        $docno_lot=$sql_row1['jm_docket_id'];
         if($docket_line_no!='' && $plant_code!=''){
             $result_docketinfo=getDocketInformation($docket_line_no,$plant_code);
             $style =$result_docketinfo['style'];
@@ -563,7 +563,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		
 		// $qry_lotnos="select* from $wms.sticker_report left join $pps.requested_dockets on requested_dockets.plan_lot_ref=sticker_report.lot_no where sticker_report.product_group='Fabric' and sticker_report.plant_code='$plant_code'";
 
-		$qry_lotnos="select* from $wms.sticker_report left join $pps.requested_dockets on requested_dockets.plan_lot_ref=sticker_report.lot_no where sticker_report.product_group='Fabric' and sticker_report.plant_code='$plant_code' and requested_dockets.jm_docket_line_id='$doc_no'";
+		$qry_lotnos="select* from $wms.sticker_report left join $pps.requested_dockets on requested_dockets.plan_lot_ref=sticker_report.lot_no where sticker_report.product_group='Fabric' and sticker_report.plant_code='$plant_code' and requested_dockets.jm_docket_id='$doc_no'";
 		// echo "<br>LOt qry : ".$qry_lotnos;
 		$sql_lotresult=mysqli_query($link, $qry_lotnos) or exit("lot numbers Sql Error ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_lotrow=mysqli_fetch_array($sql_lotresult))
@@ -595,7 +595,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 // 	$shrinkaage='';
 // 	$mwidt='A';
  	$marker_id='';
-	$sql007="select reference from $pps.requested_dockets where jm_docket_line_id=\"".$doc_no."\"";
+	$sql007="select reference from $pps.requested_dockets where jm_docket_id=\"".$doc_no."\"";
 	$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row007=mysqli_fetch_array($sql_result007))
 	{
@@ -660,17 +660,17 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
         $width =$result_docketinfo['width'];
         $cat_compo =$result_docketinfo['rm_sku'];
 		$fabric_required =$result_docketinfo['required_qty'];
-		$docket_line_number =$result_docketinfo['docket_line_number'];
+		$docket_number =$result_docketinfo['docket_number'];
 		$ratio_comp_group_id =$result_docketinfo['ratio_comp_group_id'];
 		$po_number=$result_docketinfo['sub_po'];
 		
 	}
 	echo "<tr><td>".$cat_refnce."</td>";
 	echo "<td>".$cat_compo."</td>";
-    echo "<td>".$colorx.'-'.$docket_line_number."</td>";
+    echo "<td>".$colorx.'-'.$docket_number."</td>";
     // echo "<td>".($marker)."</td>";
     
-	$maker_update="select * from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_line_id='".$doc_no."'";
+	$maker_update="select * from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_id='".$doc_no."'";
 	$maker_update_result=mysqli_query($link, $maker_update) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($maker_update_result)){
 		$plan_lot_ref = $row['plan_lot_ref'];
@@ -784,7 +784,7 @@ if($print_status=='0000-00-00 00:00:00'){
 			if(!in_array($sql_row1['category'],$comp_printed))
 			{
 				echo "<td><a href='$path$doc_no'  onclick=\"Popup1=window.open('$path$doc_no','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
-				// echo "<td><a href=\"$path?doc_no=".$docket_line_number."&print_status=$print_status&plant_code=$plant_code&username=$username&doc_id=".$docket_line_number."\"  onclick=\"Popup1=window.open('$path?print_status=$print_status&plant_code=$plant_code&username=$username&doc_id=".$docket_line_number."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+				// echo "<td><a href=\"$path?doc_no=".$docket_number."&print_status=$print_status&plant_code=$plant_code&username=$username&doc_id=".$docket_number."\"  onclick=\"Popup1=window.open('$path?print_status=$print_status&plant_code=$plant_code&username=$username&doc_id=".$docket_number."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 				$comp_printed[]=$sql_row1['category'];
 			}
 			else
@@ -952,7 +952,7 @@ if($enable_allocate_button==1)
 echo "</form>";
 //NEW Implementation for Docket generation from RMS
 
-$sql1="SELECT fabric_status from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_line_id='$doc_no'";
+$sql1="SELECT fabric_status from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_id='$doc_no'";
 
 //mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error567".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -964,7 +964,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 
 if($sql_num_check == 0){
 	if($doc_no > 0){
-		$fab_status_query = "SELECT fabric_status from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_line_id='$doc_no'";
+		$fab_status_query = "SELECT fabric_status from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_id='$doc_no'";
 		$fab_status_result = mysqli_query($link,$fab_status_query);
 		while($row = mysqli_fetch_array($fab_status_result)){
 			$fabric_status=$row['fabric_status'];
@@ -1082,7 +1082,7 @@ if(isset($_POST['submit']))
 	$doc_num=explode(",",$group_docs);
 	for($i=0;$i<sizeof($doc_num);$i++)
 	{	
-		$sql2="update $pps.requested_dockets set fabric_status='$issue_status',updated_user='$username',updated_at=NOW() where jm_docket_line_id='".$doc_no."'";
+		$sql2="update $pps.requested_dockets set fabric_status='$issue_status',updated_user='$username',updated_at=NOW() where jm_docket_id='".$doc_no."'";
 		
 		mysqli_query($link, $sql2) or exit("Sql Error----5".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -1177,28 +1177,28 @@ if(isset($_POST['submit']))
 	if($issue_status==5)
 	{
 		
-		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and jm_docket_line_id in ('$doc_no')";
+		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and jm_docket_id in ('$doc_no')";
 		//Uncheck this
 		mysqli_query($link, $sql1) or exit("Sql Error---5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and jm_docket_line_id in ('$doc_no')";
+		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and jm_docket_id in ('$doc_no')";
 		//Uncheck this
 		mysqli_query($link, $sql1) or exit("Sql Error---6".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		//if($issue_status==5)
 		//{
-		$sql3="update $pps.fabric_prorities set issued_time='".date("Y-m-d H:i:s")."',updated_user='$username',updated_at=NOW() where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
+		$sql3="update $pps.fabric_prorities set issued_time='".date("Y-m-d H:i:s")."',updated_user='$username',updated_at=NOW() where jm_docket_id in ('$doc_no') and plant_code='$plant_code'";
 		//Uncheck this	
 		mysqli_query($link, $sql3) or exit("Sql Error----7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql1="INSERT INTO `$pps`.`log_rm_ready_in_pool` (`jm_docket_line_id`, `date_n_time`, `username`,created_at,created_user,plant_code) VALUES ('$doc_no', '".date("Y-m-d H:i:s")."','$username',NOW(),'$username','$plant_code')";
+		$sql1="INSERT INTO `$pps`.`log_rm_ready_in_pool` (`jm_docket_id`, `date_n_time`, `username`,created_at,created_user,plant_code) VALUES ('$doc_no', '".date("Y-m-d H:i:s")."','$username',NOW(),'$username','$plant_code')";
 		// echo $sql1;
 		mysqli_query($link, $sql1) or exit("Sql Error33".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 
 	if($issue_status==1)
 	{
-		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and jm_docket_line_id in ('$doc_no')";
+		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and jm_docket_id in ('$doc_no')";
 		//Uncheck this
 		mysqli_query($link, $sql1) or exit("Sql Error---5.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}

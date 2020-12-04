@@ -122,10 +122,10 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 									$docket_qry_result=mysqli_query($link, $docket_qry) or die(exception($docket_qry));
 									while($sql_row01=mysqli_fetch_array($docket_qry_result))
 									{
-										$docket_line_number = $sql_row01['docket_number'];
+										$docket_number = $sql_row01['docket_number'];
 									}
 									echo "<tr><td>".$index."</td>";
-									echo "<td>".$docket_line_number."</td>";
+									echo "<td>".$docket_number."</td>";
 									echo "<td>".$sql_row2['style']."</td>";
 									echo "<td>".$sql_row2['color']."</td>";
 									echo "<td>".$sql_row['qty']."</td>";
@@ -181,10 +181,10 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 								$docket_qry_result=mysqli_query($link, $docket_qry) or die(exception($docket_qry));
 								while($sql_row01=mysqli_fetch_array($docket_qry_result))
 								{
-									$docket_line_number = $sql_row01['docket_number'];
+									$docket_number = $sql_row01['docket_number'];
 								}
                                 echo "<tr><td>".$index."</td>";
-                                echo "<td>".$docket_line_number."</td>";
+                                echo "<td>".$docket_number."</td>";
                                 echo "<td>".$sql_row['qty']."</td>";
                                 echo "<td>".$sql_row['requested_by']."</td>";
                                 echo "<td>".$sql_row['requested_at']."</td>";
@@ -218,10 +218,10 @@ if(isset($_POST['formSubmit']))
 		$docket_qry_result=mysqli_query($link, $docket_qry) or die(exception($docket_qry));
 		while($sql_row01=mysqli_fetch_array($docket_qry_result))
 		{
-			$jm_docket_line_id = $sql_row01['jm_docket_id'];
+			$jm_docket_id = $sql_row01['jm_docket_id'];
 		}
   
-        $fabric_status_qry="SELECT fabric_status FROM $pps.requested_dockets WHERE plant_code='".$plant_code."' and jm_docket_line_id='$jm_docket_line_id'";
+        $fabric_status_qry="SELECT fabric_status FROM $pps.requested_dockets WHERE plant_code='".$plant_code."' and jm_docket_id='$jm_docket_id'";
         //  echo $fabric_status_qry;
     
 		$fabric_status_qry_result=mysqli_query($link, $fabric_status_qry) or die(exception($fabric_status_qry));
@@ -233,18 +233,18 @@ if(isset($_POST['formSubmit']))
                 $fabric_status = $sql_row0['fabric_status'];
             }
         
-            $fab_qry="SELECT * FROM $wms.fabric_cad_allocation WHERE doc_no='$jm_docket_line_id' and plant_code='".$plant_code."'";
+            $fab_qry="SELECT * FROM $wms.fabric_cad_allocation WHERE doc_no='$jm_docket_id' and plant_code='".$plant_code."'";
             $fab_qry_result=mysqli_query($link, $fab_qry) or die(exception($fab_qry));
             if(mysqli_num_rows($fab_qry_result)>0)
             {     
                 if($fabric_status != 5)
                 {
-                    $is_requested="SELECT * FROM $wms.material_deallocation_track WHERE doc_no='$jm_docket_line_id' and status='Open' and plant_code='".$plant_code."'";
+                    $is_requested="SELECT * FROM $wms.material_deallocation_track WHERE doc_no='$jm_docket_id' and status='Open' and plant_code='".$plant_code."'";
                     $is_requested_result=mysqli_query($link, $is_requested) or die(exception($is_requested));
 
                     if(mysqli_num_rows($is_requested_result)==0)
                     {
-                        $fab_qry="SELECT allocated_qty FROM $wms.fabric_cad_allocation WHERE doc_no='$jm_docket_line_id' and plant_code='".$plant_code."'";
+                        $fab_qry="SELECT allocated_qty FROM $wms.fabric_cad_allocation WHERE doc_no='$jm_docket_id' and plant_code='".$plant_code."'";
                         $fab_qry_result=mysqli_query($link, $fab_qry) or die(exception($fab_qry));
                         $allocated_qty=0;
                         while($sql_row1=mysqli_fetch_array($fab_qry_result))
@@ -252,7 +252,7 @@ if(isset($_POST['formSubmit']))
                             $allocated_qty+=$sql_row1['allocated_qty'];  
                         }
                         $req_at = date("Y-m-d H:i:s");
-						$insert_req_qry = "INSERT INTO $wms.material_deallocation_track(doc_no,qty,requested_by,requested_at,status,plant_code,created_user,updated_user,updated_at) values ('$jm_docket_line_id',$allocated_qty,'$username','$req_at','Open','".$plant_code."','".$username."','".$username."',NOW())";
+						$insert_req_qry = "INSERT INTO $wms.material_deallocation_track(doc_no,qty,requested_by,requested_at,status,plant_code,created_user,updated_user,updated_at) values ('$jm_docket_id',$allocated_qty,'$username','$req_at','Open','".$plant_code."','".$username."','".$username."',NOW())";
                         $insert_req_qry_result=mysqli_query($link, $insert_req_qry) or die(exception($insert_req_qry));
                         echo "<script>swal('success','Request Sent Successfully','success')</script>";
                         $url = getFullUrlLevel($_GET['r'],'material_deallocation.php',0,'N');

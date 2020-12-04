@@ -715,7 +715,7 @@ if(isset($_POST['submit']))
 							<?php
 									while($row6=mysqli_fetch_array($sql_result6))
 									{
-										$docket_no=$row6['docket_line_number'];
+										$docket_no=$row6['docket_number'];
 										$lay_id=$row6['lp_lay_id'];
 										//$cut_status=$row6['lay_status'];
 										$actual_plies=$row6['actualplies'];
@@ -749,7 +749,7 @@ if(isset($_POST['submit']))
 												$comp_group =  $row['cg_name'];
 												$cut_no = $row['cut_number'];
 												$ratio_comp_group_id = $row['ratio_comp_group_id'];
-												$docket_line_number = $row['docket_line_number'];
+												$docket_number = $row['docket_number'];
 												$po_number = $row['po_number'];
 												$marker_version_id = $row['marker_version_id'];
 												$ratio_id = $row['ratio_id'];
