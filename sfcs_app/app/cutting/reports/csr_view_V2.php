@@ -214,7 +214,7 @@ function verify_date(){
 					{
 						$attribute_value=$sql_row9['attribute_value'];
 					
-						$sql2="SELECT jm_dockets.jm_docket_id,jm_dockets.plies,jm_dockets.jm_docket_id,jm_dockets.docket_bundle_number,jm_cut_job.cut_number,lp_ratio_component_group.ratio_id,lp_ratio_size.size,lp_ratio_size.size_ratio,jm_cut_job.po_number,jm_docket_cg_bundle.jm_dcgb_id,jm_docket_cg_bundle.cg_name
+						$sql2="SELECT jm_dockets.plies,jm_dockets.jm_docket_id,jm_dockets.docket_bundle_number,jm_cut_job.cut_number,lp_ratio_component_group.ratio_id,lp_ratio_size.size,lp_ratio_size.size_ratio,jm_cut_job.po_number,jm_docket_cg_bundle.jm_dcgb_id,jm_docket_cg_bundle.cg_name
 						FROM $pps.jm_dockets 
 						LEFT JOIN $pps.jm_cut_docket_map ON jm_cut_docket_map.jm_docket_id=jm_dockets.jm_docket_id LEFT JOIN $pps.jm_cut_job ON  jm_cut_job.
 						jm_cut_job_id= jm_cut_docket_map.jm_cut_job_id LEFT JOIN $pps.lp_ratio_component_group ON lp_ratio_component_group.lp_ratio_cg_id
@@ -227,27 +227,27 @@ function verify_date(){
 						if($rows>0){	
 							while($sql_row2=mysqli_fetch_array($sql_result2))
 							{
-								$docket_line_number=$sql_row2['docket_line_number'];
+								$docket_number=$sql_row2['docket_number'];
 								$cut_number=$sql_row2['cut_number'];
 								$size=$sql_row2['size'];
 								$size_ratio=$sql_row2['size_ratio'];
 								$po_number=$sql_row2['po_number'];
 								$plies=$sql_row2['plies'];
-								$jm_docket_line_id=$sql_row2['jm_docket_line_id'];
+								$jm_docket_id=$sql_row2['jm_docket_id'];
 								$jm_dcgb_id=$sql_row2['jm_dcgb_id'];
 								$category_name=$sql_row2['cg_name'];
 
 							
 							
-								if($plantcode!='' and $docket_line_number!=''){
-									$result_mp_color_details=getJmDockets($docket_line_number,$plantcode);
+								if($plantcode!='' and $docket_number!=''){
+									$result_mp_color_details=getJmDockets($docket_number,$plantcode);
 									$style=$result_mp_color_details['style'];
 									$fg_color=$result_mp_color_details['fg_color'];
 									
 									
 								}
-								// if($plantcode!='' and $docket_line_number!=''){
-								// 	$result_category=getDocketInformation($docket_line_number,$plantcode);
+								// if($plantcode!='' and $docket_number!=''){
+								// 	$result_category=getDocketInformation($docket_number,$plantcode);
 								// 	$category=$result_category['category'];	
 								// }
 								
@@ -266,7 +266,7 @@ function verify_date(){
 								echo "<tr>
 								<td>".$date."</td> 
 								<td>".$workstation_description."</td> 
-								<td>".$docket_line_number."</td> 
+								<td>".$docket_number."</td> 
 								<td>$style</td> 
 								<td>$schedule</td> 
 								<td>$fg_color</td> 
@@ -354,9 +354,9 @@ function verify_date(){
 								LEFT JOIN $pps.jm_cut_docket_map ON jm_cut_docket_map.jm_docket_id=jm_dockets.jm_docket_id 
 								LEFT JOIN $pps.jm_cut_job ON  jm_cut_job.jm_cut_job_id=jm_cut_docket_map.jm_cut_job_id 
 								LEFT JOIN $pps.lp_ratio_component_group ON lp_ratio_component_group.lp_ratio_cg_id=jm_dockets.ratio_comp_group_id 
-								LEFT JOIN $pps.jm_docket_cg_bundle ON jm_docket_cg_bundle.jm_docket_line_id=jm_dockets.jm_docket_id 
+								LEFT JOIN $pps.jm_docket_cg_bundle ON jm_docket_cg_bundle.jm_docket_id=jm_dockets.jm_docket_id 
 								LEFT JOIN $pps.lp_ratio_size ON lp_ratio_size.ratio_id=lp_ratio_component_group.ratio_id  
-								WHERE jm_dockets.plant_code='$plantcode' AND docket_type='RECUT' AND jm_dockets.docket_line_number IN  ($attribute_value) GROUP BY lp_ratio_size.size,jm_docket_cg_bundle.cg_name";
+								WHERE jm_dockets.plant_code='$plantcode' AND docket_type='RECUT' AND jm_dockets.docket_number IN  ($attribute_value) GROUP BY lp_ratio_size.size,jm_docket_cg_bundle.cg_name";
 								$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$rows=mysqli_num_rows($sql_result2);
 								$total=0;
@@ -364,27 +364,27 @@ function verify_date(){
 								if($rows>0){	
 									while($sql_row2=mysqli_fetch_array($sql_result2))
 									{
-										$docket_line_number=$sql_row2['docket_line_number'];
+										$docket_number=$sql_row2['docket_number'];
 										$cut_number=$sql_row2['cut_number'];
 										$size=$sql_row2['size'];
 										$size_ratio=$sql_row2['size_ratio'];
 										$po_number=$sql_row2['po_number'];
 										$plies=$sql_row2['plies'];
-										$jm_docket_line_id=$sql_row2['jm_docket_line_id'];
+										$jm_docket_id=$sql_row2['jm_docket_id'];
 										$jm_dcgb_id=$sql_row2['jm_dcgb_id'];
 										$category_name=$sql_row2['cg_name'];
 		
 									
 									
-										if($plantcode!='' and $docket_line_number!=''){
-											$result_mp_color_details=getJmDockets($docket_line_number,$plantcode);
+										if($plantcode!='' and $docket_number!=''){
+											$result_mp_color_details=getJmDockets($docket_number,$plantcode);
 											$style=$result_mp_color_details['style'];
 											$fg_color=$result_mp_color_details['fg_color'];
 											
 											
 										}
-										// if($plantcode!='' and $docket_line_number!=''){
-										// 	$result_category=getDocketInformation($docket_line_number,$plantcode);
+										// if($plantcode!='' and $docket_number!=''){
+										// 	$result_category=getDocketInformation($docket_number,$plantcode);
 										// 	$category=$result_category['category'];	
 										// }
 										
@@ -403,7 +403,7 @@ function verify_date(){
 										echo "<tr>
 										<td>".$date."</td> 
 										<td>".$workstation_description."</td> 
-										<td>".$docket_line_number."</td> 
+										<td>".$docket_number."</td> 
 										<td>$style</td> 
 										<td>$schedule</td> 
 										<td>$fg_color</td> 
@@ -494,7 +494,7 @@ function verify_date(){
 						{
 
 							$category_name=$sql_row8['component_name'];
-							$jm_docket_line_id=$sql_row8['jm_docket_id'];
+							$jm_docket_id=$sql_row8['jm_docket_id'];
 							// $size_ratio=$sql_row8['size_ratio'];
 							$docket_number=$sql_row8['docket_number'];
 
@@ -505,7 +505,7 @@ function verify_date(){
 							jm_cut_job_id=jm_cut_docket_map.jm_cut_job_id 
 							LEFT JOIN $pps.lp_ratio_component_group ON lp_ratio_component_group.lp_ratio_cg_id
 							=jm_dockets.ratio_comp_group_id LEFT JOIN $pps.lp_ratio_size ON lp_ratio_size.ratio_id=lp_ratio_component_group.ratio_id  
-							WHERE jm_dockets.plant_code='$plantcode'  AND jm_dockets.jm_docket_id IN  ('$jm_docket_line_id')";
+							WHERE jm_dockets.plant_code='$plantcode'  AND jm_dockets.jm_docket_id IN  ('$jm_docket_id')";
 
 
 						
@@ -516,7 +516,7 @@ function verify_date(){
 							
 							}
 								
-							$sql3="select sum(plies) as plies from $pps.jm_dockets where jm_docket_id='$jm_docket_line_id' and plant_code='$plantcode'";
+							$sql3="select sum(plies) as plies from $pps.jm_dockets where jm_docket_id='$jm_docket_id' and plant_code='$plantcode'";
 							$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row3=mysqli_fetch_array($sql_result3))
 							{
@@ -601,14 +601,14 @@ function verify_date(){
 							$category_name=$sql_row8['component_name'];
 							$jm_docket_id=$sql_row8['jm_docket_id'];
 							// $size_ratio=$sql_row8['size_ratio'];
-							$docket_number=$sql_row8['docket_line_number'];
+							$docket_number=$sql_row8['docket_number'];
 
-							$sql111="SELECT jm_dockets.jm_docket_id,jm_dockets.docket_line_number,jm_cut_job.cut_number,lp_ratio_component_group.ratio_id,lp_ratio_size.size,sum(lp_ratio_size.size_ratio) as size_ratio,jm_cut_job.po_number
+							$sql111="SELECT jm_dockets.jm_docket_id,jm_dockets.docket_number,jm_cut_job.cut_number,lp_ratio_component_group.ratio_id,lp_ratio_size.size,sum(lp_ratio_size.size_ratio) as size_ratio,jm_cut_job.po_number
 							FROM $pps.jm_dockets 
 							LEFT JOIN $pps.jm_cut_docket_map ON jm_cut_docket_map.jm_docket_id=jm_dockets.jm_docket_id LEFT JOIN $pps.jm_cut_job ON  jm_cut_job.
 							jm_cut_job_id=jm_dockets.jm_cut_job_id LEFT JOIN $pps.lp_ratio_component_group ON lp_ratio_component_group.lp_ratio_cg_id
 							=jm_dockets.ratio_comp_group_id LEFT JOIN $pps.lp_ratio_size ON lp_ratio_size.ratio_id=lp_ratio_component_group.ratio_id  
-							WHERE jm_dockets.plant_code='$plantcode'  AND jm_dockets.jm_docket_line_id IN  ('$jm_docket_id')";
+							WHERE jm_dockets.plant_code='$plantcode'  AND jm_dockets.jm_docket_id IN  ('$jm_docket_id')";
 
 
 						

@@ -586,9 +586,9 @@ for($j=0;$j<sizeof(array_unique($sizesarr));$j++)
 				$get_doclinenum_qry_result=mysqli_query($link, $get_doclinenum_qry) or exit("Sql Error while getting cutno".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row_jmline=mysqli_fetch_array($get_doclinenum_qry_result))
 				{
-					$jm_docket_line_id=$sql_row_jmline['jm_docket_id'];
+					$jm_docket_id=$sql_row_jmline['jm_docket_id'];
 					
-					$get_bundle_no="SELECT sum(quantity) as quantity FROM $pps.`jm_docket_cg_bundle` WHERE jm_docket_line_id='$jm_docket_line_id' AND plant_code='$plant_code' and size='".$sizesarr[$j]."'";
+					$get_bundle_no="SELECT sum(quantity) as quantity FROM $pps.`jm_docket_cg_bundle` WHERE jm_docket_id='$jm_docket_id' AND plant_code='$plant_code' and size='".$sizesarr[$j]."'";
 					$get_bundle_no_result=mysqli_query($link, $get_bundle_no) or exit("Sql Error while getting cutno".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row_bunno=mysqli_fetch_array($get_bundle_no_result))
 					{

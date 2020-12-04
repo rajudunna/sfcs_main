@@ -25,7 +25,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$plant_code = $_POST['plantCode'];
 		$username = $_POST['userName'];
 		$ratio_comp_group_id = $_POST['ratio_comp_group_id'];
-		$sql2x="select * from $pps.fabric_prorities where plant_code='$plant_code' AND jm_docket_line_id=\"".$doc_no."\"";
+		$sql2x="select * from $pps.fabric_prorities where plant_code='$plant_code' AND jm_docket_id=\"".$doc_no."\"";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows2=mysqli_num_rows($result2x);
 	} 
@@ -38,7 +38,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$plant_code = $_GET['plantCode'];
 		$username = $_GET['userName'];
 		$ratio_comp_group_id = $_GET['ratio_comp_group_id'];
-		$sql2x="select * from $pps.fabric_prorities where plant_code='$plant_code' AND jm_docket_line_id=\"".$doc_no."\"";
+		$sql2x="select * from $pps.fabric_prorities where plant_code='$plant_code' AND jm_docket_id=\"".$doc_no."\"";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows2=mysqli_num_rows($result2x);	
 	}	
@@ -166,11 +166,11 @@ $sql11x11="SELECT docket_number FROM $pps.jm_dockets where plant_code='$plant_co
 $sql_result11x11=mysqli_query($link, $sql11x11) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row111x11=mysqli_fetch_array($sql_result11x11))
 {
-	$docket_line_number=$row111x11["docket_number"];
+	$docket_number=$row111x11["docket_number"];
 
 }
-	if($docket_line_number!='' && $plant_code!=''){
-		$result_docketinfo=getDocketInformation($docket_line_number,$plant_code);
+	if($docket_number!='' && $plant_code!=''){
+		$result_docketinfo=getDocketInformation($docket_number,$plant_code);
 		$style =$result_docketinfo['style'];
 		$colorx =$result_docketinfo['fg_color'];
 		$cut_no =$result_docketinfo['cut_no'];
@@ -182,7 +182,7 @@ while($row111x11=mysqli_fetch_array($sql_result11x11))
 		$width =$result_docketinfo['width'];
 		$marker_version_id =$result_docketinfo['marker_version_id'];
 		$ratio_comp_group_id=$result_docketinfo['ratio_comp_group_id'];
-		$docket_line_number=$result_docketinfo['docket_line_number'];
+		$docket_number=$result_docketinfo['docket_number'];
 		$po_number=$result_docketinfo['sub_po'];
 			
 	}
@@ -230,7 +230,7 @@ while($row111x11=mysqli_fetch_array($sql_result11x11))
 		echo "<td>".$cut_no."</td>";
 		echo "<td>".$cat_refnce."</td>";
 		echo "<td>".$cat_compo."</td>";
-		echo "<td>".$docket_line_number."</td>";
+		echo "<td>".$docket_number."</td>";
 		echo "<td>".$total_required_qty."</td>";
 		echo "<td><input type='hidden' name='doc_details[]' id='doc_details' value='".$doc_no."'> <input type='text' name='reference[]' value=''></td>";
 	
@@ -246,7 +246,7 @@ while($row111x11=mysqli_fetch_array($sql_result11x11))
 		echo "</tr>";
 		
 		
-		if($docket_line_number!='' && $plant_code!=''){
+		if($docket_number!='' && $plant_code!=''){
 			$result_docketinfo=getDocketInformation($doc_nos,$plant_code);
 			$ratio_comp_group_id =$result_docketinfo['ratio_comp_group_id'];
 			
@@ -446,7 +446,7 @@ if(isset($_POST["submit1"]))
 	 {		
 		// $insert="Update $pps.`requested_dockets` set reference='".$ref[$i]."',created_user='".$username."',updated_user='".$username."',updated_at=NOW() where doc_no='".$dockets[$i]."'";
 		// mysqli_query($link, $insert) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$insert="insert into $pps.requested_dockets(docket_requested_id,fabric_status,print_status,jm_docket_line_id,reference,created_user,created_at,plant_code) values(\"".$uuid1."\",0,'0000-00-00 00:00:00',\"".$doc_nos."\",\"".$ref[$i]."\",\"".$username."\",NOW(),'$plant_code')";
+		$insert="insert into $pps.requested_dockets(docket_requested_id,fabric_status,print_status,jm_docket_id,reference,created_user,created_at,plant_code) values(\"".$uuid1."\",0,'0000-00-00 00:00:00',\"".$doc_nos."\",\"".$ref[$i]."\",\"".$username."\",NOW(),'$plant_code')";
 		// var_dump($insert);die();	
 		
 	}
@@ -491,7 +491,7 @@ if(isset($_POST["submit1"]))
 	//for($i=0;$i<sizeof($doc_nos_split);$i++)
 	for($i=0;$i<1;$i++)
 	{
-		$sql1="select * from $pps.fabric_prorities where plant_code='$plant_code' AND jm_docket_line_id=\"".$doc_nos."\"";
+		$sql1="select * from $pps.fabric_prorities where plant_code='$plant_code' AND jm_docket_id=\"".$doc_nos."\"";
 		$result=mysqli_query($link, $sql1) or die("Error = 123".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows=mysqli_num_rows($result);
 		// echo $log_req_diff;
@@ -503,7 +503,7 @@ if(isset($_POST["submit1"]))
 		{
 			if($rows==0)
 			{
-				$sql="insert into $pps.fabric_prorities(fabric_prorities_id,jm_docket_line_id,doc_ref_club,req_time,log_time,created_user,section_id,work_station_id,plant_code) values(\"".$uuid."\",\"".$doc_nos."\",\"".$doc_nos."\",\"".$req_time."\",\"".$log_time."\",\"".$username."\",\"".$secs."\",\"".$mods."\",'$plant_code')";
+				$sql="insert into $pps.fabric_prorities(fabric_prorities_id,jm_docket_id,doc_ref_club,req_time,log_time,created_user,section_id,work_station_id,plant_code) values(\"".$uuid."\",\"".$doc_nos."\",\"".$doc_nos."\",\"".$req_time."\",\"".$log_time."\",\"".$username."\",\"".$secs."\",\"".$mods."\",'$plant_code')";
 				// echo "<br>".$sql."<br>";
 				$note.=$sql."<br>";
 				if(!mysqli_query($link, $sql))
@@ -536,7 +536,7 @@ if(isset($_POST["submit1"]))
 echo "<h2>Already Requested Cut Jobs </h2>";
 echo "<div class='table-responsive'><table class=\"table table-bordered\" id=\"table1\" border=0 cellpadding=0 cellspacing=0>";
 echo "<tr><th>Module</th><th>Date</th><th>Time</th><th>Requested By</th><th>Style</th><th>Schedule</th><th>Color</th><th>Docket No</th><th>Job No</th><th>Fabric Status</th></tr>";
-$sql2="select fabric_prorities.section_id,fabric_prorities.req_time,fabric_prorities.jm_docket_line_id,jm_dockets.docket_number,fabric_prorities.work_station_id,fabric_prorities.created_user,fabric_prorities.issued_time from $pps.fabric_prorities left join $pps.jm_dockets on jm_dockets.jm_docket_id=fabric_prorities.jm_docket_line_id where (fabric_prorities.created_user=\"".$username."\"  or fabric_prorities.req_time!='') and  fabric_prorities.plant_code='$plant_code'  order by fabric_prorities.section_id,fabric_prorities.req_time,fabric_prorities.work_station_id";
+$sql2="select fabric_prorities.section_id,fabric_prorities.req_time,fabric_prorities.jm_docket_ljm_docket_idine_id,jm_dockets.docket_number,fabric_prorities.work_station_id,fabric_prorities.created_user,fabric_prorities.issued_time from $pps.fabric_prorities left join $pps.jm_dockets on jm_dockets.jm_docket_id=fabric_prorities.jm_docket_id where (fabric_prorities.created_user=\"".$username."\"  or fabric_prorities.req_time!='') and  fabric_prorities.plant_code='$plant_code'  order by fabric_prorities.section_id,fabric_prorities.req_time,fabric_prorities.work_station_id";
 // echo $sql2;
 $result2=mysqli_query($link, $sql2) or die("Error12 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row2=mysqli_fetch_array($result2))
@@ -584,7 +584,7 @@ while($row2=mysqli_fetch_array($result2))
 	echo "<td>".implode(",",$schedule)."</td>";
 	echo "<td>".$colorx1."</td>";
 	
-	echo "<td>".$row2["docket_line_number"]."</td>";
+	echo "<td>".$row2["docket_number"]."</td>";
 	echo "<td>".$cut_nos."</td>";
 	// echo "<td>".chr($color_code)."00".$cut_nos."</td>";
 	

@@ -136,10 +136,10 @@ th{
                                     $jmDocketLinesresult = mysqli_query($link_new,$qryJmDocketLines);
                                     while($sql_row1=mysqli_fetch_array($jmDocketLinesresult))
                                     {
-                                        $jm_docket_line_id = $sql_row1['jm_docket_id'];
+                                        $jm_docket_id = $sql_row1['jm_docket_id'];
                                     }
 
-                                    $path=$DOCKET_SERVER_IP."/printDocket/".$jm_docket_line_id;
+                                    $path=$DOCKET_SERVER_IP."/printDocket/".$jm_docket_id;
 
                                     echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'><span class='label label-info fa fa-list fa-xl' >&nbsp;&nbsp;&nbsp;$index</span></td>";
                                     echo "<td>".$sql_row['style']."</td>";

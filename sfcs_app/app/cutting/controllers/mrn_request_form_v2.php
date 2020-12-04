@@ -483,17 +483,17 @@ $(document).ready(function(){
                     $sql_result111=mysqli_query($link, $sql1111) or die("Error".$sql111.mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row111=mysqli_fetch_array($sql_result111))
                     {
-                        $jm_docket_line_id[]=$sql_row111["jm_docket_line_id"];
+                        $jm_docket_id[]=$sql_row111["jm_docket_id"];
 
 
                     }
-                        $sql12="select group_concat(plan_lot_ref) as plan_lot_ref from $pps.requested_dockets where (fabric_status=5 or LENGTH(plan_lot_ref) > 0) AND jm_docket_line_id IN ('".implode("','" , $jm_docket_line_id)."')";
+                        $sql12="select group_concat(plan_lot_ref) as plan_lot_ref,docket_number from $pps.requested_dockets where (fabric_status=5 or LENGTH(plan_lot_ref) > 0) AND jm_docket_id IN ('".implode("','" , $jm_docket_id)."')";
                         //echo "<option value=\"0\" selected>".$sql12."</option>";
                         $sql_result12=mysqli_query($link, $sql12) or die("Error".$sql12.mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($sql_row12=mysqli_fetch_array($sql_result12))
                         {
                             $lot_ref=$sql_row12["plan_lot_ref"];
-                            $doc_no=$sql_row12["docket_line_number"];
+                            $doc_no=$sql_row12["docket_number"];
                         }
                         
                     if(strlen($doc_no) > 0)

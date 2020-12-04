@@ -853,11 +853,11 @@ if(isset($_POST['allocate_new']))
 			//To confirm docket as allocated
 			if($process_cat==1)
 			{
-				$sql1="update $pps.requested_dockets set plan_lot_ref=\"".$lot_db[$i]."\",updated_user='$username',updated_at=NOW() where jm_docket_line_id=\"".$doc_ref[$i]."\"";
+				$sql1="update $pps.requested_dockets set plan_lot_ref=\"".$lot_db[$i]."\",updated_user='$username',updated_at=NOW() where jm_docket_id=\"".$doc_ref[$i]."\"";
 			}
 			else
 			{
-				$sql2="update $pps.requested_dockets set plan_lot_ref=\"".$lot_db[$i]."\" ,updated_user='$username',updated_at=NOW() where jm_docket_line_id=\"".$doc_ref[$i]."\"";
+				$sql2="update $pps.requested_dockets set plan_lot_ref=\"".$lot_db[$i]."\" ,updated_user='$username',updated_at=NOW() where jm_docket_id=\"".$doc_ref[$i]."\"";
 				mysqli_query($link, $sql2) or exit("Sql Errordd5: $sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql1="update recut_v2 set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
 			}
@@ -888,7 +888,7 @@ if(isset($_POST['allocate_new']))
 					
 					// mysqli_query($link, $sql) or exit("Sql Error1x: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
-					$sql="update $pps.requested_dockets set updated_at=\"".date("Y-m-d")."\",updated_user='$username',created_user='$username' where jm_docket_line_id='.$doc_ref[$i].'";
+					$sql="update $pps.requested_dockets set updated_at=\"".date("Y-m-d")."\",updated_user='$username',created_user='$username' where jm_docket_id='.$doc_ref[$i].'";
 					
 					mysqli_query($link, $sql) or exit("Sql Error: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
@@ -1022,7 +1022,7 @@ if(isset($_POST['allocate']))
 		}
 		$shrinkaage='';
 		$pur_width='A';
-		$sql007="select reference from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_line_id=\"".$doc_no[$i]."\"";
+		$sql007="select reference from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_id=\"".$doc_no[$i]."\"";
 		
 		$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row007=mysqli_fetch_array($sql_result007))

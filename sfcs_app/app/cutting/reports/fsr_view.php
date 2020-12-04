@@ -309,17 +309,17 @@ $reptype = $_POST['reptype'];
 if(isset($_POST['submit']) && $reptype == 1)
 {
 	$sql = "SELECT lpl.lp_lay_id,lpl.workstation_id,lpl.shift,DATE(lpl.created_at) AS date1,lrfc.fabric_category,
-	jdl.docket_line_number,jcj.cut_number,sum(jdlb.quantity) as quantity,jdl.plies,lpl.po_number,lrfc.fabric_category
+	jd.docket_number,jcj.cut_number,sum(jdlb.quantity) as quantity,jd.plies,lpl.po_number,lrfc.fabric_category
 	FROM $pps.`lp_lay` lpl 
 	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = lpl.po_number
 	LEFT JOIN $pps.`lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
-	LEFT JOIN $pps.`jm_docket_cg_bundle` jdb ON jdb.jm_docket_line_id = jdl.jm_docket_line_id
+	LEFT JOIN $pps.`jm_docket_cg_bundle` jdb ON jdb.jm_docket_id = jd.jm_docket_id
 	LEFT JOIN $pps.`jm_docket_logical_bundle` jdlb ON jdlb.jm_docket_bundle_id = jdb.jm_docket_bundle_id
-	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdl.jm_docket_id
+	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdb.jm_docket_id
 	LEFT JOIN $pps.jm_cut_docket_map dm ON dm. jm_docket_id=jd. jm_docket_id
 	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = dm. jm_cut_job_id 
 	WHERE DATE(lpl.created_at) between \"$from_date\" and  \"$to_date\" and lpl.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND lpl.shift in ($shift)
-	GROUP BY lpl.lp_lay_id,jdl.docket_line_number";
+	GROUP BY lpl.lp_lay_id,jdl.docket_number";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error dd".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	// echo $sql;
@@ -367,7 +367,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			
-			$doc_no=$sql_row['docket_line_number'];
+			$doc_no=$sql_row['docket_number'];
 			$date=$sql_row['date1'];
 			$act_shift=$sql_row['shift'];
 			$po_number=$sql_row['po_number'];
@@ -540,9 +540,9 @@ $sql = "SELECT GROUP_CONCAT(distinct(lpl.lp_lay_id)) as lp_lay_id,GROUP_CONCAT(d
 	FROM $pps.`lp_lay` lpl 
 	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = lpl.po_number
 	LEFT JOIN $pps.`lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
-	LEFT JOIN $pps.`jm_docket_bundle` jdb ON jdb.jm_docket_line_id = jdl.jm_docket_line_id
+	LEFT JOIN $pps.`jm_docket_cg_bundle` jdb ON jdb.jm_docket_id = jd.jm_docket_id
 	LEFT JOIN $pps.`jm_docket_logical_bundle` jdlb ON jdlb.jm_docket_bundle_id = jdb.jm_docket_bundle_id
-	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdl.jm_docket_id
+	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdb.jm_docket_id
 	LEFT JOIN $pps.jm_cut_docket_map dm ON dm. jm_docket_id=jd. jm_docket_id
 	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = dm. jm_cut_job_id  
 	WHERE DATE(lpl.created_at) between \"$from_date\" and  \"$to_date\" and lpl.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND lpl.shift in ($shift)

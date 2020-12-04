@@ -10,7 +10,7 @@ if(isset($_GET['lay_id']))
 function getLayDetails($lay_id)
 {
     include("../../../../common/config/config_ajax.php");
-    $get_lay_details = " SELECT lp_roll_id,lay_sequence,roll_no, roll.plies AS roll_plies, lay.jm_docket_line_id  FROM $pps.lp_lay lay LEFT JOIN $pps.`lp_roll` roll ON roll.lp_lay_id = lay.lp_lay_id    
+    $get_lay_details = " SELECT lp_roll_id,lay_sequence,roll_no, roll.plies AS roll_plies, lay.jm_docket_id  FROM $pps.lp_lay lay LEFT JOIN $pps.`lp_roll` roll ON roll.lp_lay_id = lay.lp_lay_id    
     WHERE lay.lp_lay_id = '$lay_id' ORDER BY roll.lay_sequence";
     $docketLineDetails = mysqli_query($link,$get_lay_details);
     $table_data =  "<div class='row'>
@@ -29,7 +29,7 @@ function getLayDetails($lay_id)
                 $s_no = 1;
                 while($row = mysqli_fetch_array($docketLineDetails)){
                     $id = '"'.$row['lp_roll_id'].'"';
-                    $docket_id = $row['jm_docket_line_id'];
+                    $docket_id = $row['jm_docket_id'];
                     $table_data .= "<tr><td>".$row['roll_no']."</td>";
                     $table_data .= "<td>".$row['lay_sequence']."</td>";
                     $rem_string = $row['lp_roll_id'].'rems';

@@ -494,7 +494,7 @@ if(isset($_POST['allocate_new']))
 	$schedule=$_POST['schedule1'];
 	$plant_code = $_POST['plant_code_name1'];
     $username = $_POST['username1']; 
-	$jm_docket_line_id = $_POST['jm_docket_line_id']; 
+	$jm_docket_id = $_POST['jm_docket_id']; 
    	for($i=0;$i<sizeof($doc_ref);$i++)
 	{
 		$temp="lable".$doc_ref[$i];
@@ -581,7 +581,7 @@ if(isset($_POST['allocate_new']))
 					}
 
                     $row_id_new1 = 'B'.$row_id_new;
-					$sql="insert into $wms.fabric_cad_allocation(tran_id,doc_no,roll_id,roll_width,doc_type,allocated_qty,status,plant_code,created_user,updated_at) values('".$uuid."','".$jm_docket_line_id."','".$tid_ref[$j]."','".$width_ref[$j]."','binding',".$issued_ref[$j].",'2','".$plant_code."','".$username."',NOW())";
+					$sql="insert into $wms.fabric_cad_allocation(tran_id,doc_no,roll_id,roll_width,doc_type,allocated_qty,status,plant_code,created_user,updated_at) values('".$uuid."','".$jm_docket_id."','".$tid_ref[$j]."','".$width_ref[$j]."','binding',".$issued_ref[$j].",'2','".$plant_code."','".$username."',NOW())";
 					
 					//Uncheck this					
 					mysqli_query($link, $sql) or exit("Sql Error43: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -595,7 +595,7 @@ if(isset($_POST['allocate_new']))
 					}    
 					
 					
-					$sql111="select roll_id,tran_pin,allocated_qty from $wms.fabric_cad_allocation where doc_no='".$jm_docket_line_id."' and roll_id='".$tid_ref[$j]."' and plant_code='".$plant_code."'";
+					$sql111="select roll_id,tran_pin,allocated_qty from $wms.fabric_cad_allocation where doc_no='".$jm_docket_id."' and roll_id='".$tid_ref[$j]."' and plant_code='".$plant_code."'";
                     //echo $sql111."</br>";
 					$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
@@ -652,7 +652,7 @@ if(isset($_POST['allocate_new']))
 			$uuid1=$uuid_row1['uuid'];
 		
 		}
-		$sql13="insert into $pps.requested_dockets(docket_requested_id,jm_docket_line_id,plan_lot_ref,plant_code,created_user,created_at,fabric_status) values('$uuid1','".$jm_docket_line_id."',\"".$lot_db[$i]."\",'".$plant_code."','".$username."',NOW(),'5')";
+		$sql13="insert into $pps.requested_dockets(docket_requested_id,jm_docket_id,plan_lot_ref,plant_code,created_user,created_at,fabric_status) values('$uuid1','".$jm_docket_id."',\"".$lot_db[$i]."\",'".$plant_code."','".$username."',NOW(),'5')";
 
 					mysqli_query($link, $sql13) or exit("Sql Error344: $sql13".mysqli_error($GLOBALS["___mysqli_ston"]));				
 	}	
@@ -785,13 +785,13 @@ if(isset($_POST['allocate']))
 			$docket_query_result = mysqli_query($link_new,$docket_query);
 			while($sql_row1=mysqli_fetch_array($docket_query_result))
 			{
-				$jm_docket_line_id = $sql_row1['jm_docket_id'];
+				$jm_docket_id = $sql_row1['jm_docket_id'];
 			}
         echo "<input type=\"hidden\" name=\"row_id1\" value=\"".$row_id."\">";
 		echo "<input type=\"hidden\" name=\"style_ref1\" value=\"".$style_ref."\">";
 		echo "<input type=\"hidden\" name=\"schedule1\" value=\"".$schedule."\">";
 		echo "<input type=\"hidden\" name=\"plant_code_name1\" value=\"".$plant_code."\">";
-		echo "<input type=\"hidden\" name=\"jm_docket_line_id\" value=\"".$jm_docket_line_id."\">";
+		echo "<input type=\"hidden\" name=\"jm_docket_id\" value=\"".$jm_docket_id."\">";
 		echo "<input type=\"hidden\" name=\"username1\" value=\"".$username."\">";
 		echo "<input type=\"hidden\" name=\"doc_ref[$i]\" value=\"".$doc_ref."\">";
 		echo "<input type=\"hidden\" name=\"process_cat\" value=\"".$process_cat."\">";

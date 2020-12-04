@@ -2119,14 +2119,14 @@ function printpr()
  $docket_query_result = mysqli_query($link_new,$docket_query);
  while($sql_row1=mysqli_fetch_array($docket_query_result))
  {
-	 $jm_docket_line_id = $sql_row1['jm_docket_id'];
+	 $jm_docket_id = $sql_row1['jm_docket_id'];
  }
 //function to get docket 
 
 $doc=4;
 $doc_ype="binding";
-// if($jm_docket_line_id!='' && $doc_ype!='' && $plant_code!=''){
-// 	$result_docketinfo=getDocketInfo($jm_docket_line_id,$doc_ype,$plant_code);
+// if($jm_docket_id!='' && $doc_ype!='' && $plant_code!=''){
+// 	$result_docketinfo=getDocketInfo($jm_docket_id,$doc_ype,$plant_code);
 // 	$roll_det =$result_docketinfo['roll_det'];
 // 	$width_det =$result_docketinfo['width_det'];
 // 	$leng_det =$result_docketinfo['leng_det'];
@@ -2143,7 +2143,7 @@ $doc_ype="binding";
 // 	$tkt_width =$result_docketinfo['tkt_width'];
 // 	$item_name =$result_docketinfo['item_name'];
 // }
-$query2="select fabric_cad_allocation.roll_id,fabric_cad_allocation.roll_width,fabric_cad_allocation.plies,fabric_cad_allocation.allocated_qty,fabric_cad_allocation.shade,store_in.ref2,store_in.shrinkage_width,store_in.qty_allocated,store_in.ref4,store_in.ref1,store_in.lot_no,store_in.tid,store_in.ref5,store_in.qty_rec,store_in.ref3,store_in.ref6,sticker_report.item,sticker_report.batch_no,sticker_report.inv_no from $wms.fabric_cad_allocation left join $wms.store_in on store_in.tid=fabric_cad_allocation.roll_id left join $wms.sticker_report on store_in.lot_no=sticker_report.lot_no where doc_no='$jm_docket_line_id'";
+$query2="select fabric_cad_allocation.roll_id,fabric_cad_allocation.roll_width,fabric_cad_allocation.plies,fabric_cad_allocation.allocated_qty,fabric_cad_allocation.shade,store_in.ref2,store_in.shrinkage_width,store_in.qty_allocated,store_in.ref4,store_in.ref1,store_in.lot_no,store_in.tid,store_in.ref5,store_in.qty_rec,store_in.ref3,store_in.ref6,sticker_report.item,sticker_report.batch_no,sticker_report.inv_no from $wms.fabric_cad_allocation left join $wms.store_in on store_in.tid=fabric_cad_allocation.roll_id left join $wms.sticker_report on store_in.lot_no=sticker_report.lot_no where doc_no='$jm_docket_id'";
 $query2_result = mysqli_query($link_new,$query2);
 while($sql_row=mysqli_fetch_array($query2_result))
 {
