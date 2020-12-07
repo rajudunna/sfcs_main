@@ -309,12 +309,11 @@ $reptype = $_POST['reptype'];
 if(isset($_POST['submit']) && $reptype == 1)
 {
 	$sql = "SELECT jad.jm_ad_id,jad.workstation_id,jad.shift,DATE(jad.created_at) AS date1,lrfc.fabric_category,
-	jd.docket_number,jcj.cut_number,sum(jdlb.quantity) as quantity,jd.plies,jad.po_number,lrfc.fabric_category
+	jd.docket_number,jcj.cut_number,sum(jdb.quantity) as quantity,jd.plies,jad.po_number,lrfc.fabric_category
 	FROM $pps.`jm_actual_docket` jad 
 	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = jad.po_number
 	LEFT JOIN $pps.`lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
 	LEFT JOIN $pps.`jm_docket_cg_bundle` jdb ON jdb.jm_docket_id = jd.jm_docket_id
-	LEFT JOIN $pps.`jm_docket_logical_bundle` jdlb ON jdlb.jm_dcgb_id = jdb.jm_dcgb_id
 	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdb.jm_docket_id
 	LEFT JOIN $pps.jm_cut_docket_map dm ON dm. jm_docket_id=jd. jm_docket_id
 	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = dm. jm_cut_job_id 
@@ -536,12 +535,11 @@ $reptype == $_POST['reptype'];
 if(isset($_POST['submit']) && $reptype==2)
 { 
 
-$sql = "SELECT GROUP_CONCAT(distinct(jad.jm_ad_id)) as jm_ad_id,GROUP_CONCAT(distinct(jcj.cut_number)) as cut_number,sum(jdlb.quantity) as quantity,sum(jdl.plies) as plies,GROUP_CONCAT(distinct(jad.po_number)) as po_number,GROUP_CONCAT(distinct(jd.ratio_comp_group_id)) as ratio_comp_group_id,jad.workstation_id,GROUP_CONCAT(distinct(jad.shift)) as shift 
+$sql = "SELECT GROUP_CONCAT(distinct(jad.jm_ad_id)) as jm_ad_id,GROUP_CONCAT(distinct(jcj.cut_number)) as cut_number,sum(jdb.quantity) as quantity,sum(jdl.plies) as plies,GROUP_CONCAT(distinct(jad.po_number)) as po_number,GROUP_CONCAT(distinct(jd.ratio_comp_group_id)) as ratio_comp_group_id,jad.workstation_id,GROUP_CONCAT(distinct(jad.shift)) as shift 
 	FROM $pps.`jm_actual_docket` jad 
 	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = jad.po_number
 	LEFT JOIN $pps.`lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
 	LEFT JOIN $pps.`jm_docket_cg_bundle` jdb ON jdb.jm_docket_id = jd.jm_docket_id
-	LEFT JOIN $pps.`jm_docket_logical_bundle` jdlb ON jdlb.jm_dcgb_id = jdb.jm_dcgb_id
 	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdb.jm_docket_id
 	LEFT JOIN $pps.jm_cut_docket_map dm ON dm. jm_docket_id=jd. jm_docket_id
 	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = dm. jm_cut_job_id  
