@@ -78,7 +78,7 @@ if(isset($_POST['submit']))
 	// getting docket line ids for a schedule
 	$sql_docket = "SELECT DISTINCT dl.jm_docket_id, dl.`docket_number` FROM $pps.`jm_dockets` dl
 	LEFT JOIN $pps.`jm_docket_cg_bundle` db ON db.`jm_docket_id` = dl.`jm_docket_id`
-	LEFT JOIN $pps.`jm_docket_component_panel` dcp ON dcp.`jm_docket_bundle_id` = db.`jm_docket_bundle_id`
+	LEFT JOIN $pps.`jm_docket_component_panel` dcp ON dcp.`jm_dcgb_id` = db.`jm_dcgb_id`
 	LEFT JOIN $pps.`jm_product_logical_bundle` plb ON plb.`jm_pplb_id` = dcp.`jm_pplb_id`
 	WHERE plb.`schedule` = '$schedule'";
 	$sql_result_sql_docket=mysqli_query($link,$sql_docket) or exit("Sql Error15".mysqli_error());
