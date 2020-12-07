@@ -226,7 +226,7 @@ if(isset($_POST['show']))
 									{
 										$jm_docket_id = $get_docket_row['jm_docket_id'];
 										$dockets_list[]= $component_group_name.':'.$get_docket_row['docket_number'];
-										$get_pending_dockets="select cut_report_status from $pps.lp_lay where jm_docket_id='$jm_docket_id' and plant_code='$plantcode' and is_active=true limit 1";
+										$get_pending_dockets="select cut_report_status from $pps.jm_actual_docket where jm_docket_id='$jm_docket_id' and plant_code='$plantcode' and is_active=true limit 1";
 										// echo $get_pending_dockets.'<br/>';
 										$get_pending_dockets_result=mysqli_query($link, $get_pending_dockets) or exit("Sql Error--1x==".$get_pending_dockets.mysqli_error($GLOBALS["___mysqli_ston"]));
 										if(mysqli_num_rows($get_pending_dockets_result) > 0)

@@ -288,7 +288,7 @@ if($section){
                         
 
                         // Get actual reported plies for the docket
-                        $cutReportedQuery = "select sum(plies) as plies from $pps.lp_lay where jm_docket_id = '".$docketId."' and plant_code='".$plantCode."'";
+                        $cutReportedQuery = "select sum(plies) as plies from $pps.jm_actual_docket where jm_docket_id = '".$docketId."' and plant_code='".$plantCode."'";
                         $cutReportedResult = mysqli_query($link_new,$cutReportedQuery) or exit('Problem in getting reported docket data');
                         $row = mysqli_fetch_assoc($cutReportedResult);
                         ($row['plies']) ? $reportedPlies = $row['plies'] * $sizeRatioSum: $reportedPlies = 0;

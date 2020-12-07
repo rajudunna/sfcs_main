@@ -312,7 +312,7 @@ if(isset($_POST['reversesubmit']))
        $updateQry = "UPDATE $pps.lp_roll set plies = plies - $reversalPlies where lp_roll_id = $value";
        mysqli_query($link, $updateQry) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
    }
-   $updateLayQty = "UPDATE $pps.lp_lay set plies = plies - $lay_plies where lp_lay_id = '$lay_id'";
+   $updateLayQty = "UPDATE $pps.jm_actual_docket set plies = plies - $lay_plies where jm_ad_id = '$lay_id'";
    mysqli_query($link, $updateLayQty) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
    $updateDocketQty = "UPDATE $pps.jm_dockets set lay_status = 'OPEN' where jm_docket_id = '$docket_number'";
