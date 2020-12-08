@@ -716,7 +716,7 @@ if(isset($_POST['submit']))
 									while($row6=mysqli_fetch_array($sql_result6))
 									{
 										$docket_no=$row6['docket_number'];
-										$lay_id=$row6['lp_lay_id'];
+										$lay_id=$row6['jm_ad_id'];
 										//$cut_status=$row6['lay_status'];
 										$actual_plies=$row6['actualplies'];
 										// $docket_date=$row6['docket_date'];

@@ -996,17 +996,15 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                             /**if it is emb jobs update docket*/
                             $cutJobType=TaskTypeEnum::CUTJOB;
                             $cutEmbJobType=TaskTypeEnum::EMBELLISHMENTJOB;
-                            $qryGetDokcetlines="SELECT jm_docket_line_id,jm_docket_id FROM $pps.jm_docket_lines WHERE docket_line_number='$docketNumber' AND plant_code='$plantcode' AND is_active=1";
+                            $qryGetDokcetlines="SELECT jm_docket_id FROM $pps.jm_dockets WHERE docket_number='$docketNumber' AND plant_code='$plantcode' AND is_active=1";
                             $resultDocketLineIds = mysqli_query($link_new, $qryGetDokcetlines) or exit("Sql Error at get Docket Lines" . mysqli_error($GLOBALS["___mysqli_ston"]));
                             if (mysqli_num_rows($resultDocketLineIds) > 0) {
                                 while ($docketLineIds = mysqli_fetch_array($resultDocketLineIds)) {
-
-                                    $docketLinesIds = $docketLineIds['jm_docket_line_id'];
                                     $jmDocketId = $docketLineIds['jm_docket_id'];
                                 }
 
                                 /**getting task header id from taskjobs */
-                                $qryGettaskjob="SELECT task_header_id FROM $tms.task_jobs WHERE task_job_reference='$docketLinesIds' AND plant_code='$plantcode' AND is_active=1
+                                $qryGettaskjob="SELECT task_header_id FROM $tms.task_jobs WHERE task_job_reference='$jmDocketId' AND plant_code='$plantcode' AND is_active=1
                                 ";
                                 $resulttaskjobs = mysqli_query($link_new, $qryGettaskjob) or exit("Sql Error at get task header id" . mysqli_error($GLOBALS["___mysqli_ston"]));
                                 if (mysqli_num_rows($resulttaskjobs) > 0) {

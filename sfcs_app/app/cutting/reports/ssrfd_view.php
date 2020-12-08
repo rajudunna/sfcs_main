@@ -401,7 +401,7 @@ if(isset($_POST['submit']))
 	// $damages=  $fabric_attributes[$fabric_lay_attributes['damages']];
 	// $endbits=  $fabric_attributes[$fabric_lay_attributes['endbits']];
 	// $joints=  $fabric_attributes[$fabric_lay_attributes['joints']];
-	$qrt_get_attributes="SELECT SUM(IF(attribute_name='FABRICRECEIVED', attribute_VALUE, 0)) AS FABRICRECEIVED,SUM(IF(attribute_name='FABRICRETURNED', attribute_VALUE, 0)) AS FABRICRETURNED,SUM(IF(attribute_name='SHORTAGES', attribute_VALUE, 0)) AS SHORTAGES,SUM(IF(attribute_name='DAMAGES', attribute_VALUE, 0)) AS DAMAGES,SUM(IF(attribute_name='END-BITS', attribute_VALUE, 0)) AS ENDBITS,SUM(IF(attribute_name='JOINTS', attribute_VALUE, 0)) AS JOINTS FROM $pps.lp_lay_attribute WHERE lp_lay_id in ('".implode("','" , $lay_id)."') and plant_code='$plant_code'";
+	$qrt_get_attributes="SELECT SUM(IF(attribute_name='FABRICRECEIVED', attribute_VALUE, 0)) AS FABRICRECEIVED,SUM(IF(attribute_name='FABRICRETURNED', attribute_VALUE, 0)) AS FABRICRETURNED,SUM(IF(attribute_name='SHORTAGES', attribute_VALUE, 0)) AS SHORTAGES,SUM(IF(attribute_name='DAMAGES', attribute_VALUE, 0)) AS DAMAGES,SUM(IF(attribute_name='END-BITS', attribute_VALUE, 0)) AS ENDBITS,SUM(IF(attribute_name='JOINTS', attribute_VALUE, 0)) AS JOINTS FROM $pps.lp_lay_attribute WHERE jm_ad_id in ('".implode("','" , $lay_id)."') and plant_code='$plant_code'";
 	$sql_result6 = mysqli_query($link_new, $qrt_get_attributes) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
 	while ($row2 = mysqli_fetch_array($sql_result6)) {
 		$fabric_recevied = $row2['FABRICRECEIVED'];
@@ -575,7 +575,7 @@ if(isset($_POST['submit']))
 
 			//To get fabric attributes
 			$fabricattributes=array();
-			$qrt_get_attributes1="SELECT * FROM $pps.lp_lay_attribute WHERE lp_lay_id= '$lay_id' and plant_code='$plant_code'";
+			$qrt_get_attributes1="SELECT * FROM $pps.lp_lay_attribute WHERE jm_ad_id= '$lay_id' and plant_code='$plant_code'";
 			$sql_result7=mysqli_query($link, $qrt_get_attributes1) or die("Error".$qrt_get_attributes1.mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row7=mysqli_fetch_array($sql_result7))
 			{

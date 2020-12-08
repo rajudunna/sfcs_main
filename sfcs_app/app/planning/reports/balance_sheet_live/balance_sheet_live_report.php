@@ -411,9 +411,9 @@ if ((isset($_GET['sdate']) && isset($_GET['edate']))||(isset($_POST['sdate'])&& 
                         for ($i = 0; $i < sizeof($week_code); $i++) {
                             $week_array2 = getStartAndEndDate($week_code[$i], $exfact_year[$i]);
                             $cutQty=0;
-                            $lay_jm_docket_lines="SELECT `mp_sub_order`.`master_po_number`,`lp_lay`.`po_number`,`lp_lay`.`jm_docket_id`,`lp_lay`.`plies` FROM $pps.`lp_lay` JOIN $pps.`mp_sub_order` ON 
-                            `lp_lay`.`po_number`= mp_sub_order.`po_number` WHERE `mp_sub_order`.`master_po_number` IN ('".$po_number."')";
-                            $sql_result1 = mysqli_query($link, $lay_jm_docket_lines) or exit("Sql Error1 in cut Qty" . mysqli_error($GLOBALS["___mysqli_ston"]));
+                            $lay_jm_docket="SELECT `mp_sub_order`.`master_po_number`,`jm_actual_docket`.`po_number`,`jm_actual_docket`.`jm_docket_id`,`jm_actual_docket`.`plies` FROM $pps.`jm_actual_docket` JOIN $pps.`mp_sub_order` ON 
+                            `jm_actual_docket`.`po_number`= mp_sub_order.`po_number` WHERE `mp_sub_order`.`master_po_number` IN ('".$po_number."')";
+                            $sql_result1 = mysqli_query($link, $lay_jm_docket) or exit("Sql Error1 in cut Qty" . mysqli_error($GLOBALS["___mysqli_ston"]));
                             while ($sql_row1 = mysqli_fetch_array($sql_result1)) {
                                 $sql_jm_docket="SELECT plies,jm_docket_id FROM $pps.jm_dockets WHERE jm_docket_id = '".$sql_row1['jm_docket_id']."'";
                                 $sql_result2 = mysqli_query($link, $sql_jm_docket) or exit("Sql Error2 in cut Qty" . mysqli_error($GLOBALS["___mysqli_ston"]));
