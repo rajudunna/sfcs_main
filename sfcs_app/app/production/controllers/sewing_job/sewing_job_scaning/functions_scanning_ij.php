@@ -731,7 +731,7 @@ function getreversalscanningdetails($job_number)
     
     if($post_ops_code != 0 && $flag == "check")
     {
-       $pre_ops_validation = "SELECT id,(sum(recevied_qty)+sum(rejected_qty)) as recevied_qty,send_qty,size_title,bundle_number,color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref ='$job_number[1]' and assigned_module='$module1' AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by bundle_number";
+       $pre_ops_validation = "SELECT id,(sum(recevied_qty)+sum(rejected_qty)) as recevied_qty,send_qty,size_title,bundle_number,color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref ='$job_number[1]' and assigned_module='$module1' AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by size_title,bundle_number";
         $result_pre_ops_validation = $link->query($pre_ops_validation);
         while($row = $result_pre_ops_validation->fetch_assoc()) 
         {
@@ -759,7 +759,7 @@ function getreversalscanningdetails($job_number)
     }
     else if($post_ops_code != 0 && $flag != "check")
     {
-        $pre_ops_validation = "SELECT id,(sum(recevied_qty)+sum(rejected_qty)) as recevied_qty,send_qty,size_title,bundle_number,color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref ='$job_number[1]' and assigned_module='$module1' AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by bundle_number";
+        $pre_ops_validation = "SELECT id,(sum(recevied_qty)+sum(rejected_qty)) as recevied_qty,send_qty,size_title,bundle_number,color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref ='$job_number[1]' and assigned_module='$module1' AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by size_title,bundle_number";
         $result_pre_ops_validation = $link->query($pre_ops_validation);
         while($row = $result_pre_ops_validation->fetch_assoc()) 
         {
@@ -831,7 +831,7 @@ function getreversalscanningdetails($job_number)
     }
     else
     {
-        $pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number,color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref ='$job_number[1]' and assigned_module='$module1' AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by bundle_number";
+        $pre_ops_validation = "SELECT id,sum(recevied_qty) as recevied_qty,send_qty,size_title,bundle_number,color,assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref ='$job_number[1]' and assigned_module='$module1' AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by size_title,bundle_number";
         $result_pre_ops_validation = $link->query($pre_ops_validation);
         while($row = $result_pre_ops_validation->fetch_assoc()) 
         {
@@ -905,7 +905,7 @@ function getreversalscanningdetails($job_number)
         
     }
 
-    $job_details_qry = "SELECT id,style,`color` AS order_col_des,`size_title` AS size_code,GROUP_CONCAT(`bundle_number`) AS tid,`original_qty` AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(rejected_qty) AS rejected_qty,(SUM(send_qty)-SUM(recevied_qty)) AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id,assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_number[1]' and assigned_module='$module1' AND operation_id = $job_number[0] AND remarks = '$job_number[2]' GROUP BY size_title,color,assigned_module order by bundle_number";
+    $job_details_qry = "SELECT id,style,`color` AS order_col_des,`size_title` AS size_code,GROUP_CONCAT(`bundle_number`) AS tid,`original_qty` AS carton_act_qty,SUM(`recevied_qty`) AS reported_qty,SUM(rejected_qty) AS rejected_qty,(SUM(send_qty)-SUM(recevied_qty)) AS balance_to_report,`docket_number` AS doc_no, `cut_number` AS acutno, `input_job_no`,`input_job_no_random_ref` AS input_job_no_random, 'bundle_creation_data' AS flag,operation_id,remarks,size_id,assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_number[1]' and assigned_module='$module1' AND operation_id = $job_number[0] AND remarks = '$job_number[2]' GROUP BY size_title,color,assigned_module order by size_title,bundle_number";
     $job_details_qry = $link->query($job_details_qry);
     if($job_details_qry->num_rows > 0)
     {
