@@ -64,7 +64,8 @@ $facility_code=$global_facility_code;
 /**at the time of getting data from pms and pps tables we inlcude plantcode also */
 //$plantcode=$global_facility_code;
 session_start();
-$plant_code = $_SESSION['plantCode'];
+$_SESSION['plantCode']='EKG';
+// $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 
 $plant_alert_code=$conf1->get('plant-alert-code');     //plant-alert-code

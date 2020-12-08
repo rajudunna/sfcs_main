@@ -164,15 +164,15 @@ $username=$_SESSION['userName'];
 				<div class="form-group col-md-2">
 					<label>Location Name: </label>
 				</div>
-				<div class="form-group col-md-2">
-					<input type="text" name="loc_name" class="form-control k-textbox" data-role="text" <?php echo $flag; ?> title="Enter Location Name" required="required" value="<?php echo $loc_name; ?>" required>
+				<div class="form-group col-md-3">
+					<input type="text" name="loc_name" class="form-control k-textbox" data-role="text"  <?php echo $flag; ?> title="Enter Location Name" value="<?php echo $loc_name; ?>"  required <font color='red'></font>
 				</div>
 				<br><br>
 				<div class="form-group col-md-2">
 					<label>Capacity: </label>
 				</div>
-				<div class="form-group col-md-2">
-					<input type="number" min="0" name="capacity" class="form-control" title="Enter Capacity" required="required" value="<?php echo $capacity; ?>" required> 
+				<div class="form-group col-md-3">
+					<input type="number" min="0" name="capacity" class="form-control" title="Enter Capacity" value="<?php echo $capacity; ?>" required <font color='red'></font> 
 				</div>
 				<br><br>
 				<div class="col-md-12">
