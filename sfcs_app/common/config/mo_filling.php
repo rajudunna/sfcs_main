@@ -351,9 +351,7 @@
 						for($k=0;$k<sizeof($ops);$k++)
 						{
 							{
-								$sql1231="SELECT tid,carton_act_qty FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' 
-											and  sref_id = $sref_id and trim(order_col_des) = '$trimmed_color'
-											and type_of_sewing>0 ";
+								$sql1231="SELECT tid,carton_act_qty FROM $bai_pro3.packing_summary_input WHERE sref_id = $sref_id and size_code='$size_code' and trim(order_col_des) = '$trimmed_color' and type_of_sewing>0 ";
 								$result1231=mysqli_query($link, $sql1231) or 
 											die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
@@ -370,9 +368,7 @@
 					{
 						$last_mo = max($mo_no);
 						$bal=0;$qty_tmp=0;
-						$sql1234 = "SELECT tid,carton_act_qty FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' and sref_id = $sref_id
-						and trim(order_col_des) = '$trimmed_color'
-						and type_of_sewing=1";
+						$sql1234 = "SELECT tid,carton_act_qty FROM $bai_pro3.packing_summary_input WHERE sref_id = $sref_id and size_code='$size_code' and trim(order_col_des) = '$trimmed_color' and type_of_sewing=1";
 						$result1234=mysqli_query($link, $sql1234) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 						while($row1234=mysqli_fetch_array($result1234)) 
@@ -441,8 +437,7 @@
 						//Excess allocate to Last MO
 						//$qty1 = $qty;
 						$bal=0;$qty_tmp=0;$qty=0;
-						$sql12341="SELECT tid,carton_act_qty FROM $bai_pro3.packing_summary_input WHERE size_code='$size_code' 
-									and sref_id = $sref_id and trim(order_col_des) = '$trimmed_color' and type_of_sewing<>1";       
+						$sql12341="SELECT tid,carton_act_qty FROM $bai_pro3.packing_summary_input WHERE sref_id = $sref_id and size_code='$size_code' and trim(order_col_des) = '$trimmed_color' and type_of_sewing<>1";       
 						$result12341=mysqli_query($link, $sql12341) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						if(mysqli_num_rows($result12341)>0)
 						{
