@@ -288,7 +288,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 	echo "<th>Plies</th>";
 	echo "<th>MK Len.</th>";
 	echo "<th>Cut Qty</th>";
-	echo "<th>Docket Requested</th>";
+	echo "<th>Fabric Requested</th>";
 	echo "<th>Fabric Received</th>";
 	echo "<th>Fabric Returned</th>";
 	echo "<th>Damages</th>";
@@ -455,14 +455,14 @@ if(isset($_POST['submit']) && $reptype == 1)
 		}	
         $req_qty=0;
 		$issued_qty=0;
-        $sql112="SELECT req_qty,issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and style='$style' and schedule='$schedule' and color='$color^$act_cut_no'";
+        $sql112="SELECT sum(req_qty) as mrn_req_qty,sum(issued_qty) as mrn_issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and style='$style' and schedule='$schedule' and color='$color^$act_cut_no'";
 		$sql_result112=mysqli_query($link, $sql112) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result112)>0)
 		{
 			while($sql_row112=mysqli_fetch_array($sql_result112))
 			{
-				$req_qty=$sql_row112['req_qty'];
-				$issued_qty=$sql_row112['issued_qty'];
+				$req_qty=$sql_row112['mrn_req_qty'];
+				$issued_qty=$sql_row112['mrn_issued_qty'];
 			}
 		}
 		$doc_req=$doc_req+$req_qty;
@@ -701,14 +701,14 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		
 		$req_qty=0;
 		$issued_qty=0;
-		$sql112="SELECT req_qty,issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and schedule='$schedule' and color='$color^$act_cut_no'";
+		$sql112="SELECT sum(req_qty) as mrn_req_qty,sum(issued_qty) as mrn_issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and schedule='$schedule' and color='$color^$act_cut_no'";
 		$sql_result112=mysqli_query($link, $sql112) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result112)>0)
 		{
 			while($sql_row112=mysqli_fetch_array($sql_result112))
 			{
-				$req_qty=$sql_row112['req_qty'];
-				$issued_qty=$sql_row112['issued_qty'];
+				$req_qty=$sql_row112['mrn_req_qty'];
+				$issued_qty=$sql_row112['mrn_issued_qty'];
 			}
 			$fab_rec=$fab_rec+$issued_qty;
 		}

@@ -62,6 +62,19 @@ if(isset($_POST['myval']))
 		$result13=mysqli_query($link, $count_sch_qry3) or die("Error110-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$row2=mysqli_fetch_array($result13);
 		$input_job_random_min = $row2['input_job_no_random'];
+		$sql32="SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no ='$schedule' AND input_job_no in ($list1) and bundle_print_status = 1"; 
+		$result32=mysqli_query($link, $sql32) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($result32)>0)
+		{
+			echo "<script>
+							sweetAlert('Error','Job already printed.','warning');
+							setTimeout('Redirect()',500); 
+							function Redirect() {  
+								location.href = \"".getFullURLLevel($_GET['r'], "sewing_club.php", "0", "N")."&style=$decode_style&schedule=$schedule&submit_val=submit_val1\";
+							}
+				</script>";
+				exit();
+		}
 		$count_sch_qry1="SELECT input_job_no,input_job_no_random FROM $bai_pro3.packing_summary_input WHERE order_del_no ='$schedule' AND input_job_no in ($list1) group by input_job_no";
 		$result10=mysqli_query($link, $count_sch_qry1) or die("Error100-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row2=mysqli_fetch_array($result10))
@@ -153,7 +166,7 @@ if($style != null && $schedule != null && isset($_GET['submit_val']))
 			echo "<th>Quantity</th>";
 			echo "<th>Clubbing Details</th>";  
 			echo "</tr></thead>";
-			$sql = "SELECT order_del_no,input_job_no,input_job_no_random,SUM(carton_act_qty) AS carton_act_qty,order_col_des, mrn_status FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' GROUP BY input_job_no ORDER BY input_job_no*1";
+			$sql = "SELECT order_del_no,input_job_no,input_job_no_random,SUM(carton_act_qty) AS carton_act_qty,order_col_des, mrn_status,bundle_print_status FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' GROUP BY input_job_no ORDER BY input_job_no*1";
 			$result=mysqli_query($link, $sql) or die("Error8-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($result))
 			{
@@ -197,6 +210,10 @@ if($style != null && $schedule != null && isset($_GET['submit_val']))
 				if(($rows_count1 > 0) || ($plan_dash_count > 0))
 				{								    
 					echo "<td>Already Jobs Loaded</td>";			
+				}
+				else if($sql_row['bundle_print_status']==1)
+				{
+					echo "<td>Job already Printed</td>";
 				}
 				else
 				{									

@@ -261,8 +261,7 @@ function insert_into_moq($ref_id,$op_code,$qty){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 
     //getting style,color,schedule,size
-    $order_details = "Select order_style_no,order_col_des,order_del_no,size_code from $bai_pro3.packing_summary_input 
-                      where tid = $ref_id";                 
+    $order_details = "Select order_style_no,order_col_des,order_del_no,size_code from $bai_pro3.packing_summary_input where tid = $ref_id";                 
     $order_result = mysqli_query($link,$order_details) or exit('Unable to get info from BCD');
     while($row = mysqli_fetch_array($order_result)){
         $style = $row['order_style_no'];
@@ -271,8 +270,8 @@ function insert_into_moq($ref_id,$op_code,$qty){
         $size  = $row['size_code'];
     }
 
-    $mo_details = "SELECT * FROM $bai_pro3.mo_details WHERE TRIM(size)='$size' 
-                   and TRIM(style)='$style' and TRIM(schedule)=$schedule and TRIM(color)='$color' order by mo_no";
+    $mo_details = "SELECT mo_no,mo_quantity FROM $bai_pro3.mo_details WHERE schedule=$schedule and TRIM(size)='$size' and TRIM(style)='$style' and  TRIM(color)='$color' order by mo_no";
+                   
     $mos_result = mysqli_query($link,$mo_details);		
     while($row = mysqli_fetch_array($mos_result)){
         $mos[$row['mo_no']] = $row['mo_quantity'];
@@ -283,8 +282,7 @@ function insert_into_moq($ref_id,$op_code,$qty){
 
     //getting the operations and op_codes  for that mo if exists
     foreach($mos as $mo=>$mo_qty){
-        $mo_op_query ="SELECT OperationNumber,OperationDescription FROM $bai_pro3.schedule_oprations_master 
-                       WHERE OperationNumber=$op_code and MONumber='$mo' limit 1";             
+        $mo_op_query ="SELECT OperationNumber,OperationDescription FROM $bai_pro3.schedule_oprations_master WHERE OperationNumber=$op_code and MONumber='$mo' limit 1";             
         $mo_ops_result = mysqli_query($link,$mo_op_query) or exit('No Operations Exists for MO '.$mo);
         while($row = mysqli_fetch_array($mo_ops_result)){
             $op_desc[$mo] = $row['OperationDescription'];
@@ -308,8 +306,7 @@ function insert_into_moq($ref_id,$op_code,$qty){
 
             $filled_qty = 0;
             //getting already filled quantities 
-            $filled_qty_query = "Select SUM(bundle_quantity) as filled from $bai_pro3.mo_operation_quantites where 
-                                 mo_no = '$mo' and op_code = $op_code";
+            $filled_qty_query = "Select SUM(bundle_quantity) as filled from $bai_pro3.mo_operation_quantites where mo_no = '$mo' and op_code = $op_code";
             $filled_qty_result = mysqli_query($link,$filled_qty_query);	
             while($row = mysqli_fetch_array($filled_qty_result)){
                 $filled_qty = $row['filled'];
@@ -336,8 +333,7 @@ function insert_into_moq($ref_id,$op_code,$qty){
         }
         //Updating all excess to last mo 
         if($qty > 0){
-            $update_query = "Update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity + $qty 
-                             where mo_no = '$last_mo' and ref_no = $ref_id and op_code = $op_code";
+            $update_query = "Update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity + $qty where mo_no = '$last_mo' and ref_no = $ref_id and op_code = $op_code";
             mysqli_query($link,$update_query) or exit("Error 3 In Updating excess qty to MO Qtys for mo : ".$mo);
         }
     }

@@ -351,7 +351,7 @@ if(isset($_GET['tid']))
 		}
 		$sewing_operations = implode ( ", ", $operations);
 
-		$check_bcd="select * from $brandix_bts.bundle_creation_data WHERE operation_id in ($sewing_operations) and assigned_module='$module_ref' and bundle_qty_status=5";
+		$check_bcd="select * from $brandix_bts.bundle_creation_data WHERE bundle_number =$bundle_no_ref and operation_id in ($sewing_operations) and bundle_qty_status=5";
 		$result_status= mysqli_query($link, $check_bcd);
 		if(mysqli_num_rows($result_status) > 0)
 		{
