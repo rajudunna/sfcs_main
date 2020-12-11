@@ -72,6 +72,7 @@ function validateLength(t){
             if (t.value.length > 20) {
                 t.value =  t.value.substr(0,20);
                 swal("Length must be lessthan 20 Characters");
+                t.value ='';
                 return false;
             }
         }

@@ -58,13 +58,13 @@ $username=$_SESSION['userName'];
                 <label class="control-label control-label-left col-sm-3" for="table_name">  Employee Id:</label>
                 <div class="controls col-sm-9">
                     
-                <input id="table_name" type="text" class="form-control k-textbox integer"   onkeyup="return validateEmpIdNum(this)" maxlength="15" data-role="text"  name="emp_id" required="required" <?= $jj ?>  value="<?php echo $emp_id; ?>" ><span id="errId1" class="error"></span></div>
+                <input id="table_name" type="text" class="form-control k-textbox integer"   onkeyup="return validateEmpIdNum(this)" maxlength="21" data-role="text"  name="emp_id" required="required" <?= $jj ?>  value="<?php echo $emp_id; ?>" ><span id="errId1" class="error"></span></div>
                 
         </div></div><div class="col-md-4"><div class="form-group">
                 <label class="control-label control-label-left col-sm-3" for="table_status">Employee Name:</label>
                 <div class="controls col-sm-9">
                     
-               <input id="emp_name" type="text" class="form-control k-textbox alpha "  maxlength="20" data-role="text" pattern="[A-Za-z0-9]" name="emp_name" required="required" value="<?php echo $emp_name; ?>" ><span id="errId1" class="error"></span></div>
+               <input id="emp_name" type="text" class="form-control k-textbox alpha " onkeyup="return validateEmpIdNum(this)"  maxlength="21" data-role="text" pattern="[A-Za-z0-9]" name="emp_name" required="required" value="<?php echo $emp_name; ?>" ><span id="errId1" class="error"></span></div>
     
                 
         </div></div><div class="col-md-4"><div class="form-group">
@@ -91,6 +91,11 @@ $username=$_SESSION['userName'];
         var emp_id = t.value;
         var emp_id_pattern = /^[1-9][0-9]*$/;
         var found = emp_id.match(emp_id_pattern);
+        if (emp_id > 20) {
+                swal("Length must be lessthan 20 Characters");
+                t.value ='';
+                return false;
+            }
         if(found) {
             return true;
         } else {
