@@ -1,0 +1,1 @@
+ALTER TABLE `pps`.`requested_dockets` CHANGE `print_status` `print_status` DATETIME NULL;
