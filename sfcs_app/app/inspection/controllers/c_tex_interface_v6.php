@@ -1847,9 +1847,9 @@ if(mysqli_num_rows($sql_result1) > 0)
 {
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
-		if($sql_row["partial_appr_qty"]=='')
+		if($sql_row1["partial_appr_qty"]=='')
 		{
-			$sql_row["partial_appr_qty"]='0.00';
+			$sql_row1["partial_appr_qty"]='0.00';
 		}
 		$values[]=$sql_row1['tid']."~".$sql_row1['ref2']."~".$sql_row1['ref4']."~".$sql_row1['qty_rec']."~".$sql_row1['ref5']."~".$sql_row1['ref6']."~".$sql_row1['ref3']."~".$sql_row1['lot_no']."~".$sql_row1["roll_joins"]."~".$sql_row1["partial_appr_qty"]."~".$sql_row1["roll_status"]."~".$sql_row1["shrinkage_length"]."~".$sql_row1["shrinkage_width"]."~".$sql_row1["shrinkage_group"]."~".$sql_row1["roll_remarks"]."~".$sql_row1["rejection_reason"]."~".$sql_row1["qty_allocated"]."~".$sql_row1["qty_issued"];
 	//tid,rollno,shade,tlenght,clenght,twidth,cwidth,lot_no
