@@ -123,6 +123,7 @@ function validateLength(t){
             if (t.value.length > 30) {
                 t.value =  t.value.substr(0,30);
                 swal("Length must be lessthan 30 Characters");
+                t.value ='';
                 return false;
             }
         }

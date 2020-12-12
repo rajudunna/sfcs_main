@@ -127,9 +127,11 @@ include('view_handover_team_list.php');
         var emp_id_pattern = /^[1-9][0-9]*$/;
         var found = emp_id.match(emp_id_pattern);
         if (emp_id > 15) {
-                emp_id =  emp_id.substr(0,15);
+                // emp_id =  emp_id.substr(0,15);
                 swal("ID must be lessthan 15 Characters");
+                t.value ='';
                 return false;
+               
             }
         if(found) {
         return true;
@@ -144,6 +146,7 @@ include('view_handover_team_list.php');
             if (t.value.length > 20) {
                 t.value =  t.value.substr(0,20);
                 swal("Name must be lessthan 20 Characters");
+                t.value ='';
                 return false;
             }
         }
