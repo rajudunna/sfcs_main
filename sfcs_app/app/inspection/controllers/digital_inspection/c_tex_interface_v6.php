@@ -1863,6 +1863,12 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBAL
 $num_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
+	if($sql_row["partial_appr_qty"]=='')
+	{
+		$sql_row["partial_appr_qty"]='0.00';
+	}
+
+	
 	$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["qty_allocated"]."~".$sql_row["shade_grp"]."~".$sql_row["act_width_grp"]."~".$sql_row["four_point_status"]."~".$sql_row["qty_issued"];
 //tid,rollno,shade,tlenght,clenght,twidth,cwidth,lot_no
 	$scount_temp[]=$sql_row['ref4'];
@@ -1888,6 +1894,10 @@ if(mysqli_num_rows($sql_result1) > 0)
 {
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
+		if($sql_row1["partial_appr_qty"]=='')
+		{
+			$sql_row1["partial_appr_qty"]='0.00';
+		}
 		$values[]=$sql_row1['tid']."~".$sql_row1['ref2']."~".$sql_row1['ref4']."~".$sql_row1['qty_rec']."~".$sql_row1['ref5']."~".$sql_row1['ref6']."~".$sql_row1['ref3']."~".$sql_row1['lot_no']."~".$sql_row1["roll_joins"]."~".$sql_row1["partial_appr_qty"]."~".$sql_row1["roll_status"]."~".$sql_row1["shrinkage_length"]."~".$sql_row1["shrinkage_width"]."~".$sql_row1["shrinkage_group"]."~".$sql_row1["roll_remarks"]."~".$sql_row1["rejection_reason"]."~".$sql_row1["qty_allocated"]."~".$sql_row1["shade_grp"]."~".$sql_row1["act_width_grp"]."~".$sql_row1["four_point_status"]."~".$sql_row1["qty_issued"];
 	//tid,rollno,shade,tlenght,clenght,twidth,cwidth,lot_no
 		
@@ -3043,8 +3053,11 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			$add_query="";
 			
 				$add_query=", ref4=\"".$ele_shade[$i]."\", shade_grp=\"".$ele_shade1[$i]."\", act_width_grp=\"".$ele_shade2[$i]."\"";
-			
-
+			if($roll_joins[$i]=="")
+			{
+				$roll_joins[$i]=0;
+			}
+			/*
 			if($partial_rej_qty[$i]>0 and $partial_rej_qty[$i]<$ele_t_length[$i] )// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
 			{
 				 $sql= "insert INTO $wms.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason,ref_tid,plant_code,created_user,updated_user,updated_at)select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\", tid,'".$plant_code."','".$username."','".$username."',NOW()  FROM $wms.store_in WHERE plant_code='$plant_code' and  tid=".$ele_tid[$i];
@@ -3057,8 +3070,10 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 				 mysqli_query($link, $sql1) or exit("Sql Error9=2222".mysqli_error($GLOBALS["___mysqli_ston"]));			
 			}
 			else
+			*/
 			{
 				$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_user= '".$username."',updated_at=NOW() $add_query where plant_code='$plant_code' and  tid='".$ele_tid[$i]."'";
+			//	echo $sql."<br>";
 				mysqli_query($link, $sql) or exit("Sql Error9=111".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
