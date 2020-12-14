@@ -92,9 +92,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
             }
         foreach($cat as $key=>$value)
         {
-          
-     
-            $qry_to_get = "SELECT * FROM  `$bai_pro3`.`cat_stat_log` WHERE  order_tid = '$order_tid' and category = '$value'";
+            $qry_to_get = "SELECT tid FROM  `$bai_pro3`.`cat_stat_log` WHERE  order_tid = '$order_tid' and category = '$value'";
             // echo $qry_to_get.'</br>';
             $res_qry_to_get = $link->query($qry_to_get);
             while($row_cat_ref = $res_qry_to_get->fetch_assoc()) 
@@ -140,7 +138,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
                             $recut_allowing_qty = 0;
                         }
                   
-                        if($to_add > 0)
+                        if($to_add > 0 && ( $value == 'Body' || $value == 'Front'))
                         {
                             $inserting_into_recut_v2_child = "INSERT INTO `$bai_pro3`.`lay_plan_recut_track` (`allocated_id`,`tran_id`,`cat_ref`,`bcd_id`,`operation_id`,`recut_raised_qty`,`recut_allocated_qty`,`remaining_qty`,`size_id`)
                             VALUES($insert_id,'$ids[$bcd_act_id]','$cat_ref',$bcd_act_id,$operation_id,$to_add,0,$to_add,'$size_id')";
