@@ -108,7 +108,7 @@
 									<td colspan=2><b>Schedule:</b>'.$schedule.'</td>
 								</tr>
 								<tr>
-									<td colspan=2><b>Color:</b>'.$color.'</td>
+									<td colspan=6><b>Color:</b>'.$color.'</td>
 								</tr>
 								<tr>
 									<td colspan=2><b>Barcode ID:</b>'.trim($barcode).'</td>
@@ -124,9 +124,9 @@
 						else
 							$html.= "<td colspan=4></td>";
 						$html.='</tr> 
-								<tr>
+								<!--<tr>
 									<td colspan=9><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,30).'</td>
-								</tr>
+								</tr>-->
 								<tr>	
 									<td colspan=6><b>CutNo:</b>'.$color_code.'</td>
 								</tr>
