@@ -282,7 +282,7 @@ function check_val()
                                                 while($row_23 = mysqli_fetch_assoc( $bundle_sql_result)){
                                                     $barcode[]=$row_23['barcode'];
                                                 }
-                                             
+                                                
                                                 $operation_bundles=implode(',',$barcode);
 												if(sizeof($operation_bundles)>0)
                                                 {
@@ -291,7 +291,7 @@ function check_val()
 
                                                         // $query="SELECT SUM(IF(operation=$sew_in_op,1,0)) AS sew_in,SUM(IF(operation=$sew_out_op,1,0)) AS sew_out from $pts."
                                                        
-                                                        $selectSQL = "SELECT parent_job,parent_barcode,size,color,sum(rejected_quantity) as rejected_quantity,sum(good_quantity) as good_quantity,sum(if(operation=".$sew_in_op.",good_quantity+rejected_quantity,0)) as total_good_quantity,sum(if(operation=".$sew_out_op.",good_quantity+rejected_quantity,0)) as total_quantity,operation,schedule FROM `$pts`.`transaction_log` WHERE style='".$style."' AND schedule='".$schedule."'  AND parent_barcode IN ($operation_bundles) and parent_barcode_type='PPLB' and operation in($opcodes)  group by parent_barcode,operation order by operation";
+                                                        $selectSQL = "SELECT parent_job,parent_barcode,size,color,sum(rejected_quantity) as rejected_quantity,sum(good_quantity) as good_quantity,sum(if(operation=".$sew_in_op.",good_quantity+rejected_quantity,0)) as total_good_quantity,sum(if(operation=".$sew_out_op.",good_quantity+rejected_quantity,0)) as total_quantity,operation,schedule FROM `$pts`.`transaction_log` WHERE style='".$style."' AND schedule='".$schedule."'  AND parent_barcode IN ('".$operation_bundles."') and parent_barcode_type='PPLB' and operation in($opcodes)  group by parent_barcode,operation order by operation";
                                                         //   echo   $selectSQL ;
                                                            
                                                         $selectRes=mysqli_query($link,$selectSQL) or exit($selectSQL."Error at something");
