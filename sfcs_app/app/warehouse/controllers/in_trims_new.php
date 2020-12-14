@@ -6,7 +6,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/global_error_function.php");
 $main_url=$_SERVER['PHP_SELF'];
 $plantcode=$_GET['plantcode'];
-$username=$_GET['username'];
+//$username=$_GET['username'];
  ?>
 <script>
 
@@ -67,7 +67,7 @@ if(isset($_GET['location']))
 		//var_dump($_GET);
 	}
 	else
-	{
+	{	
 		if($result_status==4)
 		{
 			echo "<h3>Location: <font color=green>$location</font></h3>";
@@ -80,33 +80,23 @@ if(isset($_GET['location']))
 	}
 }
 
-?>
-
-<!-- <h2><font color="green">IN</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <?php echo "<a href=\"in_trims_new.php\">In</a>   |   <a href=\"out.php\">Out</a></h2>"; ?> -->
-<form name="input" method="post" action="<?php $_SERVER['PHP_SELF']; ?>" enctype="multipart/form data">
-<!-- <input type="text" value="" name="cartonid"> -->
-<textarea name="cartonid" id='cartonid' rows="2" cols="15" onkeydown="document.input.submit();" value=""></textarea>
-<br/>Enter Barcode:<br/>
-<input type="text" size="19" value="" name="cartonid2" placeholder="manual entry..">
-<input type="submit" name="check2" value="Scan" >
-
-<input type="hidden" name="barcode" value="<?php echo $code; ?>">
-<input type="hidden" name="location" value="<?php echo $location; ?>">
-<input type="hidden" name="status" value="<?php echo $status; ?>">
-<input type="hidden" name="plantcode" value="<?php echo $plantcode; ?>">
-<input type="hidden" name="check4" value="check">
-</form>
-
-<?php
-
 //Normal Process
 if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 {
 	try
 	{
 		$code=$_POST['cartonid'];
-		$location=$_POST['location'];
-		$plantcode=$_POST['plantcode'];
+		if(isset($_POST['location'])){
+			$location=$_POST['location'];
+		}else{
+			if(isset($_GET['location'])){
+				$location=$_GET['location'];
+			}else{
+				$location='';
+			}
+			
+		}
+		$plantcode=$_GET['plantcode'];
 		if($location=='')
 		{
 			$location=$code;
@@ -125,7 +115,7 @@ if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 			}	
 		}
 		else
-		{	
+		{
 			$sql12="select * from $wms.location_db where plant_code='$plantcode' and location_id='".$code."' and status=1";
 			$sql_result12=mysqli_query($link, $sql12) or die(exception($sql12));
 			if(mysqli_num_rows($sql_result12))
@@ -152,7 +142,7 @@ if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 					}
 					else
 					{
-						$sql1="update $wms.store_in set ref1=\"$location\",updated_user='$username',updated_at='Now()' where plant_code='$plantcode' and barcode_number=\"$code\"";
+						$sql1="update $wms.store_in set ref1=\"$location\",updated_user='$username',updated_at=Now() where plant_code='$plantcode' and barcode_number=\"$code\"";
 						$sql_result1=mysqli_query($link, $sql1) or die(exception($sql1));				
 						if(mysqli_affected_rows($link)>0)
 						{
@@ -233,7 +223,7 @@ if(isset($_POST['check2']))
 					}
 					else
 					{
-						$sql1="update $wms.store_in set ref1=\"$location\",updated_user='$username',updated_at='Now()' where plant_code='$plantcode' and barcode_number=\"$code\"";
+						$sql1="update $wms.store_in set ref1=\"$location\",updated_user='$username',updated_at=Now() where plant_code='$plantcode' and barcode_number=\"$code\"";
 						$sql_result1=mysqli_query($link, $sql1)or die(exception($sql1));				
 						if(mysqli_affected_rows($link)>0)
 						{
@@ -262,6 +252,23 @@ if(isset($_POST['check2']))
 }
 
 ?>
+
+<!-- <h2><font color="green">IN</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <?php echo "<a href=\"in_trims_new.php\">In</a>   |   <a href=\"out.php\">Out</a></h2>"; ?> -->
+<form name="input" method="post" action="<?php $_SERVER['PHP_SELF']; ?>" enctype="multipart/form data">
+<!-- <input type="text" value="" name="cartonid"> -->
+<textarea name="cartonid" id='cartonid' rows="2" cols="15" onkeydown="document.input.submit();" value=""></textarea>
+<br/>Enter Barcode:<br/>
+<input type="text" size="19" value="" name="cartonid2" placeholder="manual entry..">
+<input type="submit" name="check2" value="Scan" >
+
+<input type="hidden" name="barcode" value="<?php echo $code; ?>">
+<input type="hidden" name="location" value="<?php echo $location; ?>">
+<input type="hidden" name="status" value="<?php echo $status; ?>">
+<input type="hidden" name="plantcode" value="<?php echo $plantcode; ?>">
+<input type="hidden" name="check4" value="check">
+</form>
+
+
 
 </body>
 </html>
