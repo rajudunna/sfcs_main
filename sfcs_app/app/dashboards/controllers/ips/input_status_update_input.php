@@ -20,7 +20,7 @@ $plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 ?>
 <div class='panel panel-primary'>
-	<div class='panel-heading'>Trims Status Update Form</div>
+	<div class='panel-heading'>Line Input Update Status</div>
 <script>
 function popitup(url) {
 newwindow=window.open(url,'name','scrollbars=1,menubar=1,resizable=1,location=0,toolbar=0');
@@ -83,7 +83,7 @@ if(isset($_POST["doc"]) or isset($_POST["section"]))
 	$color=$_POST['color'];
 	$plant_code=$_POST['plant_code'];
 	$username=$_POST['username'];
-
+    $job_color_status=$_GET['job_status'];
 	//echo $doc."<br>";
 }
 else
@@ -99,25 +99,36 @@ else
 	$color=$_GET['color'];
 	$plant_code=$_GET['plant_code'];
 	$username=$_GET['username'];
+	$job_color_status=$_GET['job_status'];
 }
-echo "<h2>Trims Status View Form</h2>";
     $textbox_disable="disabled=\"disabled\"";
 	// $dropdown_disable="disabled=\"disabled\"";
 
 
 echo "<h4>Style:$style / Schedule:$schedule / Input Job#: $prefix".$jobno."</h4>";
-$path=$DOCKET_SERVER_IP."/printJobSheet/";
-
+//$path=$DOCKET_SERVER_IP."/printJobSheet/";
+if($job_color_status=='blue')
+{
+	$display_job_color_status="Job is ready to issue<br/>(Blue Color)";
+}
+else if($job_color_status=='yellow')
+{
+	$display_job_color_status="Cutting not Completed<br/>(Yellow Color)";
+}
+else if($job_color_status=='lgreen')
+{
+	$display_job_color_status="Fabric not receive yet<br/>(Dark Green Color)";
+}
+else 
+{
+	$display_job_color_status="Job not ready to issue";
+}
 $seq1=-1;
-echo "<h4><u>Consumption Report</u> </h4>";
-echo "<a class='btn btn-info btn-sm' href=\"sheet_v2.php?schedule=$schedule&style=$style&input_job=$jobno\" onclick=\"return popitup_new('sheet_v2.php?schedule=$schedule&style=$style&input_job=$jobno&plant_code=$plant_code')\"><button class='equal btn btn-success'>Job Wise Trim Requirement Sheet</button></a><br><br>";
-
-
-echo "<a class='btn btn-info btn-sm' href=\"$path$jobno\" onclick=\"return popitup_new('$path$jobno')\"><button class='equal btn btn-success'>Job Sheet</button></a>";
+// echo "<a class='btn btn-info btn-sm' href=\"$path$jobno\" onclick=\"return popitup_new('$path$jobno')\"><button class='equal btn btn-success'>Job Sheet</button></a>";
 
 // echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc&plant_code=$plant_code')\"><button class='equal btn btn-success'>Job Sheet</button></a>";
 
-echo "&nbsp;&nbsp;&nbsp;&nbsp;<u><b><a href=\"../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$schedule&seq_no=$seq1\" onclick=\"return popitup('../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$schedule&seq_no=$seq1&jm_jg_header_id=$jm_jg_header_id&plant_code=$plant_code')\">Print Input Job Sheet - Job Wise</a></b></u><br>";
+echo "<u><b><a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$schedule&seq_no=$seq1\" onclick=\"return popitup('../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$schedule&seq_no=$seq1&jm_jg_header_id=$jm_jg_header_id&plant_code=$plant_code')\"><button class='equal btn btn-success'>Print Input Job Sheet - Job Wise</button></a></b></u><br>";
 
 echo "<br><br>";
 
@@ -129,11 +140,12 @@ echo "<br><br>";
 $balance_tot=0;
 echo "<table class='table'>";
 echo "<tr>";
+echo "<th>Schedule</th>";
 echo "<th>Color </th>";
 echo "<th>Cut Job</th>";
 echo "<th>Destination</th>";
 echo "<th>Size</th>";
-echo "<th>Allocated Quantity</th>";
+echo "<th>Job Quantity</th>";
 echo "</tr>";
 
 //To get cut job id
@@ -152,7 +164,8 @@ while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
 }
 $cutjobno = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
 $docket_no = $job_detail_attributes[$sewing_job_attributes['docketno']];
-$sql="SELECT sum(jm_job_bundles.quantity) as quantity,jm_job_bundles.size as size FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_pplb_id`=jm_product_logical_bundle.jm_pplb_id WHERE jm_jg_header_id='".$jm_jg_header_id."' AND schedule='".$schedule."' AND jm_job_bundles.fg_color='".$color."' AND  jm_job_bundles.plant_code='$plant_code' group by size";
+$sql="SELECT sum(jm_job_bundles.quantity) as quantity,jm_job_bundles.size as size FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_pplb_id`=jm_product_logical_bundle.jm_pplb_id WHERE jm_jg_header_id='".$jm_jg_header_id."'  AND jm_job_bundles.fg_color='".$color."' AND  jm_job_bundles.plant_code='$plant_code' group by size";
+//AND schedule='".$schedule."'
 $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($sql_result))
 {
@@ -167,6 +180,7 @@ while($row=mysqli_fetch_array($sql_result))
       $destination=$row1['destination'];
 	}
 	echo "<tr>";
+	echo "<td>".$schedule."</td>";
 	echo "<td>".$color."</td>";	
 	echo "<td>".$cutjobno."</td>";
 	echo "<td>".$destination."</td>";
@@ -175,6 +189,7 @@ while($row=mysqli_fetch_array($sql_result))
 	echo "</tr>";
 }
 echo "</table>";
+echo "<br/><div style=\"Color:red;font-size:16px;text-weight:bold;\">".$display_job_color_status."</div><br/>";
 //get trim status
 $get_trims_status="SELECT trim_status FROM $tms.job_trims WHERE task_job_id= '$task_job_id'";
 $get_trims_status_result = mysqli_query($link_new, $get_trims_status) or exit("Sql Error at get_trims_status" . mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -209,52 +224,22 @@ echo "<select name=\"status\" class=\"form-control\" $dropdown_disable>";
     {
       echo "<option value='".$value."' selected>".$value."</option>";
     }
-    else
-    {
-      echo "<option value='".$value."'>".$value."</option>";
-    }
+    // else
+    // {
+    //   echo "<option value='".$value."'>".$value."</option>";
+    // }
     //echo "sa =" .$sta."<br>";
   }
   echo "</select>";
-  $pvalue=$_POST['status'];
-	//echo "pres value=".$pvalue;
-
 echo "</td>";
 ?>
 </div>
 </div>
 <?php
-echo '<td><input type="submit" id="submit" class="btn btn-primary" name="submit" value="Submit" /></td>';
+//echo '<td><input type="submit" id="submit" class="btn btn-primary" name="submit" value="Submit" /></td>';
 echo "</tr></table>";
 ?>
 </form>
-
-<?php
-
-if(isset($_POST["submit"]))
-{
-	$up_status=$_POST["status"];
-	$doc_ref_job=$_POST["doc"];
-	$section_sec=$_POST["section"];
-	$style_code=$_POST["style"];
-	$schedule_code=$_POST["schedule"];
-	$color_code=$_POST["input_color"];
-	$task_job_id=$_POST['task_job_id'];
-	$plant_code=$_POST['plant_code'];
-	$username=$_POST['username'];
-	
-
-	$sql4="UPDATE $tms.job_trims SET trim_status='".$up_status."',updated_at='".date("Y-m-d H:i:s")."',updated_user='$username' WHERE task_job_id='$task_job_id' AND plant_code='$plant_code'";
-	mysqli_query($link, $sql4);
-			
-	// $sql123="INSERT INTO `$pps`.`temp_line_input_log` (`schedule_no`, `style`, `input_job_no`, `username`, `date_n_time`, `page_name`	) VALUES
-	// ('".$schedule_code."','".$style_code."','".$doc_ref_job."','".$username."','".date("Y-m-d H:i:s")."','Trim Issue$up_status')";
-	// mysqli_query($link, $sql123) OR die("Error=".$sql123."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
-	echo "<script type=\"text/javascript\">window.close(); </script>";	
-}
-
-?>
 </body>
 </div>
 <style>
