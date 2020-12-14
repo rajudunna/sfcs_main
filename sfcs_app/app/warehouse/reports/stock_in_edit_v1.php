@@ -6,7 +6,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 //$view_access=user_acl("SFCS_0156",$username,1,$group_id_sfcs); 
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-$plantcode="AIP"
+// $plantcode="AIP"
 ?>
 
 <?php 
