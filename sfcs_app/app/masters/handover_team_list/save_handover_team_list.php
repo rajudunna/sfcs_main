@@ -126,8 +126,8 @@ include('view_handover_team_list.php');
         var emp_id = t.value;
         var emp_id_pattern = /^[1-9][0-9]*$/;
         var found = emp_id.match(emp_id_pattern);
-        if (emp_id > 15) {
-                // emp_id =  emp_id.substr(0,15);
+        if (t.value.length > 15) {
+                //emp_id =  emp_id.substr(0,15);
                 swal("ID must be lessthan 15 Characters");
                 t.value ='';
                 return false;

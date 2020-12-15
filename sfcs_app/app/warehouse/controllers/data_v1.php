@@ -78,7 +78,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 					
 						$handle = fopen($_FILES['file']['tmp_name'],"r");
 						$flag = true;
-						$sql1 = "insert into $wms.store_in (tid,lot_no, ref1, ref2, qty_rec, date, supplier_no, remarks, log_user,plant_code,created_user,created_at,updated_user,updated_at) values ";
+						$sql1 = "insert into $wms.store_in (tid,lot_no, ref1, ref2, qty_rec, date, supplier_no, remarks, log_user,plant_code,created_user,created_at,updated_user,updated_at, ref3) values ";
 						$values = array();
 						$uuidArray = array();
 						$total_qty=0;
@@ -123,7 +123,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 
 							// $sql1 = "insert into bai_rm_pj1.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,upload_file) values ( '$lot_no','$ref1', '$item1','$item2', '$date','$remarks','$user_name','$upload_file')";
 							
-							array_push($values, "('" . $uuid . "','" . $lot_no . "','" . $ref1 . "','" . $item1 . "','" . $item2 . "','" . $date . "','" . $item3 . "','" . $remarks . "','".$username."-".$plant_name."','$plantcode','$username','".date('Y-m-d')."','$username','".date('Y-m-d')."')");
+							array_push($values, "('" . $uuid . "','" . $lot_no . "','" . $ref1 . "','" . $item1 . "','" . $item2 . "','" . $date . "','" . $item3 . "','" . $remarks . "','".$username."-".$plant_name."','$plantcode','$username','".date('Y-m-d')."','$username','".date('Y-m-d')."','0')");
 							$total_qty=$total_qty+$item2;
 							$iro_cnt++;
 

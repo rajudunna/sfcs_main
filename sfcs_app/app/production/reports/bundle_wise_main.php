@@ -24,7 +24,7 @@
 					<div class="form-inline col-sm-10">
 
 						<label><font size="2">Bundle Number: </font></label>
-						<input type="text" class="form-control integer" id="bundle" name="bundle">
+						<input type="text" class="form-control" id="bundle" name="bundle">
 						<input type="button"  class="btn btn-success" value="Submit" onclick="getbundle()"> 
 					</div>
 				</div>
