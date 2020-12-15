@@ -1,15 +1,16 @@
- <?php
+<?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R')); 
-// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
 error_reporting(0);
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 ?>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
+ <?php echo '<link href="'.getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',1,'R').'" rel="stylesheet" type="text/css" />';  ?>
+  <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R');?>"></script>
 
-<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
+<script type="text/javascript" src="../<?= getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R'); ?>" ></script>
 <script>
 
 	function verify_date(){
@@ -103,11 +104,10 @@ if(isset($_POST['submit']))
 
 	$no_of_rows = mysqli_num_rows($sql_resultx);
 	if($no_of_rows > 0){
-		echo '<div id="main_div"><form action='.getFullURL($_GET['r'],'Inspection_Report_Excel.php','R').' method ="post" name="expo" id="expo">
-		<input type="hidden" name="plantcode" id="plantcode" value="'.$plantcode.'">
-	  <input type="hidden" name="username" id="username" value="'.$username.'">
-		<input type="hidden" name="fdate" value="'.$sdate.'"><input type="hidden" name="tdate" value="'.$edate.'"><input type="hidden" name="buyerdiv" value="'.$buyer_select.'"><input type="hidden" name="batch_no" value="'.$batch_search.'">
-		<input type="submit" name="export"  class="btn btn-primary pull-right" value="Export to Excel">
+		echo '<div id="main_div">
+		<form action='.getFullURL($_GET['r'],'Inspection_Report_Excel.php','R').' method ="post" name="export" id="expo">
+		<input type="hidden" name="csv_text" id="csv_text">
+		<input type="submit" name="export"  class="btn btn-primary pull-right"  onclick="getCSVData()" value="Export to Excel">
 		</form>';
 
 		// /echo "<form name='report'>";
@@ -434,6 +434,11 @@ if(isset($_POST['submit']))
 	display_all_text: "Display all"
 	}
 	setFilterGrid("table1",table3Filters);
+	
+	function getCSVData(){
+ var csv_value=$('#table1').table2CSV({delivery:'value'});
+ $("#csv_text").val(csv_value);	
+}
 </script> 
 <style>
 	.flt {
