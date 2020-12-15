@@ -103,7 +103,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error-b".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 
-			var_dump($sql);
+			// var_dump($sql);
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				
