@@ -57,7 +57,13 @@ if($conn)
 		    $api_data = $obj->getCurlAuthRequest($api_url);
 		    $api_data = json_decode($api_data, true);
 		    $rm_color = $api_data['MIRecord'][0]['NameValue'][0]['Value'];                           
-			
+			$select_uuid="SELECT UUID() as uuid";
+			$uuid_result=mysqli_query($link_new, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($uuid_row=mysqli_fetch_array($uuid_result))
+			{
+				$uuid=$uuid_row['uuid'];
+			}
+
 			$sql_lot = "INSERT IGNORE INTO $wms.sticker_report (sticker_id,lot_no,plant_code,created_user,created_at,updated_user,updated_at) VALUES (\"".$uuid."\",\"".$lot_num."\",'$plantcode','$username','$current_date','$username','$current_date')";
 			
 			$result_lot = mysqli_query($link, $sql_lot);
