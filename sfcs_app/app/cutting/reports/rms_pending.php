@@ -217,17 +217,16 @@ if(isset($_POST['show']))
 								$pending_dockets = '';
 								$completed_dockets = '';
 								$completed = '';
-								$get_docket="SELECT jdl.jm_docket_line_id,jdl.docket_line_number,jdl.jm_docket_id FROM $pps.jm_dockets jd LEFT JOIN $pps.jm_docket_lines jdl ON jdl.jm_docket_id = jd.jm_docket_id WHERE jd.jm_cut_job_id='$jm_cut_job_id' AND jd.plant_code='$plantcode' AND jd.is_active=true order by jdl.docket_line_number";
+								$get_docket="SELECT jd.jm_docket_id,jd.docket_number FROM $pps.jm_dockets jd WHERE jd.jm_cut_job_id='$jm_cut_job_id' AND jd.plant_code='$plantcode' AND jd.is_active=true order by jd.docket_number";
 								// echo $get_docket.'<br/>';
 								$get_docket_result=mysqli_query($link, $get_docket) or exit("Sql Error--1x== get_docket".mysqli_error($GLOBALS["___mysqli_ston"]));
 								if(mysqli_num_rows($get_docket_result)>0)
 								{
 									while($get_docket_row=mysqli_fetch_array($get_docket_result))
 									{
-										$jm_docket_line_id = $get_docket_row['jm_docket_line_id'];
 										$jm_docket_id = $get_docket_row['jm_docket_id'];
-										$dockets_list[]= $component_group_name.':'.$get_docket_row['docket_line_number'];
-										$get_pending_dockets="select cut_report_status from $pps.lp_lay where jm_docket_line_id='$jm_docket_line_id' and plant_code='$plantcode' and is_active=true limit 1";
+										$dockets_list[]= $component_group_name.':'.$get_docket_row['docket_number'];
+										$get_pending_dockets="select cut_report_status from $pps.jm_actual_docket where jm_docket_id='$jm_docket_id' and plant_code='$plantcode' and is_active=true limit 1";
 										// echo $get_pending_dockets.'<br/>';
 										$get_pending_dockets_result=mysqli_query($link, $get_pending_dockets) or exit("Sql Error--1x==".$get_pending_dockets.mysqli_error($GLOBALS["___mysqli_ston"]));
 										if(mysqli_num_rows($get_pending_dockets_result) > 0)
@@ -235,16 +234,16 @@ if(isset($_POST['show']))
 											while($get_pending_docket_row=mysqli_fetch_array($get_pending_dockets_result))
 											{
 												if($get_pending_docket_row['cut_report_status']=='OPEN'){
-													$pending_dockets_list[] = $component_group_name.':'.$get_docket_row['docket_line_number'];
+													$pending_dockets_list[] = $component_group_name.':'.$get_docket_row['docket_number'];
 													$completed = 1;
 												} 
 												else if($get_pending_docket_row['cut_report_status']=='DONE'){
-													$completed_dockets_list[] =$component_group_name.':'.$get_docket_row['docket_line_number'];
+													$completed_dockets_list[] =$component_group_name.':'.$get_docket_row['docket_number'];
 													$completed = 1;
 												} 
 											}
 										}else {
-											$open_dockets_list[] =$component_group_name.':'.$get_docket_row['docket_line_number'];
+											$open_dockets_list[] =$component_group_name.':'.$get_docket_row['docket_number'];
 										}
 									}
 									

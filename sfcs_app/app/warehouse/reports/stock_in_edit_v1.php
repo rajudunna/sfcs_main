@@ -6,8 +6,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 //$view_access=user_acl("SFCS_0156",$username,1,$group_id_sfcs); 
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-$plantcode="AIP"
+// $plantcode="AIP"
 ?>
+
 
 <?php 
 //include("functions.php"); 
@@ -85,8 +86,10 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			else
 			{
 				$lot_no=$_GET['lot_no'];
+				$plantcode=$_GET['plantcode'];
 			}
-
+			// $plantcode = 'EKG';
+			// var_dump($plantcode);
 
 			?>
 
@@ -99,8 +102,11 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date from $wms.sticker_report where plant_code='$plantcode' and lot_no=\"".trim($lot_no)."\"";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error-b".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
+
+			// var_dump($sql);
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
+				
 				$product_group=$sql_row['product_group'];
 				$item=$sql_row['item'];
 				$item_name=$sql_row['item_name'];

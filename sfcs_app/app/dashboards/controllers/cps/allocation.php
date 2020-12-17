@@ -551,9 +551,9 @@ if(isset($_POST['allocate_new']))
 					$total_qty=0;	
 					if(($width_ref[$j]=='') or ($width_ref[$j]==NULL)){
 						//getting recieved qty from store_in
-						$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid=$tid_ref[$j] and plant_code='".$plant_code."'";
+						$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid='$tid_ref[$j]' and plant_code='".$plant_code."'";
 						
-						$sql_result3=mysqli_query($link, $query3) or exit("Sql Error41: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));						
+						$sql_result3=mysqli_query($link, $query3) or exit("Sql Error41: $query3".mysqli_error($GLOBALS["___mysqli_ston"]));						
 						while($sql_row3=mysqli_fetch_array($sql_result3))
 						{
 							$width_ref[$j]=$sql_row3['qty_rec'];
@@ -565,7 +565,7 @@ if(isset($_POST['allocate_new']))
 					}
 					else
 					{
-						$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid=$tid_ref[$j] and plant_code='".$plant_code."'";
+						$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid='$tid_ref[$j]' and plant_code='".$plant_code."'";
 						$sql_result3=mysqli_query($link, $query3) or exit("Sql Error42: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row3=mysqli_fetch_array($sql_result3))
 						{
@@ -589,7 +589,7 @@ if(isset($_POST['allocate_new']))
 					{						
 						$splitting_roll = binding_roll_splitting_function($tid_ref[$j],$width_ref[$j],$issued_ref[$j],$plant_code,$username);						
                     }else {
-						$sql121="update $wms.store_in set qty_issued=qty_issued+".$issued_ref[$j].",updated_user= '".$username."',updated_at=NOW() where plant_code='".$plant_code."' and  tid=".$tid_ref[$j];
+						$sql121="update $wms.store_in set qty_issued=qty_issued+".$issued_ref[$j].",updated_user= '".$username."',updated_at=NOW() where plant_code='".$plant_code."' and  tid='$tid_ref[$j]'";
 						// echo $sql121."<br>";
 						mysqli_query($link, $sql121) or exit("Sql Error344: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}    
@@ -634,9 +634,8 @@ if(isset($_POST['allocate_new']))
 									$status=0;
 								}
 							}
-							$sql121="update $wms.store_in set status=$status,allotment_status=$status,updated_user= '".$username."',updated_at=NOW() where plant_code='".$plant_code."' and tid=".$tid_ref[$j];
-							mysqli_query($link, $sql121) or exit("Sql Error355: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
-							 echo $sql121."<br>";							
+							$sql121="update $wms.store_in set status=$status,allotment_status=$status,updated_user= '".$username."',updated_at=NOW() where plant_code='".$plant_code."' and tid='$tid_ref[$j]'";
+							mysqli_query($link, $sql121) or exit("Sql Error355: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));							
                             $sql23="insert into $wms.store_out (tran_tid,qty_issued,Style,Schedule,date,updated_by,log_stamp,cutno,remarks,plant_code,created_user,updated_user,updated_at) values ('".$code."', '".$qty_iss."','".$style."','".$schedule."','".date("Y-m-d")."','".$username."','".date("Y-m-d H:i:s")."','".$row_id_new1."','Binding','".$plant_code."','".$username."','".$username."',NOW())";
 							// echo $sql23."<br>";
 							mysqli_query($link, $sql23) or exit("Sql Error----4---$sql23".mysqli_error($GLOBALS["___mysqli_ston"]));                           

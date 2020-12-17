@@ -24,7 +24,7 @@ function getJmDockets($doc_num,$plant_code){
     $remark3='';
     $remark4='';
     $created_at='';
-    $qry_jm_dockets="SELECT jdl.`fg_color`,jdl.`plies`,jd.`jm_cut_job_id`,jd.`ratio_comp_group_id`,DATE(jdl.created_at) as created_at FROM $pps.jm_dockets jd JOIN $pps.jm_docket_lines jdl ON jdl.jm_docket_id=jd.jm_docket_id WHERE jd.plant_code='$plant_code' AND jdl.docket_line_number='$doc_num'";
+    $qry_jm_dockets="SELECT jd.`fg_color`,jd.`plies`,jcdm.`jm_cut_job_id`,jd.`ratio_comp_group_id`,DATE(jd.created_at) as created_at FROM $pps.jm_dockets jd JOIN $pps.jm_cut_docket_map jcdm ON jcdm.jm_docket_id=jd.jm_docket_id WHERE jd.plant_code='$plant_code' AND jd.docket_number='$doc_num'";
     $jm_dockets_result=mysqli_query($link_new, $qry_jm_dockets) or exit("Sql Error_at_jmdockets".mysqli_error($GLOBALS["___mysqli_ston"]));
     $jm_dockets_num=mysqli_num_rows($jm_dockets_result);
     /**From this above query we can get ratio compo group id */
@@ -684,7 +684,7 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
     }
     $cut_job_id = implode("','", $cut_job_id);
      //qry to get dockets using cut_job_id
-    $qry_get_dockets="SELECT jm_docket_id From $pps.jm_dockets WHERE plant_code='$plantcode' AND jm_cut_job_id in ('$cut_job_id') AND is_active=1 order by docket_number ASC";
+    $qry_get_dockets="SELECT jm_docket_id From $pps.jm_cut_docket_map WHERE plant_code='$plantcode' AND jm_cut_job_id in ('$cut_job_id') AND is_active=1";
     $toget_dockets_result=mysqli_query($link_new, $qry_get_dockets) or exit("Sql Error at dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_dockets_num=mysqli_num_rows($toget_dockets_result);
     if($toget_dockets_num>0){
@@ -698,13 +698,13 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
 
     }
     //qry to get dockets in through dockets id
-    $qry_get_docketlines="SELECT jm_docket_line_id,docket_line_number FROM $pps.jm_docket_lines WHERE jm_docket_id IN ('$jm_dockets') AND plant_code='$plantcode' AND is_binding='$docket_type' AND is_active=1";
+    $qry_get_docketlines="SELECT jm_docket_id,docket_number FROM $pps.jm_dockets WHERE jm_docket_id IN ('$jm_dockets') AND plant_code='$plantcode' AND is_binding='$4' AND is_active=1";
     $qry_get_docketlines_result=mysqli_query($link_new, $qry_get_docketlines) or exit("Sql Error at docket lines".mysqli_error($GLOBALS["___mysqli_ston"]));
     $docketlines_num=mysqli_num_rows($qry_get_docketlines_result);
     if($docketlines_num>0){
         while($docketline_row=mysqli_fetch_array($qry_get_docketlines_result))
             {
-                $docket_lines[$docketline_row["docket_line_number"]]=$docketline_row["jm_docket_line_id"]; 
+                $docket_lines[$docketline_row["docket_number"]]=$docketline_row["jm_docket_id"]; 
             }
         }
     return array(
@@ -996,17 +996,15 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                             /**if it is emb jobs update docket*/
                             $cutJobType=TaskTypeEnum::CUTJOB;
                             $cutEmbJobType=TaskTypeEnum::EMBELLISHMENTJOB;
-                            $qryGetDokcetlines="SELECT jm_docket_line_id,jm_docket_id FROM $pps.jm_docket_lines WHERE docket_line_number='$docketNumber' AND plant_code='$plantcode' AND is_active=1";
+                            $qryGetDokcetlines="SELECT jm_docket_id FROM $pps.jm_dockets WHERE docket_number='$docketNumber' AND plant_code='$plantcode' AND is_active=1";
                             $resultDocketLineIds = mysqli_query($link_new, $qryGetDokcetlines) or exit("Sql Error at get Docket Lines" . mysqli_error($GLOBALS["___mysqli_ston"]));
                             if (mysqli_num_rows($resultDocketLineIds) > 0) {
                                 while ($docketLineIds = mysqli_fetch_array($resultDocketLineIds)) {
-
-                                    $docketLinesIds = $docketLineIds['jm_docket_line_id'];
                                     $jmDocketId = $docketLineIds['jm_docket_id'];
                                 }
 
                                 /**getting task header id from taskjobs */
-                                $qryGettaskjob="SELECT task_header_id FROM $tms.task_jobs WHERE task_job_reference='$docketLinesIds' AND plant_code='$plantcode' AND is_active=1
+                                $qryGettaskjob="SELECT task_header_id FROM $tms.task_jobs WHERE task_job_reference='$jmDocketId' AND plant_code='$plantcode' AND is_active=1
                                 ";
                                 $resulttaskjobs = mysqli_query($link_new, $qryGettaskjob) or exit("Sql Error at get task header id" . mysqli_error($GLOBALS["___mysqli_ston"]));
                                 if (mysqli_num_rows($resulttaskjobs) > 0) {
@@ -1027,7 +1025,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                                 if($tasktype == $check_type)
                                 {
                                     /**if it is  sewing jobs*/
-                                    $qryGetCutjobs = "SELECT jm_cut_job_id FROM $pps.jm_dockets WHERE plant_code='$plantcode' AND jm_docket_id='$jmDocketId' AND is_active=1";
+                                    $qryGetCutjobs = "SELECT jm_cut_job_id FROM $pps.jm_cut_docket_map WHERE plant_code='$plantcode' AND jm_docket_id='$jmDocketId' AND is_active=1";
                                     $resultGetCutJob = mysqli_query($link_new,$qryGetCutjobs) or die(exception($qryGetCutjobs));
                                     if (mysqli_num_rows($resultGetCutJob) > 0) {
                                         while($cutJobRow=mysqli_fetch_array($resultGetCutJob)) 
@@ -1434,15 +1432,14 @@ function getDocketInformation($docket_no, $plant_code) {
     
     $schedules = [];
     // get the docket info
-    $docket_info_query = "SELECT doc_line.plies, doc_line.fg_color,doc_line.docket_line_number,
+    $docket_info_query = "SELECT doc.plies, doc.fg_color,doc.docket_number,
         doc.marker_version_id, doc.ratio_comp_group_id,
-        cut.cut_number, cut.po_number,doc_line.jm_docket_line_id,
+        cut.cut_number, cut.po_number,
         ratio_cg.component_group_id as cg_id, ratio_cg.ratio_id, ratio_cg.master_po_details_id
-        FROM $pps.jm_docket_lines doc_line 
-        LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = doc_line.jm_docket_id
+        FROM $pps.jm_dockets doc
         LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
         LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
-        WHERE doc_line.plant_code = '$plant_code' AND doc_line.docket_line_number='$docket_no' AND doc_line.is_active=true";
+        WHERE doc.plant_code = '$plant_code' AND doc.docket_number='$docket_no' AND doc.is_active=true";
     $docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
  
     while($row = mysqli_fetch_array($docket_info_result))
@@ -1452,7 +1449,7 @@ function getDocketInformation($docket_no, $plant_code) {
         $comp_group =  $row['cg_name'];
         $cut_no = $row['cut_number'];
         $ratio_comp_group_id = $row['ratio_comp_group_id'];
-        $docket_line_number = $row['docket_line_number'];
+        $docket_line_number = $row['docket_number'];
         $po_number = $row['po_number'];
         $marker_version_id = $row['marker_version_id'];
         $ratio_id = $row['ratio_id'];
@@ -1734,7 +1731,7 @@ function getOpsWiseJobQtyInfo($schedule, $bundle_types) {
     {   
         $pplb = $sql_row_sql_result_sql_sql_plb['external_ref_id'];
         $pplb_barcode =  $sql_row_sql_result_sql_sql_plb['parent_barcode'];
-        $sql_bundle_type = "SELECT bundle_type, ppb.fg_color, ppb.size FROM $pps.`jm_cut_bundle_details` ppb LEFT JOIN $pps.`jm_product_logical_bundle` pplb ON pplb.`jm_ppb_id` = ppb.jm_ppb_id
+        $sql_bundle_type = "SELECT bundle_type, ppb.fg_color, ppb.size FROM $pps.`jm_product_bundle` ppb LEFT JOIN $pps.`jm_product_logical_bundle` pplb ON pplb.`jm_ppb_id` = ppb.jm_ppb_id
         WHERE pplb.jm_pplb_id = '$pplb'";
         $sql_result_sql_bundle_type=mysqli_query($link_new,$sql_bundle_type) or exit("Sql Error5".mysqli_error());
         while($sql_row_bundle_type = mysqli_fetch_array($sql_result_sql_bundle_type))

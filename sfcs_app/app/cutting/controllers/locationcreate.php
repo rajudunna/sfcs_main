@@ -85,33 +85,51 @@ $username=$_SESSION['userName'];
 			}else{
 				if (strlen(trim($locName)) > 0) 
 				{
-					$InsertQuery = 'INSERT INTO '.$pms.'.`locations` (`loc_name`, `capacity`,plant_code,created_user,created_at,updated_user,updated_at) VALUES ( "'.$locName.'" , '.$cap.',"'.$plantcode.'","'.$username.'","'.date('Y-m-d').'","'.$username.'","'.date('Y-m-d').'") ON DUPLICATE KEY UPDATE loc_name = VALUES(loc_name), capacity = VALUES(capacity);';
+					/**getting location existed or not */
+					$qrySelect="SELECT loc_name FROM $pms.locations WHERE loc_name='$locName' AND plant_code='$plantcode'";
+					$countResult=mysqli_query($link, $qrySelect) or exit("Sql Error at qrySelect".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$rows=mysqli_num_rows($countResult);
+					if($rows > 0)
+						{
+							?>
+								<div class="alert alert-danger 	fa fa-thumbs-down">
+									<strong>Location Name Already exists</strong> 
+								</div>
+								<script type="text/javascript">
+									setTimeout(function () {
+										window.location.href="<?= $self ?>";
+									},1000);
+								</script>
+							<?php
+						}else{
+							$InsertQuery = 'INSERT INTO '.$pms.'.`locations` (`loc_name`, `capacity`,plant_code,created_user,created_at,updated_user,updated_at) VALUES ( "'.$locName.'" , '.$cap.',"'.$plantcode.'","'.$username.'","'.date('Y-m-d').'","'.$username.'","'.date('Y-m-d').'") ON DUPLICATE KEY UPDATE loc_name = VALUES(loc_name), capacity = VALUES(capacity);';
 
-					$InsertReply = mysqli_query( $link, $InsertQuery);
-					if ($InsertReply) 
-					{?>
-						<div class="alert alert-success fa fa-thumbs-up">
-							<strong>Success!</strong><br>Sucessfully Created the Location!
-						</div>
-						<script type="text/javascript">
-							setTimeout(function () {
-								window.location.href="<?= $self ?>";
-							},1000);
-						</script>
-					<?php	
-					}
-					else
-					{	?>
-						<div class="alert alert-danger 	fa fa-thumbs-down">
-							<strong>Failed</strong> to Create the Location!
-						</div>
-						<script type="text/javascript">
-							setTimeout(function () {
-								window.location.href="<?= $self ?>";
-							},1000);
-						</script>
-					<?php 
-					}
+							$InsertReply = mysqli_query( $link, $InsertQuery);
+							if ($InsertReply) 
+							{?>
+								<div class="alert alert-success fa fa-thumbs-up">
+									<strong>Success!</strong><br>Sucessfully Created the Location!
+								</div>
+								<script type="text/javascript">
+									setTimeout(function () {
+										window.location.href="<?= $self ?>";
+									},1000);
+								</script>
+							<?php	
+							}
+							else
+							{	?>
+								<div class="alert alert-danger 	fa fa-thumbs-down">
+									<strong>Failed</strong> to Create the Location!
+								</div>
+								<script type="text/javascript">
+									setTimeout(function () {
+										window.location.href="<?= $self ?>";
+									},1000);
+								</script>
+							<?php 
+							}
+						}
 				}
 				else
 				{
@@ -164,15 +182,15 @@ $username=$_SESSION['userName'];
 				<div class="form-group col-md-2">
 					<label>Location Name: </label>
 				</div>
-				<div class="form-group col-md-2">
-					<input type="text" name="loc_name" class="form-control k-textbox" data-role="text" <?php echo $flag; ?> title="Enter Location Name" required="required" value="<?php echo $loc_name; ?>" required>
+				<div class="form-group col-md-3">
+					<input type="text" name="loc_name" class="form-control k-textbox" data-role="text"  <?php echo $flag; ?> title="Enter Location Name" value="<?php echo $loc_name; ?>"  required <font color='red'></font>
 				</div>
 				<br><br>
 				<div class="form-group col-md-2">
 					<label>Capacity: </label>
 				</div>
-				<div class="form-group col-md-2">
-					<input type="number" min="0" name="capacity" class="form-control" title="Enter Capacity" required="required" value="<?php echo $capacity; ?>" required> 
+				<div class="form-group col-md-3">
+					<input type="number" min="0" name="capacity" class="form-control" title="Enter Capacity" value="<?php echo $capacity; ?>" required <font color='red'></font> 
 				</div>
 				<br><br>
 				<div class="col-md-12">

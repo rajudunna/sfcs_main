@@ -175,7 +175,7 @@ function check_val()
                                                $opcodes=implode(',',$operation_codes);
                                              
                                                 //echo "</br>SQL Operation : ".$sql_operation."</br>";       
-                                                $get_color1="SELECT fg_color FROM `$pps`.`jm_product_logical_bundle` WHERE feature_value='$schedule' and plant_code='$plant_code'";
+                                                $get_color1="SELECT fg_color FROM `$pps`.`jm_product_logical_bundle` WHERE schedule='$schedule' and plant_code='$plant_code'";
                                                 $get_color_result1=mysqli_query($link,$get_color1) or exit($get_color_result."Error at something");
                                                     if( mysqli_num_rows( $get_color_result1 )==0)
                                                     {
@@ -218,14 +218,14 @@ function check_val()
                                              ?>
                                          <?php  
 
-                                         $get_color="SELECT fg_color FROM `$pps`.`jm_product_logical_bundle` WHERE feature_value='$schedule' and plant_code='$plant_code'";
+                                         $get_color="SELECT fg_color FROM `$pps`.`jm_product_logical_bundle` WHERE schedule='$schedule' and plant_code='$plant_code'";
                                          $get_color_result=mysqli_query($link,$get_color) or exit($get_color_result."Error at something");
                                          while($row_21 = mysqli_fetch_assoc( $get_color_result)){
 
                                         $color =  $row_21['fg_color'];
                                          }
                                                 // $openbundle_sql="SELECT jm_pplb_id FROM `$pps`.`jm_job_bundles` WHERE fg_color='".$color."' AND  plant_code='$plant_code' ";
-                                                    $openbundle_sql="SELECT jm_pplb_id FROM `$pps`.`jm_product_logical_bundle` WHERE feature_value='$schedule' and fg_color='".$color."' AND  plant_code='$plant_code' ";
+                                                    $openbundle_sql="SELECT jm_pplb_id FROM `$pps`.`jm_product_logical_bundle` WHERE schedule='$schedule' and fg_color='".$color."' AND  plant_code='$plant_code' ";
                                                     //  echo $openbundle_sql;
                                                     $select_bundlenum=mysqli_query($link,$openbundle_sql) or exit($openbundle_sql."Error at something");
                                                     $operation_bundles=array();$bundle_qty_stats_bundles = array();
@@ -282,7 +282,7 @@ function check_val()
                                                 while($row_23 = mysqli_fetch_assoc( $bundle_sql_result)){
                                                     $barcode[]=$row_23['barcode'];
                                                 }
-                                             
+                                                
                                                 $operation_bundles=implode(',',$barcode);
 												if(sizeof($operation_bundles)>0)
                                                 {
@@ -291,7 +291,7 @@ function check_val()
 
                                                         // $query="SELECT SUM(IF(operation=$sew_in_op,1,0)) AS sew_in,SUM(IF(operation=$sew_out_op,1,0)) AS sew_out from $pts."
                                                        
-                                                        $selectSQL = "SELECT parent_job,parent_barcode,size,color,sum(rejected_quantity) as rejected_quantity,sum(good_quantity) as good_quantity,sum(if(operation=".$sew_in_op.",good_quantity+rejected_quantity,0)) as total_good_quantity,sum(if(operation=".$sew_out_op.",good_quantity+rejected_quantity,0)) as total_quantity,operation,schedule FROM `$pts`.`transaction_log` WHERE style='".$style."' AND schedule='".$schedule."'  AND parent_barcode IN ($operation_bundles) and parent_barcode_type='PPLB' and operation in($opcodes)  group by parent_barcode,operation order by operation";
+                                                        $selectSQL = "SELECT parent_job,parent_barcode,size,color,sum(rejected_quantity) as rejected_quantity,sum(good_quantity) as good_quantity,sum(if(operation=".$sew_in_op.",good_quantity+rejected_quantity,0)) as total_good_quantity,sum(if(operation=".$sew_out_op.",good_quantity+rejected_quantity,0)) as total_quantity,operation,schedule FROM `$pts`.`transaction_log` WHERE style='".$style."' AND schedule='".$schedule."'  AND parent_barcode IN ('".$operation_bundles."') and parent_barcode_type='PPLB' and operation in($opcodes)  group by parent_barcode,operation order by operation";
                                                         //   echo   $selectSQL ;
                                                            
                                                         $selectRes=mysqli_query($link,$selectSQL) or exit($selectSQL."Error at something");

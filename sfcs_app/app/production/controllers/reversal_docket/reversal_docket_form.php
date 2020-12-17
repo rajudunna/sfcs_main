@@ -16,23 +16,23 @@
         $components = [];
         $size_ratios = [];
         $unsorted_size_ratios = [];
-        $lay_info_query = "SELECT lay.plies AS lay_plies, lay.shift, lay.lp_lay_id, dl.plies AS docket_plies, cut_report_status, dl.jm_docket_line_id, dl.jm_docket_id 
-                FROM $pps.jm_docket_lines dl 
-                LEFT JOIN $pps.lp_lay lay ON lay.jm_docket_line_id = dl.jm_docket_line_id 
-                WHERE docket_line_number = $docket_number ORDER BY lay.created_at";
+        $lay_info_query = "SELECT jad.plies AS lay_plies, jad.shift, jad.jm_ad_id, dl.plies AS docket_plies, cut_report_status, dl.jm_docket_id 
+                FROM $pps.jm_dockets dl 
+                LEFT JOIN $pps.jm_actual_docket jad ON jad.jm_docket_id = dl.jm_docket_id 
+                WHERE docket_number = $docket_number ORDER BY jad.created_at";
         $layInfo = mysqli_query($link,$lay_info_query);
         if($layInfo->num_rows == 0)
         {
             echo "<script>sweetAlert('In-valid docket number given Or Lay not yet reported for this docket','warning');</script>";
         } else {
-            $doc_id_query = "SELECT jm_docket_id FROM $pps.jm_docket_lines where docket_line_number = $docket_number ";
+            $doc_id_query = "SELECT jm_docket_id FROM $pps.jm_dockets where docket_number = $docket_number ";
             $doc_id_result = mysqli_query($link, $doc_id_query);
             while($row = mysqli_fetch_array($doc_id_result)){
                 $docket_id = $row['jm_docket_id'];
             }
             // get the sizes involved in the docket
             $doc_info_query = "SELECT fg_color, doc.plies, ratio_comp_group_id, ratio_id FROM $pps.jm_dockets doc
-            LEFT JOIN  $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
+            LEFT JOIN  $pps.lp_ratio_component_group lrcg ON lrcg.component_group_id = doc.ratio_comp_group_id
             WHERE doc.jm_docket_id = '$docket_id' ";
             $doc_info_result = mysqli_query($link, $doc_info_query);
             while ($row1 = mysqli_fetch_array($doc_info_result)) {   
@@ -261,7 +261,7 @@ if(isset($_POST['formSubmit']))
                         $s_no = 1;
                         while($row = mysqli_fetch_array($layInfo)){
                             $docket_id = $row['jm_docket_id'];
-                            $lay_id = '"'.$row['lp_lay_id'].'"';
+                            $lay_id = '"'.$row['jm_ad_id'].'"';
                             $plies = $row['lay_plies'];
                             echo "<tr><td>$docket_number</td>";
                             echo "<td>$s_no</td>";
@@ -312,10 +312,10 @@ if(isset($_POST['reversesubmit']))
        $updateQry = "UPDATE $pps.lp_roll set plies = plies - $reversalPlies where lp_roll_id = $value";
        mysqli_query($link, $updateQry) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
    }
-   $updateLayQty = "UPDATE $pps.lp_lay set plies = plies - $lay_plies where lp_lay_id = '$lay_id'";
+   $updateLayQty = "UPDATE $pps.jm_actual_docket set plies = plies - $lay_plies where jm_ad_id = '$lay_id'";
    mysqli_query($link, $updateLayQty) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-   $updateDocketQty = "UPDATE $pps.jm_docket_lines set lay_status = 'OPEN' where jm_docket_line_id = '$docket_number'";
+   $updateDocketQty = "UPDATE $pps.jm_dockets set lay_status = 'OPEN' where jm_docket_id = '$docket_number'";
    mysqli_query($link, $updateDocketQty) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
    $url = '?r='.$_GET['r'].'&sidemenu=false';
    echo "<script> sweetAlert('Lay Reversed Successfully!!!','','success'); setTimeout(window.location = '$url', 2000); </script>"; 

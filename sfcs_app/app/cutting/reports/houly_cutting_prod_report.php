@@ -79,13 +79,13 @@ if(isset($_POST['submit']))
 				echo "<tr><td>".$workstation_description."</td>";
 				for ($val=$hour_start; $val <= $hour_end; $val++)
 				{
-					$qryLayAttributes="SELECT GROUP_CONCAT(DISTINCT(CONCAT('''', lp.jm_docket_line_id, '''' ))) AS docketLines,SUM(IF(lpa.attribute_name = 'FABRICRECEIVED', lpa.attribute_value,0)) AS fab,
+					$qryLayAttributes="SELECT GROUP_CONCAT(DISTINCT(CONCAT('''', jca.jm_docket_id, '''' ))) AS docketLines,SUM(IF(lpa.attribute_name = 'FABRICRECEIVED', lpa.attribute_value,0)) AS fab,
 					SUM(IF(attribute_name = 'DAMAGES', attribute_value,0)) AS damages,
 					SUM(IF(attribute_name = 'SHORTAGES', attribute_value,0)) AS shortages 
-					FROM $pps.lp_lay lp 
-					LEFT JOIN $pps.lp_lay_attribute lpa ON lp.lp_lay_id=lpa.lp_lay_id 
-					WHERE lp.workstation_id='$workstation_id' AND lp.is_active=1 AND 
-					DATE(lpa.created_at)='$from_date' AND TIME(lpa.created_at) BETWEEN TIME('".($val-1).":00:00') AND TIME('".$val.":00:00')";
+					FROM $pps.jm_actual_docket jca 
+					LEFT JOIN $pps.lp_lay_attribute lpa ON jca.jm_ad_id=lpa.jm_ad_id 
+					WHERE jca.workstation_id='$workstation_id' AND jca.is_active=1 AND 
+					DATE(jca.created_at)='$from_date' AND TIME(jca.created_at) BETWEEN TIME('".($val-1).":00:00') AND TIME('".$val.":00:00')";
 					$LayAttributesResult=mysqli_query($link_new, $qryLayAttributes) or exit("Error getting attributes".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$attributessNum=mysqli_num_rows($LayAttributesResult);
 					if($attributessNum>0){			
@@ -102,11 +102,10 @@ if(isset($_POST['submit']))
 									/**
 									 * getting dockets count and plies sum and ratio is
 									*/
-									$qrydockeInfo = "SELECT count(doc_line.docket_line_number) as doc_count, sum(doc_line.plies) as tot_plies,GROUP_CONCAT(DISTINCT(CONCAT('''',ratio_cg.ratio_id, '''' ))) AS ratio_id
-									FROM $pps.jm_docket_lines doc_line 
-									LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = doc_line.jm_docket_id
+									$qrydockeInfo = "SELECT count(doc.docket_number) as doc_count, sum(doc.plies) as tot_plies,GROUP_CONCAT(DISTINCT(CONCAT('''',ratio_cg.ratio_id, '''' ))) AS ratio_id
+									FROM $pps.jm_dockets doc
 									LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
-									WHERE doc_line.plant_code = '$plant_code' AND doc_line.jm_docket_line_id IN ($docketLines) AND doc_line.is_active=1";
+									WHERE doc.plant_code = '$plant_code' AND doc.jm_docket_id IN ($docketLines) AND doc.is_active=1";
 									$qrydockeInfoResult=mysqli_query($link_new, $qrydockeInfo) or exit("Error getting docket info".mysqli_error($GLOBALS["___mysqli_ston"]));
 									$dockeInfoNum=mysqli_num_rows($qrydockeInfoResult);
 									if($dockeInfoNum>0){			

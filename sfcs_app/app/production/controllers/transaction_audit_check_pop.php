@@ -76,15 +76,15 @@ if(isset($_POST['submit']))
 	echo "<table id=\"table10\" border=1 class='table table-bordered'>";
 	echo "<tr><th>Docket ID</th><th width=\"150\">What</th><th>Who</th><th>When</th></tr>";
 	// getting docket line ids for a schedule
-	$sql_docket = "SELECT DISTINCT dl.jm_docket_line_id, dl.`docket_line_number` FROM $pps.`jm_docket_lines` dl
-	LEFT JOIN $pps.`jm_docket_bundle` db ON db.`jm_docket_line_id` = dl.`jm_docket_line_id`
-	LEFT JOIN $pps.`jm_docket_logical_bundle` dlb ON dlb.`jm_docket_bundle_id` = db.`jm_docket_bundle_id`
-	LEFT JOIN $pps.`jm_product_logical_bundle` plb ON plb.`jm_pplb_id` = dlb.`jm_pplb_id`
-	WHERE plb.`feature_value` = '$schedule'";
+	$sql_docket = "SELECT DISTINCT dl.jm_docket_id, dl.`docket_number` FROM $pps.`jm_dockets` dl
+	LEFT JOIN $pps.`jm_docket_cg_bundle` db ON db.`jm_docket_id` = dl.`jm_docket_id`
+	LEFT JOIN $pps.`jm_docket_component_panel` dcp ON dcp.`jm_dcgb_id` = db.`jm_dcgb_id`
+	LEFT JOIN $pps.`jm_product_logical_bundle` plb ON plb.`jm_pplb_id` = dcp.`jm_pplb_id`
+	WHERE plb.`schedule` = '$schedule'";
 	$sql_result_sql_docket=mysqli_query($link,$sql_docket) or exit("Sql Error15".mysqli_error());
 	while($sql_row_docket=mysqli_fetch_array($sql_result_sql_docket))
 	{
-		$task_job_ref = $sql_row_docket['jm_docket_line_id'];
+		$task_job_ref = $sql_row_docket['jm_docket_id'];
 		$sql="SELECT th.resource_id, th.created_user, th.created_at FROM $tms.`task_jobs` tj LEFT JOIN $tms.`task_header` th ON th.`task_header_id` = tj.`task_header_id`
 		WHERE th.`resource_id` IS NOT NULL AND `task_job_reference` = '$task_job_ref'";
 		mysqli_query($link,$sql) or exit("Sql Error14".mysqli_error());
@@ -101,7 +101,7 @@ if(isset($_POST['submit']))
 					$workstationCode = $workstaton_type_row['workstation_code'];
 				}	
 				echo "<tr>";
-				echo "<td>".$sql_row_docket['docket_line_number']."</td>";
+				echo "<td>".$sql_row_docket['docket_number']."</td>";
 				echo "<td>".$workstationCode."</td>";
 				echo "<td>".$sql_row_work['created_user']."</td>";
 				echo "<td>".$sql_row_work['created_at']."</td>";

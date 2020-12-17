@@ -334,12 +334,12 @@ if(isset($_POST['submit']))
 							$jm_docket_id[]=$row2['jm_docket_id'];
 						}
 						$doc_qty=0;
-						$get_dockets="SELECT docket_line_number FROM $pps.`jm_docket_lines` WHERE plant_code='$plantcode' AND jm_docket_id IN ('".implode("','" , $jm_docket_id)."') group by docket_line_number";
+						$get_dockets="SELECT docket_number FROM $pps.`jm_dockets` WHERE plant_code='$plantcode' AND jm_docket_id IN ('".implode("','" , $jm_docket_id)."') group by docket_number";
 						$sql_result3 = mysqli_query($link,$get_dockets) or exit('Error get_dockets');
 						while($row3 = mysqli_fetch_array($sql_result3))
 						{
-							$docket=$row3['docket_line_number'];
-							$dockets[]=$row3['docket_line_number'];
+							$docket=$row3['docket_number'];
+							$dockets[]=$row3['docket_number'];
 							//To get docket qty
 							$result_doc_qty=getDocketInformation($docket,$plantcode);
 							$doc_qty =$result_doc_qty['docket_quantity'];

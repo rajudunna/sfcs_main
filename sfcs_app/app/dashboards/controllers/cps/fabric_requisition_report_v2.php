@@ -158,11 +158,11 @@ $username=$_POST["username"];
 if($cat!=''){
 	if($cat==1)
 	{
-		$sql2="select req_time,section_id,work_station_id,jm_docket_line_id,issued_time,created_user,log_time from $pps.fabric_prorities where req_time between '$sdate $stime:00' and '$edate $etime:00'  and issued_time is null or issued_time='0000-00-00 00:00:00' and plant_code='$plant_code' order by req_time";
+		$sql2="select req_time,section_id,work_station_id,jm_docket_id,issued_time,created_user,log_time from $pps.fabric_prorities where req_time between '$sdate $stime:00' and '$edate $etime:00'  and issued_time is null or issued_time='0000-00-00 00:00:00' and plant_code='$plant_code' order by req_time";
 	}
 	if($cat==2)
 	{
-		$sql2="select req_time,section_id,work_station_id,jm_docket_line_id,issued_time,created_user,log_time from $pps.fabric_prorities where issued_time between '$sdate 06:00:00' and '$edate 23:00:00'  and issued_time is not null and issued_time!='0000-00-00 00:00:00'  and plant_code='$plant_code'  order by issued_time";
+		$sql2="select req_time,section_id,work_station_id,jm_docket_id,issued_time,created_user,log_time from $pps.fabric_prorities where issued_time between '$sdate 06:00:00' and '$edate 23:00:00'  and issued_time is not null and issued_time!='0000-00-00 00:00:00'  and plant_code='$plant_code'  order by issued_time";
 	}
 	   
 	echo "<hr/>";
@@ -177,18 +177,18 @@ if($cat!=''){
 			$log_split=explode(" ",$log);
 			$section_id=$row2["section_id"];
 			$workstation_id=$row2["work_station_id"];
-			$jm_docket_line_id=$row2["jm_docket_line_id"];
+			$jm_docket_id=$row2["jm_docket_id"];
 			$sql111="select section_name from $pms.sections where section_id='$section_id' and plant_code='$plant_code'";
 			$sql_result111=mysqli_query($link,$sql111) or die("Error1 = ".mysqli_error());
 			while($row111=mysqli_fetch_array($sql_result111))
 			{
 				$section=$row111["section_name"];
 			}
-			$docket_query="select docket_line_number from $pps.jm_docket_lines where plant_code='$plant_code' AND jm_docket_line_id='$jm_docket_line_id'";
+			$docket_query="select docket_number from $pps.jm_dockets where plant_code='$plant_code' AND jm_docket_id='$jm_docket_id'";
 			$docket_query_result=mysqli_query($link,$docket_query) or die("Error1 = ".mysqli_error());
 			while($row1112=mysqli_fetch_array($docket_query_result))
 			{
-				$docket_number=$row1112["docket_line_number"];
+				$docket_number=$row1112["docket_number"];
 			}
 			$sql1111="select workstation_code from $pms.workstation where workstation_id='$workstation_id' and plant_code='$plant_code'";
 			$sql_result1111=mysqli_query($link,$sql1111) or die("Error1 = ".mysqli_error());
@@ -234,7 +234,7 @@ if($cat!=''){
 				$length =$result_docketinfo['length'];
 				$shrinkage =$result_docketinfo['shrinkage'];
 			$width =$result_docketinfo['width'];
-			$docket_number =$result_docketinfo['docket_line_number'];
+			$docket_number =$result_docketinfo['docket_number'];
 			$po_number =$result_docketinfo['sub_po'];
 			
 				

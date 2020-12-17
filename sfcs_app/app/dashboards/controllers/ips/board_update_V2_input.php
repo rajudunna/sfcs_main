@@ -353,7 +353,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 		$display_prefix1= $jobno;
 		$doc_no_ref_explode=explode(",",$doc_no_ref);
 		$num_docs=sizeof($doc_no_ref_explode);
-		$sqlDocketLineIds="SELECT GROUP_CONCAT(CONCAT('''', jm_docket_line_id, '''' )) AS docket_line_ids FROM $pps.`jm_docket_lines` WHERE docket_line_number IN ($doc_no_ref)";
+		$sqlDocketLineIds="SELECT GROUP_CONCAT(CONCAT('''', jm_docket_id, '''' )) AS docket_line_ids FROM $pps.`jm_dockets` WHERE docket_number IN ($doc_no_ref)";
 		// echo $sqlDocketLineIds.'<br/>';
 		$sql_resultsqlDocketLineIds=mysqli_query($link, $sqlDocketLineIds) or exit("Sql Error1000".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($docket_row123=mysqli_fetch_array($sql_resultsqlDocketLineIds))
@@ -361,7 +361,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 			$docket_line_ids=$docket_row123['docket_line_ids'];
 		}
 		if($doc_no_ref){
-			$sql1x1="select * from $pps.jm_docket_lines where lay_status<>'DONE' and docket_line_number in ($doc_no_ref)";
+			$sql1x1="select * from $pps.docket_number where lay_status<>'DONE' and docket_number in ($doc_no_ref)";
 			$sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error81".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result1x1)>0)
 			{
@@ -375,7 +375,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 		$fabric_req= '0';
 		if($docket_line_ids){
 			// fabric request logic
-			$sql1x115="SELECT *  FROM  `$pps`.`fabric_prorities` WHERE `jm_docket_line_id` IN ($docket_line_ids)";
+			$sql1x115="SELECT *  FROM  `$pps`.`fabric_prorities` WHERE `jm_docket_id` IN ($docket_line_ids)";
 			// echo $sql1x115;
 			$sql_result1x115=mysqli_query($link, $sql1x115) or exit("Sql Error82".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// echo mysqli_num_rows($sql_result1x115);
@@ -396,7 +396,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 			}
 			// fabric status logic
 			$fabric_status="";
-			$sql1x12="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_line_id` IN ($docket_line_ids) and fabric_status='1'";
+			$sql1x12="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_id` IN ($docket_line_ids) and fabric_status='1'";
 			$sql_result1x12=mysqli_query($link, $sql1x12) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result1x12)>0)
 			{
@@ -405,7 +405,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 					$fabric_status="1";
 				}
 			}
-			$sql1x11="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_line_id` IN ($docket_line_ids) and fabric_status = '5'";
+			$sql1x11="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_id` IN ($docket_line_ids) and fabric_status = '5'";
 			$sql_result1x11=mysqli_query($link, $sql1x11) or exit("Sql Error83".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result1x11)>0)
 			{

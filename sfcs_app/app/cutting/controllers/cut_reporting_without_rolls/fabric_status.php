@@ -4,12 +4,12 @@ $doc_no = $_GET['doc_no'];
 
 $plantcode=$_SESSION['plantCode'];
 //Check whether fabric requested or not
-$get_docket_id="SELECT jm_docket_line_id FROM $pps.jm_docket_lines WHERE docket_line_number='".$doc_no."' and plant_code='$plantcode'";
+$get_docket_id="SELECT jm_docket_id FROM $pps.jm_dockets WHERE docket_number='".$doc_no."' and plant_code='$plantcode'";
 $get_docket_id_result = mysqli_query($link,$get_docket_id); 
 while($id_row = mysqli_fetch_array($get_docket_id_result)){
-   $jm_docket_line_id = $id_row['jm_docket_line_id'];
+   $jm_docket_id = $id_row['jm_docket_id'];
 
-   $check_fabric_status="SELECT fabric_status FROM $pps.requested_dockets WHERE plant_code='$plantcode' and jm_docket_line_id='$jm_docket_line_id'";
+   $check_fabric_status="SELECT fabric_status FROM $pps.requested_dockets WHERE plant_code='$plantcode' and jm_docket_id='$jm_docket_id'";
    $check_fabric_status_result = mysqli_query($link,$check_fabric_status);
    $sql_num=mysqli_num_rows($check_fabric_status_result);
    if($sql_num > 0)

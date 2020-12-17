@@ -6,7 +6,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/me
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/header_scripts.php',1,'R')); 
 $table_csv = '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
 $excel_form_action = '../'.getFullURLLevel($_GET['r'],'common/php/export_excel.php',1,'R');
-$plantcode=$_SESSION['plantCode'];
+// $plantcode=$_SESSION['plantCode'];
+$plantcode='Q01';
 $username=$_SESSION['userName'];
 // $plantcode='AIP';
 
@@ -307,20 +308,17 @@ if(isset($_POST['submit']))
 $reptype = $_POST['reptype'];
 if(isset($_POST['submit']) && $reptype == 1)
 {
-	$sql = "SELECT lpl.lp_lay_id,lpl.workstation_id,lpl.shift,DATE(lpl.created_at) AS date1,lrfc.fabric_category,
-	jdl.docket_line_number,jcj.cut_number,sum(jdlb.quantity) as quantity,jdl.plies,lpl.po_number,lrfc.fabric_category
-	FROM $pps.`lp_lay` lpl 
-	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = lpl.po_number
+	$sql = "SELECT jad.jm_ad_id,jad.workstation_id,jad.shift,DATE(jad.created_at) AS date1,lrfc.fabric_category,
+	jd.docket_number,jcj.cut_number,sum(jdb.quantity) as quantity,jd.plies,jad.po_number,lrfc.fabric_category
+	FROM $pps.`jm_actual_docket` jad 
+	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = jad.po_number
 	LEFT JOIN $pps.`lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
-	LEFT JOIN $pps.`jm_docket_lines` jdl ON jdl.jm_docket_line_id = lpl.jm_docket_line_id
-	LEFT JOIN $pps.`jm_docket_bundle` jdb ON jdb.jm_docket_line_id = jdl.jm_docket_line_id
-	LEFT JOIN $pps.`jm_docket_logical_bundle` jdlb ON jdlb.jm_docket_bundle_id = jdb.jm_docket_bundle_id
-	LEFT JOIN $pps.`jm_cut_bundle` jcb ON jcb.jm_cut_bundle_id = jdb.jm_docket_bundle_id
-	LEFT JOIN $pps.`jm_cut_bundle_details` jcbd ON jcbd.jm_cut_bundle_id = jcb.jm_cut_bundle_id
-	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdl.jm_docket_id
-	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = jd.jm_cut_job_id 
-	WHERE DATE(lpl.created_at) between \"$from_date\" and  \"$to_date\" and lpl.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND lpl.shift in ($shift)
-	GROUP BY lpl.lp_lay_id,jdl.docket_line_number";
+	LEFT JOIN $pps.`jm_docket_cg_bundle` jdb ON jdb.jm_docket_id = jd.jm_docket_id
+	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdb.jm_docket_id
+	LEFT JOIN $pps.jm_cut_docket_map dm ON dm. jm_docket_id=jd. jm_docket_id
+	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = dm. jm_cut_job_id 
+	WHERE DATE(jad.created_at) between \"$from_date\" and  \"$to_date\" and jad.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND jad.shift in ($shift)
+	GROUP BY jad.jm_ad_id,jdl.docket_number";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error dd".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	// echo $sql;
@@ -368,7 +366,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			
-			$doc_no=$sql_row['docket_line_number'];
+			$doc_no=$sql_row['docket_number'];
 			$date=$sql_row['date1'];
 			$act_shift=$sql_row['shift'];
 			$po_number=$sql_row['po_number'];
@@ -383,7 +381,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$cut_number=$sql_row['cut_number'];
 			$act_total = $sql_row['quantity'];
 			$plies = $sql_row['plies'];
-			$lay_id = $sql_row['lp_lay_id'];
+			$lay_id = $sql_row['jm_ad_id'];
 			$ratio_comp_group_id = $sql_row['ratio_comp_group_id'];
 			// echo $po_number;
 			$getdetails = getStyleColorSchedule($po_number,$plantcode);
@@ -420,7 +418,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$act_con = 0;
 			$net_con = 0;
 			$fabricattributes=array();
-			$qrt_get_attributes1="SELECT * FROM $pps.lp_lay_attribute WHERE lp_lay_id= '$lay_id' and plant_code='$plantcode'";
+			$qrt_get_attributes1="SELECT * FROM $pps.lp_lay_attribute WHERE jm_ad_id= '$lay_id' and plant_code='$plantcode'";
 			$sql_result7=mysqli_query($link, $qrt_get_attributes1) or die("Error".$qrt_get_attributes1.mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row7=mysqli_fetch_array($sql_result7))
 			{
@@ -537,19 +535,16 @@ $reptype == $_POST['reptype'];
 if(isset($_POST['submit']) && $reptype==2)
 { 
 
-$sql = "SELECT GROUP_CONCAT(distinct(lpl.lp_lay_id)) as lp_lay_id,GROUP_CONCAT(distinct(jcj.cut_number)) as cut_number,sum(jcb.quantity) AS pcs,sum(jdlb.quantity) as quantity,sum(jdl.plies) as plies,GROUP_CONCAT(distinct(lpl.po_number)) as po_number,GROUP_CONCAT(distinct(jd.ratio_comp_group_id)) as ratio_comp_group_id,lpl.workstation_id,GROUP_CONCAT(distinct(lpl.shift)) as shift 
-	FROM $pps.`lp_lay` lpl 
-	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = lpl.po_number
+$sql = "SELECT GROUP_CONCAT(distinct(jad.jm_ad_id)) as jm_ad_id,GROUP_CONCAT(distinct(jcj.cut_number)) as cut_number,sum(jdb.quantity) as quantity,sum(jdl.plies) as plies,GROUP_CONCAT(distinct(jad.po_number)) as po_number,GROUP_CONCAT(distinct(jd.ratio_comp_group_id)) as ratio_comp_group_id,jad.workstation_id,GROUP_CONCAT(distinct(jad.shift)) as shift 
+	FROM $pps.`jm_actual_docket` jad 
+	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = jad.po_number
 	LEFT JOIN $pps.`lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
-	LEFT JOIN $pps.`jm_docket_lines` jdl ON jdl.jm_docket_line_id = lpl.jm_docket_line_id
-	LEFT JOIN $pps.`jm_docket_bundle` jdb ON jdb.jm_docket_line_id = jdl.jm_docket_line_id
-	LEFT JOIN $pps.`jm_docket_logical_bundle` jdlb ON jdlb.jm_docket_bundle_id = jdb.jm_docket_bundle_id
-	LEFT JOIN $pps.`jm_cut_bundle` jcb ON jcb.jm_cut_bundle_id = jdb.jm_docket_bundle_id
-	LEFT JOIN $pps.`jm_cut_bundle_details` jcbd ON jcbd.jm_cut_bundle_id = jcb.jm_cut_bundle_id
-	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdl.jm_docket_id
-	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = jd.jm_cut_job_id 
-	WHERE DATE(lpl.created_at) between \"$from_date\" and  \"$to_date\" and lpl.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND lpl.shift in ($shift)
-	GROUP BY lpl.workstation_id";
+	LEFT JOIN $pps.`jm_docket_cg_bundle` jdb ON jdb.jm_docket_id = jd.jm_docket_id
+	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdb.jm_docket_id
+	LEFT JOIN $pps.jm_cut_docket_map dm ON dm. jm_docket_id=jd. jm_docket_id
+	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = dm. jm_cut_job_id  
+	WHERE DATE(jad.created_at) between \"$from_date\" and  \"$to_date\" and jad.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND jad.shift in ($shift)
+	GROUP BY jad.workstation_id";
 	// echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
@@ -580,7 +575,7 @@ $sql = "SELECT GROUP_CONCAT(distinct(lpl.lp_lay_id)) as lp_lay_id,GROUP_CONCAT(d
 				// $act_total = $sql_row['quantity'];
 				$plies = $sql_row['plies'];
 				$act_total = $sql_row['quantity'];
-				$lay_ids = $sql_row['lp_lay_id'];
+				$lay_ids = $sql_row['jm_ad_id'];
 				$workstation_id = $sql_row['workstation_id'];
 				$ratio_comp_group_id = $sql_row['ratio_comp_group_id'];
 				
@@ -659,7 +654,7 @@ $sql = "SELECT GROUP_CONCAT(distinct(lpl.lp_lay_id)) as lp_lay_id,GROUP_CONCAT(d
 				$lay_ids_arr=explode(",",$lay_ids);
 				foreach($lay_ids_arr as $lay_id){
 					$fabricattributes=array();
-					$qrt_get_attributes1="SELECT * FROM $pps.lp_lay_attribute WHERE lp_lay_id = '$lay_id' and plant_code='$plantcode'";
+					$qrt_get_attributes1="SELECT * FROM $pps.lp_lay_attribute WHERE jm_ad_id = '$lay_id' and plant_code='$plantcode'";
 					$sql_result7=mysqli_query($link, $qrt_get_attributes1) or die("Error".$qrt_get_attributes1.mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row7=mysqli_fetch_array($sql_result7))
 					{

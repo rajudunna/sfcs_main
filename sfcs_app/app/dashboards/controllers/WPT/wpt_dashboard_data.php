@@ -256,11 +256,11 @@ if($section){
                 $docketLineIds = [];
                 if(sizeof($uniqueDockets) > 0) {
                     // get dockets which are main component group
-                    $jmDocketLineIdsQuery = "select doclines.jm_docket_line_id from $pps.jm_docket_lines as doclines left join $pps.jm_dockets as docs on doclines.jm_docket_id = docs.jm_docket_id left join $pps.lp_ratio_component_group as ratiocompgroups on docs.ratio_comp_group_id = ratiocompgroups.lp_ratio_cg_id left join $pps.lp_component_group as cg on ratiocompgroups.component_group_id = cg.lp_cg_id where doclines.docket_line_number IN ('".implode("','" , $uniqueDockets)."') and doclines.plant_code='".$plantCode."' and cg.is_main_component_group = 1";
+                    $jmDocketLineIdsQuery = "select docs.jm_docket_id from $pps.jm_dockets as docs left join $pps.lp_ratio_component_group as ratiocompgroups on docs.ratio_comp_group_id = ratiocompgroups.lp_ratio_cg_id left join $pps.lp_component_group as cg on ratiocompgroups.component_group_id = cg.lp_cg_id where docs.docket_number IN ('".implode("','" , $uniqueDockets)."') and docs.plant_code='".$plantCode."' and cg.is_main_component_group = 1";
                     $docketLineIdsResult = mysqli_query($link_new,$jmDocketLineIdsQuery) or exit('Problem in getting docket ids');
                     if(mysqli_num_rows($docketLineIdsResult)>0){
                         while($row = mysqli_fetch_array($docketLineIdsResult)){
-                            array_push($docketLineIds, $row['jm_docket_line_id']); 
+                            array_push($docketLineIds, $row['jm_docket_id']); 
                         }
                     }
                 }
@@ -272,7 +272,7 @@ if($section){
                         $docketPlies = 0;
                         $sizeRatioSum = 0;
                         // Get sum of size ratio for the docket
-                        $getRatioQuery = "select jcj.ratio_id from $pps.jm_cut_job as jcj left join $pps.jm_dockets as jd on jcj.jm_cut_job_id = jd.jm_cut_job_id left join $pps.jm_docket_lines as jdl on jd.jm_docket_id = jdl.jm_docket_id where jdl.jm_docket_line_id='".$docketId."' and jdl.plant_code='".$plantCode."'";
+                        $getRatioQuery = "select jcj.ratio_id from $pps.jm_cut_job as jcj left join $pps.jm_cut_docket_map as dm on jcj.jm_cut_job_id = jd.jm_cut_job_id left join $pps.jm_dockets as jd on dm.jm_docket_id = jd.jm_docket_id where jd.jm_docket_id='".$docketId."' and jd.plant_code='".$plantCode."'";
                         $ratioResult = mysqli_query($link_new,$getRatioQuery) or exit('Problem in getting ratio for  docket');
                         $row = mysqli_fetch_assoc($ratioResult);
                         ($row['ratio_id'])? $ratioId= $row['ratio_id']: $ratioId = '';
@@ -288,13 +288,13 @@ if($section){
                         
 
                         // Get actual reported plies for the docket
-                        $cutReportedQuery = "select sum(plies) as plies from $pps.lp_lay where jm_docket_line_id = '".$docketId."' and plant_code='".$plantCode."'";
+                        $cutReportedQuery = "select sum(plies) as plies from $pps.jm_actual_docket where jm_docket_id = '".$docketId."' and plant_code='".$plantCode."'";
                         $cutReportedResult = mysqli_query($link_new,$cutReportedQuery) or exit('Problem in getting reported docket data');
                         $row = mysqli_fetch_assoc($cutReportedResult);
                         ($row['plies']) ? $reportedPlies = $row['plies'] * $sizeRatioSum: $reportedPlies = 0;
                        
                         // Get original plies for the docket
-                        $docketLineQuery = "select plies from $pps.jm_docket_lines where jm_docket_line_id = '".$docketId."' and plant_code='".$plantCode."'";
+                        $docketLineQuery = "select plies from $pps.jm_dockets where jm_docket_id = '".$docketId."' and plant_code='".$plantCode."'";
                         $docketResult = mysqli_query($link_new,$docketLineQuery) or exit('Problem in getting docket data');                        
                         $row = mysqli_fetch_assoc($docketResult);
                         ($row['plies']) ? $docketPlies = $row['plies'] * $sizeRatioSum: $docketPlies = 0;
@@ -311,7 +311,7 @@ if($section){
                                     $status_color = 'orange';
                                     $remaingPlies = $docketPlies - $reportedPlies;
                                 }else {                         
-                                    $fabric_status_query="SELECT fabric_status from $pps.requested_dockets where  plant_code='".$plantCode."' and jm_docket_line_id = '".$docketId."'";
+                                    $fabric_status_query="SELECT fabric_status from $pps.requested_dockets where  plant_code='".$plantCode."' and jm_docket_id = '".$docketId."'";
                                     $fabric_status_result=mysqli_query($link_new, $fabric_status_query) or exit('fabric status error');
                                     $row = mysqli_fetch_assoc($fabric_status_result);
                                     if($row['fabric_status']){

@@ -763,19 +763,19 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 					//echo "</br>Dokcet".$docketno;
 
 					/**getting docket line id's */
-					$jm_docket_line_id=array();
-					$qrydocketLinesIDs="SELECT jm_docket_line_id FROM $pps.jm_docket_lines WHERE docket_line_number IN ($docketno) AND plant_code='$plant_code' AND is_active=1";
+					$jm_docket_id=array();
+					$qrydocketLinesIDs="SELECT jm_docket_id FROM $pps.jm_dockets WHERE docket_number IN ($docketno) AND plant_code='$plant_code' AND is_active=1";
 					$toget_qty_qry_result=mysqli_query($link_new, $qrydocketLinesIDs) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$getRows=mysqli_num_rows($toget_qty_qry_result);
 					if($getRows>0){
 						while($docketRow=mysqli_fetch_array($toget_qty_qry_result))
 						{
-						   $jm_docket_line_id[] = $docketRow['jm_docket_line_id'];
+						   $jm_docket_id[] = $docketRow['jm_docket_id'];
 						}
 					}
-					//echo implode("','" , $jm_docket_line_id);
+					//echo implode("','" , $jm_docket_id);
 					/**getting fabric req or not */
-					$get_fab_req_details="SELECT fabric_prorities_id FROM $pps.fabric_prorities WHERE plant_code='$plant_code' AND jm_docket_line_id IN ('".implode("','" , $jm_docket_line_id)."') AND is_active=1";
+					$get_fab_req_details="SELECT fabric_prorities_id FROM $pps.fabric_prorities WHERE plant_code='$plant_code' AND jm_docket_id IN ('".implode("','" , $jm_docket_id)."') AND is_active=1";
 					//echo $get_fab_req_details;
 					$get_fab_req_result=mysqli_query($link_new, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$resulted_rows = mysqli_num_rows($get_fab_req_result);
@@ -860,7 +860,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 						echo '<li id="'.$jm_sew_id.'" data-color="'.$id.'" style="background-color:'.$bgColor.';  color:'.$colorCode.';'.$borderColor.'" title="'.$title.'"><strong>'.$sew_num.'</strong></li>'; 
 					}
 					unset($job_detail_attributes); 
-					unset($jm_docket_line_id); 
+					unset($jm_docket_id); 
 		        }
 		        echo "</ul>";
 		       echo "</div>";

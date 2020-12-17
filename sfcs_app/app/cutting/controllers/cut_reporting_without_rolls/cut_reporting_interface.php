@@ -46,10 +46,10 @@ echo '<input type="hidden" name="good_report" id="good_report" value="'.$good_re
 echo '<input type="hidden" name="reject_report" id="reject_report" value="'.$reject_report.'">';
 if(isset($_GET['doc_no'])){
     $docket_line_id=$_GET['doc_no'];
-    $get_docket_number="SELECT docket_line_number FROM $pps.jm_docket_lines WHERE jm_docket_line_id='$docket_line_id'";
+    $get_docket_number="SELECT docket_number FROM $pps.jm_dockets WHERE jm_docket_id='$docket_line_id'";
     $sql_result121=mysqli_query($link, $get_docket_number) or exit("Sql Error get_docket_number".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row_doc = mysqli_fetch_array($sql_result121)){
-        $doc_no = $row_doc['docket_line_number'];
+        $doc_no = $row_doc['docket_number'];
     }
     // $cut_table = $_GET['module'];
     $cut_table = $_GET['module'];
@@ -97,7 +97,22 @@ $rejection_reason_result = mysqli_query($link,$rejection_reason_query);
 while($row = mysqli_fetch_array($rejection_reason_result)){
     $rejection_reasons[$row['reason_code'].'-'.$row['m3_reason_code']] = $row['reason_desc'];
 }
+//Check whether fabric requested or not
+$get_docket_id="SELECT jm_docket_id FROM $pps.jm_dockets WHERE docket_number='".$doc_no."' and plant_code='$plantcode'";
+$get_docket_id_result = mysqli_query($link,$get_docket_id); 
+while($id_row = mysqli_fetch_array($get_docket_id_result)){
+   $jm_docket_id = $id_row['jm_docket_id'];
 
+   $check_fabric_status="SELECT fabric_status FROM $pps.requested_dockets WHERE jm_docket_id=' $jm_docket_id' and plant_code='$plantcode'";
+   $check_fabric_status_result = mysqli_query($link,$check_fabric_status);
+   $sql_num=mysqli_num_rows($check_fabric_status_result);
+   if($sql_num > 0)
+   {
+    while($row_fabric = mysqli_fetch_array($check_fabric_status_result)){
+       $fabric_status=$row_fabric['fabric_status'];
+    }
+   } 
+}
 ?>
 <script src="../../../../common/js/jquery_new.min.js"></script>
 <!-- Cut Reporting Code -->
@@ -337,16 +352,15 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 <input type='hidden' value='' id='post_color'>
                 <input type='hidden' value='' id='fab_required'>
                 <input type='hidden' value='' id='mk_length'>
-                <input type='hidden' value='' id='binding_consum'>
-                <input type='hidden' value='' id='seperat_dock'>
+                <!-- <input type='hidden' value='' id='binding_consum'>
+                <input type='hidden' value='' id='seperat_dock'> -->
 
 
                 <div class='col-sm-12'>
                     <span><b>MARK THIS AS FULLY REPORTED CUT ? &nbsp;&nbsp;</b> 
                     <input type='checkbox' value='1' id='full_reported' onchange='reportingFull(this)'> Yes</span>
-              
-                    <!-- <span class='pull-right showifcontain'><b>ENABLE ROLE WISE CUT REPORTING ? &nbsp;&nbsp;</b> 
-                    <input type='checkbox' value='1' id='cut_report' onchange='enablecutreport(this)'> Yes</span> -->
+                    <span class='pull-right showifcontain'><b>ENABLE ROLE WISE CUT REPORTING ? &nbsp;&nbsp;</b> 
+                    <input type='checkbox' value='1' id='cut_report' onchange='enablecutreport(this)'> Yes</span>
 				
                 </div>
 
@@ -544,6 +558,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 doc_no = $('#doc_no').val();
                 var form_data = {
                         doc_no:doc_no,
+                        plantcode:'<?php echo $plantcode ?>',
                     };    
 
       
@@ -693,31 +708,31 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             enable_report = 0;
            //$("#cut_report"). prop("checked", false);     
     }
-    function checklaysequence(){
+    // function checklaysequence(){
        
-        var laysequnces=[];
-        var alreadygiven;
-        var table = $("#enablerolls");
-       // var i=0;
-        table.find('tr').each(function (i) {
+    //     var laysequnces=[];
+    //     var alreadygiven;
+    //     var table = $("#enablerolls");
+    //    // var i=0;
+    //     table.find('tr').each(function (i) {
        
-        var $tds = $(this).find('td'),
-            laysequence = $tds.find('#'+i+'laysequece').val();
+    //     var $tds = $(this).find('td'),
+    //         laysequence = $tds.find('#'+i+'laysequece').val();
         
-            if(!(laysequence=="")){
-                laysequnces.push(laysequence);
-            }
+    //         if(!(laysequence=="")){
+    //             laysequnces.push(laysequence);
+    //         }
         
-        });
-        var laysequncesArray = laysequnces.filter(function(elem, index, self) {
-          alreadygiven = (index === self.indexOf(elem)); 
-        if(!alreadygiven){
+    //     });
+    //     var laysequncesArray = laysequnces.filter(function(elem, index, self) {
+    //       alreadygiven = (index === self.indexOf(elem)); 
+    //     if(!alreadygiven){
           
-            swal('Lay Sequence','Check Lay Sequence'+elem+' already given','warning');
-        }
-        });
-        return alreadygiven;
-    }
+    //         swal('Lay Sequence','Check Lay Sequence'+elem+' already given','warning');
+    //     }
+    //     });
+    //     return alreadygiven;
+    // }
   
 //    $('table tbody').on('click','.btn',function(){
 //        $(this).closest('tr').remove();
@@ -938,15 +953,15 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             var joints = Number($('#joints').val());
             var endbits = Number($('#endbits').val());
             var tot_mlength = Number($('#mk_length').val());
-            var binding_consum = Number($('#binding_consum').val());
-            var seperat_dock = $('#seperat_dock').val();
+            //var binding_consum = Number($('#binding_consum').val());
+            //var seperat_dock = $('#seperat_dock').val();
             var ratio = $('#ratio').val();
-            if(seperat_dock!='Yes'){ 
-                var binding_consum_qty=Number(c_plies*binding_consum*ratio);
-            }else{
-                var binding_consum_qty=0;
-            }  
-                var shortag_qty = parseFloat(Number(fab_received) -(Number(c_plies*tot_mlength)+Number(damages)+Number(joints)+Number(endbits)+Number(fab_returned)+binding_consum_qty)).toFixed(2);
+            // if(seperat_dock!='Yes'){ 
+            //     var binding_consum_qty=Number(c_plies*binding_consum*ratio);
+            // }else{
+            //     var binding_consum_qty=0;
+            // }  
+                var shortag_qty = parseFloat(Number(fab_received) -(Number(c_plies*tot_mlength)+Number(damages)+Number(joints)+Number(endbits)+Number(fab_returned))).toFixed(2);
                 $('#shortages').val(Number(shortag_qty).toFixed(2));
             
                        
@@ -1060,6 +1075,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             var fabricreturnqty=0;
             var totalfabricreturnqty=0;
             var data = [];
+            var rolls = [];
+            var rollsObject = new Object();
             var check=0;
             var i=0;
             console.log(table+'table');
@@ -1157,16 +1174,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                data;
             }
 
-            // layseqnce=checklaysequence();
-            //     if(layseqnce)
-            //     {
-            //     }
-            //     else{
-            //         swal('LaySequence Problem','Please Check','error');
-            //     }
-        
-              
-
         c_plies = Number($('#c_plies').val());
         var ret_to     = Number($('#fab_returned').val());
         var rec     = Number($('#fab_received').val());
@@ -1227,20 +1234,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 return false;
             }
         }
-        //Screen Validations End
-        
-        //Rejections Validation
-        // if(ret > 0){
-        //     if(total_rejected_pieces > c_plies * ratio)
-        //         return swal('You are Returning More than Reporting Pieces','Please Remove some rejections','warning');
-        //     else if(total_rejected_pieces < ret)
-        //         return  swal('Please Fill the Rejections Completely','','warning');
-        //     else
-        //         rejections_flag = 1;
-        // }else{
-        //     if(total_rejected_pieces > ret)
-        //         return swal('You are Returning more than Specified','','error');
-        // }
+
         if(ret > 0){
             if(total_rejected_pieces > c_plies * ratio)
                 return swal('You are Returning More than Reporting Pieces','Please Remove some rejections','warning');
@@ -1271,7 +1265,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             return false;
         
         if(total_rejected_pieces > 0)
-            rejections_flag = 1;
+            //rejections_flag = 1;
         var form_data = {
                         doc_no:post_doc_no,createdUser:user,c_plies:c_plies,fab_returned:ret_to,
                         fab_received:rec,returned_to:returned_to,damages:damages,
@@ -1301,8 +1295,9 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
        
         reportData.reportedPlies = parseInt($('#c_plies').val());
         console.log(typeof reportData.reportedPlies);
-        reportData.rollsInfo = [];
+        //reportData.rollsInfo = [];
         var fabricAttributes = new Array();
+        var rollsInfo = new Array();
 
         var fabricReceivedObject = new Object();
         fabricReceivedObject.attributeName='FABRICRECEIVED';
@@ -1334,7 +1329,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         shortagesObject.attributeValue=$('#shortages').val();
         fabricAttributes.push(shortagesObject);
         reportData.fabricAttributes = fabricAttributes;
-        console.log(reportData);
+        reportData.rollsInfo = rolls;
         $('#wait_loader').css({'display':'block'});
 
 
@@ -1770,6 +1765,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     
     
     function loadDetails(doc_no){
+        var getData;
         const data={
                       "docketNumber": doc_no
                   }

@@ -374,12 +374,12 @@ if(isset($_POST['submit']))
 	$lay_id=array();
 	$tot_cutable_qty=0;
 	//Actual Consumption
-	$Qry_get_cut_details="SELECT docket_line_number,lp_lay_id FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_docket_lines` ON jm_docket_lines.`jm_docket_line_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_docket_lines.plant_code='$plant_code'";
+	$Qry_get_cut_details="SELECT docket_number,jm_ad_id FROM $pps.`jm_actual_docket` LEFT JOIN $pps.`jm_dockets` ON jm_dockets.`jm_docket_id` = jm_actual_docket.jm_docket_id WHERE po_number='$sub_po' AND jm_dockets.plant_code='$plant_code'";
 	$sql_result5=mysqli_query($link, $Qry_get_cut_details) or die("Error".$Qry_get_cut_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row5=mysqli_fetch_array($sql_result5))
 	{
-		$docket_no=$row5['docket_line_number'];
-		$lay_id[]=$row5['lp_lay_id'];
+		$docket_no=$row5['docket_number'];
+		$lay_id[]=$row5['jm_ad_id'];
 		
 		$result_docket_qty=getDocketInformation($docket_no,$plant_code);
 		$get_docket_qty=$result_docket_qty['docket_quantity'];
@@ -401,7 +401,7 @@ if(isset($_POST['submit']))
 	// $damages=  $fabric_attributes[$fabric_lay_attributes['damages']];
 	// $endbits=  $fabric_attributes[$fabric_lay_attributes['endbits']];
 	// $joints=  $fabric_attributes[$fabric_lay_attributes['joints']];
-	$qrt_get_attributes="SELECT SUM(IF(attribute_name='FABRICRECEIVED', attribute_VALUE, 0)) AS FABRICRECEIVED,SUM(IF(attribute_name='FABRICRETURNED', attribute_VALUE, 0)) AS FABRICRETURNED,SUM(IF(attribute_name='SHORTAGES', attribute_VALUE, 0)) AS SHORTAGES,SUM(IF(attribute_name='DAMAGES', attribute_VALUE, 0)) AS DAMAGES,SUM(IF(attribute_name='END-BITS', attribute_VALUE, 0)) AS ENDBITS,SUM(IF(attribute_name='JOINTS', attribute_VALUE, 0)) AS JOINTS FROM $pps.lp_lay_attribute WHERE lp_lay_id in ('".implode("','" , $lay_id)."') and plant_code='$plant_code'";
+	$qrt_get_attributes="SELECT SUM(IF(attribute_name='FABRICRECEIVED', attribute_VALUE, 0)) AS FABRICRECEIVED,SUM(IF(attribute_name='FABRICRETURNED', attribute_VALUE, 0)) AS FABRICRETURNED,SUM(IF(attribute_name='SHORTAGES', attribute_VALUE, 0)) AS SHORTAGES,SUM(IF(attribute_name='DAMAGES', attribute_VALUE, 0)) AS DAMAGES,SUM(IF(attribute_name='END-BITS', attribute_VALUE, 0)) AS ENDBITS,SUM(IF(attribute_name='JOINTS', attribute_VALUE, 0)) AS JOINTS FROM $pps.lp_lay_attribute WHERE jm_ad_id in ('".implode("','" , $lay_id)."') and plant_code='$plant_code'";
 	$sql_result6 = mysqli_query($link_new, $qrt_get_attributes) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
 	while ($row2 = mysqli_fetch_array($sql_result6)) {
 		$fabric_recevied = $row2['FABRICRECEIVED'];
@@ -558,13 +558,13 @@ if(isset($_POST['submit']))
 	<th>Pct</th>
 	</tr>";
 	$tot_qty=0;
-	$Qry_get_cut_details="SELECT docket_line_number,lp_lay_id,lay_status FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_docket_lines` ON jm_docket_lines.`jm_docket_line_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_docket_lines.plant_code='$plant_code'";
+	$Qry_get_cut_details="SELECT docket_number,jm_ad_id,cut_report_status FROM $pps.`jm_actual_docket` LEFT JOIN $pps.`jm_dockets` ON jm_dockets.`jm_docket_id` = jm_actual_docket.jm_docket_id WHERE po_number='$sub_po' AND jm_dockets.plant_code='$plant_code'";
 	$sql_result6=mysqli_query($link, $Qry_get_cut_details) or die("Error".$Qry_get_cut_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row6=mysqli_fetch_array($sql_result6))
 	{
-		$docket_no=$row6['docket_line_number'];
-		$lay_id=$row6['lp_lay_id'];
-		$cut_status=$row6['lay_status'];
+		$docket_no=$row6['docket_number'];
+		$lay_id=$row6['jm_ad_id'];
+		$cut_status=$row6['cut_report_status'];
 
 			//To get docket_details
 			$result_docket_qty=getDocketInformation($docket_no,$plant_code);
@@ -575,7 +575,7 @@ if(isset($_POST['submit']))
 
 			//To get fabric attributes
 			$fabricattributes=array();
-			$qrt_get_attributes1="SELECT * FROM $pps.lp_lay_attribute WHERE lp_lay_id= '$lay_id' and plant_code='$plant_code'";
+			$qrt_get_attributes1="SELECT * FROM $pps.lp_lay_attribute WHERE jm_ad_id= '$lay_id' and plant_code='$plant_code'";
 			$sql_result7=mysqli_query($link, $qrt_get_attributes1) or die("Error".$qrt_get_attributes1.mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row7=mysqli_fetch_array($sql_result7))
 			{

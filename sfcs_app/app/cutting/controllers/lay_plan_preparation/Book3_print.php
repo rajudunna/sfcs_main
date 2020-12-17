@@ -7,11 +7,11 @@ $doc_num=$_GET['doc_id'];
 $print_status=$_GET['print_status'];
 $plant_code = $_GET['plant_code'];
 $username = $_GET['username'];
-$sql22="select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number='$doc_num' and plant_code='$plant_code'";
+$sql22="select jm_docket_id from $pps.jm_dockets where docket_number='$doc_num' and plant_code='$plant_code'";
 	    $jm_cut_job_result1=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row12=mysqli_fetch_array($jm_cut_job_result1))
 		{
-			$doc_id= $sql_row12['jm_docket_line_id'];
+			$doc_id= $sql_row12['jm_docket_id'];
 
 		}
 
@@ -2087,11 +2087,11 @@ function printpr()
   
   <?php
 
- $sql1="select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number=$doc_num and plant_code='$plant_code'";
+ $sql1="select jm_docket_id from $pps.jm_dockets where docket_number=$doc_num and plant_code='$plant_code'";
  $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error at inspection123".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($sql_row1=mysqli_fetch_array($sql_result1))
  {
-	 $doc_num=$sql_row1["jm_docket_line_id"];
+	 $doc_num=$sql_row1["jm_docket_id"];
  }
 //function to get docket 
 $doc=4;
@@ -2613,7 +2613,7 @@ $tot_bind_len=0;
 // {
 	if($print_status=="0" || $print_status == "")
     {
-		$sql="update $pps.requested_dockets set print_status=\"".date("Y-m-d")."\" where jm_docket_line_id='$doc_num'";
+		$sql="update $pps.requested_dockets set print_status=\"".date("Y-m-d")."\" where jm_docket_id='$doc_num'";
  	    // echo $sql;
 	    mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	

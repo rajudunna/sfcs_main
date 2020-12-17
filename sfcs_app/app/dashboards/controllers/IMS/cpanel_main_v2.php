@@ -472,6 +472,14 @@ $.ajax
           <div class="line_main"  style="background:<?= $module_col_lab['color']; ?>">
                 <h5 align="center" style="margin-bottom: 0px;margin-top: 0px;" ><b><?= $workstations['workstationLabel']; ?></b></h5>
                 <!-- module number DIV start -->  
+                <?php
+                $popup_url=getFullURL($_GET['r'],'mod_rep.php','R');
+                $authToken=$_SESSION['authToken'];
+                $modsec=$workstations['workstationCode'];
+                '<form id="' . $modsec . '" method="post" action="' . $popup_url . '" target="TheWindow">
+                <input type="hidden" name="authToken" value="' . $authToken . '" />
+                </form>';
+                ?>
               <div class="line_no">
                 <a href="#" data-toggle="tooltip" tile="M-<?php echo $workstations['workstationCode']; ?> WIP :  
                 <?php echo $wip; ?>" class="red-tooltip" onclick="window.open('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?= $workstations['workstationId'] ?>&plantCode=<?= $plantCode?>&username=<?= $username?>', 'myPop1');">

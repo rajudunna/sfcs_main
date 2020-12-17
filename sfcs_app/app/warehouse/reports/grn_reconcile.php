@@ -56,6 +56,7 @@ table{
 	width:100%;
 }
 
+
 </style>
 
    <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
@@ -90,7 +91,7 @@ echo '<div class="table-responsive"><table class="table table-bordered" id="tabl
 	{
 		echo "<tbody><tr>";
 
-		echo "<td><a href='".getFullURL($_GET['r'],'stock_in_edit_v1.php','N')."&lot_no=".trim($sql_row1['lot_no'])."'><button class='btn btn-info btn-xs'>".trim($sql_row1['lot_no'])."</button></a></td>";
+		echo "<td><a href='".getFullURL($_GET['r'],'stock_in_edit_v1.php','N')."&lot_no=".trim($sql_row1['lot_no'])."&plantcode=".trim($plantcode)."'><button class='btn btn-info btn-xs'>".trim($sql_row1['lot_no'])."</button></a></td>";
 		echo "<td>".$sql_row1['supplier']."</td>";
 		echo "<td>".$sql_row1['batch_no']."</td>";
 		echo "<td>".$sql_row1['item']."</td>";

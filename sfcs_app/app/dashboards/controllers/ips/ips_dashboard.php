@@ -142,7 +142,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
             {
                 $doc_no_ref_explode=explode(",",$doc_no_ref);
                 $num_docs=sizeof($doc_no_ref_explode);
-                $sqlDocketLineIds="SELECT GROUP_CONCAT(CONCAT('''', jm_docket_line_id, '''' ))AS docket_line_ids FROM $pps.`jm_docket_lines` WHERE docket_line_number IN ($doc_no_ref)";
+                $sqlDocketLineIds="SELECT GROUP_CONCAT(CONCAT('''', jm_docket_id, '''' ))AS docket_line_ids FROM $pps.`jm_dockets` WHERE docket_number IN ($doc_no_ref)";
                 $sql_resultsqlDocketLineIds=mysqli_query($link, $sqlDocketLineIds) or exit("Sql Error1000".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($docket_row123=mysqli_fetch_array($sql_resultsqlDocketLineIds))
                 {
@@ -150,7 +150,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                 }
                 if($docket_line_ids)
                 {
-                    $sql1x1="select * from $pps.jm_docket_lines where lay_status<>'DONE' and docket_line_number in ($doc_no_ref)";
+                    $sql1x1="select * from $pps.jm_dockets where lay_status<>'DONE' and docket_number in ($doc_no_ref)";
                     $sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error81".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($sql_result1x1)>0)
                     {
@@ -161,7 +161,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                         $cut_status="5";
                     }
                     // fabric request logic
-                    $sql1x115="SELECT *  FROM  `$pps`.`fabric_prorities` WHERE `jm_docket_line_id` IN ($docket_line_ids)";
+                    $sql1x115="SELECT *  FROM  `$pps`.`fabric_prorities` WHERE `jm_docket_id` IN ($docket_line_ids)";
                     $sql_result1x115=mysqli_query($link, $sql1x115) or exit("Sql Error82".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($sql_result1x115)>0)
                     {
@@ -180,7 +180,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                     }
                     // fabric status logic
                     $fabric_status="";
-                    $sql1x12="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_line_id` IN ($docket_line_ids) and fabric_status='1'";
+                    $sql1x12="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_id` IN ($docket_line_ids) and fabric_status='1'";
                     $sql_result1x12=mysqli_query($link, $sql1x12) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($sql_result1x12)>0)
                     {
@@ -189,7 +189,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                             $fabric_status="1";
                         // }
                     }
-                    $sql1x11="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_line_id` IN ($docket_line_ids) and fabric_status = '5'";
+                    $sql1x11="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_id` IN ($docket_line_ids) and fabric_status = '5'";
                     $sql_result1x11=mysqli_query($link, $sql1x11) or exit("Sql Error83".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($sql_result1x11)>0)
                     {
@@ -310,7 +310,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                             {
                                 $ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
                                     <div id=\"SJ$input_job_no\" style=\"float:left;\">
-                                        <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
+                                        <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
                                         </div>
                                     </div>
                                 </div>";
@@ -331,7 +331,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                             {
                                 $ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
                                     <div id=\"SJ$input_job_no\" style=\"float:left;\">
-                                        <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
+                                        <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
                                         </div>
                                     </div>
                                 </div>";
@@ -341,7 +341,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                     else
                     {
                         
-                        $ips_data.="<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a></div></div></div>";
+                        $ips_data.="<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a></div></div></div>";
                     }
                     $y++;   
                 } 

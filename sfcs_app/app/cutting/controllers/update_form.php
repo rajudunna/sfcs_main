@@ -746,8 +746,8 @@ $(document).ready(function(){
 				$qty_allocated=array();
 				$total_qty=array();
 				if($issued_qty[$j]<=$val_ref[$j]){
-					$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid=$tid_ref[$j] and plant_code='".$plant_code."'";
-					$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid='$tid_ref[$j]' and plant_code='".$plant_code."'";
+					$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $query3".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row3=mysqli_fetch_array($sql_result3))
 					{
 						$width_ref[$j]=$sql_row3['qty_rec'];

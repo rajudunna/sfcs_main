@@ -63,7 +63,7 @@
                 <label class="control-label control-label-left col-sm-3"  for="complaint_reason">Employee Ids:</label>
                 <div class="controls col-sm-9">
                     
-                <input id="emp_id" type="text" class="form-control k-textbox alpha" maxlength="15" onkeyup="return validateEmpIdNum(this)" data-role="text" required="required" <?= $jj ?>  name="emp_id" value="<?php echo $emp_id; ?>"  data-parsley-errors-container="#errId1" />
+                <input id="emp_id" type="text" class="form-control k-textbox alpha" maxlength="16" onkeyup="return validateEmpIdNum(this)" data-role="text" required="required" <?= $jj ?>  name="emp_id" value="<?php echo $emp_id; ?>"  data-parsley-errors-container="#errId1" />
                     <span id="errId1" class="error"></span></div>
                 
         </div></div>
@@ -71,7 +71,7 @@
 			    <label class="control-label control-label-left col-sm-3" for="complaint_clasification" >Employee Name:</label>
 			    <div class="controls col-sm-9">
                     
-                <input id="emp_call_name" type="text" class="form-control k-textbox alpha" maxlength="20" onkeyup="return validateEmpNameLength(this)" data-role="text" required="required" name="emp_call_name" value="<?php echo $emp_call_name; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
+                <input id="emp_call_name" type="text" class="form-control k-textbox alpha" maxlength="21" onkeyup="return validateEmpNameLength(this)" data-role="text" required="required" name="emp_call_name" value="<?php echo $emp_call_name; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
                 
 		</div></div>
         
@@ -126,6 +126,13 @@ include('view_handover_team_list.php');
         var emp_id = t.value;
         var emp_id_pattern = /^[1-9][0-9]*$/;
         var found = emp_id.match(emp_id_pattern);
+        if (t.value.length > 15) {
+                //emp_id =  emp_id.substr(0,15);
+                swal("ID must be lessthan 15 Characters");
+                t.value ='';
+                return false;
+               
+            }
         if(found) {
         return true;
         } else {
@@ -136,9 +143,10 @@ include('view_handover_team_list.php');
     }
     function validateEmpNameLength(t){
     if (t.value) {
-            if (t.value.length > 39) {
-                t.value =  t.value.substr(0,39);
-                swal("Name must be lessthan 40 Characters");
+            if (t.value.length > 20) {
+                t.value =  t.value.substr(0,20);
+                swal("Name must be lessthan 20 Characters");
+                t.value ='';
                 return false;
             }
         }

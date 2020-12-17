@@ -56,7 +56,7 @@
                         <div class="form-group">
                             <label class="control-label control-label-left col-sm-5"  for="complaint_reason">Complaint Reason:</label>
                             <div class="controls col-sm-7">        
-                                <input id="complaint_reason" type="text" class="form-control" data-role="text" maxlength="50" required="required"  name="complaint_reason" value="<?php echo $complaint_reason; ?>"  data-parsley-errors-container="#errId1">
+                                <input id="complaint_reason" type="text" onkeyup="return validateLength(this)" class="form-control" data-role="text" maxlength="50" required="required"  name="complaint_reason" value="<?php echo $complaint_reason; ?>"  data-parsley-errors-container="#errId1">
                                 <span id="errId1" class="error"></span>
                             </div>
                         </div>
@@ -65,7 +65,7 @@
                         <div class="form-group">
                             <label class="control-label control-label-left col-sm-5" for="complaint_clasification" >Complaint Classification:</label>
                             <div class="controls col-sm-7">
-                                <input id="complaint_clasification" type="text" class="form-control k-textbox" maxlength="50" data-role="text" required="required" name="complaint_clasification" value="<?php echo $complaint_clasification; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
+                                <input id="complaint_clasification" type="text" onkeyup="return validateLength(this)" class="form-control k-textbox" maxlength="50" data-role="text" required="required" name="complaint_clasification" value="<?php echo $complaint_clasification; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
                             </div>
                         </div>
                     </div>
@@ -75,7 +75,7 @@
                         <div class="form-group">
                             <label class="control-label control-label-left col-sm-5" for="complaint_category" >Complaint Category:</label>
                             <div class="controls col-sm-7">
-                                <input id="complaint_category" type="text" class="form-control k-textbox alpha" maxlength="50" data-role="text" required="required" name="complaint_category" value="<?php echo $complaint_category; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
+                                <input id="complaint_category" type="text" class="form-control k-textbox alpha" maxlength="50" data-role="text" onkeyup="return validateLength(this)" required="required" name="complaint_category" value="<?php echo $complaint_category; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
                             </div>
                         </div>
                     </div>
@@ -117,3 +117,15 @@
                 ?>
 </body>
 </html>
+<script>
+function validateLength(t){
+    if (t.value) {
+            if (t.value.length > 30) {
+                t.value =  t.value.substr(0,30);
+                swal("Length must be lessthan 30 Characters");
+                t.value ='';
+                return false;
+            }
+        }
+    }
+</script>
