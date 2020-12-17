@@ -87,7 +87,7 @@ $cat=$_POST['cat'];
 					$table_name[]=$tables['tbl_name'];
 					$table_id[]=$tables['tbl_id'];
 				}
-				$all_sec_query = "SELECT GROUP_CONCAT('\"',tbl_id,'\"') as sec FROM $bai_pro3.tbl_cutting_table WHERE STATUS='active'";
+				$all_sec_query = "SELECT GROUP_CONCAT('\"',tbl_name,'\"') as sec FROM $bai_pro3.tbl_cutting_table WHERE STATUS='active'";
 				$sec_result_all = mysqli_query($link,$all_sec_query) or exit('Unable to load sections all');
 				while($res1 = mysqli_fetch_array($sec_result_all)){
 					$all_secs = $res1['sec'];
