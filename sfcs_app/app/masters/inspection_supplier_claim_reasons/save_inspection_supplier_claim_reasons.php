@@ -36,12 +36,13 @@
         }
         $action_url = getFullURL($_GET['r'],'insert_inspection_supplier_claim_reasons.php','N');
 	?> 
+
 <div class='panel panel-primary'>
 	<div class='panel-heading'>
 		<b>Inspection Supplier Claim Reasons</b>
 	</div>
 	<div class='panel-body'>
-        <form action="<?= $action_url ?>" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
+        <form  id="formentry" name="supplierform" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
         <input type='hidden' id='tid' name='tid' value=<?php echo $tid; ?> >
         <div class="container-fluid shadow">
             <div class="row">
@@ -115,9 +116,35 @@
                 <?php
                 include('view_inspection_supplier_claim_reasons.php');
                 ?>
+                
 </body>
 </html>
 <script>
+$("#formentry").submit(function(event){
+		submitForm();
+		return false;
+	});
+    function submitForm(){
+        var txt;
+        var r = confirm("Are You Sure Do You Want To Create/Update");
+        if (r == true) {
+                var urls = '<?=$action_url?>'
+            $.ajax({
+                type: "POST",
+                url: urls,
+                cache:false,
+                data: $('form#formentry').serialize(),
+                success: function(response){
+                    $("#contact").html(response)
+                },
+                error: function(e){
+                    console.log(e);
+                }
+            });
+        } else {
+            alert('Cancelled Creation/Updation');
+        }
+    }
 function validateLength(t){
     if (t.value) {
             if (t.value.length > 30) {
