@@ -367,7 +367,7 @@ if(isset($_POST['submit']))
 							?>						
 								<input type="hidden"  name="count" id="count"  value=<?php echo $max_id ?>>
 								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" readonly style="width: 100px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
-								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $jumper; ?>" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
+								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $jumper; ?>" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>" oninput="this.value = this.value.replace(/^-?\d*\d{0,9}$/; g, '').replace(/(\..*)\./g, '$1');" /></td>
 								<td><select  id="adjustment_type<?php echo $k; ?>" class="form-control" name="adjustment_type<?php echo $k; ?>" >
 								<option value="Positive" <?php if($adjustment_type == "Positive") { echo "SELECTED"; } ?>>Positive</option>
 								<option value="Negative" <?php if($adjustment_type == "Negative") { echo "SELECTED"; } ?>>Negative</option>	
@@ -431,7 +431,7 @@ if(isset($_POST['submit']))
 
 						         <input type="hidden"  name="count" id="count"  value=<?php echo $max_id; ?>>
 								<td><input type="text" onkeyup="validateQty1(event,this);" class="form-control" style="width: 100px;" readonly value="0" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
-								<td><input type="text" onkeyup="validateQty1(event,this);"  class="form-control" style="width: 100px;"value="0" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
+								<td><input type="text" onkeyup="validateQty1(event,this);"  class="form-control" style="width: 100px;"value="0" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>" oninput="this.value = this.value.replace(/^-?\d*\d{0,9}$/; g, '').replace(/(\..*)\./g, '$1');" /></td>
 								<td><select class="form-control"name="adjustment_type<?php echo $k; ?>" id="adjustment_type<?php echo $k; ?>">
 								<option value="Positive">Positive</option>
 								<option value="Negative">Negative</option>
@@ -792,7 +792,7 @@ function validateQty1(e,t)
 	if(e.keyCode == 13)
 			return;
 		var p = String.fromCharCode(e.which);
-		var c = /^[0-9]+$/;
+		var c =/^-?\d*\d{0,9}$/; 
 		var v = document.getElementById(t.id);
 		if( !(v.value.match(c)) && v.value!=null ){
 			v.value = '';
