@@ -341,8 +341,6 @@ if(isset($_POST['put']))
 	//$sql="select * from store_in where lot_no=".$lot_no;
 	
 	$sql="SELECT sum(qty_issued) as total_issued,sum(qty_ret) as total_returned,sum(qty_allocated) as total_qty_allocated FROM $wms.store_in where lot_no='$lot_no' and plant_code='".$plant_code."' group by lot_no";
-	
-	// echo "<br/>".$sql;
 	$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -355,37 +353,37 @@ if(isset($_POST['put']))
 	//if($total_qty_allocated==$total_returned)
 	if($total_qty_allocated==0 && ($total_issued-$total_returned)==0)
 	{
-		if(in_array($authorized,$has_permission))
-		{
+		// if(in_array($authorized,$has_permission))
+		// {
 		
-		$check=0;
-		if(mysqli_num_rows($sql_result)>0)
-		{
-			$sql2="insert into $wms.store_in_deleted SELECT * FROM $wms.store_in where lot_no='$lot_no' and plant_code='".$plant_code."'"; 
-			// echo "<br/>".$sql2;
-		 	
-			$sql_result2=mysqli_query($link, $sql2) or exit($sql2."<br/>Sql Error 2".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$num2=mysqli_affected_rows($link);
-		
-			$sql3="update $wms.store_in_deleted set log_user='".$username."&".$reason."',log_stamp =NOW(),updated_user= '".$username."',updated_at=NOW() where lot_no='$lot_no' and plant_code='".$plant_code."'";
-			// echo  "<br/>".$sql3;
-		 
-			$sql_result3=mysqli_query($link, $sql3) or exit($sql3."<br/>Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$num3=mysqli_affected_rows($link);
-		
-		 
-			$sql4="delete FROM $wms.store_in where lot_no='$lot_no' and plant_code='".$plant_code."'";
-			// echo  "<br/>".$sql4;
-		
-			$sql_result4=mysqli_query($link, $sql4) or exit($sql4."<br/>Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$num4=mysqli_affected_rows($link);
-		
-			if(($num2==$num4))
+			$check=0;
+			if(mysqli_num_rows($sql_result)>0)
 			{
-				$check=1;
-			}
-		
-		}																									
+				$sql2="insert into $wms.store_in_deleted SELECT * FROM $wms.store_in where lot_no='$lot_no' and plant_code='".$plant_code."'"; 
+				// echo "<br/>".$sql2;
+				
+				$sql_result2=mysqli_query($link, $sql2) or exit($sql2."<br/>Sql Error 2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$num2=mysqli_affected_rows($link);
+			
+				$sql3="update $wms.store_in_deleted set log_user='".$username."&".$reason."',log_stamp =NOW(),updated_user= '".$username."',updated_at=NOW() where lot_no='$lot_no' and plant_code='".$plant_code."'";
+				// echo  "<br/>".$sql3;
+			
+				$sql_result3=mysqli_query($link, $sql3) or exit($sql3."<br/>Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$num3=mysqli_affected_rows($link);
+			
+			
+				$sql4="delete FROM $wms.store_in where lot_no='$lot_no' and plant_code='".$plant_code."'";
+				// echo  "<br/>".$sql4;
+			
+				$sql_result4=mysqli_query($link, $sql4) or exit($sql4."<br/>Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$num4=mysqli_affected_rows($link);
+			
+				if(($num2==$num4))
+				{
+					$check=1;
+				}
+			
+			}																									
 		
 			$sql1="SELECT * FROM $wms.sticker_report where lot_no='$lot_no' and plant_code='".$plant_code."'";
 			$sql_result1=mysqli_query($link, $sql1) or exit($sql1."<br/>Sql Error at count".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -441,61 +439,62 @@ if(isset($_POST['put']))
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",3000); function Redirect() {  location.href = \"$url\"; }</script>";
 			}		
 	
-		}									
-		else
-		{
-			if(mysqli_num_rows($sql_result)>0)
-			{
-				echo "<h2><font color=red>Deletion Can't Possible.</font></h2>";
-			}
-			else
-			{
-			/*
-			$sql="delete from sticker_report where lot_no=\"$lid\"";
-			$sql_result=mysql_query($sql,$link) or exit($sql."<br/>Sql Error2=".mysql_error());
-			*/
+		// }
+		/*commneting due to permission concern*/									
+		// else
+		// {	//echo "</br>Testing : ".mysqli_num_rows($sql_result)."</br>";
+		// 	if(mysqli_num_rows($sql_result)>0)
+		// 	{
+		// 		echo "<h2><font color=red>Deletion Can't Possible.</font></h2>";
+		// 	}
+		// 	else
+		// 	{
+		// 	/*
+		// 	$sql="delete from sticker_report where lot_no=\"$lid\"";
+		// 	$sql_result=mysql_query($sql,$link) or exit($sql."<br/>Sql Error2=".mysql_error());
+		// 	*/
 			
-			$sql1="SELECT * FROM $wms.sticker_report where lot_no='$lot_no' and plant_code='".$plant_code."'";
-			$sql_result1=mysqli_query($link, $sql1) or exit($sql1."<br/>Sql Error at count".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$count1=mysqli_num_rows($sql_result1);
-			$num7=0;
-				if($count1>0)
-				{
-			 		$sql5="select * FROM $wms.sticker_report where lot_no='$lot_no' and plant_code='".$plant_code."'";
-			 		// "<br/>".$sql5;
+		// 	$sql1="SELECT * FROM $wms.sticker_report where lot_no='$lot_no' and plant_code='".$plant_code."'";
+		// 	$sql_result1=mysqli_query($link, $sql1) or exit($sql1."<br/>Sql Error at count".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 	$count1=mysqli_num_rows($sql_result1);
+		// 	$num7=0;
+		// 		if($count1>0)
+		// 		{
+		// 	 		$sql5="select * FROM $wms.sticker_report where lot_no='$lot_no' and plant_code='".$plant_code."'";
+		// 	 		// "<br/>".$sql5;
 			 
-					$sql_result5=mysqli_query($link, $sql5) or exit($sql5."<br/>Sql Error 5".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$num5=mysqli_affected_rows($link);
+		// 			$sql_result5=mysqli_query($link, $sql5) or exit($sql5."<br/>Sql Error 5".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 			$num5=mysqli_affected_rows($link);
 				
 				
-					$sql6="insert into $wms.sticker_report_deleted select * FROM $wms.sticker_report where lot_no='$lot_no' and plant_code='".$plant_code."'";
-			 		// "<br/>".$sql6;
+		// 			$sql6="insert into $wms.sticker_report_deleted select * FROM $wms.sticker_report where lot_no='$lot_no' and plant_code='".$plant_code."'";
+		// 	 		// "<br/>".$sql6;
 					
-					$sql_result6=mysqli_query($link, $sql6) or exit($sql6."<br/>Sql Error 6".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$num6=mysqli_affected_rows($link);
+		// 			$sql_result6=mysqli_query($link, $sql6) or exit($sql6."<br/>Sql Error 6".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 			$num6=mysqli_affected_rows($link);
 				
-					if($num5==$num6)
-					{
-						//query to update upadte_user and time
-						$qry_update="UPDATE $wms.sticker_report_deleted SET updated_user= '".$username."',updated_at=NOW() where lot_no='$lot_no' and plant_code='".$plant_code."'";
-						$updateresult=mysqli_query($link, $qry_update) or exit("update Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$sql8="delete FROM $wms.stock_report_inventory where lot_no='$lot_no' and plant_code='".$plant_code."'";
-						$sql_result8=mysqli_query($link, $sql8) or exit($sql8."<br/>Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$num8=mysqli_affected_rows($link);
+		// 			if($num5==$num6)
+		// 			{
+		// 				//query to update upadte_user and time
+		// 				$qry_update="UPDATE $wms.sticker_report_deleted SET updated_user= '".$username."',updated_at=NOW() where lot_no='$lot_no' and plant_code='".$plant_code."'";
+		// 				$updateresult=mysqli_query($link, $qry_update) or exit("update Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 				$sql8="delete FROM $wms.stock_report_inventory where lot_no='$lot_no' and plant_code='".$plant_code."'";
+		// 				$sql_result8=mysqli_query($link, $sql8) or exit($sql8."<br/>Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 				$num8=mysqli_affected_rows($link);
 
-						$sql7="delete FROM $wms.sticker_report where lot_no='$lot_no' and plant_code='".$plant_code."'";
-						$sql_result7=mysqli_query($link, $sql7) or exit($sql7."<br/>Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$num7=mysqli_affected_rows($link);
-					}
+		// 				$sql7="delete FROM $wms.sticker_report where lot_no='$lot_no' and plant_code='".$plant_code."'";
+		// 				$sql_result7=mysqli_query($link, $sql7) or exit($sql7."<br/>Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 				$num7=mysqli_affected_rows($link);
+		// 			}
 				
-				}	
+		// 		}	
 			
-				echo "<script>sweetAlert('Successfully Updated','','success')</script>";
-				echo "<h2><font color=green>Successfully Updated!!</font></h2>";
-				$url = getFullURL($_GET['r'],'entry_delete.php','N');
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
-			}
-		}																																													
+		// 		echo "<script>sweetAlert('Successfully Updated','','success')</script>";
+		// 		echo "<h2><font color=green>Successfully Updated!!</font></h2>";
+		// 		$url = getFullURL($_GET['r'],'entry_delete.php','N');
+		// 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
+		// 	}
+		// }																																													
 	}
 	else
 	{
