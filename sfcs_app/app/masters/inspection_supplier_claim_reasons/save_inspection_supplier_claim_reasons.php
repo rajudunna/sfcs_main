@@ -8,24 +8,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-	
-	
-	
-
-
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!-- Fav and touch icons -->
-    
+	<script src="<?= getFullURLLevel($_GET['r'],'common/js/jquery-2.1.3.min.js',3,'R'); ?>"></script>
+  <script src="<?= getFullURLLevel($_GET['r'],'common/js/sweetalert-dev.js',3,'R'); ?>"></script>
+  <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/sweetalert.css',3,'R'); ?>">
 </head>
 
 <body>
     <?php
+
         if(isset($_GET['tid'])){
             $complaint_reason =$_GET['complaint_reason'];
             $tid =$_GET['tid'];
+            $rowid = $_GET['tid'];
             $complaint_clasification=$_GET['complaint_clasification'];
             $status = $_GET['status'];
             $complaint_category = $_GET['complaint_category'];  
@@ -105,6 +99,7 @@
                     <div class="col-md-12">
                         <div class="form-group btn-group pull-right">
                             <button id="btn_save" type="submit" class="btn btn-primary" name="btn_save">Save</button>
+                            <input type='reset' class="btn btn-danger" value="Clear">
                         </div>
                     </div>
                 </div>
@@ -116,6 +111,7 @@
                 <?php
                 include('view_inspection_supplier_claim_reasons.php');
                 ?>
+          
                 
 </body>
 </html>
@@ -125,25 +121,41 @@ $("#formentry").submit(function(event){
 		return false;
 	});
     function submitForm(){
-        var txt;
-        var r = confirm("Are You Sure Do You Want To Create/Update");
-        if (r == true) {
-                var urls = '<?=$action_url?>'
-            $.ajax({
-                type: "POST",
-                url: urls,
-                cache:false,
-                data: $('form#formentry').serialize(),
-                success: function(response){
-                    $("#contact").html(response)
-                },
-                error: function(e){
-                    console.log(e);
-                }
-            });
-        } else {
-            alert('Cancelled Creation/Updation');
+        var rowid = '<?=$rowid?>';
+        var op ='Create';
+        if(rowid!=0){
+            op ='Update';
         }
+        swal({
+					title: "Are you sure?",
+					text: "Do You Want To "+op+" inspection supplier claim reason",
+					type: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#DD6B55",confirmButtonText: "Yes, I Want To "+op+" inspection supplier claim reason",
+					cancelButtonText: "No, Cancel!",
+					closeOnConfirm: false,
+					closeOnCancel: false }, 
+				 function(isConfirm){ 
+					if (isConfirm) {
+                        swal("Continue", "Your Continue To "+op+" inspection supplier claim reason", "success");
+                                        var urls = '<?=$action_url?>'
+                                        $.ajax({
+                                            type: "POST",
+                                            url: urls,
+                                            cache:false,
+                                            data: $('form#formentry').serialize(),
+                                            // success: function(response){
+                                            //     $("#contact").html(response)
+                                            // },
+                                            error: function(e){
+                                                console.log(e);
+                                            }
+                                        });
+                                        location.reload();
+					} else {
+						swal("Cancelled!", "You Cancelled To "+op+" inspection supplier claim reason", "error");
+					}
+				 });
     }
 function validateLength(t){
     if (t.value) {
