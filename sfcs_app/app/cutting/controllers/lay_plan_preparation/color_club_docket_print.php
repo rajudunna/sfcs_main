@@ -3393,7 +3393,7 @@ tags will be replaced.-->
 	$divide=14;
 	$divide1=$divide;
 	$temp = 0;
-	$fab_uom = 'Yds';
+	// $fab_uom = 'Yds';
 	$temp_len1=0;
 	echo "<th style='border:.5pt solid black;'>Barcode</th>";
 	echo "<th style='border:.5pt solid black;'>Color</th>";
