@@ -2,7 +2,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
-
+<script src="<?= getFullURLLevel($_GET['r'],'common/js/jquery-2.1.3.min.js',3,'R'); ?>"></script>
+  <script src="<?= getFullURLLevel($_GET['r'],'common/js/sweetalert-dev.js',3,'R'); ?>"></script>
+  <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/sweetalert.css',3,'R'); ?>">
 <body>
 </body>
 <?php 
@@ -25,7 +27,7 @@
     <div class="panel panel-primary">
         <div class="panel-heading">Packing Method</div>
         <div class="panel-body">
-        <form name="test" action="<?= $action_url ?>" method="POST" id='form_submt'>
+        <form name="test" role="form" method="POST" id='form_submt' data-parsley-validate novalidate>
             <div class="row">
                 <div class="col-md-3">
         			<input type='hidden' id='row_id' name='row_id' value=<?php echo $row_id; ?> >
@@ -60,8 +62,11 @@
                 </div>                
             </div>
             <div class="row">
-                <div class="col-sm-2">
-                    <button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
+                <div class="col-sm-12">
+                    <div class="col-sm-4">
+                        <button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
+                        <input type='reset' class="btn btn-danger" value="Clear" style="margin-top:18px;">
+                    </div>
                 </div>
             </div>
         </form>
@@ -71,6 +76,47 @@
 
 <?php include('view_packing.php'); ?>
 <script>
+$("#form_submt").submit(function(event){
+		submitForm();
+		return false;
+	});
+    function submitForm(){
+        var row_id = '<?=$row_id?>';
+        var op ='Create';
+        if(row_id!=0){
+            op ='Update';
+        }
+        swal({
+					title: "Are you sure?",
+					text: "Do You Want To "+op+" packing method",
+					type: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#DD6B55",confirmButtonText: "Yes, I Want To "+op+" packing method",
+					cancelButtonText: "No, Cancel!",
+					closeOnConfirm: false,
+					closeOnCancel: false }, 
+				 function(isConfirm){ 
+					if (isConfirm) {
+                        swal("Continue", "Your Continue To "+op+" packing method", "success");
+                                        var urls = '<?=$action_url?>'
+                                        $.ajax({
+                                            type: "POST",
+                                            url: urls,
+                                            cache:false,
+                                            data: $('form#form_submt').serialize(),
+                                            // success: function(response){
+                                            //     $("#contact").html(response)
+                                            // },
+                                            error: function(e){
+                                                console.log(e);
+                                            }
+                                        });
+                                        location.reload();
+					} else {
+						swal("Cancelled!", "You Cancelled To "+op+" packing method", "error");
+					}
+				 });
+    }
 function validateCodeLength(t){
     if (t.value) {
             if (t.value.length > 15) {
