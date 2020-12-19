@@ -17,7 +17,7 @@
 	
 		while($row=mysqli_fetch_array($sql_result)) {
 			$complaint_reason=$row["complaint_reason"];
-			$tid=$row["tid"];
+			$tid=($row["tid"])?$row["tid"]:0;
 			$complaint_clasification=$row["Complaint_clasification"];
 			$complaint_category=$row["complaint_category"];			
 			$status = $row['status'];
