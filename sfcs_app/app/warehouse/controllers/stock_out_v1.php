@@ -491,7 +491,7 @@ if(isset($_POST['put']))
 				if($balance_qty[$j]==0)
 				{
 					$status_new=2;
-					$sql44="update $wms.store_in set status=$status_new, allotment_status=$status_new ,updated_at=NOW(),updated_user='".$username."' where tid=".$tid_ref[$j]." and plant_code='".$plant_code."'";
+					$sql44="update $wms.store_in set status=$status_new, allotment_status=$status_new ,updated_at=NOW(),updated_user='".$username."' where tid='".$tid_ref[$j]."' and plant_code='".$plant_code."'";
 					//echo $sql44."</br>";
 					mysqli_query($link, $sql44) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
