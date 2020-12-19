@@ -98,7 +98,8 @@ if(strlen($lot_no)>0)
 
 $sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no from $wms.sticker_report where lot_no=\"".trim($lot_no)."\"";
 // echo $sql."<br>";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+mysqli_query($link, $sql) or exit("Sql Error at 101".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error at 102".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check1=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -117,7 +118,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 $sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where lot_no=\"".trim($lot_no)."\" and plant_code='".$plant_code."'";
 // echo $sql."<br>";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+//mysqli_query($link, $sql) or exit("Sql Error at 121".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error 122".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check2=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -174,7 +176,8 @@ switch (trim($product_group))
 
 $sql="select tid,ref1,ref2,qty_rec,status,qty_issued,qty_ret from $wms.store_in where lot_no=\"".trim($lot_no)."\"";
 // echo $sql."<br>";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+//mysqli_query($link, $sql) or exit("Sql Error at 179".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error at 180".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -231,8 +234,7 @@ if(isset($_POST['put']))
 			$qty_returned_new=0;
 			
 			$sql1="select qty_issued from $wms.store_in where tid='".$tid[$i]."' and plant_code='".$plant_code."'";
-			// echo $sql1;
-			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error at 237".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check1=mysqli_num_rows($sql_result1);
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
@@ -241,7 +243,8 @@ if(isset($_POST['put']))
 		
 			$sql="select qty_ret from $wms.store_in where tid='".$tid[$i]."' and plant_code='".$plant_code."'";
 			//echo $sql;
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//mysqli_query($link, $sql) or exit("Sql Error at 246".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error at 247".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -255,19 +258,19 @@ if(isset($_POST['put']))
 				$sql="insert into $wms.store_returns (tran_tid, qty_returned, date, remarks, plant_code,created_user,updated_user,updated_by,updated_at) values ('".$tid[$i]."',".$qty_return[$i].",'".$date[$i]."','".$remarks[$i]."','".$plant_code."','$username','".$username."','".$username."',NOW())";
 				//echo "<br/>".$sql."<br/>";
 				//die();
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result=mysqli_query($link, $sql) or exit("Sql Error at 261".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				if($status[$i]==1)
 				{
 					$sql="update $wms.store_in set qty_ret=".$qty_returned_new.", status=1, allotment_status=0, updated_user= '".$username."',updated_at=NOW() where tid='".$tid[$i]."' and plant_code='".$plant_code."'";
-					echo "<br/>".$sql."<br/>";
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+					//echo "<br/>".$sql."<br/>";
+					$sql_result=mysqli_query($link, $sql) or exit("Sql Error at 267".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 				else
 				{
 					$sql="update $wms.store_in set qty_ret=".$qty_returned_new.", status=0, allotment_status=0, updated_user= '".$username."',updated_at=NOW() where tid='".$tid[$i]."' and plant_code='".$plant_code."'";
 					//echo "<br/>".$sql."<br/>";
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_result=mysqli_query($link, $sql) or exit("Sql Error at 271".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 	// 			echo "<script>sweetAlert('Returns updated scuccessfully',' ','success')</script>";
 	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"index-no-navi.php?r=". $_GET['r'] ."&lot_no=$lot_no_new\"; }</script>";
