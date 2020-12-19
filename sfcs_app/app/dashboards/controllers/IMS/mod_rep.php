@@ -286,9 +286,15 @@
                                 <input type="hidden" value="'.$module.'" name="module"> 
                                 <input type="hidden" value="'.$section_id.'" name="section_id">
                                 <input type="hidden" value="'.$plant_code.'" name="plant_code">
-                                <input type="hidden" value="'.$user_name.'" name="user_name">'; 
+                                <input type="hidden" value="'.$user_name.'" name="user_name">
+                                <input type="hidden" name="authToken" value="' . $_POST["authToken"] . '" />'; 
                     ?>
                 </form>
+                <?php
+                    echo '<form id="TheForm" method="post" action="" target="TheWindow">
+					<input type="hidden" name="authToken" value="' . $_POST["authToken"] . '" />
+                    </form>';
+                ?>
             </div>
         </div>
     </div>
@@ -325,7 +331,7 @@ $(document).ready(function(){
                                 "createdUser": '<?= $user_name ?>'
                             }
                 var bearer_token;
-                bearer_token = '<?= $_SESSION['authToken'] ?>';
+                bearer_token = '<?= $_POST['authToken'] ?>';
                 $.ajax({
                     type: "POST",
                     url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/transferBundlesToWorkStation",

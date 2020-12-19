@@ -1792,7 +1792,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$sp_rem=$sql_row['sp_rem'];
 	$qty_insp=$sql_row['qty_insp'];
 	$gmt_way=$sql_row['gmt_way'];
-	$pts=$sql_row['pts'];
+	$pts_value=$sql_row['pts'];
 	$fallout=$sql_row['fallout'];
 	$skew=$sql_row['skew'];
 	$skew_cat=$sql_row['skew_cat'];
@@ -1960,7 +1960,7 @@ tags will be replaced.-->
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Qty In (<?php echo $fab_uom; ?>)</td>
   <td colspan=2 class=xl10324082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php echo round($rec_qty,2); ?></td>
   <td class=xl9424082 dir=LTR width=99 style='border-top:none;border-left:none;  width:74pt'>PTS/100 Sq.Yd.</td>
-  <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;  width:109pt'><?php  echo "<input onchange=\"change_head(1,this.name)\" type=\"text\" class=\"textbox float req_man\"  id=\"pts\" name=\"pts\" value='".$pts."' />";?></td>
+  <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;  width:109pt'><?php  echo "<input onchange=\"change_head(1,this.name)\" type=\"text\" class=\"textbox float req_man\"  id=\"pts\" name=\"pts\" value='".$pts_value."' />";?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Package</td>
   <td colspan=4 class=xl9324082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'><?php echo $pkg_no; ?></td>
  </tr>

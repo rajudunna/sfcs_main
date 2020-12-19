@@ -118,7 +118,6 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							while($uuid_row=mysqli_fetch_array($uuid_result))
 							{
 								$uuid=$uuid_row['uuid'];
-							
 							}
 
 							// $sql1 = "insert into bai_rm_pj1.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,upload_file) values ( '$lot_no','$ref1', '$item1','$item2', '$date','$remarks','$user_name','$upload_file')";
@@ -160,9 +159,24 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							$sql_result1=mysqli_query($link, $sql1 . implode(', ', $values)) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$last_id_ref = mysqli_insert_id($link);
 							$for_last_val = $last_id_ref+$iro_cnt;
-
+							
+							$bundlenumber=0;
 							foreach ($uuidArray as $uuidValue) {
-								$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$plantcode."-',tid),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='$uuidValue'";
+								//To check bundle count for plant
+								$checkcount="SELECT count(barcode_number) as barcodecount FROM $wms.store_in WHERE plant_code='$plantcode'";
+								$sql_result12=mysqli_query($link, $checkcount) or exit("Sql Error at checkcount".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$count_num=mysqli_num_rows($sql_result12);
+								if($count_num > 0){
+									while($count_row=mysqli_fetch_array($sql_result12))
+									{
+										$barcodecount=$count_row['barcodecount'];
+										$bundlenumber=$barcodecount+1;
+									}
+								} else 
+								{
+									$bundlenumber++;
+								}
+								$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$plantcode."-',$bundlenumber),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='$uuidValue'";
 								//echo "Update : ".$update_query."</br>"; 
 								$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							}
@@ -259,6 +273,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 		else
 		{
 			$qty_count = 0;
+			$bundlenumber=0;
 			for($i=0;$i<100;$i++)
 			{
 				if($qty[$i]>0)
@@ -284,13 +299,27 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 					{
 						$uuid=$uuid_row['uuid'];
 					}
+					//To check bundle count for plant
+					$checkcount="SELECT count(barcode_number) as barcodecount FROM $wms.store_in WHERE plant_code='$plantcode'";
+					$sql_result12=mysqli_query($link, $checkcount) or exit("Sql Error at checkcount".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$count_num=mysqli_num_rows($sql_result12);
+					if($count_num > 0){
+						while($count_row=mysqli_fetch_array($sql_result12))
+						{
+							$barcodecount=$count_row['barcodecount'];
+							$bundlenumber=$barcodecount+1;
+						}
+					} else 
+					{
+						$bundlenumber++;
+					}
 
 					$sql="insert into $wms.store_in (tid,lot_no, ref1, ref2, ref3,supplier_no, qty_rec, date, remarks, log_user,plant_code,created_user,created_at,updated_user,updated_at) values ('$uuid','$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', '$ref4[$i]', $qty[$i], '$date', '$remarks','".$username."-".$plant_name."','$plantcode','$username','".date('Y-m-d')."','$username','".date('Y-m-d')."')";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$qty_count += 1;
 					//$last_id = mysqli_insert_id($link);
 					
-					$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$plantcode."-',tid),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='$uuid'";
+					$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$plantcode."-',$bundlenumber),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='$uuid'";
 					$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				}

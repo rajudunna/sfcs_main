@@ -1,20 +1,9 @@
-<!--
-
-Ticket #: #684040-kirang/2014-05-26 : To raise compalint for rejected RM material
-
-CR# 213 / kirang / 2014-10-21 : Stock out option for Multiple Lots And Locations
-
--->
-
-
 <?php 
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config_splitting_function.php',3,'R'));
 $plant_code = $_SESSION['plantCode'];
-// $plant_code = 'EKG'; 
 $username = $_SESSION['userName'];
-
 ?>
 
 
@@ -22,21 +11,11 @@ $username = $_SESSION['userName'];
 <html  xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-
-<!--<script type="text/javascript" src="ajax-autocomplete/jquery.js"></script>
-<script type='text/javascript' src='ajax-autocomplete/jquery.autocomplete.js'></script>
-<link rel="stylesheet" type="text/css" href="ajax-autocomplete/jquery.autocomplete.css" />-->
-
 <script type="text/javascript">
 $().ready(function() {
   $("#course").autocomplete("ajax-autocomplete/get_course_list.php", {
 	  width: 260,
 	  matchContains: true,
-	  //mustMatch: true,
-	  //minChars: 0,
-	  //multiple: true,
-	  //highlight: false,
-	  //multipleSeparator: ",",
 	  selectFirst: false
   });
 });
@@ -405,7 +384,7 @@ $sql_mrn="SELECT iss_qty,updated_user,lable_id,log_time FROM $wms.`mrn_out_alloc
 			$tran_tid1 = $row_mrn['lable_id'];
 			$log_time = date($row_mrn['log_time']);
 			
-			$sql121 = "select ref2,barcode_number from $wms.store_in where tid=$tran_tid1 and plant_code='".$plant_code."'";
+			$sql121 = "select ref2,barcode_number from $wms.store_in where tid='".$tran_tid1."' and plant_code='".$plant_code."'";
 			$result121=mysqli_query($link,$sql121) or die("Error = ".mysqli_error());
 			while ($row121 = mysqli_fetch_array($result121))
 			{
