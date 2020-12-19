@@ -176,8 +176,20 @@ if(isset($_POST['check2']))
 	{
 		
 		$code=$_POST['cartonid2'];
-		$location=$_POST['location'];
-		$plantcode=$_POST['plantcode'];
+		//$location=$_POST['location'];
+		if(isset($_POST['location'])){
+			$location=$_POST['location'];
+		}else{
+			if(isset($_GET['location'])){
+				$location=$_GET['location'];
+			}else{
+				$location='';
+			}
+			
+		}
+
+		$plantcode=$_GET['plantcode'];
+		// if(isset($_POST['location']))
 		if($location=='')
 		{
 			$location=$code;
