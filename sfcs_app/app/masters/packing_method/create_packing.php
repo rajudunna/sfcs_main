@@ -63,12 +63,10 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                <div class="col-sm-2">
-                    <button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
-                </div>
-                <div class="col-sm-2">
-                    <input type='reset' class="btn btn-danger" value="Clear">
-                </div>
+                    <div class="col-sm-4">
+                        <button type="submit"  class="btn btn-primary" style="margin-top:18px;">Save</button>
+                        <input type='reset' class="btn btn-danger" value="Clear" style="margin-top:18px;">
+                    </div>
                 </div>
             </div>
         </form>
