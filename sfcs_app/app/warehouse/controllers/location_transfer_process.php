@@ -69,8 +69,22 @@ if($_POST['put'])
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				//$new_tid=mysqli_insert_id($link);
-				
-				$sql="update $wms.store_in set barcode_number='".$facility_code."-".$uuid."',updated_user= '".$username."',updated_at=NOW() where tid='$uuid' and plant_code='".$plant_code."'";
+				//To check bundle count for plant
+				$bundlenumber=0;
+				$checkcount="SELECT count(barcode_number) as barcodecount FROM $wms.store_in WHERE plant_code='$plantcode'";
+				$sql_result12=mysqli_query($link, $checkcount) or exit("Sql Error at checkcount".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$count_num=mysqli_num_rows($sql_result12);
+				if($count_num > 0){
+					while($count_row=mysqli_fetch_array($sql_result12))
+					{
+						$barcodecount=$count_row['barcodecount'];
+						$bundlenumber=$barcodecount+1;
+					}
+				} else 
+				{
+					$bundlenumber++;
+				}
+				$sql="update $wms.store_in set barcode_number='".$plant_code."-".$bundlenumber."',updated_user= '".$username."',updated_at=NOW() where tid='$uuid' and plant_code='".$plant_code."'";
 				//echo $sql;
 				$sql_result2=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
