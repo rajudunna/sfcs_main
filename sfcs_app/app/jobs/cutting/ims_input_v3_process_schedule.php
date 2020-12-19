@@ -84,7 +84,7 @@ if($log_time==0 or $time_diff>1)
 					$work_hrs=$work_hrs+($sql_row_hr['end_time']-$sql_row_hr['start_time']);
 
 				}	
-				$break_time=sizeof($teams)*0.5;
+				$break_time=sizeof($teams)*($breakhours/60);
 				$work_hours=$work_hrs-$break_time;
 			}else{
 					if(sizeof($teams) > 1) 
@@ -128,7 +128,7 @@ if($log_time==0 or $time_diff>1)
 				}
 			
 				if($hour_dur >3){
-					$hour_dur=$hour_dur-0.5;
+					$hour_dur=$hour_dur-($breakhours/60);
 					//$hour_dur=$hour_dur-($breakhours/60);
 				}
 				$hoursa_shift=$hour_dur;
@@ -236,7 +236,7 @@ if($log_time==0 or $time_diff>1)
 					{
 						if($hoursa_new>3)
 						{
-							$hoursa_new=$hoursa_new+0.5-1;	
+							$hoursa_new=$hoursa_new+($breakhours/60)-1;	
 						}
 					}
 					if($hoursa_new==11.5)
@@ -247,7 +247,7 @@ if($log_time==0 or $time_diff>1)
 					{
 					if($hoursa_new>7.5)
 					{
-						$hoursa_new=$hoursa_new+0.5-1;
+						$hoursa_new=$hoursa_new+($breakhours/60)-1;
 					}
 					}
 					$total_hrs+=$hoursa_new;
@@ -423,7 +423,7 @@ if($log_time==0 or $time_diff>1)
                                     $work_hrs=$work_hrs+($difference);
 
                                 }
-								$work_hours=$work_hrs-0.5;
+								$work_hours=$work_hrs-($breakhours/60);
 						
                             }else{
 								$work_hours=7.5;
@@ -445,7 +445,7 @@ if($log_time==0 or $time_diff>1)
 										$end_time=$sql_row_hr['end_time'];
 										$diff_time=$current_hr-$start_time;
 										if($diff_time>3){
-												$diff_time=$diff_time-0.5;
+												$diff_time=$diff_time-($breakhours/60);
 										}
 
 										$hour_dur=$hour_dur+$diff_time;
@@ -474,7 +474,7 @@ if($log_time==0 or $time_diff>1)
 											$diff_time=$start+$end_time;
 										}
 										if($diff_time>3){
-												$diff_time=$diff_time-0.5;
+												$diff_time=$diff_time-($breakhours/60);
 										}
 										$hour_dur=$hour_dur+$diff_time;
 									}
