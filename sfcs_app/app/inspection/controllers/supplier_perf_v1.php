@@ -91,7 +91,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/hea
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
-$Page_Id='SFCS_0054';
+//$Page_Id='SFCS_0054';
 ?>
 <style>
 .lb-lg {
@@ -168,12 +168,20 @@ if(isset($_POST['filter']))
                 $supplier_ref1[]=",'".$supplier_code[$i2]."'";
             }
         }
-    
-        $suppliers_list_ref_query=" and supplier in (".implode(" ",$supplier_ref1).") ";     
+        if(sizeof($supplier_ref1)>0){
+            $suppliers_list_ref_query=" and supplier in (".implode(" ",$supplier_ref1).") ";
+        }else{
+            $suppliers_list_ref_query=" ";
+        }
+            
     }
     else
     {
-        $suppliers_list_ref_query=" and supplier in (".$suppliers_list_ref.") ";        
+        if(sizeof($suppliers_list_ref)>0){
+            $suppliers_list_ref_query=" and supplier in (".$suppliers_list_ref.") ";
+        }else{
+            $suppliers_list_ref_query=" ";
+        }        
     }
     
     
@@ -220,7 +228,6 @@ if(isset($_POST['filter']))
     $newstartDate = date("Ymd", strtotime($sdate));
     $newendDate = date("Ymd", strtotime($edate));
     $sql="select distinct supplier as sup from $wms.sticker_report WHERE DATE(grn_date) BETWEEN \"".$newstartDate."\" AND \"".$newendDate."\" ".$add_query." AND product_group=\"Fabric\" AND plant_code='".$plant_code."' ".$suppliers_list_ref_query." group by month(grn_date),batch_no ORDER BY supplier";
-    // echo "</br> Supplier Qry :".$sql."<br>";die();
 
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error123".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 $flag=false;
@@ -791,11 +798,7 @@ if(mysqli_num_rows($sql_result) > 0){
         $('#main_div').hide()</script>";
     }
 }
-
-
-
 ?>
-
 
 
 <script language="javascript" type="text/javascript">
