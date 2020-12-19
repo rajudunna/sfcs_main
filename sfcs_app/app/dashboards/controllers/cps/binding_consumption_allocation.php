@@ -166,7 +166,7 @@ $username = $_GET['username'];
 $doc_no=$_GET['doc_no'];
 //getting docket number to get 
 $binding_query = "select p.id,p.tot_bindreq_qty,c.doc_no from $pps.binding_consumption_items as c LEFT JOIN $pps.binding_consumption p ON p.id=c.parent_id where c.parent_id='".$doc_no."' and c.plant_code='".$plant_code."'";
-$binding_query_result=mysqli_query($link_new, $binding_query) or exit("Sql Errorat_jm_cut_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+$binding_query_result=mysqli_query($link_new, $binding_query) or exit("Sql Error binding_query at 169".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$binding_num=mysqli_num_rows($binding_query_result);
 	if($binding_num>0){
 		while($binding_row=mysqli_fetch_array($binding_query_result))
@@ -296,13 +296,12 @@ echo "</tr>";
 	}
 
 	//to get component po_num and ratio id from
-	$qry_jm_cut_job="SELECT ratio_id,po_number FROM $pps.jm_cut_job WHERE plant_code='$plant_code' AND jm_cut_job_id='$jm_cut_job_id'";
-	$jm_cut_job_result=mysqli_query($link_new, $qry_jm_cut_job) or exit("Sql Errorat_jm_cut_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$qry_jm_cut_job="SELECT po_number FROM $pps.jm_cut_job WHERE plant_code='$plant_code' AND jm_cut_job_id='$jm_cut_job_id'";
+	$jm_cut_job_result=mysqli_query($link_new, $qry_jm_cut_job) or exit("Sql Error At qry_jm_cut_job 300".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$jm_cut_job_num=mysqli_num_rows($jm_cut_job_result);
 	if($jm_cut_job_num>0){
 		while($sql_row1=mysqli_fetch_array($jm_cut_job_result))
 		{
-			$ratio_id = $sql_row1['ratio_id'];
 			$po_number=$sql_row1['po_number'];
 		}
 	}
