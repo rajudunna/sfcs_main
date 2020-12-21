@@ -2613,7 +2613,12 @@ $tot_bind_len=0;
 // {
 	if($print_status=="0" || $print_status == "")
     {
-		$sql="update $pps.requested_dockets set print_status=\"".date("Y-m-d")."\" where jm_docket_id='$doc_num'";
+		$get_docket_id="SELECT jm_docket_id FROM $pps.jm_dockets WHERE docket_number='".$doc_num."' and plant_code='$plantcode'";
+		$get_docket_id_result = mysqli_query($link,$get_docket_id); 
+		while($id_row = mysqli_fetch_array($get_docket_id_result)){
+		  $jm_docket_id = $id_row['jm_docket_id'];
+		}
+		$sql="update $pps.requested_dockets set print_status=\"".date("Y-m-d")."\" where jm_docket_id='$jm_docket_id'";
  	    // echo $sql;
 	    mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
