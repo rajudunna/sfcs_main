@@ -29,6 +29,7 @@ $driver_name=$conf->get('driver_name');
 $fabricstatus=$conf->get('fabricstatus');
 $strimstatus=$conf->get('strimstatus');
 $ptrimstatus=$conf->get('ptrimstatus');
+$breakhours=$conf->get('breakhours');
 $host_ms = $conf->get('m3_system_id');
 $user_ms = $conf->get('m3_user_name');
 $password_ms = $conf->get('m3_password');

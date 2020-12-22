@@ -728,6 +728,14 @@ td,th
                                     {
                                         $shift=$teams[$k];
                                         
+                                        $sql2="select sum(smo_adjustment_hours) as smo_adjustment_hours FROM $bai_pro.pro_attendance_adjustment WHERE DATE='$date' AND module='".$mod."' and shift=\"$shift\"";
+                                        $note.=date("His").$sql2."<br/>";
+                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error40$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        while($sql_row2=mysqli_fetch_array($sql_result2))
+                                        {
+                                            $hrs=$sql_row2['smo_adjustment_hours'];
+                                        }
+
                                         $sql_nop="select (present+jumper) as avail,absent from $bai_pro.pro_attendance where date=\"$date\" and module=\"$mod\" and shift=\"$shift\""; 
                                         // echo $sql_nop."<br>";
                                         $sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -735,7 +743,8 @@ td,th
                                         { 
                                             while($sql_row_nop=mysqli_fetch_array($sql_result_nop)) 
                                             { 
-                                                $nop=$sql_row_nop["avail"]-$sql_row_nop["absent"];
+                                                // $nop=$sql_row_nop["avail"]-$sql_row_nop["absent"];
+                                                $nop=$sql_row_nop["avail"];
                                                 $nop_shift=$nop_shift+$nop; 
                                             } 
                                         } 
@@ -797,8 +806,46 @@ td,th
                                                 { 
                                                     $start_time=$sql_row_hr['start_time'];
                                                     $end_time=$sql_row_hr['end_time'];
+                                                    $sql81="select start_time FROM $bai_pro3.tbl_plant_timings where time_value='".$start_time."'";				
+                                                    $sql_result81=mysqli_query($link, $sql81) or exit ("Sql Error7: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                                    while($sql_row81=mysqli_fetch_array($sql_result81))
+                                                    {
+                                                        $start=$sql_row81['start_time'];
+                                                    }
+                                                    
+                                                    $sql82="select end_time FROM $bai_pro3.tbl_plant_timings where time_value='".$end_time."'";						
+                                                    $sql_result82=mysqli_query($link, $sql82) or exit ("Sql Error7: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                                    while($sql_row82=mysqli_fetch_array($sql_result82))
+                                                    {
+                                                        $end='';
+                                                        $data=explode(":",$sql_row82['end_time']);
+                                                        for($i=0;$i<sizeof($data);$i++)
+                                                        {
+                                                            if($i==0)
+                                                            {
+                                                                $end .= $data[$i];
+                                                            }
+                                                            else
+                                                            {
+                                                                if($data[$i]=='59')
+                                                                {									
+                                                                    $end .= ":00";
+                                                                }
+                                                                else
+                                                                {
+                                                                    $end .= ":".($data[$i]+1);
+                                                                }								
+                                                            }
+                                                        }
+                                                    }						
+                                                    $time1 = strtotime($start);
+                                                    $time2 = strtotime($end);
+                                                   // $difference = round(abs($time2 - $time1) / 3600,2);
+                                                
+                                                   
+
                                                     if($end_time > $start_time){
-                                                        $diff_time=$end_time-$start_time;
+                                                        $diff_time=round(abs($time2 - $time1) / 3600,2);
                                                     }
                                                     else
                                                     {
@@ -811,11 +858,11 @@ td,th
                                                     $hoursa_shift=$hoursa_shift+$diff_time;
                                                 }
                                             }          
-                                        }
+                                        }                                   
                                         // echo $nop."<br>";
                                         // echo $diff_time."ds<br>";
 
-                                        $aaa=$nop*$diff_time;
+                                        $aaa=$nop*$diff_time+$hrs;
                                         $clha_shift=$clha_shift+$aaa;
                                     }
                                     //      echo $hoursa_shift."hrs<br>"; 
@@ -986,7 +1033,7 @@ td,th
                                         $peff_a=$sql_row2['plan_eff']; 
                                         $ppro_a=$sql_row2['plan_pro']; 
                                     } 
-                                    //hourly break
+                                    //hourly break                                 
                                     if($option1==1)
                                     { 
                                             echo "<td>".$hoursa_shift."</td>"; 

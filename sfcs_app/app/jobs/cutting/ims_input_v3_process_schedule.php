@@ -83,8 +83,8 @@ if($log_time==0 or $time_diff>1)
 				{ 
 					$work_hrs=$work_hrs+($sql_row_hr['end_time']-$sql_row_hr['start_time']);
 
-				}
-				$break_time=sizeof($teams)*0.5;
+				}	
+				$break_time=sizeof($teams)*($breakhours/60);
 				$work_hours=$work_hrs-$break_time;
 			}else{
 					if(sizeof($teams) > 1) 
@@ -110,7 +110,7 @@ if($log_time==0 or $time_diff>1)
 				for($i=0;$i<sizeof($teams);$i++)
 				{
 					$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
-					// echo $sql_hr."<br>";
+                    // echo $sql_hr."<br>";
 					$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					if(mysqli_num_rows($sql_result_hr) >0)
 					{
@@ -128,7 +128,8 @@ if($log_time==0 or $time_diff>1)
 				}
 			
 				if($hour_dur >3){
-					$hour_dur=$hour_dur-0.5;
+					$hour_dur=$hour_dur-($breakhours/60);
+					//$hour_dur=$hour_dur-($breakhours/60);
 				}
 				$hoursa_shift=$hour_dur;
 			}
@@ -235,7 +236,7 @@ if($log_time==0 or $time_diff>1)
 					{
 						if($hoursa_new>3)
 						{
-							$hoursa_new=$hoursa_new+0.5-1;	
+							$hoursa_new=$hoursa_new+($breakhours/60)-1;	
 						}
 					}
 					if($hoursa_new==11.5)
@@ -246,7 +247,7 @@ if($log_time==0 or $time_diff>1)
 					{
 					if($hoursa_new>7.5)
 					{
-						$hoursa_new=$hoursa_new+0.5-1;
+						$hoursa_new=$hoursa_new+($breakhours/60)-1;
 					}
 					}
 					$total_hrs+=$hoursa_new;
@@ -304,7 +305,7 @@ if($log_time==0 or $time_diff>1)
 			
 			//S:To avoid Duplicate Entry - 20150511 Kirang
 			$hour_dur=0;
-			$sql222_new="select distinct bac_date from $table_name where bac_date between \"$sdate\" and \"$edate\"";
+			$sql222_new="select distinct bac_date from $table_name where bac_date between \"$sdate\" and \"$edate\"";			
 			$note.=date("His").$sql222."<br/>";
 			$sql_result222_new=mysqli_query($link, $sql222_new) or exit("Sql Error28$sql222_new".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
@@ -381,11 +382,49 @@ if($log_time==0 or $time_diff>1)
                             {
                                 while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
                                 { 
-                                    $work_hrs=$work_hrs+($sql_row_hr['end_time']-$sql_row_hr['start_time']);
+									$start_time=$sql_row_hr['start_time'];
+									$end_time=$sql_row_hr['end_time'];
+									$sql81="select start_time FROM $bai_pro3.tbl_plant_timings where time_value='".$start_time."'";				
+									$sql_result81=mysqli_query($link, $sql81) or exit ("Sql Error7: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+									while($sql_row81=mysqli_fetch_array($sql_result81))
+									{
+										$start=$sql_row81['start_time'];
+									}
+									
+									$sql82="select end_time FROM $bai_pro3.tbl_plant_timings where time_value='".$end_time."'";						
+									$sql_result82=mysqli_query($link, $sql82) or exit ("Sql Error7: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+									while($sql_row82=mysqli_fetch_array($sql_result82))
+									{
+										$end='';
+										$data=explode(":",$sql_row82['end_time']);
+										for($i=0;$i<sizeof($data);$i++)
+										{
+											if($i==0)
+											{
+												$end .= $data[$i];
+											}
+											else
+											{
+												if($data[$i]=='59')
+												{									
+													$end .= ":00";
+												}
+												else
+												{
+													$end .= ":".($data[$i]+1);
+												}								
+											}
+										}
+									}						
+									$time1 = strtotime($start);
+									$time2 = strtotime($end);
+									$difference = round(abs($time2 - $time1) / 3600,2);
+								
+                                    $work_hrs=$work_hrs+($difference);
 
                                 }
-								$work_hours=$work_hrs-0.5;
-								
+								$work_hours=$work_hrs-($breakhours/60);
+						
                             }else{
 								$work_hours=7.5;
                             }
@@ -406,7 +445,7 @@ if($log_time==0 or $time_diff>1)
 										$end_time=$sql_row_hr['end_time'];
 										$diff_time=$current_hr-$start_time;
 										if($diff_time>3){
-												$diff_time=$diff_time-0.5;
+												$diff_time=$diff_time-($breakhours/60);
 										}
 
 										$hour_dur=$hour_dur+$diff_time;
@@ -424,7 +463,10 @@ if($log_time==0 or $time_diff>1)
 										$start_time=$sql_row_hr['start_time'];
 										$end_time=$sql_row_hr['end_time'];
 										if($end_time > $start_time){
-											$diff_time=$end_time-$start_time;
+											$time1 = strtotime($start_time);
+											$time2 = strtotime($end_time);
+											$diff_time = round(abs($time2 - $time1) / 3600,2);
+											//$diff_time=$end_time-$start_time;
 										}
 										else
 										{
@@ -432,7 +474,7 @@ if($log_time==0 or $time_diff>1)
 											$diff_time=$start+$end_time;
 										}
 										if($diff_time>3){
-												$diff_time=$diff_time-0.5;
+												$diff_time=$diff_time-($breakhours/60);
 										}
 										$hour_dur=$hour_dur+$diff_time;
 									}
@@ -472,6 +514,14 @@ if($log_time==0 or $time_diff>1)
 							{
 								$nop=$sql_row2['nop'];
 							}
+
+							$sql2="select sum(smo_adjustment_hours) as smo_adjustment_hours FROM $bai_pro.pro_attendance_adjustment WHERE DATE='$date' AND module=$module and shift='".$shift."' ";
+							$note.=date("His").$sql2."<br/>";
+							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error40$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row2=mysqli_fetch_array($sql_result2))
+							{
+								$hrs=$sql_row2['smo_adjustment_hours'];
+							}
 						
 							$days=0;
 							$sql2="select days from $bai_pro.pro_style_today where style=\"$style_code_new\"";
@@ -483,8 +533,8 @@ if($log_time==0 or $time_diff>1)
 							}
 
 							//COM: Actual Clock Hours
-							$act_clh=$nop*$hoursa_shift;
-
+							$act_clh=$nop*$hoursa_shift+$hrs;
+							
 							//COM: PLAN
 							$sql2="select plan_eff, plan_pro, act_hours from $bai_pro.pro_plan_today where date=\"$date\" and shift=\"$shift\" and sec_no=$sec and   mod_no=$module";
 							// echo $sql2."<br>";
@@ -506,7 +556,7 @@ if($log_time==0 or $time_diff>1)
 							$act_clh=$pln_clh;
 							
 							
-							$act_clh=$nop*$hoursa_shift;
+							$act_clh=$nop*$hoursa_shift+$hrs;
 										
 							$code=$date."-".$module."-".$shift;
 							// echo $code."<br>";
