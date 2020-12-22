@@ -494,7 +494,7 @@ if(isset($_POST['allocate_new']))
 	$schedule=$_POST['schedule1'];
 	$plant_code = $_POST['plant_code_name1'];
     $username = $_POST['username1']; 
-	$jm_docket_line_id = $_POST['jm_docket_line_id']; 
+	$jm_docket_id = $_POST['jm_docket_id']; 
    	for($i=0;$i<sizeof($doc_ref);$i++)
 	{
 		$temp="lable".$doc_ref[$i];
@@ -651,9 +651,9 @@ if(isset($_POST['allocate_new']))
 			$uuid1=$uuid_row1['uuid'];
 		
 		}
-		$sql13="insert into $pps.requested_dockets(docket_requested_id,jm_docket_line_id,plan_lot_ref,plant_code,created_user,created_at,fabric_status) values('$uuid1','".$jm_docket_line_id."',\"".$lot_db[$i]."\",'".$plant_code."','".$username."',NOW(),'5')";
+		$sql13="insert into $pps.requested_dockets(docket_requested_id,jm_docket_id,plan_lot_ref,plant_code,created_user,created_at,fabric_status) values('$uuid1','".$jm_docket_id."',\"".$lot_db[$i]."\",'".$plant_code."','".$username."',NOW(),'5')";
 
-					mysqli_query($link, $sql13) or exit("Sql Error344: $sql13".mysqli_error($GLOBALS["___mysqli_ston"]));				
+		mysqli_query($link, $sql13) or exit("Sql Error344: $sql13".mysqli_error($GLOBALS["___mysqli_ston"]));				
 	}	
 	$update_parent="update $pps.binding_consumption set status='Allocated',status_at='".date("Y-m-d H:i:s")."',updated_user= '".$username."',updated_at=NOW() where id=$row_id_new and plant_code='".$plant_code."'";
 
@@ -780,17 +780,17 @@ if(isset($_POST['allocate']))
 		//Table to show all list of available items
 		if(sizeof($lot_db_2)>0)
 		{
-			$docket_query = "select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number='$doc_ref' and plant_code='".$plant_code."'";
+			$docket_query = "select jm_docket_id from $pps.jm_dockets where docket_number='$doc_ref' and plant_code='".$plant_code."'";
 			$docket_query_result = mysqli_query($link_new,$docket_query);
 			while($sql_row1=mysqli_fetch_array($docket_query_result))
 			{
-				$jm_docket_line_id = $sql_row1['jm_docket_line_id'];
+				$jm_docket_id = $sql_row1['jm_docket_id'];
 			}
         echo "<input type=\"hidden\" name=\"row_id1\" value=\"".$row_id."\">";
 		echo "<input type=\"hidden\" name=\"style_ref1\" value=\"".$style_ref."\">";
 		echo "<input type=\"hidden\" name=\"schedule1\" value=\"".$schedule."\">";
 		echo "<input type=\"hidden\" name=\"plant_code_name1\" value=\"".$plant_code."\">";
-		echo "<input type=\"hidden\" name=\"jm_docket_line_id\" value=\"".$jm_docket_line_id."\">";
+		echo "<input type=\"hidden\" name=\"jm_docket_id\" value=\"".$jm_docket_id."\">";
 		echo "<input type=\"hidden\" name=\"username1\" value=\"".$username."\">";
 		echo "<input type=\"hidden\" name=\"doc_ref[$i]\" value=\"".$doc_ref."\">";
 		echo "<input type=\"hidden\" name=\"process_cat\" value=\"".$process_cat."\">";

@@ -108,17 +108,17 @@ if(isset($_POST['submit']))
 		echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'entry_delete.php','N').'">';
 		echo '<tr><td>Reason</td><td>:</td><td><div class="row"><div class="col-md-4"><input type="text" name="reason"  id="reason2" class="form-control" required ></div></div></td></tr>';
 		
-		if(in_array($authorized,$has_permission))
-		{
-			echo '<tr><td></td><td></td><td><input type="submit" value="delete" name="delete" id="delete" class="btn btn-danger btn-sm confirm-submit" onclick="return check_reason1();" ><input type="hidden" name="lid" value="'.$lid.'" onclick=document.getElementById("delete").style.display="none"; ></td></tr>';
-		}
-		else
-		{
+		// if(in_array($authorized,$has_permission))
+		// {
+			// echo '<tr><td></td><td></td><td><input type="submit" value="delete" name="delete" id="delete" class="btn btn-danger btn-sm confirm-submit" onclick="return check_reason1();" ><input type="hidden" name="lid" value="'.$lid.'" onclick=document.getElementById("delete").style.display="none"; ></td></tr>';
+		// }
+		// else
+		// {
 			if($qty_rec>0 and $qty_issued==0 and $qty_ret==0 and strlen($ref1)==0 and strlen($ref4)==0)
 			{				
 				echo '<tr><td></td><td></td><td><input type="submit" value="delete" name="delete" id="delete" class="btn btn-danger btn-sm confirm-submit" onclick="return check_reason1();" ><input type="hidden" name="lid" value="'.$lid.'" onclick=document.getElementById("delete").style.display="none";></td></tr>';
-			}	
-		}
+			 }	
+		// }
 		echo '</form>';
 		echo "</table>";
 	}
@@ -140,7 +140,6 @@ if(isset($_POST['delete']))
 		
 
 	$query = "select qty_issued,qty_allocated from $wms.store_in where barcode_number='$lid' and plant_code='".$plant_code."'";
-	
 	$result = mysqli_query($link,$query);
 	while($row = mysqli_fetch_array($result)){
 		$issued_qty = $row['qty_issued'];
@@ -157,12 +156,11 @@ if(isset($_POST['delete']))
 	
 	}else{
 		$sql="insert into $wms.store_in_deleted select * from $wms.store_in where barcode_number='$lid' and plant_code='".$plant_code."'";
-		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error4=".mysqli_error($link));
 		
-		$id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+		//$id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 		//echo $id;
-		$sql3="update $wms.store_in_deleted set log_user='".$username."$".$reason."',log_stamp =NOW(),updated_user= '".$username."',updated_at=NOW() where barcode_number=".$id." and plant_code='".$plant_code."'";
+		$sql3="update $wms.store_in_deleted set log_user='".$username."$".$reason."',log_stamp =NOW(),updated_user= '".$username."',updated_at=NOW() where barcode_number='".$lid."' and plant_code='".$plant_code."'";
 		// echo  "<br/>".$sql3;	 
 		$sql_result3=mysqli_query($link, $sql3) or exit($sql3."<br/>Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$num3=mysqli_affected_rows($link);
