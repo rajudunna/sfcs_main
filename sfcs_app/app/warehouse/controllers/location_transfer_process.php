@@ -29,8 +29,7 @@ if($_POST['put'])
 	$barcode_number=$_POST['barcode_number'];
 	$ref_tid=$_POST['ref_tid'];
 	$user_name=$_SESSION['SESS_MEMBER_ID'];
-	$qty_rec=$_POST['qty_rec'];
-	$username=getrbac_user()['uname'];	
+	$qty_rec=$_POST['qty_rec'];	
 	
 	//echo sizeof($qty_issued);
 	

@@ -227,10 +227,10 @@ if(trim($product_group)=='Fabric')
 			  echo "<td  style='background-color:white;'>$location</td><td style='background-color:white;'>$lot_ref</td><td style='background-color:white;'>$barcode_number</td><td style='background-color:white;'>$box</td><td style='background-color:white;'>$available</td>";
 			  echo '<td style="background-color:white;"><input style="width:88px; type="text" name="date[]" value="'.date("Y-m-d").'"></td>';
 			  echo '<td style="background-color:white;"><input class="float" style="width: 72px; type="text" name="qty_issued[]"  value="" onchange="if(check(this.value, '.$available.')==1010){ this.value=0;}"></td>';
-			  echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="style[]"  value=""></td>';
-			  echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="schedule[]"  value=""></td>';
-			  echo '<td style="background-color:white;"><input style="width: 62px; type="text" name="cut[]" value=""></td>';
-			  echo '<td style="background-color:white;"><input style="width: 125px; type="text" name="remarks[]" value="">';
+			  echo '<td style="background-color:white;"><input style="width: 110px; type="text" maxlength="10" name="style[]"  value=""></td>';
+			  echo '<td style="background-color:white;"><input style="width: 110px; type="text" maxlength="10" name="schedule[]"  value=""></td>';
+			  echo '<td style="background-color:white;"><input style="width: 62px; type="text" maxlength="10" name="cut[]" value=""></td>';
+			  echo '<td style="background-color:white;"><input style="width: 125px; type="text" maxlength="20" name="remarks[]" value="">';
 			  echo '<input type="hidden" name="tid[]" value="'.$tid.'"><input type="hidden" name="available[]" value="'.$available.'"><input type="hidden" name="available2[]" value="'.$available2.'"></td>';
 		  }
 		  
@@ -262,10 +262,10 @@ else
 		  echo "<td  style='background-color:white;'>$location</td><td style='background-color:white;'>$lot_ref</td><td style='background-color:white;'>$barcode_number</td><td style='background-color:white;'>$box</td><td style='background-color:white;'>$available</td>";
 		  echo '<td style="background-color:white;"><input style="width:88px; type="text" name="date[]" value="'.date("Y-m-d").'"></td>';
 		  echo '<td style="background-color:white;"><input class="float" style="width: 72px; type="text" name="qty_issued[]"  value="" onchange="if(check(this.value, '.$available.')==1010){ this.value=0;}"></td>';
-		  echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="style[]"  value=""></td>';
-		  echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="schedule[]"  value=""></td>';
-		  echo '<td style="background-color:white;"><input style="width: 62px; type="text" name="cut[]" value=""></td>';
-		  echo '<td style="background-color:white;"><input style="width: 125px; type="text" name="remarks[]" value="">';
+		  echo '<td style="background-color:white;"><input style="width: 110px; type="text" maxlength="10" name="style[]"  value=""></td>';
+		  echo '<td style="background-color:white;"><input style="width: 110px; type="text" maxlength="10" name="schedule[]"  value=""></td>';
+		  echo '<td style="background-color:white;"><input style="width: 62px; type="text" maxlength="10" name="cut[]" value=""></td>';
+		  echo '<td style="background-color:white;"><input style="width: 125px; type="text" maxlength="20" name="remarks[]" value="">';
 		  echo '<input type="hidden" name="tid[]" value="'.$tid.'"><input type="hidden" name="available[]" value="'.$available.'"><input type="hidden" name="available2[]" value="'.$available2.'"></td>';
 	  }
 	  
