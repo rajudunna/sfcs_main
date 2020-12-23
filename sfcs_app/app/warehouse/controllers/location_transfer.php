@@ -120,7 +120,7 @@
 <div class="row">
 <div class="col-md-3">
 <label>Enter Lot No: </label>
-<input type="text" class='form-control integer' id="course" name="lot_no"  />
+<input type="text" class='form-control integer' id="course" name="lot_no" required="required"/>
 </div>
 <input type="submit" id="submit" name="submit" class='btn btn-info' value="Search" onclick="return testing()" style="margin-top: 22px;">
 </div>
