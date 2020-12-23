@@ -37,8 +37,8 @@ $().ready(function() {
 
 <div style="float:right;">
 <FORM method="post" name="input2" action="?r=<?= $_GET['r'] ?>">
-<div id="seract_lot">Search Lot No/Location: <!--<input type="text" id="course" name="lot_no">-->
-<textarea id="course" name="lot_no" cols=12 rows=10 style="height: 107px;"></textarea>
+<div id="seract_lot">Search Lot No: <!--<input type="text" id="course" name="lot_no">-->
+<textarea id="course" name="lot_no" cols=12 rows=10 style="height: 107px;" required></textarea>
 <input type="submit" name="submit" value="Search" class="btn btn-success"></div>
 </form>
 
@@ -78,6 +78,14 @@ if(strlen($lot_no)>2)
 	 else{
 	  echo"<style>#back1{display:none;}</style>";
 	 }
+	 $check_lots="select * from $wms.sticker_report where lot_no in ('".trim($lot_no)."') and plant_code='".$plant_code."'";
+	$check_lots_result=mysqli_query($link, $check_lots) or exit("Sql Errorchecklots".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_checklot=mysqli_num_rows($check_lots_result);
+	if($sql_num_checklot == 0)
+	{
+		echo "<script>swal('Invalid Lot Number')</script>";
+		die();
+	}
 
 //$sql="select * from sticker_report where lot_no=\"".trim($lot_no)."\"";
 $sql5="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date from $wms.sticker_report where lot_no in ('".trim($lot_no)."') and plant_code='".$plant_code."'";
@@ -100,6 +108,7 @@ while($sql_row=mysqli_fetch_array($sql_result5))
   $pkg_no=$sql_row['pkg_no'];
   $grn_date=$sql_row['grn_date'];
 }
+
 
 $sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where lot_no in ('".trim($lot_no)."') and plant_code='".$plant_code."'";
 //mysqli_query($sql,$link) or exit("Sql Error3".mysqli_error());

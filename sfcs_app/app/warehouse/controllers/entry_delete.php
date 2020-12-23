@@ -323,7 +323,7 @@ if(isset($_POST['submit2']))
 		//echo "<table class='table table-bordered'><tr class='danger'><td>Details not available, please enter lot no.</td></tr></table>";
 		echo "<script>sweetAlert('please enter valid lot no','','warning')</script>";
         $url = getFullURL($_GET['r'],'entry_delete.php','N');
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",3000); function Redirect() {  location.href = \"$url\"; }</script>";
 
 	}
 
@@ -427,7 +427,7 @@ if(isset($_POST['put']))
 				//echo "<h2><font color=green>Lot number deleted successfully</font></h2>";
 				echo "<script>sweetAlert('Lot Number Deleted Successfully','','success')</script>";
 				$url = getFullURL($_GET['r'],'entry_delete.php','N');
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",3000); function Redirect() {  location.href = \"$url\"; }</script>";
 			}				
 			else
 			{
