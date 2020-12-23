@@ -165,7 +165,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			$shades=array("","A","B","C","D","E","F","G");
 
 
-			$sql="select tid,ref1,ref2,qty_rec,status,qty_issued,qty_ret,ref4,ref3,ref5 from $wms.store_in where plant_code='$plantcode' and lot_no=\"".trim($lot_no)."\"";
+			$sql="select tid,ref1,ref2,qty_rec,status,qty_issued,qty_ret,ref4,ref3,ref5,barcode_number from $wms.store_in where plant_code='$plantcode' and lot_no=\"".trim($lot_no)."\"";
 			// echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error-c".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
@@ -175,6 +175,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			{
 				$MRN_tid[] = $sql_row['tid'];
 				$tid=$sql_row['tid'];
+				$barcode_number=$sql_row['barcode_number'];
 				$location=$sql_row['ref1'];
 				$box=$sql_row['ref2'];
 				$qty_rec=$sql_row['qty_rec'];
@@ -188,7 +189,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 				
 				if($status==0)
 				{	
-					echo '<td>'.leading_zeros($tid,8).'</td>';
+					echo '<td>'.leading_zeros($barcode_number,8).'</td>';
 					if($location=="")
 					{
 						echo '<td><select name="ref1[]">';
