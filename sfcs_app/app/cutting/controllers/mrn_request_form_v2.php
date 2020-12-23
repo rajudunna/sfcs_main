@@ -538,7 +538,7 @@ $(document).ready(function(){
                         }
                     }
                     echo "</select></div>";
-                    echo $sql11;
+                    // echo $sql11;
                     //echo "<br/>".$sql13;
 
                     //To check the supplier approved quantity for issue availability 
@@ -646,7 +646,7 @@ $(document).ready(function(){
 							$company_no=$sql_row141["company_code"];
 						}
 
-						$sql ="SELECT mo_number FROM $pps.finished_good fg LEFT JOIN $pps.jm_product_logical_bundle jplb ON jplb.jm_pplb_id=fg.jm_pplb_id WHERE fg.cut_number=$inp_4 AND fg.plant_code='$plant_code'";
+						$sql ="SELECT mo_number FROM $pps.finished_good fg LEFT JOIN $pps.jm_product_logical_bundle jplb ON jplb.jm_pplb_id=fg.jm_pplb_id WHERE jplb.cut_number=$inp_4 AND fg.plant_code='$plant_code'";
 					
 						$sql_result=mysqli_query($link, $sql) or die(exception($sql));
 						$MIRecords = array();

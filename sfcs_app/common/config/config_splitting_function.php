@@ -29,8 +29,23 @@ function roll_splitting_function($roll_id,$total_roll_qty,$issued_qty,$plant_cod
 
 		$qry_newroll="insert into $wms.store_in(tid,lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll,ref_tid,barcode_number,plant_code,created_user,updated_user,updated_at) values('".$uuid."','".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$balance_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$row_rolldetials["log_user"]."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".($row_rolldetials["ref5"]-$issued_qty)."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$roll_id."','".$row_rolldetials["ref_tid"]."','".$row_rolldetials["barcode_number"]."','".$plant_code."','".$username."','".$username."',NOW())";
 		mysqli_query($link, $qry_newroll) or exit("Sql Error33: $qry_newroll".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$new_tid=mysqli_insert_id($link);
-		$sql22="update $wms.store_in set barcode_number='".$facility_code."-".$uuid."' where tid='".$uuid."' and plant_code='".$plant_code."'";
+		// $new_tid=mysqli_insert_id($link);
+		//To check bundle count for plant
+		$bundlenumber=0;
+		$checkcount="SELECT count(barcode_number) as barcodecount FROM $wms.store_in WHERE plant_code='$plant_code'";
+		$sql_result12=mysqli_query($link, $checkcount) or exit("Sql Error at checkcount".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$count_num=mysqli_num_rows($sql_result12);
+		if($count_num > 0){
+			while($count_row=mysqli_fetch_array($sql_result12))
+			{
+				$barcodecount=$count_row['barcodecount'];
+				$bundlenumber=$barcodecount+1;
+			}
+		} else 
+		{
+			$bundlenumber++;
+		}
+		$sql22="update $wms.store_in set barcode_number='".$plant_code."-".$bundlenumber."' where tid='".$uuid."' and plant_code='".$plant_code."'";
 		mysqli_query($link, $sql22) or exit("Sql Error333: $sql22".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	$sql="update $wms.store_in set qty_rec=".$issued_qty.",qty_allocated=".$issued_qty.",status=2, allotment_status=2 where tid='".$roll_id."' and plant_code='".$plant_code."'";
@@ -48,7 +63,7 @@ function binding_roll_splitting_function($roll_id,$total_roll_qty,$issued_qty,$p
 	$username=$username;
 	if($balance_qty>0)
 	{
-		$qry_rolldetails="SELECT lot_no,ref1,ref2,ref3,remarks,log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason,barcode_number,ref_tid,qty_allocated,qty_issued FROM $wms.store_in WHERE tid=".$roll_id." and plant_code='".$plant_code."'";
+		$qry_rolldetails="SELECT lot_no,ref1,ref2,ref3,remarks,log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason,barcode_number,ref_tid,qty_allocated,qty_issued FROM $wms.store_in WHERE tid='".$roll_id."' and plant_code='".$plant_code."'";
 		$result__rolldetials=mysqli_query($link_new, $qry_rolldetails);
 		$row_rolldetials=mysqli_fetch_assoc($result__rolldetials);
 		$select_uuid="SELECT UUID() as uuid";
@@ -61,8 +76,23 @@ function binding_roll_splitting_function($roll_id,$total_roll_qty,$issued_qty,$p
 
 		$qry_newroll="insert into $wms.store_in(tid,lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll,ref_tid,barcode_number,plant_code,created_user,updated_user,updated_at) values('".$uuid."','".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$balance_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$row_rolldetials["log_user"]."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".($row_rolldetials["ref5"]-$issued_qty)."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$roll_id."','".$row_rolldetials["ref_tid"]."','".$row_rolldetials["barcode_number"]."','".$plant_code."','".$username."','".$username."',NOW())";
 		mysqli_query($link_new, $qry_newroll) or exit("Sql Error5: $qry_newroll".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$new_tid=mysqli_insert_id($link_new);
-		$sql22="update $wms.store_in set barcode_number='".$facility_code."-".$uuid."' where tid=".$uuid." and plant_code='".$plant_code."'";
+		// $new_tid=mysqli_insert_id($link_new);
+		//To check bundle count for plant
+		$bundlenumber=0;
+		$checkcount="SELECT count(barcode_number) as barcodecount FROM $wms.store_in WHERE plant_code='$plant_code'";
+		$sql_result12=mysqli_query($link, $checkcount) or exit("Sql Error at checkcount".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$count_num=mysqli_num_rows($sql_result12);
+		if($count_num > 0){
+			while($count_row=mysqli_fetch_array($sql_result12))
+			{
+				$barcodecount=$count_row['barcodecount'];
+				$bundlenumber=$barcodecount+1;
+			}
+		} else 
+		{
+			$bundlenumber++;
+		}
+		$sql22="update $wms.store_in set barcode_number='".$plant_code."-".$bundlenumber."' where tid=".$uuid." and plant_code='".$plant_code."'";
 		mysqli_query($link_new, $sql22) or exit("Sql Error6: $sql22".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	$qty_rec_old = $row_rolldetials["qty_allocated"]+$row_rolldetials["qty_issued"]+$issued_qty;
