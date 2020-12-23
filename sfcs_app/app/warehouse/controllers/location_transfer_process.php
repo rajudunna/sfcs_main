@@ -49,7 +49,7 @@ if($_POST['put'])
 				//echo $sql;
 				$sql_result2=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
-				$sql="insert into $wms.location_trnsf (date,source_location,new_location,tid,lot_no,remarks,old_qty,new_qty,plant_code,created_user,updated_user,updated_at,created_at) values (\"$date\",\"".$s_location[$i]."\",\"".$n_location[$i]."\",\"".$barcode_number[$i]."\",\"".$lot_no_new."\",\"".$remarks[$i]."\",".$available[$i].",".$qty_issued[$i].",'".$plant_code."',\"$username\",'".$username."',NOW(),NOW())";
+				$sql="insert into $wms.location_trnsf (date,source_location,new_location,tid,lot_no,remarks,old_qty,new_qty,log_user,plant_code,created_user,updated_user,updated_at,created_at) values (\"$date\",\"".$s_location[$i]."\",\"".$n_location[$i]."\",\"".$barcode_number[$i]."\",\"".$lot_no_new."\",\"".$remarks[$i]."\",".$available[$i].",".$qty_issued[$i].",\"$username\",'".$plant_code."',\"$username\",'".$username."',NOW(),NOW())";
 //echo $sql;
 				$sql_result1=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
@@ -84,7 +84,7 @@ if($_POST['put'])
 				//$new_tid=mysqli_insert_id($link);
 				//To check bundle count for plant
 				$bundlenumber=0;
-				$checkcount="SELECT count(barcode_number) as barcodecount FROM $wms.store_in WHERE plant_code='$plantcode'";
+				$checkcount="SELECT count(barcode_number) as barcodecount FROM $wms.store_in WHERE plant_code='$plant_code'";
 				$sql_result12=mysqli_query($link, $checkcount) or exit("Sql Error at checkcount".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$count_num=mysqli_num_rows($sql_result12);
 				if($count_num > 0){
