@@ -1768,7 +1768,8 @@ function printpr()
 	else
 	{
 		$parent_id=$_GET['parent_id'];
-
+		$plantcode=$_GET['plant_code'];
+        $username=$_GET['username'];
 		$lot = array();
 		$get_details = "select distinct(lot_no),supplier_batch from $wms.inspection_population where plant_code='$plantcode' and parent_id='$parent_id'";
 	    //echo $get_details;
