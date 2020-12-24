@@ -101,4 +101,9 @@ class ApiTypeEnum {
     const FG= 'FG';
     const OPN = 'OPN';
 }
+
+class DocOwningTypeEnum {
+    const MAIN = 'MAIN';
+    const FOREIGN = 'FOREIGN';
+}
 ?>
