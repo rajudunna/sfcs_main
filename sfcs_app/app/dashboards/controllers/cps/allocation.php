@@ -581,7 +581,7 @@ if(isset($_POST['allocate_new']))
 					}
 
                     $row_id_new1 = 'B'.$row_id_new;
-					$sql="insert into $wms.fabric_cad_allocation(tran_id,doc_no,roll_id,roll_width,doc_type,allocated_qty,status,plant_code,created_user,updated_at) values('".$uuid."','".$jm_docket_line_id."','".$tid_ref[$j]."','".$width_ref[$j]."','binding',".$issued_ref[$j].",'2','".$plant_code."','".$username."',NOW())";
+					$sql="insert into $wms.fabric_cad_allocation(tran_id,doc_no,roll_id,roll_width,doc_type,allocated_qty,status,plant_code,created_user,updated_at) values('".$uuid."','".$jm_docket_id."','".$tid_ref[$j]."','".$width_ref[$j]."','binding',".$issued_ref[$j].",'2','".$plant_code."','".$username."',NOW())";
 					
 					//Uncheck this					
 					mysqli_query($link, $sql) or exit("Sql Error43: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -595,8 +595,8 @@ if(isset($_POST['allocate_new']))
 					}    
 					
 					
-					$sql111="select roll_id,tran_pin,allocated_qty from $wms.fabric_cad_allocation where doc_no='".$jm_docket_line_id."' and roll_id='".$tid_ref[$j]."' and plant_code='".$plant_code."'";
-                    //echo $sql111."</br>";
+					$sql111="select roll_id,allocated_qty from $wms.fabric_cad_allocation where doc_no='".$jm_docket_id."' and roll_id='".$tid_ref[$j]."' and plant_code='".$plant_code."'";
+                    // echo $sql111."</br>";
 					$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
                     if(mysqli_num_rows($sql_result111)>0)
@@ -604,7 +604,6 @@ if(isset($_POST['allocate_new']))
                         while($row2=mysqli_fetch_array($sql_result111))
                         {
                             $code=$row2['roll_id'];
-                            $tran_pin=$row2['tran_pin'];
 							$sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty,qty_allocated,allotment_status from $wms.store_in where roll_status in (0,2) and tid=\"$code\" and plant_code='".$plant_code."'";
 							//echo $sql1;
                             $sql_result=mysqli_query($link, $sql1) or exit("Sql Error--15".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -838,7 +837,7 @@ if(isset($_POST['allocate']))
         $sql="select * from $wms.store_in where plant_code='".$plant_code."' and lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1)";
         // var_dump($sql);
 		// // die();
-	
+
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error12455: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$row_count=mysqli_num_rows($sql_result);
 		$j=0;
@@ -849,7 +848,7 @@ if(isset($_POST['allocate']))
 		{
 
 			$sql33="select inv_no,grn_date,batch_no,item from $wms.sticker_report where plant_code='".$plant_code."' and lot_no in (".implode(",",$lot_db_2).")";
-			// echo $sql3;
+			// echo $sql33;
 			$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error12nth: $sql33".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$row_count33=mysqli_num_rows($sql_result33);	
 			while($sql_row3=mysqli_fetch_array($sql_result33))
@@ -858,20 +857,22 @@ if(isset($_POST['allocate']))
 					$grn_date=$sql_row3['grn_date'];
 					$batch_no=$sql_row3['batch_no'];
 					$item=$sql_row3['item'];
+					if(strcmp($inv_no,trim($sql_row3['inv_no'])))
+					{
+						if($bg_color=="#99CCFF")
+						{
+							$bg_color="white";
+							$inv_no=trim($sql_row3['inv_no']);
+						}
+						else
+						{
+							$bg_color="#99CCFF";
+							$inv_no=trim($sql_row3['inv_no']);
+						}
+					}
 				}
-			if(strcmp($inv_no,trim($sql_row['inv_no'])))
-			{
-				if($bg_color=="#99CCFF")
-				{
-					$bg_color="white";
-					$inv_no=trim($sql_row['inv_no']);
-				}
-				else
-				{
-					$bg_color="#99CCFF";
-					$inv_no=trim($sql_row['inv_no']);
-				}
-			}
+				
+			
 			
 			
 			// var_dump($sql);
@@ -963,7 +964,7 @@ if(isset($_POST['allocate']))
 			echo "<td>".$batch_no."</td>";
 			echo "<td id='col1'>".$item."</td>";
 			echo "<td id='col1'>".$sql_row['lot_no']."</td>";
-			echo "<td>".$sql_row['shade']."</td>";
+			echo "<td>".$sql_row['ref4']."</td>";
 			if($shrinkage_inspection == 'yes') 
 	        {
 			echo "<td>".$sql_row['shrinkage_group']."</td>";
@@ -973,7 +974,7 @@ if(isset($_POST['allocate']))
 			echo "<td>".$sql_row['ref2']."</td>";
 			echo "<td>".$sql_row['ref1']."</td>";
 			echo "<td>".$sql_row['roll_remarks']."</td>";
-			echo "<td>".$sql_row['shade']."</td>";
+			echo "<td>".$sql_row['ref4']."</td>";
 			echo "<td>".$sql_row['ref6']."</td>";
 			echo "<td>".$sql_row['ref3']."</td>";
 			echo "<td>".$sql_row['qty_rec']."</td>";

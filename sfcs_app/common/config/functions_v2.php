@@ -698,7 +698,8 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
 
     }
     //qry to get dockets in through dockets id
-    $qry_get_docketlines="SELECT jm_docket_id,docket_number FROM $pps.jm_dockets WHERE jm_docket_id IN ('$jm_dockets') AND plant_code='$plantcode' AND is_binding='$4' AND is_active=1";
+    $binding_value=1;
+    $qry_get_docketlines="SELECT jm_docket_id,docket_number FROM $pps.jm_dockets WHERE jm_docket_id IN ('$jm_dockets') AND plant_code='$plantcode' AND is_binding='$binding_value' AND is_active=1";
     $qry_get_docketlines_result=mysqli_query($link_new, $qry_get_docketlines) or exit("Sql Error at docket lines".mysqli_error($GLOBALS["___mysqli_ston"]));
     $docketlines_num=mysqli_num_rows($qry_get_docketlines_result);
     if($docketlines_num>0){

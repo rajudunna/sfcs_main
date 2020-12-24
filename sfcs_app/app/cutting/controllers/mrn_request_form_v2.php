@@ -458,7 +458,7 @@ $(document).ready(function(){
                     echo "<div class='col-md-2'>Select Batch No: <select name=\"batchno\" onchange=\"fifthbox();\" class='form-control'>";
                     echo "<option value=\"0\" selected>NIL</option>";
 
-                    $sql11="select jm_cut_job_id from $pps.jm_cut_job where cut_number=\"".$cut_no."\"";
+                    $sql11="select jm_cut_job_id from $pps.jm_cut_job where cut_number=\"".$cut_no."\" and plant_code='".$plant_code."'";
                     
                     $sql_result11=mysqli_query($link, $sql11) or die("Error".$sql11.mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row11=mysqli_fetch_array($sql_result11))
@@ -467,7 +467,7 @@ $(document).ready(function(){
                        
                     }
 
-                    $sql111="select jm_docket_id from $pps.jm_cut_docket_map where jm_cut_job_id=\"".$cut_num."\"";
+                    $sql111="select jm_docket_id from $pps.jm_cut_docket_map where jm_cut_job_id=\"".$cut_num."\" and plant_code='".$plant_code."'";
                     // echo "<option value=\"0\" selected>".$sql11."</option>";
                     $sql_result111=mysqli_query($link, $sql111) or die("Error".$sql111.mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row111=mysqli_fetch_array($sql_result111))
@@ -476,16 +476,8 @@ $(document).ready(function(){
 
 
                     }
-                    $sql1111="select jm_docket_id from $pps.jm_dockets where plant_code='$plant_code' AND jm_docket_id IN ('".implode("','" , $jm_docket_id)."')";
-                //    echo "<option value=\"0\" selected>".$sql1111."</option>";
-                    $sql_result111=mysqli_query($link, $sql1111) or die("Error".$sql111.mysqli_error($GLOBALS["___mysqli_ston"]));
-                    while($sql_row111=mysqli_fetch_array($sql_result111))
-                    {
-                        $jm_docket_id[]=$sql_row111["jm_docket_id"];
-
-
-                    }
-                        $sql12="select group_concat(plan_lot_ref) as plan_lot_ref,docket_number from $pps.requested_dockets rd LEFT JOIN $pps.jm_dockets jm ON rd.jm_docket_id=jm.jm_docket_id  where (fabric_status=5 or LENGTH(plan_lot_ref) > 0) AND jm_docket_id IN ('".implode("','" , $jm_docket_id)."')";
+                    
+                        $sql12="select group_concat(plan_lot_ref) as plan_lot_ref,docket_number from $pps.requested_dockets rd LEFT JOIN $pps.jm_dockets jm ON rd.jm_docket_id=jm.jm_docket_id  where (fabric_status=5 or LENGTH(plan_lot_ref) > 0) AND jm.jm_docket_id IN ('".implode("','" , $jm_docket_id)."') and jm.plant_code='".$plant_code."'";
                        // echo $sql12;
                         //echo "<option value=\"0\" selected>".$sql12."</option>";
                         $sql_result12=mysqli_query($link, $sql12) or die("Error".$sql12.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -546,7 +538,7 @@ $(document).ready(function(){
                         }
                     }
                     echo "</select></div>";
-                    echo $sql11;
+                    // echo $sql11;
                     //echo "<br/>".$sql13;
 
                     //To check the supplier approved quantity for issue availability 
@@ -654,7 +646,7 @@ $(document).ready(function(){
 							$company_no=$sql_row141["company_code"];
 						}
 
-						$sql ="SELECT mo_number FROM $pps.finished_good fg LEFT JOIN $pps.jm_product_logical_bundle jplb ON jplb.jm_pplb_id=fg.jm_pplb_id WHERE fg.cut_number=$inp_4 AND fg.plant_code='$plant_code'";
+						$sql ="SELECT mo_number FROM $pps.finished_good fg LEFT JOIN $pps.jm_product_logical_bundle jplb ON jplb.jm_pplb_id=fg.jm_pplb_id WHERE jplb.cut_number=$inp_4 AND fg.plant_code='$plant_code'";
 					
 						$sql_result=mysqli_query($link, $sql) or die(exception($sql));
 						$MIRecords = array();

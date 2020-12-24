@@ -150,7 +150,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                 }
                 if($docket_line_ids)
                 {
-                    $sql1x1="select * from $pps.jm_dockets where lay_status<>'DONE' and docket_number in ($doc_no_ref)";
+                    $sql1x1="select * from $pps.jm_actual_docket where jm_docket_id in ($docket_line_ids)";
                     $sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error81".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($sql_result1x1)>0)
                     {
