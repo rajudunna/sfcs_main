@@ -1402,6 +1402,7 @@ function getCutNumber($jm_cut_job_id){
 function getDocketInformation($docket_no, $plant_code) {
     global $pps;
     global $link_new;
+    global $DocOwningTypeEnum;
     
     $style = ''; // done
     $fg_color = ''; // done
@@ -1433,22 +1434,22 @@ function getDocketInformation($docket_no, $plant_code) {
     
     $schedules = [];
     // get the docket info
-    $docket_info_query = "SELECT doc.plies, doc.fg_color,doc.docket_number,
-        doc.marker_version_id, doc.ratio_comp_group_id,
-        cut.cut_number, cut.po_number,
+    // LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
+    $docket_info_query = "SELECT doc.jm_docket_id, doc.plies, doc.fg_color,doc.docket_number,
+        doc.marker_version_id, doc.ratio_comp_group_id, doc.sub_po as po_number,
         ratio_cg.component_group_id as cg_id, ratio_cg.ratio_id, ratio_cg.master_po_details_id
         FROM $pps.jm_dockets doc
-        LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
         LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
         WHERE doc.plant_code = '$plant_code' AND doc.docket_number='$docket_no' AND doc.is_active=true";
     $docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
  
     while($row = mysqli_fetch_array($docket_info_result))
     {
+        $docket_id = $row['jm_docket_id'];
         $fg_color = $row['fg_color'];
         $plies =  $row['plies'];
         $comp_group =  $row['cg_name'];
-        $cut_no = $row['cut_number'];
+        // $cut_no = $row['cut_number'];
         $ratio_comp_group_id = $row['ratio_comp_group_id'];
         $docket_line_number = $row['docket_number'];
         $po_number = $row['po_number'];
@@ -1458,6 +1459,16 @@ function getDocketInformation($docket_no, $plant_code) {
         $mp_detail_id = $row['master_po_details_id'];
     }
 
+    // get the cut numbers for the docket
+    $doc_type = DocOwningTypeEnum::MAIN;
+    $cut_num_query = "SELECT DISTINCT cut_number from $pps.jm_cut_job cut
+        LEFT JOIN $pps.jm_cut_docket_map cdm ON cdm.jm_cut_job_id = cut.jm_cut_job_id
+        WHERE cdm.jm_docket_id='$docket_id' AND doc_owning_type = '$doc_type' ";
+    $cut_num_result = mysqli_query($link_new, $cut_num_query) or exit("Sql cut_num_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row = mysqli_fetch_array($cut_num_result))
+    {
+        $cut_no = $row['cut_number'];
+    }
     // get the style and master po info
     $style_info_query = "SELECT mpc.style, mp.master_po_number, mp.master_po_description 
     FROM $pps.mp_color_detail mpc 
