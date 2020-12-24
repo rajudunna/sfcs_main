@@ -75,7 +75,7 @@ th{
                                 $i = $sql_row['id'];
                                 $index+=1;
                                 echo "<input id='plant_code' type='hidden'  value='$plant_code'>";
-                                echo "<input id='usernsame' type='hidden'  value='$username'>";
+                                echo "<input id='username' type='hidden'  value='$username'>";
                                 echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'><span class='label label-info fa fa-list fa-xl' >&nbsp;&nbsp;&nbsp;$index</span></td>";
                                 echo "<td>".$sql_row['style']."</td>";
                                 echo "<td>".$sql_row['schedule']."</td>";
