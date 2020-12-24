@@ -29,6 +29,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
 
 ?>
 <!-- <script src="../../../../../template/helperjs.js"></script> -->
