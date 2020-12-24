@@ -1143,26 +1143,27 @@ if(isset($_POST['allocate']))
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$lot_no=$sql_row['lot_no'];
-			$sql1235="select grn_date,batch_no,item from $wms.sticker_report where lot_no  ='$lot_no' and plant_code='$plant_code'";
+			$sql1235="select grn_date,batch_no,item,inv_no from $wms.sticker_report where lot_no  ='$lot_no' and plant_code='$plant_code'";
 		$sql_result2=mysqli_query($link, $sql1235) or exit("Sql Error125678: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row7=mysqli_fetch_array($sql_result2)){
 		   $grn_date=$sql_row7['grn_date'];
 		   $batch_no=$sql_row7['batch_no'];
 		   $item=$sql_row7['item'];
+		   $inv_no=$sql_row7['inv_no'];
 		}
-			if(strcmp($inv_no,trim($sql_row['inv_no'])))
-			{
-				if($bg_color=="#99CCFF")
-				{
-					$bg_color="white";
-					$inv_no=trim($sql_row['inv_no']);
-				}
-				else
-				{
-					$bg_color="#99CCFF";
-					$inv_no=trim($sql_row['inv_no']);
-				}
-			}
+		// if(strcmp($inv_no,trim($inv_no)))
+		// 	{
+		// 		if($bg_color=="#99CCFF")
+		// 		{
+		// 			$bg_color="white";
+		// 			$inv_no=trim($inv_no);
+		// 		}
+		// 		else
+		// 		{
+		// 			$bg_color="#99CCFF";
+		// 			$inv_no=trim($inv_no);
+		// 		}
+		// 	}	
 			
 			
 			$temp_var='';			
@@ -1213,7 +1214,7 @@ if(isset($_POST['allocate']))
 					$valid_check="display:none";
 				}
 
-				if(strlen($sql_row['shade'])==0)
+				if(strlen($sql_row['ref4'])==0)
 				{
 					$tag="Insp. <br/>Pending";
 					$valid_check="display:none";
@@ -1246,9 +1247,9 @@ if(isset($_POST['allocate']))
 				while($sql_row2=mysqli_fetch_array($sql_result3))
 				{
 					if($sql_row2['split_roll'] != '') {
-						echo "<td><center><a data-toggle='modal' id='btn$doc_ref$j' data-target='#modalbtn$doc_ref$j' class='label label-warning label-lg'>".$sql_row['inv_no']."(Splitted Roll)</a></center></td>";
+						echo "<td><center><a data-toggle='modal' id='btn$doc_ref$j' data-target='#modalbtn$doc_ref$j' class='label label-warning label-lg'>".$inv_no."(Splitted Roll)</a></center></td>";
 					} else {
-						echo "<td>".$sql_row['inv_no']."</td>";
+						echo "<td>".$inv_no."</td>";
 					}
 				}
 			}
@@ -1277,7 +1278,7 @@ if(isset($_POST['allocate']))
 			echo "<td>".$batch_no."</td>";
 			echo "<td id='col1'>".$item."</td>";
 			echo "<td id='col1'>".$sql_row['lot_no']."</td>";
-			echo "<td>".$sql_row['shade']."</td>";
+			echo "<td>".$sql_row['ref4']."</td>";
 			if($shrinkage_inspection == 'yes') 
 	        {
 			echo "<td>".$sql_row['shrinkage_group']."</td>";
@@ -1287,7 +1288,7 @@ if(isset($_POST['allocate']))
 			echo "<td>".$sql_row['ref2']."</td>";
 			echo "<td>".$sql_row['ref1']."</td>";
 			echo "<td>".$sql_row['roll_remarks']."</td>";
-			echo "<td>".$sql_row['shade']."</td>";
+			echo "<td>".$sql_row['ref4']."</td>";
 			echo "<td>".$sql_row['ref6']."</td>";
 			echo "<td>".$sql_row['ref3']."</td>";
 			echo "<td>".$sql_row['qty_rec']."</td>";
@@ -1361,13 +1362,13 @@ if(isset($_POST['allocate']))
 										<td>".$sql_result_new['batch_no']."</td>
 										<td>".$sql_result_new['item']."</td>
 										<td>".$sql_result_new['lot_no']."</td>
-										<td>".$sql_result_new['shade']."</td>
+										<td>".$sql_result_new['ref4']."</td>
 										<td>".$sql_result_new['shrinkage_group']."</td>
 										<td>".$sql_result_new['shrinkage_width']."</td>
 										<td>".$sql_result_new['shrinkage_length']."</td>
 										<td>".$sql_result_new['ref2']."</td>
 										<td>".$sql_result_new['ref1']."</td>
-										<td>".$sql_result_new['shade']."</td>
+										<td>".$sql_result_new['ref4']."</td>
 										<td>".$sql_result_new['ref6']."</td>
 										<td>".$sql_result_new['ref3']."</td>
 										<td>".$sql_result_new['qty_rec']."</td>
