@@ -1450,7 +1450,7 @@ function getDocketInformation($docket_no, $plant_code) {
         $comp_group =  $row['cg_name'];
         // $cut_no = $row['cut_number'];
         $ratio_comp_group_id = $row['ratio_comp_group_id'];
-        $docket_line_number = $row['docket_number'];
+        $docket_number = $row['docket_number'];
         $po_number = $row['po_number'];
         $marker_version_id = $row['marker_version_id'];
         $ratio_id = $row['ratio_id'];
@@ -1571,7 +1571,7 @@ function getDocketInformation($docket_no, $plant_code) {
         'shrinkage'=>$shrinkage,
         'ratio_comp_group_id' => $ratio_comp_group_id,
         'marker_version_id' => $marker_version_id,
-        'docket_line_number'=>$docket_line_number,
+        'docket_number'=>$docket_number,
         'required_qty'=>$required_qty
     ];
 
