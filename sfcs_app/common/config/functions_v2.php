@@ -286,7 +286,7 @@ function getDocketInfo($doc_num,$doc_type,$plant_code){
     global $link_new;
     global $wms;
     global $pps;
-    $sql1="SELECT plan_lot_ref from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_line_id='$doc_num' and plan_lot_ref!=''";
+    $sql1="SELECT plan_lot_ref from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_id='$doc_num' and plan_lot_ref!=''";
     $sql_result1=mysqli_query($link_new, $sql1) or exit("Sql Error at Doscket123 roll details".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sql_num1=mysqli_num_rows($sql_result1);
         if($sql_num1>0){
@@ -1402,7 +1402,6 @@ function getCutNumber($jm_cut_job_id){
 function getDocketInformation($docket_no, $plant_code) {
     global $pps;
     global $link_new;
-    global $DocOwningTypeEnum;
     
     $style = ''; // done
     $fg_color = ''; // done
