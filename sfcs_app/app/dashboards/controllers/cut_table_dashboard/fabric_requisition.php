@@ -12,6 +12,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURL($_GET['r'],'marker_length_popup.php','R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
 	// $username="sfcsproject1";	
 	//$mods=array();	
@@ -182,7 +183,7 @@ while($row111x11=mysqli_fetch_array($sql_result11x11))
 		$width =$result_docketinfo['width'];
 		$marker_version_id =$result_docketinfo['marker_version_id'];
 		$ratio_comp_group_id=$result_docketinfo['ratio_comp_group_id'];
-		$docket_number=$result_docketinfo['docket_number'];
+		$docket_number=$result_docketinfo['docket_line_number'];
 		$po_number=$result_docketinfo['sub_po'];
 			
 	}
@@ -536,8 +537,7 @@ if(isset($_POST["submit1"]))
 echo "<h2>Already Requested Cut Jobs </h2>";
 echo "<div class='table-responsive'><table class=\"table table-bordered\" id=\"table1\" border=0 cellpadding=0 cellspacing=0>";
 echo "<tr><th>Module</th><th>Date</th><th>Time</th><th>Requested By</th><th>Style</th><th>Schedule</th><th>Color</th><th>Docket No</th><th>Job No</th><th>Fabric Status</th></tr>";
-$sql2="select fabric_prorities.section_id,fabric_prorities.req_time,fabric_prorities.jm_docket_ljm_docket_idine_id,jm_dockets.docket_number,fabric_prorities.work_station_id,fabric_prorities.created_user,fabric_prorities.issued_time from $pps.fabric_prorities left join $pps.jm_dockets on jm_dockets.jm_docket_id=fabric_prorities.jm_docket_id where (fabric_prorities.created_user=\"".$username."\"  or fabric_prorities.req_time!='') and  fabric_prorities.plant_code='$plant_code'  order by fabric_prorities.section_id,fabric_prorities.req_time,fabric_prorities.work_station_id";
-// echo $sql2;
+$sql2="select fabric_prorities.section_id,fabric_prorities.req_time,fabric_prorities.jm_docket_id,jm_dockets.docket_number,fabric_prorities.work_station_id,fabric_prorities.created_user,fabric_prorities.issued_time from $pps.fabric_prorities left join $pps.jm_dockets on jm_dockets.jm_docket_id=fabric_prorities.jm_docket_id where (fabric_prorities.created_user=\"".$username."\"  or fabric_prorities.req_time!='') and  fabric_prorities.plant_code='$plant_code'  order by fabric_prorities.section_id,fabric_prorities.req_time,fabric_prorities.work_station_id";
 $result2=mysqli_query($link, $sql2) or die("Error12 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row2=mysqli_fetch_array($result2))
 {

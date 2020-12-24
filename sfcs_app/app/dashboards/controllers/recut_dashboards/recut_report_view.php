@@ -1,6 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 ?>
