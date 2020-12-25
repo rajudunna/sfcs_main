@@ -141,7 +141,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			echo "<tr><th>Lot No</th><td>$lot_no</td></tr>";
 			echo "<tr><th>Batch</th><td>$batch_no</td></tr>";
 			echo "<tr><th>Item Description</th><td>$item_desc</td></tr>";
-			echo "<tr><th>Item Name</th><td>$item_name</td></tr>";
+			echo "<tr><th>Item Name</th><td style = 'word-break: break-word;'>$item_name</td></tr>";
 			echo "<tr><th>Product</th><td>$product_group</td></tr>";
 			echo "<tr><th>GRN Date</th><td>$grn_date</td></tr>";
 			echo "</table>";
