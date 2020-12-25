@@ -183,7 +183,7 @@ while($row111x11=mysqli_fetch_array($sql_result11x11))
 		$width =$result_docketinfo['width'];
 		$marker_version_id =$result_docketinfo['marker_version_id'];
 		$ratio_comp_group_id=$result_docketinfo['ratio_comp_group_id'];
-		$docket_number=$result_docketinfo['docket_line_number'];
+		$docket_number=$result_docketinfo['docket_number'];
 		$po_number=$result_docketinfo['sub_po'];
 			
 	}
