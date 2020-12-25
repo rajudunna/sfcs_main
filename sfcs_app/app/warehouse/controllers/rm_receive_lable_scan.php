@@ -15,7 +15,7 @@ if(isset($_POST['check2']))
 }
 else
 {
-    $plant_name2=$_GET['plant_name'];
+    $plant_name2=$_POST['plant_name'];
     
 }
 ?>  
@@ -53,7 +53,7 @@ else
         <br/>
         <br/>
         
-       <input type="hidden" name="plantcode" id="plantcode" value="<?php echo $plant_code ?>">
+       <input type="hidden" name="plantCode" id="plantCode" value="<?php echo $plant_code ?>">
        <input type="hidden" name="username" id="username" value="<?php echo $username ?>">
         <input type='text' name='barcode1' placeholder="Label Id" size=13><br/>
         <br/>
@@ -79,17 +79,16 @@ else
             
                 //================ get barcode details from CWH DB =============
                 $qry_get_data_fm_cwh = "select tid,qty_rec,qty_ret,qty_issued,qty_allocated,ref5,lot_no,ref2,ref4,ref3,roll_joins,shrinkage_length,shrinkage_width,shrinkage_group,supplier_no,shade_grp,rejection_reason,roll_remarks,roll_status,partial_appr_qty from $wms.store_in where plant_code='".$plant_name1."' AND barcode_number='".$bar_code_new."'";
-                //echo  $qry_get_data_fm_cwh;
                 $res_get_data_fm_cwh=mysqli_query($link_new, $qry_get_data_fm_cwh) or exit("Sql Error getting at 83 line".mysqli_error($GLOBALS["___mysqli_ston"]));
                 //$res_get_data_fm_cwh = $link_new->query($qry_get_data_fm_cwh);
                 $barcode_data = array();
                 $sticker_data1= array();
-                if($res_get_data_fm_cwh->num_rows == 0)
+                if(mysqli_num_rows($res_get_data_fm_cwh) == 0)
                 {
                     
                     echo "<div class='alert alert-danger'>Sorry1!! No Label ID(".$bar_code_new.") found..</div>";
                 }
-                else if ($res_get_data_fm_cwh->num_rows > 0) 
+                else if ($res_get_data_fm_cwh->num_rows >  0) 
                 {
                     
                     while($row = $res_get_data_fm_cwh->fetch_assoc()) 
@@ -214,11 +213,28 @@ else
                                 else {
                                     // echo $res_check_rm_db->num_rows.'aaaaa';
                                     //=============== Insert Data in rmwh ==========================
-                                    // $qry_insert_update_rmwh_data = "INSERT INTO $wms.`store_in`(`lot_no`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `remarks`, `log_stamp`, `status`,`ref2`,`ref3`,`ref4`,`ref5`,`ref6`,`log_user`,`barcode_number`,`ref_tid`) VALUES ('".$barcode_data['lot_no']."','".$actual_quentity_present."','0','0','".date('Y-m-d')."','Directly came from ".$plant_name1."','".date('Y-m-d H:i:s')."','".$barcode_data['status']."','".$barcode_data['ref2']."','".$barcode_data['ref3']."','".$barcode_data['ref4']."','".$barcode_data['ref5']."','".$barcode_data['ref6']."','".$username."^".date('Y-m-d H:i:s')."','".$bar_code_new."','".$tid_new."')"; 
-                                    // // echo $qry_insert_update_rmwh_data."<br/>";
+
+                                    $select_uuid="SELECT UUID() as uuid";
+                                    $uuid_result=mysqli_query($link_new, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    while($uuid_row=mysqli_fetch_array($uuid_result))
+                                    {
+                                        $uuid=$uuid_row['uuid'];
+                                    
+                                    }
+                                    if($barcode_data['status']!=''){
+                                        $status=$barcode_data['status'];
+                                    }else{
+                                        $status=0;
+                                    }
+                                    $barcodesplit=explode("-",$bar_code_new);
+                                    $barCodeNew=$plant_code."-".$barcodesplit['1'];
+                                    $qry_insert_update_rmwh_data = "INSERT INTO $wms.`store_in`(`tid`,`lot_no`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `remarks`, `log_stamp`, `status`,`ref2`,`ref3`,`ref4`,`ref5`,`ref6`,`log_user`,`barcode_number`,`ref_tid`,`plant_code`) VALUES ('".$uuid."','".$barcode_data['lot_no']."','".$actual_quentity_present."','0','0','".date('Y-m-d')."','Directly came from ".$plant_name1."','".date('Y-m-d H:i:s')."','".$status."','".$barcode_data['ref2']."','".$barcode_data['ref3']."','".$barcode_data['ref4']."','".$barcode_data['ref5']."','".$barcode_data['ref6']."','".$username."^".date('Y-m-d H:i:s')."','".$barCodeNew."','".$tid_new."','".$plant_code."')"; 
+                                    // echo $qry_insert_update_rmwh_data."<br/>";
     
-                                    // $res_insert_update_rmwh_data = $link->query($qry_insert_update_rmwh_data);
-                                    $qry_insert_update_rmwh_data1 = "update $wms.`store_in` set qty_issued=0,remarks='Directly came from ".$plant_name1."',log_user='".$username."^".date('Y-m-d H:i:s')."' where barcode_number='$bar_code_new' and plant_code='$plant_code'";  
+                                    //$res_insert_update_rmwh_data = $link->query($qry_insert_update_rmwh_data);
+                                    $res_insert_update_rmwh_data=mysqli_query($link_new, $qry_insert_update_rmwh_data) or exit("Sql Error getting at 221 line".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                                    $qry_insert_update_rmwh_data1 = "update $wms.`store_in` set qty_issued=0,remarks='Directly came from ".$plant_name1."',log_user='".$username."^".date('Y-m-d H:i:s')."' where barcode_number='$barCodeNew' and plant_code='$plant_code'";  
                                     
                                         //$res_insert_update_rmwh_data1 = $link->query($qry_insert_update_rmwh_data1);
                                         $res_insert_update_rmwh_data1=mysqli_query($link_new, $qry_insert_update_rmwh_data1) or exit("Sql Error getting at 224 line".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -257,17 +273,23 @@ else
                                     //echo "<br/>No of rows:".$row12."<br/>";
                                     //echo "<br/>result:".count($sticker_data1)."<br/>";
                                     if(count($sticker_data1)==0)
-                                    {
+                                    {   
+                                        $select_uuid="SELECT UUID() as uuid";
+                                        $uuid_result=mysqli_query($link_new, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        while($uuid_row=mysqli_fetch_array($uuid_result))
+                                        {
+                                            $uuid=$uuid_row['uuid'];
+                                        }
                                         $pkg_no=str_replace('"','""',$sticker_data['pkg_no']);
                                         $item_desc=str_replace('"','""',$sticker_data['item_desc']);
                                         $item_name=str_replace('"','""',$sticker_data['item_name']);
-                                        $qry_insert_sticker_report_data = "INSERT INTO $wms.`sticker_report` (`item`,`item_name`,`item_desc`,`inv_no`,`po_no`,`rec_no`,`lot_no`,`batch_no`,`buyer`,`product_group`,`doe`,`pkg_no`,`grn_date`,`allocated_qty`,`backup_status`,`supplier`,`uom`,`grn_location`,style_no,plant_code,created_user,updated_user) VALUES (\"".$sticker_data['item']."\",\"".$item_name."\",\"".$item_desc."\",\"".$sticker_data['inv_no']."\",\"".$sticker_data['po_no']."\",\"".$sticker_data['rec_no']."\",\"".$sticker_data['lot_no']."\",\"".$sticker_data['batch_no']."\",\"".$sticker_data['buyer']."\",\"".$sticker_data['product_group']."\",\"".$sticker_data['doe']."\",\"".$pkg_no."\",\"".$sticker_data['grn_date']."\",\"".$sticker_data['allocated_qty']."\",\"".$sticker_data['backup_status']."\",\"".$sticker_data['supplier']."\",\"".$sticker_data['uom']."\",\"".$sticker_data['grn_location']."\",\"".$sticker_data['style_no']."\",\"".$plant_code."\",\"".$user_name."\",\"".$user_name."\")";
+                                        $qry_insert_sticker_report_data = "INSERT INTO $wms.`sticker_report` (`sticker_id`,`item`,`item_name`,`item_desc`,`inv_no`,`po_no`,`rec_no`,`lot_no`,`batch_no`,`buyer`,`product_group`,`doe`,`pkg_no`,`grn_date`,`allocated_qty`,`backup_status`,`supplier`,`uom`,`grn_location`,style_no,plant_code,created_user,updated_user) VALUES (\"".$uuid."\",\"".$sticker_data['item']."\",\"".$item_name."\",\"".$item_desc."\",\"".$sticker_data['inv_no']."\",\"".$sticker_data['po_no']."\",\"".$sticker_data['rec_no']."\",\"".$sticker_data['lot_no']."\",\"".$sticker_data['batch_no']."\",\"".$sticker_data['buyer']."\",\"".$sticker_data['product_group']."\",\"".$sticker_data['doe']."\",\"".$pkg_no."\",\"".$sticker_data['grn_date']."\",\"".$sticker_data['allocated_qty']."\",\"".$sticker_data['backup_status']."\",\"".$sticker_data['supplier']."\",\"".$sticker_data['uom']."\",\"".$sticker_data['grn_location']."\",\"".$sticker_data['style_no']."\",\"".$plant_code."\",\"".$user_name."\",\"".$user_name."\")";
                                         $qry_insert_sticker_report_data1=mysqli_query($link_new, $qry_insert_sticker_report_data) or exit("Sql Error getting at 265 line".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         // $qry_insert_sticker_report_data1 = $link->query($qry_insert_sticker_report_data);
                                     }
                                    
                                     $qty_rec_store_report = "select sum(qty_rec)as qty_rec from $wms.`store_in` where plant_code='".$plant_code."' AND lot_no='".$barcode_data['lot_no']."'";
-                                    $qty_rec_store_report1=mysqli_query($link_new, $qty_rec_store_report) or exit("Sql Error getting at 265 line".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    $qty_rec_store_report1=mysqli_query($link_new, $qty_rec_store_report) or exit("Sql Error getting at 277 line".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     // $qty_rec_store_report1 = $link->query($qty_rec_store_report);
                                     while($row2 = $qty_rec_store_report1->fetch_assoc()) 
                                     {
@@ -275,13 +297,15 @@ else
                                         break;
                                     }
                                     
+                                    $qry_insert_sticker_report1_data = "update $wms.`sticker_report` set rec_qty=\"".$rec_qty['qty_rec']."\",rec_no=\"".$sticker_data['rec_no']."\",inv_no=\"".$sticker_data['inv_no']."\",batch_no=\"".$sticker_data['batch_no']."\" where lot_no=\"".$barcode_data['lot_no']."\" AND plant_code=\"".$plant_code."\"";
+                                    $qry_insert_sticker_report1_data1=mysqli_query($link_new, $qry_insert_sticker_report1_data) or exit("Sql Error getting at 304 line".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    
                                     $qry_ins_stockout = "INSERT INTO $wms.`store_out`(tran_tid,qty_issued,date,updated_by,remarks,plant_code) VALUES ('".$tid_new."',".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_code."','".$plant_name1."')";
                                     $res_ins_stockout=mysqli_query($link_new, $qry_ins_stockout) or exit("Sql Error getting at 279 line".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     // $res_ins_stockout = $link_new->query($qry_ins_stockout);
                                     
                                     $update_qty_store_in = "update $wms.store_in set qty_issued= qty_issued + ".$actual_quentity_present." where barcode_number='".$bar_code_new."' AND plant_code='".$plant_name1."'";
                                     
-                                    //echo $update_qty_store_in."<br/>";
                                     $res_update_qty_store_in=mysqli_query($link_new, $update_qty_store_in) or exit("Sql Error getting at 285 line".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     $res_update_qty_store_in = $link_new->query($update_qty_store_in);
                                     echo "<h3>Status2: <font color=Green>Quantity ".$actual_quentity_present." Transferred successfully for Item ID : ".$bar_code_new." and Lot Number : ".$barcode_data['lot_no']."</font></h3>";
@@ -299,7 +323,7 @@ else
                                     
                                     //validating inspection done or not in sending plant for particular batch
                                     $qry_batchval_sendplant="select * from $wms.inspection_db where batch_ref='".$sticker_data['batch_no']."' AND plant_code='".$plant_name1."'";
-                                    $qry_batchval_sendplant_check=mysqli_query($link_new, $qry_batchval_sendplant) or exit("Sql Error getting at 302 line".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    $qry_batchval_sendplant_check=mysqli_query($link_new, $qry_batchval_sendplant) or exit("Sql Error getting at 309 line".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     // $qry_batchval_sendplant_check = $link_new->query($qry_batchval_sendplant);
                                     while($row123 = $qry_batchval_sendplant_check->fetch_assoc()) 
                                     {
@@ -310,7 +334,7 @@ else
                                     {
                                         //logic for insert inspected db details based on batch
                                         $insert_insp_db = "insert into $wms.inspection_db (batch_ref,act_gsm,pur_width,act_width,sp_rem,qty_insp,gmt_way,pts,fallout,skew,skew_cat,shrink_l,shrink_w,supplier,log_date,unique_id,status,pur_gsm,consumption,plant_code,created_user,updated_user) values('".$sticker_data['batch_no']."','".$inspection_data['act_gsm']."','".$inspection_data['pur_width']."','".$inspection_data['act_width']."','".str_replace( array( "'",'"' ),'',$inspection_data['sp_rem'])."','".$inspection_data['qty_insp']."','".$inspection_data['gmt_way']."','".$inspection_data['pts']."','".$inspection_data['fallout']."','".$inspection_data['skew']."','".$inspection_data['skew_cat']."','".$inspection_data['shrink_l']."','".$inspection_data['shrink_w']."','".$inspection_data['supplier']."','".$inspection_data['log_date']."','".$inspection_data['unique_id']."','".$inspection_data['status']."','".$inspection_data['pur_gsm']."','".$inspection_data['consumption']."','".$plant_code."','".$user_name."','".$user_name."')";
-                                        $qry_inspectiondb_check=mysqli_query($link_new, $insert_insp_db) or exit("Sql Error getting at 302 line".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        $qry_inspectiondb_check=mysqli_query($link_new, $insert_insp_db) or exit("Sql Error getting at 320 line".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         $qry_inspectiondb_check = $link->query($insert_insp_db);
                                     }
 

@@ -805,7 +805,7 @@ $(document).ready(function(){
 							$reason_id_db = array();
                             $reason_code_db = array();
                            
-                            $sql_reason="select reason_id,internal_reason_code,internal_reason_description from $mdm.reasons where department_type='RMWAREHOUSE'  order by internal_reason_description";
+                            $sql_reason="select reason_id,internal_reason_code,internal_reason_description from $mdm.reasons where department_type='RMWAREHOUSE' AND reason_group='MRN'  order by internal_reason_description";
                             //echo $sql_reason;
 							$sql_result=mysqli_query($link, $sql_reason) or die(exception($sql_reason));
 							$count = mysqli_num_rows($sql_result);
