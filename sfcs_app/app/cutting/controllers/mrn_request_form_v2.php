@@ -7,6 +7,7 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
 	$main_url=getFullURL($_GET['r'],'mrn_request_form_v2.php','R');
     $plant_code = $_SESSION['plantCode'];
+    // $plant_code = 'Q01';
     $username = $_SESSION['userName'];
     $flag=1;
     $validation_ref_select="";
@@ -262,6 +263,8 @@ $(document).ready(function(){
 			var cut_no=document.getElementById('cutnos').value;
 			var batch_ref=document.getElementById('batch_refs').value;
 			var section=document.getElementById('sections').value;
+			var logurl=document.getElementById('logurl').value;
+            // alert(logurl)
 			// var reasoniddb=document.getElementById('reasonid').value;
 			// var reasoncodedb=document.getElementById('reasoncode').value;
 			//alert(sty_id);
@@ -302,7 +305,10 @@ $(document).ready(function(){
 							text: "Request successfully updated",
 							type: "success"
 						}).then(function() {
-							  location.reload(true);
+							//   location.reload(true);
+                            // alert(logurl)
+                              window.location.href=logurl;
+
 							  console.log(data);
 						});
 					console.log(data);
@@ -323,7 +329,9 @@ $(document).ready(function(){
 <div class="panel panel-primary">
     <div class="panel-heading"><b>MRN Request Form</b></div>
     <div class="panel-body">
-        <?php $pgurl = getFullURL($_GET['r'],'mrn_request_form_v2.php','N'); ?>
+        <?php $pgurl = getFullURL($_GET['r'],'mrn_request_form_v2.php','N');
+            $url2 = getFullURL($_GET['r'],'mrn_form_log.php','N');
+        ?>
         <form name="test" action="<?= $pgurl ?>" method="post">
 	
 			<input type="hidden" name="plantcode" id="plantcode" value="<?php echo $plant_code; ?>">
@@ -965,7 +973,8 @@ $(document).ready(function(){
 						}
 
 						echo "</table>";
-						echo "<input type=\"hidden\" name=\"style\" id=\"styles\" value=\"$inp_1\"><input type=\"hidden\" name=\"schedule\" id=\"schedules\" value=\"$inp_2\"><input type=\"hidden\" id=\"colors\" name=\"color\" value=\"$inp_3\"><input type=\"hidden\" id=\"cutnos\" name=\"cutno\" value=\"$inp_4\"><input type=\"hidden\"  id=\"batch_refs\" name=\"batch_ref\" value=\"$inp_5\"><input type=\"hidden\" name=\"trows\" id=\"trows\" value=\"$x\"><input type=\"hidden\" name=\"plantcode\" id=\"plantcode\" value=\"$plant_code\"><input type=\"hidden\" name=\"username\" id=\"username\" value=\"$username\">";
+                        echo "<input type=\"hidden\" name=\"style\" id=\"styles\" value=\"$inp_1\"><input type=\"hidden\" name=\"schedule\" id=\"schedules\" value=\"$inp_2\"><input type=\"hidden\" id=\"colors\" name=\"color\" value=\"$inp_3\"><input type=\"hidden\" id=\"cutnos\" name=\"cutno\" value=\"$inp_4\"><input type=\"hidden\"  id=\"batch_refs\" name=\"batch_ref\" value=\"$inp_5\"><input type=\"hidden\" name=\"trows\" id=\"trows\" value=\"$x\"><input type=\"hidden\" name=\"plantcode\" id=\"plantcode\" value=\"$plant_code\"><input type=\"hidden\" name=\"username\" id=\"username\" value=\"$username\">";
+                        
 						
 						//echo "<input type=\"text\" name=\"rest[]\"  id=\"final\" value=''>ABC";
 						echo "<br/>";
@@ -981,7 +990,8 @@ $(document).ready(function(){
 								echo "<option value=\"".$sql_sec."\">".$section_display_name."</option>";
 									
 							}
-							echo "</select></div>";
+                            echo "</select></div>";
+                            echo "<input type=\"hidden\" name=\"logurl\" id=\"logurl\" value=\"$url2\">";
 
 							echo '<div class="col-md-3"><input type="checkbox" name="option" id="option" 
 									onclick="return enableButton();">Enable';
