@@ -265,23 +265,23 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			
 			
             			
-			if($trim_status == TrimStatusEnum::OPEN)
+			if($input_trims_status == TrimStatusEnum::OPEN)
 			{
 				$trimid="yash";
 			}
-			else if($trim_status == TrimStatusEnum::PREPARINGMATERIAL)
+			else if($input_trims_status == TrimStatusEnum::PREPARINGMATERIAL)
 			{
 				$trimid="yellow";
 			}
-			else if($trim_status == TrimStatusEnum::MATERIALREADYFORPRODUCTION)
+			else if($input_trims_status == TrimStatusEnum::MATERIALREADYFORPRODUCTION)
 			{
                 $trimid="blue"; 
 			}
-			else if($trim_status == TrimStatusEnum::PARTIALISSUED)
+			else if($input_trims_status == TrimStatusEnum::PARTIALISSUED)
 			{
                 $trimid="orange";
 			}
-			else if($trim_status == TrimStatusEnum::ISSUED)
+			else if($input_trims_status == TrimStatusEnum::ISSUED)
 			{
                 $trimid="pink"; 
 			}

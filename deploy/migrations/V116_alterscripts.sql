@@ -1,0 +1,1 @@
+ALTER TABLE `wms`.`store_in` CHANGE `ref3` `ref3` VARCHAR(100) CHARSET latin1 COLLATE latin1_swedish_ci DEFAULT '0' NOT NULL;

@@ -67,7 +67,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 	if($remarks==''){
 		$remarks=trim($sql_row1['roll_remarks']);
 		if($remarks==''){
-			$qry_get_rol="SELECT roll_remarks FROM $wms.store_in WHERE plant_code='$plantcode' and tid=$tid";
+			$qry_get_rol="SELECT roll_remarks FROM $wms.store_in WHERE plant_code='$plantcode' and tid='$tid'";
 			$sql_result1x =$link->query($qry_get_rol);
 			if(mysqli_num_rows($sql_result1x)> 0){
 				while ($row = $sql_result1x->fetch_assoc())
@@ -79,7 +79,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 	 	}
 	}
 	
-	$sql1x="select qty_rec,ref4,ref1,ref3 from $wms.store_in where plant_code='$plantcode' and tid=$tid";
+	$sql1x="select qty_rec,ref4,ref1,ref3 from $wms.store_in where plant_code='$plantcode' and tid='$tid'";
 	$sql_result1x =$link->query($sql1x);
 	if(mysqli_num_rows($sql_result1x)> 0) {
 		while ($row = $sql_result1x->fetch_assoc())
@@ -90,7 +90,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 			$ref3=trim($row['ref3']);			
 		}
 	}
-	$sql1a="select qty_allocated,shrinkage_length,shrinkage_width,shrinkage_group from $wms.store_in where plant_code='$plantcode' and tid=$tid";
+	$sql1a="select qty_allocated,shrinkage_length,shrinkage_width,shrinkage_group from $wms.store_in where plant_code='$plantcode' and tid='$tid'";
 	$sql_result1a=$link->query($sql1a);
 	if(mysqli_num_rows($sql_result1a)> 0) {
 		while ($row = $sql_result1a->fetch_assoc())
@@ -118,7 +118,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 		}
 	}
 
-	$sql_mrn="SELECT sum(ROUND(iss_qty,2)) as mrn_qty FROM `$wms`.`mrn_out_allocation`  WHERE  lable_id = $tid and DATE(log_time)=\"$current_date\" and plant_code='".$plantcode."'";
+	$sql_mrn="SELECT sum(ROUND(iss_qty,2)) as mrn_qty FROM `$wms`.`mrn_out_allocation`  WHERE  lable_id = '$tid' and DATE(log_time)=\"$current_date\" and plant_code='".$plantcode."'";
     $sql_result_mrn =$link->query($sql_mrn);
     if(mysqli_num_rows($sql_result_mrn)> 0) {
         while ($row_mrn = $sql_result_mrn->fetch_assoc())
@@ -149,14 +149,14 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 	}
 }
 
-$qry_max="SELECT MAX(tid) AS tid FROM $wms.stock_report_inventory where plant_code='$plantcode'";
+$qry_max="SELECT MAX(DATE(updated_at)) AS updated_at FROM $wms.stock_report_inventory where plant_code='$plantcode'";
 $qry_max_result =$link->query($qry_max);
 while ($sql_max_row1 = $qry_max_result->fetch_assoc())
 {
-	$max_id=$sql_max_row1['tid'];
+	$max_id=$sql_max_row1['updated_at'];
 }
-if($max_id>0){
-		$stock_report_inventory="SELECT store_in.ref1,store_in.lot_no,store_in.ref2,store_in.ref3,store_in.status,store_in.remarks,store_in.tid,store_in.qty_rec,store_in.qty_issued,store_in.qty_ret,store_in.qty_allocated,ROUND(ROUND(store_in.qty_rec,2)-ROUND(store_in.qty_issued,2)+ROUND(store_in.qty_ret,2)-ROUND(store_in.qty_allocated,2)) AS balance,store_in.log_stamp,store_in.roll_remarks,sticker_report.batch_no,sticker_report.item_desc,sticker_report.item_name,sticker_report.item,sticker_report.supplier,sticker_report.buyer,sticker_report.style_no,sticker_report.pkg_no,sticker_report.grn_date,sticker_report.product_group,store_in.plant_code FROM $wms.store_in LEFT JOIN $wms.sticker_report ON store_in.lot_no=sticker_report.lot_no WHERE (ROUND(store_in.qty_rec,2)-ROUND(store_in.qty_issued,2)+ROUND(store_in.qty_ret,2)) >0 and store_in.plant_code='$plantcode' and store_in.tid>$max_id";
+if($max_id!=''){
+		$stock_report_inventory="SELECT store_in.ref1,store_in.lot_no,store_in.ref2,store_in.ref3,store_in.status,store_in.remarks,store_in.tid,store_in.qty_rec,store_in.qty_issued,store_in.qty_ret,store_in.qty_allocated,ROUND(ROUND(store_in.qty_rec,2)-ROUND(store_in.qty_issued,2)+ROUND(store_in.qty_ret,2)-ROUND(store_in.qty_allocated,2)) AS balance,store_in.log_stamp,store_in.roll_remarks,sticker_report.batch_no,sticker_report.item_desc,sticker_report.item_name,sticker_report.item,sticker_report.supplier,sticker_report.buyer,sticker_report.style_no,sticker_report.pkg_no,sticker_report.grn_date,sticker_report.product_group,store_in.plant_code FROM $wms.store_in LEFT JOIN $wms.sticker_report ON store_in.lot_no=sticker_report.lot_no WHERE (ROUND(store_in.qty_rec,2)-ROUND(store_in.qty_issued,2)+ROUND(store_in.qty_ret,2)) >0 and store_in.plant_code='$plantcode' and store_in.updated_at>$max_id";
 		$stock_report_inventory_result =$link->query($stock_report_inventory);
 		while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 		{
@@ -194,7 +194,7 @@ if($max_id>0){
 				$remarks=trim($sql_row1['roll_remarks']);
 			}
 			
-			$sql1x="select qty_rec,ref4,ref1,ref3 from $wms.store_in where plant_code='$plantcode' and tid=$tid";
+			$sql1x="select qty_rec,ref4,ref1,ref3 from $wms.store_in where plant_code='$plantcode' and tid='$tid'";
 			$sql_result1x =$link->query($sql1x);
 			if(mysqli_num_rows($sql_result1x)> 0) {
 				while ($row = $sql_result1x->fetch_assoc())
@@ -205,7 +205,7 @@ if($max_id>0){
 					$ref3=trim($row['ref3']);			
 				}
 			}
-			$sql1a="select qty_allocated,shrinkage_length,shrinkage_width,shrinkage_group from $wms.store_in where plant_code='$plantcode' and tid=$tid";
+			$sql1a="select qty_allocated,shrinkage_length,shrinkage_width,shrinkage_group from $wms.store_in where plant_code='$plantcode' and tid='$tid'";
 			$sql_result1a=$link->query($sql1a);
 			if(mysqli_num_rows($sql_result1a)> 0) {
 				while ($row = $sql_result1a->fetch_assoc())

@@ -101,4 +101,16 @@ class ApiTypeEnum {
     const FG= 'FG';
     const OPN = 'OPN';
 }
+
+class DocOwningTypeEnum {
+    const MAIN = 'MAIN';
+    const FOREIGN = 'FOREIGN';
+}
+
+class JobStatusEnum {
+    const OPEN = 'OPEN';
+    const INPROGRESS = 'IN_PROGRESS';
+    const DONE = 'DONE';
+    const FAILED = 'FAILED';
+}
 ?>
