@@ -259,6 +259,7 @@ if(isset($_POST['formSubmit']))
                             <th>Reverse Cut</th>
                         </thead>";
                         $s_no = 1;
+                        echo $layInfo;
                         while($row = mysqli_fetch_array($layInfo)){
                             $docket_id = $row['jm_docket_id'];
                             $lay_id = '"'.$row['jm_ad_id'].'"';
@@ -586,7 +587,7 @@ function reportCut(id) {
     $('#post_post').show();
     $('#reportcut').hide();
     var reportData = new Object();
-    reportData.layId = id;
+    reportData.docketNumber = id;
     reportData.createdUser = '<?= $username ?>';
     reportData.plantCode = '<?= $plantcode ?>';
     reportData.sizeRejections = [];
@@ -639,7 +640,7 @@ function deleteCut(id) {
     $('#post_post').show();
     $('#deletecut').hide();
     var reportData = new Object();
-    reportData.layId = id;
+    reportData.docketNumber = id;
     reportData.createdUser = '<?= $username ?>';
     reportData.plantCode = '<?= $plantcode ?>';
     var bearer_token;
