@@ -24,8 +24,23 @@
             $result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$sql2="SELECT * FROM $bai_pro3.ims_combine where input_job_rand_no_ref='$job_no_ran'"; 
-            $result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($result1)==0 && mysqli_num_rows($result2)==0)
+            $result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+            $sql3="SELECT * FROM $bai_pro3.pac_stat_log_input_job where input_job_no_random='$job_no_ran' and bundle_print_status = 1"; 
+            $result3=mysqli_query($link, $sql3) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+            if(mysqli_num_rows($result3)>0)
+            {
+                echo "<script>sweetAlert('Error','Input job is already printed.','warning');</script>";
+				 $url_s=getFullURL($_GET['r'],'input_job_split.php','N');
+					echo "<script> 
+                    setTimeout('Redirect()',1000); 
+                    function Redirect() {  
+                        location.href = '$url_s'; 
+                    }
+                </script>"; 
+            }
+			else if(mysqli_num_rows($result1)==0 && mysqli_num_rows($result2)==0)
 			{				
 				echo '<h4><b>Sewing Job No : <a href="#" class="btn btn-warning">'.$job_no.'</a></b></h4><hr>';
 				$sql="SELECT *, UPPER(size_code) as size_code FROM $bai_pro3.packing_summary_input where 

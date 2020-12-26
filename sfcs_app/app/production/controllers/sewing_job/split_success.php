@@ -23,8 +23,22 @@
 	//temp values to insert to mo_quantites table    
 	// $temp_input_job_no_random = $input_job_no_random;
 	// $temp_input_job_no = $input_job_no;
-
+	
 	// echo "ij = $input_job_no<br>ij_rand = $input_job_no_random<br>";
+	$url = getFullURLLevel($_GET['r'],'split_jobs.php','0','N');
+	$sql31="SELECT * FROM $bai_pro3.pac_stat_log_input_job where input_job_no_random='$input_job_no_random' and bundle_print_status = 1"; 
+	$result31=mysqli_query($link, $sql31) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($result31)>0)
+	{
+		echo "<script>
+						sweetAlert('Error','Input job is already printed.','warning');
+						setTimeout('Redirect()',500); 
+						function Redirect() {  
+							location.href = '$url'; 
+						}
+			</script>";
+			exit();
+	}		 
 
 	$getlastrec="SELECT input_job_no FROM $bai_pro3.packing_summary_input WHERE status = '$input_job_no' and order_del_no='$schedule' group by input_job_no"; 
 	// echo $getlastrec;die();
@@ -193,7 +207,7 @@
 			
 		}
 	}
-	$url = getFullURLLevel($_GET['r'],'split_jobs.php','0','N');
+	// $url = getFullURLLevel($_GET['r'],'split_jobs.php','0','N');
 	$jobs_array = array_unique($jobs_array);
 	foreach($jobs_array as $job){
 		$updated = update_barcode_sequences($job);
@@ -205,7 +219,7 @@
 					function Redirect() {  
 						location.href = '$url&sch=$schedule&job=$input_job_no&rand_no=$input_job_no_random'; 
 					}
-				</script>"; 
+		</script>"; 
 ?> 
 </div></div>
 </body> 

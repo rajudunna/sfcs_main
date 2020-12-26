@@ -151,7 +151,7 @@ function ajax_calls(value, sync_type) {
                 $('div#tooltip').css('left', $(this).offset.left - 255);
                 $('div#tooltip').css('margin-left', '-50px');
                 $('div#tooltip').css('text-align', 'left');
-                $('div#tooltip').css('margin-top', '20px');
+                $('div#tooltip').css('margin-top', '40px');
                 $('div#tooltip').css('position', 'absolute');
                 $('div#tooltip').css('z-index', '999999');
             }).mouseout(function() {

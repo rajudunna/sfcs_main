@@ -79,7 +79,7 @@ if(isset($_POST) && isset($_POST['del_recs'])){
     echo 'success';
 }
 function calculate_ratio($doc,$link){
-    $sum_ratio_query = "SELECT SUM(cut_quantity) as ratio from bai_pro3.cps_log where doc_no in (".implode(',',$doc).")
+    $sum_ratio_query = "SELECT SUM(cut_quantity) as ratio from bai_pro3.cps_log where doc_no in ($doc)
     and operation_code = 15";
     $sum_ratio_result = mysqli_query($link,$sum_ratio_query);
     $row = mysqli_fetch_array($sum_ratio_result);
@@ -204,7 +204,7 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
     $ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm bd
    LEFT JOIN bai_pro3.cat_stat_log csl ON bd.order_tid = csl.order_tid 
    LEFT JOIN bai_pro3.plandoc_stat_log psl ON csl.tid = psl.cat_ref AND psl.order_tid = bd.order_tid 
-   WHERE csl.category IN ('Body','Front') AND bd.order_del_no='".$schedule."' AND TRIM(bd.order_col_des) =trim('".$color."') AND psl.order_tid <> '' AND psl.remarks='Normal'  ORDER BY ratio";
+   WHERE csl.category IN ('Body','Front') AND bd.order_del_no='".$schedule."' AND TRIM(bd.order_col_des) =trim('".$color."') AND psl.order_tid <> '' AND psl.remarks='Normal'  ORDER BY ratio,pcutno";
    $doc_nos = [];
     $view_shows=[];
     $ratio_result = mysqli_query($link, $ratio_query) or exit("Sql Error : ratio_query".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -333,7 +333,7 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
                 //Till here 
                 $display_qty = 0;
                 $bundle_qty = 0;
-                $display_qty = calculate_ratio($old_doc_nos,$link);
+                $display_qty = calculate_ratio($old_doc_nos[0],$link);
                 $bundle_qty = $old_pplice[0];
                 echo "<input id='".$old_ratio."_display_qty' type='hidden' value='$display_qty'>";
                 echo "<input id='".$old_ratio."_bundle_qty' type='hidden' value='$bundle_qty'>";
@@ -378,7 +378,7 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
         }
         $display_qty = 0;
         $bundle_qty = 0;
-        $display_qty = calculate_ratio($old_doc_nos,$link);
+        $display_qty = calculate_ratio($old_doc_nos[0],$link);
         $bundle_qty = $old_pplice[0];
         echo "<input id='".$old_ratio."_display_qty' type='hidden' value='$display_qty'>";
         echo "<input id='".$old_ratio."_bundle_qty' type='hidden' value='$bundle_qty'>";

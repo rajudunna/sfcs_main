@@ -229,14 +229,14 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
          {
             $sql="SELECT `bai_pro3`.`m3_transactions`.id,m3_trail_count,response_status,op_des,`bai_pro3`.`m3_transactions`.mo_no,m3_bulk_tran_id,m3_ops_code,style,SCHEDULE,color,size,quantity FROM `bai_pro3`.`m3_transactions`  
             LEFT JOIN `bai_pro3`.`mo_details` ON `bai_pro3`.`mo_details`.`mo_no`=`bai_pro3`.`m3_transactions`.`mo_no`
-            WHERE `bai_pro3`.`m3_transactions`.`response_status`='fail' AND `bai_pro3`.`m3_transactions`.`m3_trail_count`=4 and bai_pro3.mo_details.schedule='$schedule' ";
+            WHERE `bai_pro3`.`m3_transactions`.`response_status`='fail' AND `bai_pro3`.`m3_transactions`.`m3_trail_count`>=4 and bai_pro3.mo_details.schedule='$schedule' ";
             $msg = "Data for the schedule - ".$schedule;
          }
          else
          {
             $sql="SELECT `bai_pro3`.`m3_transactions`.id,m3_trail_count,response_status,op_des,`bai_pro3`.`m3_transactions`.mo_no,m3_bulk_tran_id,m3_ops_code,style,SCHEDULE,color,size,quantity FROM `bai_pro3`.`m3_transactions`  
             LEFT JOIN `bai_pro3`.`mo_details` ON `bai_pro3`.`mo_details`.`mo_no`=`bai_pro3`.`m3_transactions`.`mo_no`
-            WHERE `bai_pro3`.`m3_transactions`.`response_status`='fail' AND `bai_pro3`.`m3_transactions`.`m3_trail_count`=4 and `bai_pro3`.`m3_transactions`.date_time between \"".$sdate." ".$shour."\" and \"".$edate." ".$ehour."\"";
+            WHERE `bai_pro3`.`m3_transactions`.`response_status`='fail' AND `bai_pro3`.`m3_transactions`.`m3_trail_count`>=4 and `bai_pro3`.`m3_transactions`.date_time between \"".$sdate." ".$shour."\" and \"".$edate." ".$ehour."\"";
             $date_1 = $sdate;$date_2 = $edate;
             $date1= strtotime($date_1);$date2= strtotime($date_2);
             $msg = "Data from ".date('d-M-Y', $date1)." to ".date('d-M-Y', $date2);

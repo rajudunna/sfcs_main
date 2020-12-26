@@ -260,7 +260,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 	//NEW Enhancement for category breakup		
 
 	$sql="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\" ".$query;
-	//echo $sql;
+	// echo $sql;
 	//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error d".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
@@ -288,7 +288,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 	echo "<th>Plies</th>";
 	echo "<th>MK Len.</th>";
 	echo "<th>Cut Qty</th>";
-	echo "<th>Docket Requested</th>";
+	echo "<th>Fabric Requested</th>";
 	echo "<th>Fabric Received</th>";
 	echo "<th>Fabric Returned</th>";
 	echo "<th>Damages</th>";
@@ -334,6 +334,11 @@ if(isset($_POST['submit']) && $reptype == 1)
 			{
 			  $leader_name1 = $sql_row22['emp_name'];
 			  
+			}
+			$tbl_query1 = "SELECT tbl_name FROM $bai_pro3.tbl_cutting_table WHERE tbl_id = $act_section ";
+			$tbl_result1 = mysqli_query($link,$tbl_query1) or exit('Unable to get table data');
+			while($tbl1 = mysqli_fetch_array($tbl_result1)){
+				$cut_tbl_val1 = $tbl1['tbl_name'];
 			}
 		//
 
@@ -455,14 +460,14 @@ if(isset($_POST['submit']) && $reptype == 1)
 		}	
         $req_qty=0;
 		$issued_qty=0;
-        $sql112="SELECT req_qty,issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and style='$style' and schedule='$schedule' and color='$color^$act_cut_no'";
+        $sql112="SELECT sum(req_qty) as mrn_req_qty,sum(issued_qty) as mrn_issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and style='$style' and schedule='$schedule' and color='$color^$act_cut_no'";
 		$sql_result112=mysqli_query($link, $sql112) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result112)>0)
 		{
 			while($sql_row112=mysqli_fetch_array($sql_result112))
 			{
-				$req_qty=$sql_row112['req_qty'];
-				$issued_qty=$sql_row112['issued_qty'];
+				$req_qty=$sql_row112['mrn_req_qty'];
+				$issued_qty=$sql_row112['mrn_issued_qty'];
 			}
 		}
 		$doc_req=$doc_req+$req_qty;
@@ -480,7 +485,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		//echo "<td height=17 class=xl6418241 style='height:12.75pt'></td>";
 		echo "<td class=xl6618241 style='border-top:none'>$date</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$act_shift</td>";
-		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$act_section</td>";
+		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$cut_tbl_val1</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>".leading_zeros($doc_no,9)."</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$style</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$schedule</td>";
@@ -570,7 +575,7 @@ if(isset($_POST['submit']) && $reptype==2)
 //NEW Enhancement for category breakup	
    
 $sql="select section from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and shift in ($shift) and section in ($section) ".$query. " group by section order by section";
-
+// echo $sql;
 //mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -701,14 +706,14 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		
 		$req_qty=0;
 		$issued_qty=0;
-		$sql112="SELECT req_qty,issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and schedule='$schedule' and color='$color^$act_cut_no'";
+		$sql112="SELECT sum(req_qty) as mrn_req_qty,sum(issued_qty) as mrn_issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and schedule='$schedule' and color='$color^$act_cut_no'";
 		$sql_result112=mysqli_query($link, $sql112) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result112)>0)
 		{
 			while($sql_row112=mysqli_fetch_array($sql_result112))
 			{
-				$req_qty=$sql_row112['req_qty'];
-				$issued_qty=$sql_row112['issued_qty'];
+				$req_qty=$sql_row112['mrn_req_qty'];
+				$issued_qty=$sql_row112['mrn_issued_qty'];
 			}
 			$fab_rec=$fab_rec+$issued_qty;
 		}
@@ -845,9 +850,15 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	$act_saving_pct=round(($act_saving_sum/$requested)*100,0);
 	$net_saving_sum=round($requested-$utilized,1);
 	$net_saving_pct=round(($net_saving_sum/$requested)*100,0);
+
+	$tbl_query2 = "SELECT tbl_name FROM $bai_pro3.tbl_cutting_table WHERE tbl_id = $section_new ";
+	$tbl_result2 = mysqli_query($link,$tbl_query2) or exit('Unable to get table data');
+	while($tbl2 = mysqli_fetch_array($tbl_result2)){
+		$cut_tbl_val2 = $tbl2['tbl_name'];
+	}
 	
 	echo" <tr height=17 style='height:12.75pt'>";
-	echo "<td class=xl6618241 style='border-top:none'>$section_new</td>";
+	echo "<td class=xl6618241 style='border-top:none'>$cut_tbl_val2</td>";
 	echo "<td>$shift_new</td>";
 	echo "<td>$cut_qty</td>";
 	echo "<td>$damages</td>";

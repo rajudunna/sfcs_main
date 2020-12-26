@@ -15,15 +15,15 @@
 	//New to reset all pending cartons
 
 	
-	$sql1="truncate $bai_pro3.ims_log_packing";
-	mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// $sql1="truncate $bai_pro3.ims_log_packing";
+	// mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql2="insert into $bai_pro3.ims_log_packing select * from bai_pro3.packing_dashboard_new2";
-	$res1=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if($res1)
-	{
-		print("Updated ims_log_packing Table Successfully")."\n";
-	}
+	// $sql2="insert into $bai_pro3.ims_log_packing select * from bai_pro3.packing_dashboard_new2";
+	// $res1=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// if($res1)
+	// {
+	// 	print("Updated ims_log_packing Table Successfully")."\n";
+	// }
 	$sql3="truncate $bai_pro3.packing_summary_tmp_v1";
 	mysqli_query($link, $sql3) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
@@ -142,7 +142,7 @@ if(sizeof($sch_to_process)>0)
 			}
 			
 
-			$sql="select coalesce(sum(carton_act_qty),0) as \"received\" from $bai_pro3.packing_summary_tmp_v1 where order_style_no=\"".$styles[$j]."\" and order_del_no=".$schedules[$j]." and order_col_des=\"".$color_group[$i]."\" and (status=\"DONE\" or disp_carton_no=1) and size_code=\"".$sizes[$j]."\" and doc_no in (".implode(",",$doc_no).")";
+			$sql="select coalesce(sum(carton_act_qty),0) as \"received\" from $bai_pro3.packing_summary_tmp_v1 where order_style_no=\"".$styles[$j]."\" and order_del_no=\"".$schedules[$j]."\" and order_col_des=\"".$color_group[$i]."\" and (status=\"DONE\" or disp_carton_no=1) and size_code=\"".$sizes[$j]."\" and doc_no in (".implode(",",$doc_no).")";
  			// echo $sql."<br/>";
 		
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -251,17 +251,17 @@ if(sizeof($sch_to_process)>0)
 	
 	//NEW2011
 	//NEW ADD 2011-07-14
-	$sql1="truncate $bai_pro3.packing_dashboard_temp";
-	// echo $sql1."<br>";
-	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// $sql1="truncate $bai_pro3.packing_dashboard_temp";
+	// // echo $sql1."<br>";
+	// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql1="insert into $bai_pro3.packing_dashboard_temp SELECT tid,doc_no,size_code,carton_no,carton_mode,carton_act_qty,status,lastup,remarks,doc_no_ref,ims_style,ims_schedule,ims_color,input_date,ims_pro_qty,ims_mod_no,ims_log_date from bai_pro3.packing_dashboard";
-	// echo $sql1."<br>";
-	$res6=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if($res6)
-	{
-		print("Updated packing_dashboard_temp table Successfully")."\n";
-	}
+	// $sql1="insert into $bai_pro3.packing_dashboard_temp SELECT tid,doc_no,size_code,carton_no,carton_mode,carton_act_qty,status,lastup,remarks,doc_no_ref,ims_style,ims_schedule,ims_color,input_date,ims_pro_qty,ims_mod_no,ims_log_date from bai_pro3.packing_dashboard";
+	// // echo $sql1."<br>";
+	// $res6=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// if($res6)
+	// {
+	// 	print("Updated packing_dashboard_temp table Successfully")."\n";
+	// }
 	//NEW ADD 2011-07-14
 	
 
@@ -278,7 +278,7 @@ if(sizeof($sch_to_process)>0)
 		$internal_audited=0;
 		$pendingcarts=0;
 
-		$sql1="select fca_app,app,scanned from $bai_pro3.disp_mix where order_del_no=$schedule";
+		$sql1="select fca_app,app,scanned from $bai_pro3.disp_mix where order_del_no='$schedule'";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -287,7 +287,7 @@ if(sizeof($sch_to_process)>0)
 			$internal_audited=$sql_row1['fca_app'];	
 		}
 		
-		$sql1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container=1";
+		$sql1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no='$schedule' and container=1";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -295,7 +295,7 @@ if(sizeof($sch_to_process)>0)
 		}
 		
 		
-		$sql1="select distinct container, sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container>1";
+		$sql1="select distinct container, sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no='$schedule' and container>1";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{

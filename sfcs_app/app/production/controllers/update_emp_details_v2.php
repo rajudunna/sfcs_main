@@ -367,7 +367,7 @@ if(isset($_POST['submit']))
 							?>						
 								<input type="hidden"  name="count" id="count"  value=<?php echo $max_id ?>>
 								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" readonly style="width: 100px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
-								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $jumper; ?>" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
+								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $jumper; ?>" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>" oninput="this.value = this.value.replace(/^-?\d*\d{0,9}$/; g, '').replace(/(\..*)\./g, '$1');" /></td>
 								<td><select  id="adjustment_type<?php echo $k; ?>" class="form-control" name="adjustment_type<?php echo $k; ?>" >
 								<option value="Positive" <?php if($adjustment_type == "Positive") { echo "SELECTED"; } ?>>Positive</option>
 								<option value="Negative" <?php if($adjustment_type == "Negative") { echo "SELECTED"; } ?>>Negative</option>	
@@ -388,17 +388,26 @@ if(isset($_POST['submit']))
 						
 					?>	
 					<?php
-					   $get_working_days="select DATE_FORMAT(last_up,'%Y-%m-%d') AS last_up  FROM $bai_pro.pro_attendance_adjustment  GROUP BY last_up ORDER BY last_up DESC LIMIT 1  ";
-					   $result_get_working_day=mysqli_query($link, $get_working_days) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-					   while($sql_row11=mysqli_fetch_array($result_get_working_day))
-								 {
-								 $final_date=$sql_row11['last_up'];
-  
-								 }
-								
-								if($date==$final_date || $now_date==$date){
-									echo'<input type="submit" id="submit" class="btn btn-primary" value="Submit" >';
-								}
+					   
+					    $get_cur_day_cnt="SELECT DATE AS pre_date,COUNT(*) AS cnt FROM $bai_pro.pro_attendance WHERE DATE=\"$now_date\" AND present > 0";
+						$result_get_cur_day_cnt=mysqli_query($link, $get_cur_day_cnt) or exit ("Sql Error: $get_cur_day_cnt".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row_cnt=mysqli_fetch_array($result_get_cur_day_cnt))
+							{
+								$cur_day_cnt=$sql_row_cnt['cnt'];
+  							}
+					   	$new_day_row=$cur_day_cnt+1;
+					   					   
+						$get_prev_day="SELECT date FROM $bai_pro.pro_attendance WHERE present > 0 ORDER BY DATE DESC LIMIT $new_day_row,1";
+						$result_get_prev_day=mysqli_query($link, $get_prev_day) or exit ("Sql Error: $get_prev_day".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row_date=mysqli_fetch_array($result_get_prev_day))
+							{
+								$prev_date=$sql_row_date['date'];
+  							}
+					   					  					
+						if($prev_date==$date || $now_date==$date)
+						{
+							echo'<input type="submit" id="submit" class="btn btn-primary" value="Submit" >';
+						}
 					}
 				
 					echo "</form>";
@@ -422,7 +431,7 @@ if(isset($_POST['submit']))
 
 						         <input type="hidden"  name="count" id="count"  value=<?php echo $max_id; ?>>
 								<td><input type="text" onkeyup="validateQty1(event,this);" class="form-control" style="width: 100px;" readonly value="0" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
-								<td><input type="text" onkeyup="validateQty1(event,this);"  class="form-control" style="width: 100px;"value="0" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
+								<td><input type="text" onkeyup="validateQty1(event,this);"  class="form-control" style="width: 100px;"value="0" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>" oninput="this.value = this.value.replace(/^-?\d*\d{0,9}$/; g, '').replace(/(\..*)\./g, '$1');" /></td>
 								<td><select class="form-control"name="adjustment_type<?php echo $k; ?>" id="adjustment_type<?php echo $k; ?>">
 								<option value="Positive">Positive</option>
 								<option value="Negative">Negative</option>
@@ -444,17 +453,26 @@ if(isset($_POST['submit']))
 					 </table>
 					 <?php
 					 
-					 $get_working_days="select DATE_FORMAT(last_up,'%Y-%m-%d') AS last_up  FROM $bai_pro.pro_attendance_adjustment  GROUP BY last_up ORDER BY last_up DESC LIMIT 1 ";
-					 $result_get_working_day=mysqli_query($link, $get_working_days) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-					 while($sql_row11=mysqli_fetch_array($result_get_working_day))
-							   {
-							   $final_date=$sql_row11['last_up'];
-
-							   }
+							   
+						$get_cur_day_cnt="SELECT DATE AS pre_date,COUNT(*) AS cnt FROM $bai_pro.pro_attendance WHERE DATE=\"$now_date\" AND present > 0";
+						$result_get_cur_day_cnt=mysqli_query($link, $get_cur_day_cnt) or exit ("Sql Error: $get_cur_day_cnt".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row_cnt=mysqli_fetch_array($result_get_cur_day_cnt))
+							{
+								$cur_day_cnt=$sql_row_cnt['cnt'];
+  							}
+					   	$new_day_row=$cur_day_cnt+1;
+					   					   
+						$get_prev_day="SELECT date FROM $bai_pro.pro_attendance WHERE present > 0 ORDER BY DATE DESC LIMIT $new_day_row,1";
+						$result_get_prev_day=mysqli_query($link, $get_prev_day) or exit ("Sql Error: $get_prev_day".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row_date=mysqli_fetch_array($result_get_prev_day))
+							{
+								$prev_date=$sql_row_date['date'];
+  							}
 							 
-							   if($date==$final_date ||$now_date==$date){
-								echo'<input type="submit" id="submit" class="btn btn-primary" value="Submit" >';
-							   }
+						if($prev_date==$date || $now_date==$date)
+						{
+							echo'<input type="submit" id="submit" class="btn btn-primary" value="Submit" >';
+						}
 			
 	
 			         ?>	
@@ -774,7 +792,7 @@ function validateQty1(e,t)
 	if(e.keyCode == 13)
 			return;
 		var p = String.fromCharCode(e.which);
-		var c = /^[0-9]+$/;
+		var c =/^-?\d*\d{0,9}$/; 
 		var v = document.getElementById(t.id);
 		if( !(v.value.match(c)) && v.value!=null ){
 			v.value = '';

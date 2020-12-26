@@ -102,11 +102,11 @@ echo "<tr style='background-color:#003366;color:white;text-align:center;font-siz
 
 //NEW2013 
 //NEW ADD 2013-04-17 
-$sql1="truncate $bai_pro3.packing_dashboard_temp"; 
-mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+// $sql1="truncate $bai_pro3.packing_dashboard_temp"; 
+// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
-$sql1="insert into $bai_pro3.packing_dashboard_temp SELECT tid,doc_no,size_code,carton_no,carton_mode,carton_act_qty,status,lastup,remarks,doc_no_ref,ims_style,ims_schedule,ims_color,input_date,ims_pro_qty,ims_mod_no,ims_log_date from $bai_pro3.packing_dashboard";
-mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+// $sql1="insert into $bai_pro3.packing_dashboard_temp SELECT tid,doc_no,size_code,carton_no,carton_mode,carton_act_qty,status,lastup,remarks,doc_no_ref,ims_style,ims_schedule,ims_color,input_date,ims_pro_qty,ims_mod_no,ims_log_date from $bai_pro3.packing_dashboard";
+// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 //NEW ADD 2013-04-17 
 
 $sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` where section in ($section_no) GROUP BY section ORDER BY section + 0";

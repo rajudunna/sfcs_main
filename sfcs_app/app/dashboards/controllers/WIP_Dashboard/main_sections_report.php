@@ -7,6 +7,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 error_reporting(0);
+
+function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
+{
+	$datetime1 = date_create($date_1);
+	$datetime2 = date_create($date_2);
+	$interval = date_diff($datetime1, $datetime2);
+	return $interval->format($differenceFormat);
+}
 ?>
 
 <html>
@@ -121,6 +129,7 @@ $operation=$_GET['operations'];
 								<th>Rejected Qty</th>
 								<th>Balance</th>
 								<th>Remarks</th>
+								<th>Age</th>
 								<th>WIP</th>
 							</tr>";
 		$toggle=0;
@@ -186,7 +195,7 @@ $operation=$_GET['operations'];
 					
 					$rowcount_check=1;
 	                $row_counter = 0;
-	                $get_details="select docket_number,size_title,bundle_number,input_job_no,cut_number,remarks,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output,SUM(if(operation_id = $operation,rejected_qty,0)) as rej_qty From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no' and assigned_module='$module' GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty+rejected_qty,0))  order by schedule, size_id DESC";	
+	                $get_details="select docket_number,size_title,bundle_number,input_job_no,cut_number,remarks,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,DATE(MIN(date_time)) AS input_date,sum(if(operation_id = $operation,recevied_qty,0)) as output,SUM(if(operation_id = $operation,rejected_qty,0)) as rej_qty From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no' and assigned_module='$module' GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty+rejected_qty,0))  order by schedule, size_id DESC";	
 					//echo $get_details;
 					$sql_result12=mysqli_query($link, $get_details) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	                if(mysqli_num_rows($sql_result12) > 0){
@@ -211,8 +220,8 @@ $operation=$_GET['operations'];
 	                    $job_no1 = $row12['input_job_no'];
 	                    $cut_number = $row12['cut_number'];
 	                    $remarks = $row12['remarks'];
-
-	                     $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$job_no1,$link);
+						//$input_date = $row12['input_date'];
+	                    $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$job_no1,$link);
 
 
 						$sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket and a_plies>0";
@@ -240,7 +249,15 @@ $operation=$_GET['operations'];
 						{
 							$rejected = $sql_row33['rejected'];
 						}
-			    
+						
+						//Get date
+						$bundle_check_qty1="select  min(date(date_time)) as daten from $brandix_bts.bundle_creation_data_temp where bundle_number=$bundle_number and operation_id=$pre_ops_code";
+						$sql_result561=mysqli_query($link, $bundle_check_qty1) or exit("Sql bundle_check_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row1=mysqli_fetch_array($sql_result561))
+						{
+							$input_date=$sql_row1['daten'];
+						}
+					  $aging=dateDifference(date("Y-m-d"), $input_date); 
 						if($rowcount_check==1)
 						{	
 							if($row_counter == 0)
@@ -273,7 +290,7 @@ $operation=$_GET['operations'];
 							echo "<td>$rejected</td>";
 		                          			
 							echo "<td>".($previous_ops_qty-($current_ops_qty+$rejected))."</td>
-							<td>$remarks</td>";
+							<td>$remarks</td><td>$aging</td>";
 							//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
 							
 							if($rowcount_check==1)
@@ -313,10 +330,10 @@ $operation=$_GET['operations'];
 							<td>$sizes</td>
 							<td>$previous_ops_qty</td>
 							<td>$current_ops_qty</td>";
-							echo "<td>$rejected</td>";
-		                          			
+							echo "<td>$rejected</td>";	                          			
 							echo "<td>".($previous_ops_qty-($current_ops_qty+$rejected))."</td>
 							<td>$remarks</td>";
+							echo "<td>$aging</td>";
 							//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
 							//if($row_counter > 0)
 								echo "<td class=\"$tr_color\" ></td>";

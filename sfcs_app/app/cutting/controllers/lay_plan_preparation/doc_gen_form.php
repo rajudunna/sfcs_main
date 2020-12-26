@@ -260,6 +260,10 @@ if ($order_joins>'0' or $order_joins>0) {
         </script>";
   
 } else {
+	
+	$insert_sync_log = "INSERT INTO $brandix_bts.order_sync_log(`date_time`, `order_tid`, `style`,  `color`, `schedule`, `status`) VALUES(NOW(), '$tran_order_tid', '$style', '$color', '$schedule', '2')";
+	$result_insert = mysqli_query($link,$insert_sync_log) or exit("insert to get the order sync2");
+
     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
             function Redirect() {
                 location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&order_tid=$main_tran_order_tid&color=$main_color&style=$main_style&schedule=$schedule\";
@@ -282,15 +286,25 @@ else{
 
 
 	}
+
+	$insert_sync_log = "INSERT INTO $brandix_bts.order_sync_log(`date_time`, `order_tid`, `style`,  `color`, `schedule`, `status`) VALUES(NOW(), '$tran_order_tid', '$style', '$color', '$schedule', '3')";
+	$result_insert = mysqli_query($link,$insert_sync_log) or exit("insert to get the order sync3");
+
 	//Encoding order_tid
 	$main_tran_order_tid=order_tid_encode($tran_order_tid);
 	//Encoding color
 	$main_color = color_encode($color);
 	$main_style = style_encode($style);
+	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+	// 	function Redirect() {
+	// 		sweetAlert('Dockets Already Generated','','warning');
+	// 		location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\";
+	// 		}
+	// 	</script>";
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 		function Redirect() {
 			sweetAlert('Dockets Already Generated','','warning');
-			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\";
+			location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&order_tid=$main_tran_order_tid&color=$main_color&style=$main_style&schedule=$schedule\";
 			}
 		</script>";
 

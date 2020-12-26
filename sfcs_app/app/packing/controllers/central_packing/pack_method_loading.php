@@ -115,7 +115,7 @@
 				
 								
 					//end logic
-					$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where schedule=$schedule AND style='$style'"; 
+					$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where schedule='$schedule' AND style='$style'"; 
 					$get_pack_id_res=mysqli_query($link, $get_pack_id) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$row = mysqli_fetch_row($get_pack_id_res);
 					$pack_id=$row[0];

@@ -14,13 +14,26 @@ include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'
        var valueSelected = this.value;
 	  window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(valueSelected)))
     });
-	 $("#schedule").change(function(){
+	$("#schedule").change(function(){
         //alert("The text has been changed.");
 		var optionSelected = $("option:selected", this);
        var valueSelected2 = this.value;
 	   var style1 = $("#style").val();
 	   window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style1)))+"&schedule="+valueSelected2
-	  });
+	});
+	$("#submit_val").click(function(){
+	var style_val = $("#style").val();
+	var sch_val = $("#schedule").val();
+	if(style_val == null || sch_val == null)
+	{
+		sweetAlert('Please Select  Style,Schedule','','warning');
+		return false;
+	}
+	else
+	{
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style_val)))+"&schedule="+sch_val+"&submit_val=submit_val";
+	}
+  });
 });
 </script>
 <head>
@@ -32,6 +45,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'
 <body>
 <form>
 <?php
+$decode_style = $_GET['style'];
 $style=style_decode($_GET['style']);
 $schedule=$_GET['schedule']; 
 if(isset($_POST['myval']))
@@ -48,6 +62,19 @@ if(isset($_POST['myval']))
 		$result13=mysqli_query($link, $count_sch_qry3) or die("Error110-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$row2=mysqli_fetch_array($result13);
 		$input_job_random_min = $row2['input_job_no_random'];
+		$sql32="SELECT * FROM $bai_pro3.packing_summary_input WHERE order_del_no ='$schedule' AND input_job_no in ($list1) and bundle_print_status = 1"; 
+		$result32=mysqli_query($link, $sql32) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($result32)>0)
+		{
+			echo "<script>
+							sweetAlert('Error','Job already printed.','warning');
+							setTimeout('Redirect()',500); 
+							function Redirect() {  
+								location.href = \"".getFullURLLevel($_GET['r'], "sewing_club.php", "0", "N")."&style=$decode_style&schedule=$schedule&submit_val=submit_val1\";
+							}
+				</script>";
+				exit();
+		}
 		$count_sch_qry1="SELECT input_job_no,input_job_no_random FROM $bai_pro3.packing_summary_input WHERE order_del_no ='$schedule' AND input_job_no in ($list1) group by input_job_no";
 		$result10=mysqli_query($link, $count_sch_qry1) or die("Error100-".$count_sch_qry."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row2=mysqli_fetch_array($result10))
@@ -58,16 +85,28 @@ if(isset($_POST['myval']))
 			$result12=mysqli_query($link, $count_sch_qry2) or die("Error108-".$count_sch_qry2."-".mysqli_error($GLOBALS["___mysqli_ston"]));				
 		}
 		update_barcode_sequences($input_job_random_min);
-		echo "<script>sweetAlert('Following Sewing Jobs Clubbed Sucessfully','','success');</script>";
+		//echo "<script>sweetAlert('Following Sewing Jobs Clubbed Sucessfully','','success');</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+			function Redirect() {
+			sweetAlert('Following Sewing Jobs Clubbed Sucessfully','','success');
+			location.href = \"".getFullURLLevel($_GET['r'], "sewing_club.php", "0", "N")."&style=$decode_style&schedule=$schedule&submit_val=submit_val1\";
+			}
+			</script>";
 	}	
 	else
 	{
-		echo "<script>sweetAlert('Please Select More than One Sewing Job to Club','','warning');</script>";			
+		//echo "<script>sweetAlert('Please Select More than One Sewing Job to Club','','warning');</script>";	
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+		function Redirect() {
+		sweetAlert('Please Select More than One Sewing Job to Club','','warning');
+		location.href = \"".getFullURLLevel($_GET['r'], "sewing_club.php", "0", "N")."&style=$decode_style&schedule=$schedule&submit_val=submit_val2\";
+		}
+		</script>";	
 	}
 }
 ?>
 <?php
-$sql="select order_style_no from $bai_pro3.packing_summary_input group by order_style_no";	
+$sql="select order_style_no from $bai_pro3.bai_orders_db_confirm group by order_style_no";	
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 echo "<div class=\"row\"><div class=\"col-sm-3\"><label>Select Style:</label><select class='form-control' name=\"style\"  id='style'>";
 echo "<option value='' disabled selected>Please Select</option>";
@@ -100,16 +139,18 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
 	}
 }
-
 echo "	</select>
 	 </div>";
+echo "&nbsp;&nbsp;";
+echo "<div class='col-md-3 col-sm-3'><input type='button' name='submit_val' id='submit_val' class='btn btn-success' value='Show' style='margin-top: 18px;'></div>";
 ?>
 </form>
 
 </div>
+<br/>
 <?php
-if($style != "" && $schedule != "")
-{	
+if($style != null && $schedule != null && isset($_GET['submit_val']))
+{
 	?>
 	<div class="panel panel-primary">
 		<div class="panel-body">
@@ -125,7 +166,7 @@ if($style != "" && $schedule != "")
 			echo "<th>Quantity</th>";
 			echo "<th>Clubbing Details</th>";  
 			echo "</tr></thead>";
-			$sql = "SELECT order_del_no,input_job_no,input_job_no_random,SUM(carton_act_qty) AS carton_act_qty,order_col_des, mrn_status FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' GROUP BY input_job_no ORDER BY input_job_no*1";
+			$sql = "SELECT order_del_no,input_job_no,input_job_no_random,SUM(carton_act_qty) AS carton_act_qty,order_col_des, mrn_status,bundle_print_status FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' GROUP BY input_job_no ORDER BY input_job_no*1";
 			$result=mysqli_query($link, $sql) or die("Error8-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($result))
 			{
@@ -169,6 +210,10 @@ if($style != "" && $schedule != "")
 				if(($rows_count1 > 0) || ($plan_dash_count > 0))
 				{								    
 					echo "<td>Already Jobs Loaded</td>";			
+				}
+				else if($sql_row['bundle_print_status']==1)
+				{
+					echo "<td>Job already Printed</td>";
 				}
 				else
 				{									
