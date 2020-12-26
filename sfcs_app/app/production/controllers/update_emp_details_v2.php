@@ -5,6 +5,7 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 	$plantcode=$_SESSION['plantCode'];
+	$plantcode='Q01';
 	$username=$_SESSION['userName'];
 	if(isset($_POST['team'])) 
 	{ 
@@ -247,7 +248,7 @@ $username=strtolower($username_list[1]);
 
 				<div class='col-md-2 col-sm-3 col-xs-12'>
 				<?php 
-				$query2="select break_hours FROM $pms.pro_atten_hours where shift='$shift' and plant_code='$plantcode' and date='$date'";
+				$query2="select * FROM $pms.pro_atten_hours where shift='$shift' and plant_code='$plantcode' and date='$date'";
 				$query_result2=mysqli_query($link, $query2) or exit ("Sql Error21: $query_result2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($query_result2)==0)
 				{
