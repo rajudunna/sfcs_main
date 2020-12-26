@@ -52,8 +52,8 @@ echo'<td>Date:</td><td> <input type="text" class="form-control" name="date" valu
 echo '<td style="padding:4px;">Locaton:</td><td><select class="form-control" name="ref1">';
 
 $sql="select location_id from $wms.location_db where plant_code='$plant_code' and status=1 order by sno";
-mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
-$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
+//mysqli_query($link,$sql) or exit("Sql Error at line 55".mysql_error());
+$sql_result=mysqli_query($link,$sql) or exit("Sql Error at 55".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 echo "<option>Please Select</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -111,7 +111,7 @@ echo "<td><a href=\"$url?lot_no=$ref\" onclick=\"Popup=window.open('$url?lot_no=
 		{
 			
 			$sql="select coalesce(sum(qty_rec),0) as \"in\" from $wms.store_in where plant_code='$plant_code' and lot_no=\"".$sql_row1['lot_no']."\"";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error at line 115".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				$in=$sql_row['in'];
@@ -209,11 +209,11 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 					$uuid=$uuid_row['uuid'];
 				}
 		$sql="insert into $wms.store_in (tid,lot_no, ref1, ref2, qty_rec, date, remarks, log_user,plant_code,created_user,created_at,updated_user,updated_at) values ('$uuid','$lot_no[$i]', '$ref1', '$box[$i]', $qty[$i], '$date', '$remarks[$i]','$user_name','$plant_code','$username','$current_date','$username','$current_date')";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error at line 212".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$last_id = mysqli_insert_id($link);
 
 		$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid),updated_user='$username',updated_at='$current_date' where plant_code='$plant_code' AND tid='$uuid'";
-		$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error at line 216".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 	}
 	$url=  getFullURL($_GET['r'],'quick_insert_v1.php','N');
