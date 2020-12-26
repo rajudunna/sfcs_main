@@ -5,7 +5,7 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 	$plantcode=$_SESSION['plantCode'];
-	$plantcode='Q01';
+	// $plantcode='Q01';
 	$username=$_SESSION['userName'];
 	if(isset($_POST['team'])) 
 	{ 
