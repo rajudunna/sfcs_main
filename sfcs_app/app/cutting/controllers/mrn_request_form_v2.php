@@ -7,7 +7,7 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
 	$main_url=getFullURL($_GET['r'],'mrn_request_form_v2.php','R');
     $plant_code = $_SESSION['plantCode'];
-    $plant_code = 'Q01';
+    // $plant_code = 'Q01';
     $username = $_SESSION['userName'];
     $flag=1;
     $validation_ref_select="";
