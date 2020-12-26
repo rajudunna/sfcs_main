@@ -150,15 +150,16 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                 }
                 if($docket_line_ids)
                 {
-                    $sql1x1="select * from $pps.jm_actual_docket where jm_docket_id in ($docket_line_ids)";
+                    $jobstatus=JobStatusEnum::DONE;
+                    $sql1x1="select * from $pps.jm_actual_docket where jm_docket_id in ($docket_line_ids) AND cut_report_status='$jobstatus'";
                     $sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error81".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($sql_result1x1)>0)
                     {
-                        $cut_status="0";
+                        $cut_status="5";
                     }
                     else
                     {
-                        $cut_status="5";
+                        $cut_status="0";
                     }
                     // fabric request logic
                     $sql1x115="SELECT *  FROM  `$pps`.`fabric_prorities` WHERE `jm_docket_id` IN ($docket_line_ids)";
