@@ -159,7 +159,7 @@ switch (trim($product_group))
 	}
 	case "Fabric":
 	{
-		echo "<th>Return Qty (MTR)</th><th>Remarks</th></tr>";
+		echo "<th>Return Qty ($fab_uom)</th><th>Remarks</th></tr>";
 		break;
 	}
 	case "Thread":
