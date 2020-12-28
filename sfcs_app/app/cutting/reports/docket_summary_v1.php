@@ -102,9 +102,10 @@ $username=$_SESSION['userName'];
 			 */
 			$qrydocketLines="SELECT doc.fg_color,doc.docket_number,doc.is_binding,doc.jm_docket_id,ratio_cg.component_group_id as cg_id,doc.plies, ratio_cg.ratio_id,ratio_cg.fabric_saving,l.date_n_time AS fab_ready_time,cut.cut_number,cut.po_number ,doc.ratio_comp_group_id
 			FROM $pps.jm_dockets doc
-			LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
+			LEFT JOIN $pps.jm_cut_docket_map jcdm ON jcdm.jm_docket_id = doc.jm_docket_id
+			LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = jcdm.jm_cut_job_id
 			LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
-			LEFT JOIN $pps.log_rm_ready_in_pool l ON doc.jm_docket_id=l.jm_docket_id
+			LEFT JOIN $pps.log_rm_ready_in_pool l ON doc.jm_docket_id=l.doc_no
 			WHERE doc.plant_code='$plantcode' AND DATE(doc.created_at) BETWEEN '$sdate' AND '$edate'";
 			//echo $qrydocketLines;
 			$docketLinesResult=mysqli_query($link_new, $qrydocketLines) or exit("Sql Error at getting taskJobs".mysqli_error($GLOBALS["___mysqli_ston"]));
