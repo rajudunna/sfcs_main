@@ -7,8 +7,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/me
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/header_scripts.php',1,'R')); 
 $table_csv = '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
 $excel_form_action = '../'.getFullURLLevel($_GET['r'],'common/php/export_excel.php',1,'R');
-// $plantcode=$_SESSION['plantCode'];
-$plantcode='Q01';
+$plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 // $plantcode='AIP';
 
@@ -314,12 +313,12 @@ if(isset($_POST['submit']) && $reptype == 1)
 	FROM $pps.`jm_actual_docket` jad 
 	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = jad.po_number
 	LEFT JOIN $pps.`lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
-	LEFT JOIN $pps.`jm_docket_cg_bundle` jdb ON jdb.jm_docket_id = jd.jm_docket_id
+	LEFT JOIN $pps.`jm_docket_cg_bundle` jdb ON jdb.jm_docket_id = jad.jm_docket_id
 	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdb.jm_docket_id
-	LEFT JOIN $pps.jm_cut_docket_map dm ON dm. jm_docket_id=jd. jm_docket_id
-	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = dm. jm_cut_job_id 
+	LEFT JOIN $pps.jm_cut_docket_map dm ON dm. jm_docket_id=jd.jm_docket_id
+	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = dm.jm_cut_job_id 
 	WHERE DATE(jad.created_at) between \"$from_date\" and  \"$to_date\" and jad.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND jad.shift in ($shift)
-	GROUP BY jad.jm_ad_id,jdl.docket_number";
+	GROUP BY jad.jm_ad_id,jd.docket_number";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error dd".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	// echo $sql;
