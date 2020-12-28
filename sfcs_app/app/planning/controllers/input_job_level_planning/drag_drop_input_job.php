@@ -696,7 +696,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 		   * @return:workstation
 		**/
 		$result_worksation_id=getWorkstations($department,$plant_code);
-		$workstations=$result_worksation_id['workstation'];
+		$workstations=$result_worksation_id['workstation_codes'];
 					            
 		foreach($workstations as $work_id=>$work_des)
 		{
