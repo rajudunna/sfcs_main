@@ -477,7 +477,17 @@ function ReplaceProcess($replace_id_edit)
                     $bcd_id = $row_cat['bcd_id'];
                     $size_title = $row_cat['size_title'];
                     $operation_id = $row_cat['operation_id'];
-                    $remaining_qty =  $rej_qty- ($recut_qty + $replace_qty);
+                    $recut_raised_qty = 0;
+                    $get_recut_rasied_qty = "SELECT sum(recut_raised_qty) as recut_raised_qty FROM `$bai_pro3`.`lay_plan_recut_track` WHERE bcd_id IN ($bcd_id)";
+                    $result_get_recut_rasied_qry = $link->query($get_recut_rasied_qty);
+                    $sql_num_check=mysqli_num_rows($result_get_recut_rasied_qry);
+	                if($sql_num_check > 0){
+                        while($row1 = $result_get_recut_rasied_qry->fetch_assoc()) 
+                        {
+                            $recut_raised_qty = $row1['recut_raised_qty'];
+                        }
+                    }
+                    $remaining_qty =  $rej_qty- ($recut_raised_qty + $replace_qty);
                     if($job_deactivated_status1 == 1){
                         $table_data .= "<td>".$row_cat['rejected_qty']."</td>";
                         $table_data .= "<td>".$row_cat['recut_qty']."</td>";
