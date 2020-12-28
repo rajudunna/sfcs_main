@@ -86,7 +86,7 @@ if(isset($_POST['show']))
 	$s_date=$_POST['sdate'];
 	$e_date=$_POST['edate'];
 	//get cut 
-	$get_cut_jobs="select ratio_id,jm_cut_job_id,cut_number,po_number from $pps.jm_cut_job where date(created_at) between '".$s_date."' and '".$e_date."' and plant_code='$plantcode' and is_active=true";
+	$get_cut_jobs="select jm_cut_job_id,cut_number,po_number from $pps.jm_cut_job where date(created_at) between '".$s_date."' and '".$e_date."' and plant_code='$plantcode' and is_active=true";
 	// echo $get_cut_jobs;
 	$get_cut_jobs_result=mysqli_query($link, $get_cut_jobs) or exit("Sql Error--1x==".$get_cut_jobs.mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($get_cut_jobs_result)>0)
@@ -107,7 +107,6 @@ if(isset($_POST['show']))
 		
 	while($get_cut_jobs_row=mysqli_fetch_array($get_cut_jobs_result))
 	{
-		$ratio_id=$get_cut_jobs_row['ratio_id'];
 		$jm_cut_job_id=$get_cut_jobs_row['jm_cut_job_id'];
 		$cut_number=$get_cut_jobs_row['cut_number'];
 		$po_number=$get_cut_jobs_row['po_number'];
@@ -188,9 +187,16 @@ if(isset($_POST['show']))
 						// }
 					}
 				}
+				//get ratio id aganist po number
+				$get_ratio_id="SELECT ratio_id FROM $pps.lp_ratio WHERE plant_code='$plantcode' AND po_number='$po_number' and is_active=true";
+				$get_ratio_id_result=mysqli_query($link, $get_ratio_id) or exit("Sql Error--1x==".$get_ratio_id.mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($get_ratio_id_row=mysqli_fetch_array($get_ratio_id_result))
+				{
+                  $ratio_id[] = $get_ratio_id_row['ratio_id'];
+				}	
 
 				//get component_group_id from ratio_id
-				$get_component_id="select component_group_id from $pps.lp_ratio_component_group where ratio_id='$ratio_id' and plant_code='$plantcode' and is_active=true";
+				$get_component_id="select component_group_id from $pps.lp_ratio_component_group where ratio_id in ('".implode("','" , $ratio_id)."') and plant_code='$plantcode' and is_active=true";
 				// echo $get_component_id;
 				$get_component_id_result=mysqli_query($link, $get_component_id) or exit("Sql Error--1x==".$get_component_id.mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($get_component_id_result)>0)
@@ -217,7 +223,7 @@ if(isset($_POST['show']))
 								$pending_dockets = '';
 								$completed_dockets = '';
 								$completed = '';
-								$get_docket="SELECT jd.jm_docket_id,jd.docket_number FROM $pps.jm_dockets jd WHERE jd.jm_cut_job_id='$jm_cut_job_id' AND jd.plant_code='$plantcode' AND jd.is_active=true order by jd.docket_number";
+								$get_docket="SELECT jd.jm_docket_id,jd.docket_number FROM $pps.jm_dockets jd LEFT JOIN $pps.jm_cut_docket_map jcdm ON jcdm.jm_docket_id=jd.jm_docket_id  WHERE jcdm.jm_cut_job_id='$jm_cut_job_id' AND jd.plant_code='$plantcode' AND jd.is_active=true order by jd.docket_number";
 								// echo $get_docket.'<br/>';
 								$get_docket_result=mysqli_query($link, $get_docket) or exit("Sql Error--1x== get_docket".mysqli_error($GLOBALS["___mysqli_ston"]));
 								if(mysqli_num_rows($get_docket_result)>0)
