@@ -405,23 +405,24 @@ if(isset($_POST['submit']))
 		
 		
 		
-		if(substr($style,0,1)=="P" or substr($style,0,1)=="K")
-		{
-			$recipients=array_merge($pink_team,$rm_team);
-		}
-		if(substr($style,0,1)=="L" or substr($style,0,1)=="O")
-		{
-			$recipients=array_merge($logo_team,$rm_team);
-		}
-		if(substr($style,0,1)=="D" or substr($style,0,1)=="M")
-		{
-			$recipients=array_merge($dms_team,$rm_team);
-		}
-		if(strlen($recipients))
-		{
-		$to  = implode(", ",$recipients);
-		}
-		$subject = 'BAI RM - Manual Form Ref. '.$rand. ' (Request)';
+		// if(substr($style,0,1)=="P" or substr($style,0,1)=="K")
+		// {
+		// 	$recipients=array_merge($pink_team,$rm_team);
+		// }
+		// if(substr($style,0,1)=="L" or substr($style,0,1)=="O")
+		// {
+		// 	$recipients=array_merge($logo_team,$rm_team);
+		// }
+		// if(substr($style,0,1)=="D" or substr($style,0,1)=="M")
+		// {
+		// 	$recipients=array_merge($dms_team,$rm_team);
+		// }
+		// if(strlen($recipients))
+		// {
+		// $to  = implode(", ",$recipients);
+		// }
+		$to  = $line_wip_track;
+		$subject = $plantname.'RM - Manual Form Ref. '.$rand. ' (Request)';
 		
 		// To send HTML mail, the Content-type header must be set
 		$headers  = 'MIME-Version: 1.0' . "\r\n";
@@ -459,6 +460,7 @@ if(isset($_POST['submit']))
 	  $msg=$e->getMessage();
 	  log_statement('error',$msg,$main_url,__LINE__);
 	}
+
 }
 ?> 
 <script type="text/javascript">

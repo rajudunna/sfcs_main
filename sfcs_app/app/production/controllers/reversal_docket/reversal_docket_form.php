@@ -32,8 +32,8 @@
             }
             // get the sizes involved in the docket
             $doc_info_query = "SELECT fg_color, doc.plies, ratio_comp_group_id, ratio_id FROM $pps.jm_dockets doc
-            LEFT JOIN  $pps.lp_ratio_component_group lrcg ON lrcg.component_group_id = doc.ratio_comp_group_id
-            WHERE doc.jm_docket_id = '$docket_id' ";
+            LEFT JOIN  $pps.lp_ratio_component_group lrcg ON lrcg.lp_ratio_cg_id = doc.ratio_comp_group_id
+            WHERE doc.docket_number = $docket_number ";
             $doc_info_result = mysqli_query($link, $doc_info_query);
             while ($row1 = mysqli_fetch_array($doc_info_result)) {   
                 $fg_color = $row1['fg_color'];
@@ -46,7 +46,7 @@
             $doc_sizes_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id = '$ratio_id' ";
             $doc_size_result = mysqli_query($link, $doc_sizes_query);
             while ($row2 = mysqli_fetch_array($doc_size_result)) {   
-                $size = $row2['size']; 
+                $size = $row2['size'];
                 $size_ratio = $row2['size_ratio'];
                 $unsorted_size_ratios[$size] = $size_ratio;
             }
@@ -259,7 +259,6 @@ if(isset($_POST['formSubmit']))
                             <th>Reverse Cut</th>
                         </thead>";
                         $s_no = 1;
-                        echo $layInfo;
                         while($row = mysqli_fetch_array($layInfo)){
                             $docket_id = $row['jm_docket_id'];
                             $lay_id = '"'.$row['jm_ad_id'].'"';
