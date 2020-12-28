@@ -586,7 +586,7 @@ function reportCut(id) {
     $('#post_post').show();
     $('#reportcut').hide();
     var reportData = new Object();
-    reportData.docketNumber = id;
+    reportData.actualDocketId = id;
     reportData.createdUser = '<?= $username ?>';
     reportData.plantCode = '<?= $plantcode ?>';
     reportData.sizeRejections = [];
@@ -639,7 +639,7 @@ function deleteCut(id) {
     $('#post_post').show();
     $('#deletecut').hide();
     var reportData = new Object();
-    reportData.docketNumber = id;
+    reportData.actualDocketId = id;
     reportData.createdUser = '<?= $username ?>';
     reportData.plantCode = '<?= $plantcode ?>';
     var bearer_token;
