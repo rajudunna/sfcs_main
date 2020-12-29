@@ -51,21 +51,24 @@ $(document).ready(function() {
 function confirm_delete(e,t)
     {
         e.preventDefault();
-        var v = sweetAlert({
-        title: "Are you sure to Delete the Record?",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-        buttons: ["No, Cancel It!", "Yes, I am Sure!"],
-        }).then(function(isConfirm){
-        if (isConfirm) {
-        window.location = $(t).attr('href');
-        return true;
-        } else {
-        sweetAlert("Request Cancelled",'','error');
-        return false;
-        }
-        });
+		swal({
+					title: "Are you sure?",
+					text: "Do You Want To Delete the Record?",
+					type: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#DD6B55",confirmButtonText: "Yes, I Want To Delete",
+					cancelButtonText: "No, Cancel!",
+					closeOnConfirm: false,
+					closeOnCancel: false }, 
+				 function(isConfirm){ 
+					if (isConfirm) {
+                        window.location = $(t).attr('href');
+        				return true;
+					} else {
+						sweetAlert("Request Cancelled",'','error');
+        				return false;
+					}
+				 });
     }
 </script>
 <style>
