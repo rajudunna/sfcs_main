@@ -267,7 +267,8 @@
 					border-left:.5pt solid windowtext;
 					mso-background-source:auto;
 					mso-pattern:auto;
-					white-space:nowrap;}
+					/* white-space:nowrap; */
+					}
 				.xl696065
 					{padding-top:1px;
 					padding-right:1px;
@@ -465,7 +466,8 @@
 					border-left:.5pt solid black;
 					mso-background-source:auto;
 					mso-pattern:auto;
-					white-space:nowrap;}
+					/* white-space:nowrap; */
+					}
 				.xl786065
 					{padding-top:1px;
 					padding-right:1px;
@@ -804,7 +806,7 @@
 					</tr>
 					<tr height=20 style='height:15.0pt'>
 						<td colspan=2 height=20 class=xl786065 style='border-right:.5pt solid black;height:15.0pt'>Docket Number</td>
-						<td colspan=2 class=xl776065 style='border-right:.5pt solid black;border-left:none'><?php echo $doc_no; ?></td>
+						<td colspan=2 class=xl776065 style='word-break:break-word;border-right:.5pt solid black;border-left:none'><?php echo $doc_no; ?></td>
 						<td colspan=2 class=xl806065 style='border-right:.5pt solid black;border-left:none'>Product Category</td>
 						<td colspan=7 class=xl776065 style='border-right:.5pt solid black;border-left:none'><?php echo $order_div; ?></td>
 					</tr>
@@ -928,7 +930,7 @@
 											}
 										}
 										$bun_num = implode(",", array_unique($bun_num));
-										echo "<td colspan=7 class=xl686065 style='border-right:.5pt solid black;border-left:none;'>".$bun_num."</td>";
+										echo "<td colspan=7 class=xl686065 style='word-break:break-word;border-right:.5pt solid black;border-left:none;'>".$bun_num."</td>";
 									echo "</tr>";
 									unset($bun_num);
 										$sno++;
