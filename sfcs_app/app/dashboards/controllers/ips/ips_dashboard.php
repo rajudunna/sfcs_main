@@ -166,12 +166,19 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                         $sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error81".mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($sql_result1x1)>0)
                         {
-                            $cut_status="5";
+                            if(sizeof($doc_no_ref_explode)<>mysqli_num_rows($sql_result1x1))
+                            {
+                                $cut_status="5";
+                            }
+                            else
+                            {
+                                $cut_status="0";
+                            }
                         }
-                        else
+                        else 
                         {
                             $cut_status="0";
-                        }
+                        }    
                         if($cut_status=="0")
                         {
                            // fabric request logic
