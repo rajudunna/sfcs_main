@@ -747,7 +747,7 @@ window.onload = sivamtime;
 
 <?php
 $plant_code = $_SESSION['plantCode'];
-$plant_code = 'Q01';
+// $plant_code = 'Q01';
 $username = $_SESSION['userName'];
 echo "<div style='width=100%;'>";
 //NEW to correct
