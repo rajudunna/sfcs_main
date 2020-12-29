@@ -271,7 +271,7 @@ if(isset($_POST['submit']))
 					}
 
 					/**getting cut jobs based on task job id */
-					$qry_toget_style_sch="SELECT GROUP_CONCAT(DISTINCT(IF(attribute_name='CUTJOBNO', attribute_VALUE, NULL)) SEPARATOR ',') AS CUTJOBNO FROM $tms.`task_attributes` WHERE  plant_code='AIP' AND task_jobs_id IN ('".implode("','" , $task_jobs_id)."') GROUP BY attribute_name";
+					$qry_toget_style_sch="SELECT GROUP_CONCAT(DISTINCT(IF(attribute_name='CUTJOBNO', attribute_VALUE, NULL)) SEPARATOR ',') AS CUTJOBNO FROM $tms.`task_attributes` WHERE  plant_code='$plantcode' AND task_jobs_id IN ('".implode("','" , $task_jobs_id)."') GROUP BY attribute_name";
 					$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
 					while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
 						if($row2['CUTJOBNO'] != NULL){
