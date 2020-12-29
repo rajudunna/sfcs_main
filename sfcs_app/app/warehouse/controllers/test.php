@@ -391,7 +391,14 @@ if(isset($_POST['submit']))
 			if(strlen($item[$i])>0)
 			{
 				$count=1;
-				$sql="insert into $wms.manual_form(style,schedule,color,item,reason,qty,req_from,status,rand_track,category,spoc,plant_code,created_user,updated_user,updated_at) values (\"$style\",\"$schedule\",\"$color\",\"".$item[$i]."\",\"".$reason[$i]."\",\"".$qty[$i]."\",\"$username\",1,$rand,$category,\"$spoc\",'".$plantcode."','".$username."','".$username."',NOW())";
+				//To get buyer details
+				$get_buyers="SELECT DISTINCT(buyer_desc) AS buyer_desc FROM $oms.`oms_mo_details` omd LEFT JOIN $oms.`oms_products_info` opi ON opi.mo_number=omd.mo_number WHERE style='$style' AND SCHEDULE='$schedule' AND color_desc='$color'";
+				$sql_result=mysqli_query($link, $get_buyers) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row=mysqli_fetch_array($sql_result))
+				{
+                   $buyer_desc=$sql_row['buyer_desc'];
+				}
+				$sql="insert into $wms.manual_form(buyer,style,schedule,color,item,reason,qty,req_from,status,rand_track,category,spoc,plant_code,created_user,updated_user,updated_at) values (\"$buyer_desc\",\"$style\",\"$schedule\",\"$color\",\"".$item[$i]."\",\"".$reason[$i]."\",\"".$qty[$i]."\",\"$username\",1,$rand,$category,\"$spoc\",'".$plantcode."','".$username."','".$username."',NOW())";
 				//echo $sql;
 				mysqli_query($link, $sql) or die(exception($sql));
 				$table.="<tr><td>".$item[$i]."</td><td>".$reason[$i]."</td><td>".$qty[$i]."</td></tr>";

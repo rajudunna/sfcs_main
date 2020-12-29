@@ -83,7 +83,7 @@
 
 <body>
 <div class="panel panel-primary"> 
-    <div class="panel-heading">Cutting Reversal</div>
+    <div class="panel-heading">Cut Qty Reporting</div>
         <div class='panel-body'>
             <div id='post_post'>
                 <div class='panel-body'>    
@@ -314,10 +314,8 @@ if(isset($_POST['reversesubmit']))
        mysqli_query($link, $updateQry) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
    }
    $updateLayQty = "UPDATE $pps.jm_actual_docket set plies = plies - $lay_plies where jm_ad_id = '$lay_id'";
+   
    mysqli_query($link, $updateLayQty) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-   $updateDocketQty = "UPDATE $pps.jm_dockets set lay_status = 'OPEN' where jm_docket_id = '$docket_number'";
-   mysqli_query($link, $updateDocketQty) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
    $url = '?r='.$_GET['r'].'&sidemenu=false';
    echo "<script> sweetAlert('Lay Reversed Successfully!!!','','success'); setTimeout(window.location = '$url', 2000); </script>"; 
 }
@@ -587,7 +585,7 @@ function reportCut(id) {
     $('#post_post').show();
     $('#reportcut').hide();
     var reportData = new Object();
-    reportData.docketNumber = id;
+    reportData.actualDocketId = id;
     reportData.createdUser = '<?= $username ?>';
     reportData.plantCode = '<?= $plantcode ?>';
     reportData.sizeRejections = [];
@@ -640,7 +638,7 @@ function deleteCut(id) {
     $('#post_post').show();
     $('#deletecut').hide();
     var reportData = new Object();
-    reportData.docketNumber = id;
+    reportData.actualDocketId = id;
     reportData.createdUser = '<?= $username ?>';
     reportData.plantCode = '<?= $plantcode ?>';
     var bearer_token;

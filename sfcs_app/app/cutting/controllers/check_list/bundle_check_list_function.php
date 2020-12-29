@@ -2,7 +2,7 @@
 function getCheckList($get_style,$get_schedule,$plantcode){
 	$url1 = getFullURL($_GET['r'],'print_bundle_check_list.php','R');
 
-    $table = '<table class="table table-bordered">
+    $table = '<div style = "overflow: auto";><table class="table table-bordered">
     				<thead>
     					<tr class="info">
     						<th>S.No</th>
@@ -89,7 +89,7 @@ function getCheckList($get_style,$get_schedule,$plantcode){
                     $table .= "<td>".$sno."</td>";
                     $table .= "<td>".$cut_num."</td>";
                     // qry to get dockets using cut_job_id
-                    $qry_get_dockets="SELECT jm_docket_id From $pps.jm_dockets LEFT JOIN $pps.jm_cut_docket_map ON jm_dockets.jm_docket_id=jm_cut_docket_map.jm_docket_id WHERE plant_code='$plantcode' AND jm_cut_job_id  = '$cut_job_id' order by docket_number ASC";
+                    $qry_get_dockets="SELECT jm_dockets.jm_docket_id From $pps.jm_dockets LEFT JOIN $pps.jm_cut_docket_map ON jm_dockets.jm_docket_id=jm_cut_docket_map.jm_docket_id WHERE jm_dockets.plant_code='$plantcode' AND jm_cut_docket_map.jm_cut_job_id  = '$cut_job_id' order by docket_number ASC";
                     $toget_dockets_result=mysqli_query($link_new, $qry_get_dockets) or exit("Sql Error at dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $toget_dockets_num=mysqli_num_rows($toget_dockets_result);
                     if($toget_dockets_num>0){
@@ -161,7 +161,7 @@ function getCheckList($get_style,$get_schedule,$plantcode){
         }
     }
 
-    $table .= "</table>";
+    $table .= "</table></div>";
     return $table;
 }
 

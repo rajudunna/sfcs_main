@@ -142,135 +142,160 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
             {
                 $doc_no_ref_explode=explode(",",$doc_no_ref);
                 $num_docs=sizeof($doc_no_ref_explode);
-                $sqlDocketLineIds="SELECT GROUP_CONCAT(CONCAT('''', jm_docket_id, '''' ))AS docket_line_ids FROM $pps.`jm_dockets` WHERE docket_number IN ($doc_no_ref)";
-                $sql_resultsqlDocketLineIds=mysqli_query($link, $sqlDocketLineIds) or exit("Sql Error1000".mysqli_error($GLOBALS["___mysqli_ston"]));
-                while($docket_row123=mysqli_fetch_array($sql_resultsqlDocketLineIds))
-                {
-                    $docket_line_ids=$docket_row123['docket_line_ids'];
-                }
+            //     $sqlDocketLineIds="SELECT jm_docket_id AS docket_line_ids FROM $pps.`jm_dockets` WHERE docket_number IN ($doc_no_ref)";
+            //    // echo $sqlDocketLineIds;
+            //     $sql_resultsqlDocketLineIds=mysqli_query($link, $sqlDocketLineIds) or exit("Sql Error1000".mysqli_error($GLOBALS["___mysqli_ston"]));
+            //     while($docket_row123=mysqli_fetch_array($sql_resultsqlDocketLineIds))
+            //     {
+            //         $docket_line_ids[]=$docket_row123['docket_line_ids'];
+            //     }
+            $sqlDocketLineIds="SELECT GROUP_CONCAT(CONCAT('''', jm_docket_id, '''' ))AS docket_line_ids FROM $pps.`jm_dockets` WHERE docket_number IN ($doc_no_ref)";
+            $sql_resultsqlDocketLineIds=mysqli_query($link, $sqlDocketLineIds) or exit("Sql Error1000".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($docket_row123=mysqli_fetch_array($sql_resultsqlDocketLineIds))
+            {
+                $docket_line_ids=$docket_row123['docket_line_ids'];
+            }
+
+
                 if($docket_line_ids)
                 {
-                    $jobstatus=JobStatusEnum::DONE;
-                    $sql1x1="select * from $pps.jm_actual_docket where jm_docket_id in ($docket_line_ids) AND cut_report_status='$jobstatus'";
-                    $sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error81".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    if(mysqli_num_rows($sql_result1x1)>0)
-                    {
-                        $cut_status="5";
-                    }
-                    else
-                    {
-                        $cut_status="0";
-                    }
-                    // fabric request logic
-                    $sql1x115="SELECT *  FROM  `$pps`.`fabric_prorities` WHERE `jm_docket_id` IN ($docket_line_ids)";
-                    $sql_result1x115=mysqli_query($link, $sql1x115) or exit("Sql Error82".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    if(mysqli_num_rows($sql_result1x115)>0)
-                    {
-                        if(sizeof($doc_no_ref_explode)<>mysqli_num_rows($sql_result1x115))
+                    // foreach($docket_line_ids AS $docket_line_id)
+                    // {
+                        $jobstatus=JobStatusEnum::DONE;
+                        $sql1x1="select * from $pps.jm_actual_docket where jm_docket_id in ($docket_line_ids) AND cut_report_status='$jobstatus'";
+                        $sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error81".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if(mysqli_num_rows($sql_result1x1)>0)
                         {
-                            $fabric_req="0";
+                            if(sizeof($doc_no_ref_explode)<>mysqli_num_rows($sql_result1x1))
+                            {
+                                $cut_status="5";
+                            }
+                            else
+                            {
+                                $cut_status="0";
+                            }
+                        }
+                        else 
+                        {
+                            $cut_status="0";
+                        }    
+                        if($cut_status=="0")
+                        {
+                           // fabric request logic
+                            $sql1x115="SELECT *  FROM  `$pps`.`fabric_prorities` WHERE `jm_docket_id` IN ($docket_line_ids)";
+                           // echo $sql1x115;
+                            $sql_result1x115=mysqli_query($link, $sql1x115) or exit("Sql Error82".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            if(mysqli_num_rows($sql_result1x115)>0)
+                            {
+                                if(sizeof($doc_no_ref_explode)<>mysqli_num_rows($sql_result1x115))
+                                {
+                                    $fabric_req="0";
+                                }
+                                else
+                                {
+                                    $fabric_req="5";
+                                }   
+                            }
+                            else
+                            {
+                                $fabric_req="0";
+                            }
+                            // fabric status logic
+                            $sql1x12="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_id` IN ($docket_line_ids) and fabric_status='1'";
+                            $sql_result1x12=mysqli_query($link, $sql1x12) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            if(mysqli_num_rows($sql_result1x12)>0)
+                            {
+                                // if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x12))
+                                // {
+                                    $fabric_status="1";
+                                // }
+                            }
+                            $sql1x11="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_id` IN ($docket_line_ids) and fabric_status = '5'";
+                            $sql_result1x11=mysqli_query($link, $sql1x11) or exit("Sql Error83".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            if(mysqli_num_rows($sql_result1x11)>0)
+                            {
+                                // if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x11))
+                                // {
+                                    $fabric_status="5";
+                                // }
+                            }
+                        }
+                        
+                        if ($fabric_status == "")
+                        {
+                            $fabric_status="0";
+                        }
+                        // assigning colors for status based on fabric
+                        if($cut_status=="5")
+                        {
+                            $id="blue";                 
+                            $rem="Cut Completed";
+                        }
+                        elseif($fabric_status=='5')
+                        {
+                            $id="yellow";                   
+                            $rem="Fabric Issued";   
+                        }
+                        elseif($fabric_status=='1')
+                        {
+                            $id="pink";                 
+                            $rem="Ready To Issue";  
+                        }
+                        elseif($fabric_req=="5")
+                        {
+                            $id="green";                    
+                            $rem="Fabric Requested";
+                        }
+                        elseif($fabric_status<"5")
+                        {
+                            switch ($ft_status)
+                            {
+                                case "1":
+                                {
+                                    $id="lgreen";                   
+                                    $rem="Available";
+                                    break;
+                                }
+                                case "0":
+                                {
+                                    $id="red";
+                                    $rem="Not Available";
+                                    break;
+                                }
+                                case "2":
+                                {
+                                    $id="red";
+                                    $rem="In House Issue";
+                                    break;
+                                }
+                                case "3":
+                                {
+                                    $id="red";
+                                    $rem="GRN issue";
+                                    break;
+                                }
+                                case "4":
+                                {
+                                    $id="red";
+                                    $rem="Put Away Issue";
+                                    break;
+                                }                                   
+                                default:
+                                {
+                                    $id="yash";
+                                    $rem="Not Update";
+                                    break;
+                                }
+                            }
                         }
                         else
                         {
-                            $fabric_req="5";
-                        }   
-                    }
-                    else
-                    {
-                        $fabric_req="0";
-                    }
-                    // fabric status logic
-                    $fabric_status="";
-                    $sql1x12="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_id` IN ($docket_line_ids) and fabric_status='1'";
-                    $sql_result1x12=mysqli_query($link, $sql1x12) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    if(mysqli_num_rows($sql_result1x12)>0)
-                    {
-                        // if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x12))
-                        // {
-                            $fabric_status="1";
-                        // }
-                    }
-                    $sql1x11="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_id` IN ($docket_line_ids) and fabric_status = '5'";
-                    $sql_result1x11=mysqli_query($link, $sql1x11) or exit("Sql Error83".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    if(mysqli_num_rows($sql_result1x11)>0)
-                    {
-                        // if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x11))
-                        // {
-                            $fabric_status="5";
-                        // }
-                    }
-                    if ($fabric_status == "")
-                    {
-                        $fabric_status="0";
-                    }
-                    // assigning colors for status based on fabric
-                    if($cut_status=="5")
-                    {
-                        $id="blue";                 
-                        $rem="Cut Completed";
-                    }
-                    elseif($fabric_status=='5')
-                    {
-                        $id="yellow";                   
-                        $rem="Fabric Issued";   
-                    }
-                    elseif($fabric_status=='1')
-                    {
-                        $id="pink";                 
-                        $rem="Ready To Issue";  
-                    }
-                    elseif($fabric_req=="5")
-                    {
-                        $id="green";                    
-                        $rem="Fabric Requested";
-                    }
-                    elseif($fabric_status<"5")
-                    {
-                        switch ($ft_status)
-                        {
-                            case "1":
-                            {
-                                $id="lgreen";                   
-                                $rem="Available";
-                                break;
-                            }
-                            case "0":
-                            {
-                                $id="red";
-                                $rem="Not Available";
-                                break;
-                            }
-                            case "2":
-                            {
-                                $id="red";
-                                $rem="In House Issue";
-                                break;
-                            }
-                            case "3":
-                            {
-                                $id="red";
-                                $rem="GRN issue";
-                                break;
-                            }
-                            case "4":
-                            {
-                                $id="red";
-                                $rem="Put Away Issue";
-                                break;
-                            }                                   
-                            default:
-                            {
-                                $id="yash";
-                                $rem="Not Update";
-                                break;
-                            }
+                            $id="yash";
+                            $rem="Not Update";
                         }
-                    }
-                    else
-                    {
-                        $id="yash";
-                        $rem="Not Update";
-                    } 
+                    // }
+                    
+
                     $title=str_pad("Style:".$style,50)."\n".str_pad("Co No:".$co_no,50)."\n".str_pad("Schedule:".$schedule,50)."\n". $cols_de.str_pad("Sewing Job No:".$display_prefix1,50)."\n".str_pad("Total Qty:".$carton_qty,50)."\n".str_pad("Balance to Issue:".($balance),50)."\n".str_pad("Cut Job No:".$cut_job_no)."\n".str_pad("Remarks :".$rem,50)."\n".str_pad("Trim Status :".$tstatus,50);
                     //$ui_url='input_status_update_input.php';  
                     $ui_url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/input_status_update_input.php";

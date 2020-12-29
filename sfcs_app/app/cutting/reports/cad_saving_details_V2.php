@@ -11,32 +11,27 @@ $username = $_SESSION['userName'];
 
 function firstbox()
 {
-	var url1 = '<?= getFullUrl($_GET['r'],'cad_saving_details_v2.php','N'); ?>';
-	window.location.href =url1+"&style="+document.test.style.value;
+	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value;
 }
 
 function secondbox()
 {
-	var url2 = '<?= getFullUrl($_GET['r'],'cad_saving_details_v2.php','N'); ?>';
-	window.location.href =url2+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
 	
 }
 function thirdbox()
 {
-	var url3 = '<?= getFullUrl($_GET['r'],'cad_saving_details_v2.php','N'); ?>';
-	window.location.href =url3+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
 }
 
 function fourthbox()
 {
-	var url4 = '<?= getFullUrl($_GET['r'],'cad_saving_details_v2.php','N'); ?>';
-	window.location.href =url4+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value;
+	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value;
 }
 
 function fifthbox()
 {
-	var url5 = '<?= getFullUrl($_GET['r'],'cad_saving_details_v2.php','N'); ?>';
-	window.location.href =url5+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value;
+	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value;
 }
 
 function verify_date(){
@@ -264,7 +259,7 @@ $get_sub_po=$_GET['sub_po'];
 				<input  class="form-control " type="text" id="edate" name="edat" data-toggle="datepicker" size=8 onchange="return verify_date();" value="<?php  if(isset($_POST['edat'])) { echo $_POST['edat']; } else { echo date("Y-m-d"); } ?>"/></td>
 			</div>
 			  <?php
-			$sql="SELECT buyer_desc FROM $oms.oms_mo_details WHERE schedule='$get_schedule' AND plant_code='$plant_code'";
+			$sql="SELECT Distinct(buyer_desc) AS buyer_desc FROM $oms.oms_mo_details WHERE schedule='$get_schedule' AND plant_code='$plant_code'";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -273,7 +268,7 @@ $get_sub_po=$_GET['sub_po'];
 
 			  
 			  ?>
-			<div class="col-sm-2 form-group">
+			<div class="col-sm-3 form-group">
 			<label>Buyer Division: </label>
 		<select name="division" class="form-control">
 
@@ -326,10 +321,10 @@ if(isset($_POST["submit"]))
 	{
 		$buyer_division=urldecode($_POST["division"]);
 		$buyer_division_ref='"'.str_replace(",",'","',$buyer_division).'"';
-		$sql_sch="SELECT * FROM $pps.shipment_plan WHERE style='$style' AND schedule='$schedule' AND color='$color' AND buyer_division in (".$buyer_division_ref.") AND ex_factory_date_new between \"".trim($sdat)."\" and  \"".trim($edat)."\" AND plant_code='$plant_code'";
+		$sql_sch="SELECT * FROM $pps.shipment_plan WHERE style='$style' AND schedule_no='$schedule' AND color='$color' AND buyer_division in (".$buyer_division_ref.") AND ex_factory_date between \"".trim($sdat)."\" and  \"".trim($edat)."\" AND plant_code='$plant_code'";
 	} else 
 	{
-		$sql_sch="SELECT * FROM $pps.shipment_plan WHERE style='$style' AND schedule='$schedule' AND color='$color' AND ex_factory_date_new between \"".trim($sdat)."\" and  \"".trim($edat)."\" AND plant_code='$plant_code'";
+		$sql_sch="SELECT * FROM $pps.shipment_plan WHERE style='$style' AND schedule_no='$schedule' AND color='$color' AND ex_factory_date between \"".trim($sdat)."\" and  \"".trim($edat)."\" AND plant_code='$plant_code'";
 	}
 	$result_sch=mysqli_query($link, $sql_sch) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$result_num=mysqli_num_rows($result_sch);
