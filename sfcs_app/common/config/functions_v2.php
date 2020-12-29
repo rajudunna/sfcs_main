@@ -1474,7 +1474,6 @@ function getDocketInformation($docket_no, $plant_code) {
     LEFT JOIN $pps.mp_order mp ON mpc.master_po_number = mp.master_po_number
     WHERE mpc.master_po_details_id = '$mp_detail_id' ";
     $style_info_result=mysqli_query($link_new, $style_info_query) or exit("Sql style_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
-  
     while($row = mysqli_fetch_array($style_info_result))
     {
         $style = $row['style'];
@@ -1490,7 +1489,17 @@ function getDocketInformation($docket_no, $plant_code) {
         $sub_po = $row['po_number'];
         $sub_po_desc = $row['po_description'];
     }
-
+    $schedule=array();
+    //To get schedule,color
+    $qry_get_sch_col="SELECT schedule FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`mp_mo_qty_id`= mp_mo_qty.`mp_mo_qty_id`
+    WHERE po_number='$po_number' AND mp_sub_mo_qty.plant_code='$plant_code'";
+    $qry_get_sch_col_result=mysqli_query($link_new, $qry_get_sch_col) or exit("Sql Error at qry_get_sch_col".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row=mysqli_fetch_array($qry_get_sch_col_result))
+    {
+      $schedule[]=$row['schedule'];
+    }
+    $schedule_bulk=array_unique($schedule);
+    //var_dump($schedule_bulk);
     // get the rm sku, fabric catrgory
     $fabric_info_query = "SELECT fabric_category, material_item_code FROM $pps.lp_component_group where lp_cg_id = '$cg_id' ";
     $fabric_info_result=mysqli_query($link_new, $fabric_info_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1572,7 +1581,8 @@ function getDocketInformation($docket_no, $plant_code) {
         'ratio_comp_group_id' => $ratio_comp_group_id,
         'marker_version_id' => $marker_version_id,
         'docket_number'=>$docket_number,
-        'required_qty'=>$required_qty
+        'required_qty'=>$required_qty,
+        'schedule_bulk'=>$schedule_bulk
     ];
 
 }
