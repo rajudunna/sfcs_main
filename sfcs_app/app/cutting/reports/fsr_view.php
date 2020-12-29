@@ -162,7 +162,7 @@ if(isset($_POST['submit'])) {
 				<option value='All' <?php if($cat=="All"){ echo "selected"; } ?> >All</option>
 				<?php 
 				$sqlyy="SELECT fabric_category_id,fabric_category_code FROM $mdm.fabric_category where is_active=true";
-				$sql_resultyy=mysqli_query($link, $sqlyy) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_resultyy=mysqli_query($link, $sqlyy) or exit("Sql Error 41".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowyy=mysqli_fetch_array($sql_resultyy))
 				{
 					$fabric_category_id=$sql_rowyy['fabric_category_id'];
@@ -535,18 +535,17 @@ $reptype == $_POST['reptype'];
 if(isset($_POST['submit']) && $reptype==2)
 { 
 
-$sql = "SELECT GROUP_CONCAT(distinct(jad.jm_ad_id)) as jm_ad_id,GROUP_CONCAT(distinct(jcj.cut_number)) as cut_number,sum(jdb.quantity) as quantity,sum(jdl.plies) as plies,GROUP_CONCAT(distinct(jad.po_number)) as po_number,GROUP_CONCAT(distinct(jd.ratio_comp_group_id)) as ratio_comp_group_id,jad.workstation_id,GROUP_CONCAT(distinct(jad.shift)) as shift 
+$sql = "SELECT GROUP_CONCAT(distinct(jad.jm_ad_id)) as jm_ad_id,GROUP_CONCAT(distinct(jcj.cut_number)) as cut_number,sum(jdb.quantity) as quantity,sum(lp.ratio_plies) as plies,GROUP_CONCAT(distinct(jad.po_number)) as po_number,GROUP_CONCAT(distinct(jd.ratio_comp_group_id)) as ratio_comp_group_id,jad.workstation_id,GROUP_CONCAT(distinct(jad.shift)) as shift 
 	FROM $pps.`jm_actual_docket` jad 
 	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = jad.po_number
 	LEFT JOIN $pps.`lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
-	LEFT JOIN $pps.`jm_docket_cg_bundle` jdb ON jdb.jm_docket_id = jd.jm_docket_id
+	LEFT JOIN $pps.`jm_docket_cg_bundle` jdb ON jdb.jm_docket_id = jad.jm_docket_id
 	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdb.jm_docket_id
-	LEFT JOIN $pps.jm_cut_docket_map dm ON dm. jm_docket_id=jd. jm_docket_id
-	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = dm. jm_cut_job_id  
+	LEFT JOIN $pps.jm_cut_docket_map dm ON dm.jm_docket_id=jd.jm_docket_id
+	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = dm.jm_cut_job_id  
 	WHERE DATE(jad.created_at) between \"$from_date\" and  \"$to_date\" and jad.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND jad.shift in ($shift)
 	GROUP BY jad.workstation_id";
-	// echo $sql;
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error 42".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	echo "<div class='col-sm-12' style='overflow-x:scroll;overflow-y:scroll;max-height:600px;'>";
 	echo "<h5>Summary Report</h5>";
