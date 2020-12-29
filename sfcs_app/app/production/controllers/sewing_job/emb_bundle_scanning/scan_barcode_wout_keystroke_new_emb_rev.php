@@ -119,7 +119,7 @@ $(document).ready(function()
 		}
 		else
 		{
-			var res = barcode.split('-');
+			var res = barcode.split('$');
 			var operation_id = res[1];
 		}
 		var plant_code = $('#plant_code').val();

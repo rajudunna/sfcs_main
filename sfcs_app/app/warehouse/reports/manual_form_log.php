@@ -127,7 +127,6 @@ echo "<tr>
 
 
 $sql="select * from $wms.manual_form where month(log_date)=month(\"$date\") and year(log_date)=year(\"$date\") and plant_code='".$plant_code."' order by status";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
