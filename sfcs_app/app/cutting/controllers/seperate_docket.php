@@ -5,7 +5,9 @@
     $per = 'No';
     $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
+    $path=$DOCKET_SERVER_IP."/printDocket/";
     $close_url = getFullURLLevel($_GET['r'],'closed_docket.php',0,'R');
+    $updateURL=  getFullURLLevel($_GET['r'],'updateBindingDocket.php',0,'R');
     $query = "select * from $pps.binding_consumption where status='Allocated' and plant_code='".$plant_code."'";
     $sql_result = mysqli_query($link_new,$query);
     if(mysqli_num_rows($sql_result)>0){
@@ -114,8 +116,6 @@ th{
                         </tr>
                         <?php   
                                 // $path = getFullURLLevel($_GET['r'],'lay_plan_preparation/book3_print_binding.php',0,'R');
-                                // $path=$DOCKET_SERVER_IP."/printDocket/";
-                             
                                 $query = "select id,style,schedule,color,tot_bindreq_qty,status from $pps.binding_consumption where status='Allocated' and plant_code='".$plant_code."'";
                                 $sql_result = mysqli_query($link_new,$query);
                                 $index=0;
@@ -138,8 +138,7 @@ th{
                                     {
                                         $jm_docket_id = $sql_row1['jm_docket_id'];
                                     }
-
-                                    $path=$DOCKET_SERVER_IP."/printDocket/".$jm_docket_id;
+                                    //$path=$DOCKET_SERVER_IP."/printDocket/".$jm_docket_id;
 
                                     echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'><span class='label label-info fa fa-list fa-xl' >&nbsp;&nbsp;&nbsp;$index</span></td>";
                                     echo "<td>".$sql_row['style']."</td>";
@@ -149,7 +148,9 @@ th{
                                     // echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
                                     echo "<td>".$sql_row['status']."</td>";
                                       
-                                    echo "<td><a href=\"$path\" onclick=\"Popup1=window.open('$path','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
+                                    //echo "<td><a href=\"$path\" onclick=\"Popup1=window.open('$path','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
+                                    //$jm_docket_id="1233444";
+                                    echo "<td><a href=\"javascript:void(0)\" onclick=\"printCall('$jm_docket_id',$i);\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
                                     echo "</tr>";
                                 }
                                 if($index==0) {
@@ -306,4 +307,14 @@ th{
         }
         
     }
+
+    function printCall(jm_docket_id,parentId){
+        window.open('<?= $path ?>'+jm_docket_id,'popwindow');
+        $.ajax({
+            url  : '<?= $updateURL ?>?parentId='+parentId,
+            type : 'GET',
+        }).then(function(res){
+            
+        });
+    } 
     </script>
