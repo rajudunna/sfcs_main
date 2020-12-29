@@ -49,7 +49,7 @@
                 <div class="row">              
                     <div class="col-md-6">     
                         <div class="form-group">
-                            <label class="control-label control-label-left col-sm-5"  for="complaint_reason">Complaint Reason:</label>
+                            <label class="control-label control-label-left col-sm-5"  for="complaint_reason">Complaint Reason:<span><font color='red'>*</font></span></label>
                             <div class="controls col-sm-7">        
                                 <input id="complaint_reason" type="text" onkeyup="return validateLength(this)" class="form-control" data-role="text" maxlength="50" required="required"  name="complaint_reason" value="<?php echo $complaint_reason; ?>"  data-parsley-errors-container="#errId1">
                                 <span id="errId1" class="error"></span>
@@ -58,7 +58,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label control-label-left col-sm-5" for="complaint_clasification" >Complaint Classification:</label>
+                            <label class="control-label control-label-left col-sm-5" for="complaint_clasification" >Complaint Classification:<span><font color='red'>*</font></span></label>
                             <div class="controls col-sm-7">
                                 <input id="complaint_clasification" type="text" onkeyup="return validateLength(this)" class="form-control k-textbox" maxlength="50" data-role="text" required="required" name="complaint_clasification" value="<?php echo $complaint_clasification; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
                             </div>
@@ -68,7 +68,7 @@
                 <div class="row">    
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label control-label-left col-sm-5" for="complaint_category" >Complaint Category:</label>
+                            <label class="control-label control-label-left col-sm-5" for="complaint_category" >Complaint Category:<span><font color='red'>*</font></span></label>
                             <div class="controls col-sm-7">
                                 <input id="complaint_category" type="text" class="form-control k-textbox alpha" maxlength="50" data-role="text" onkeyup="return validateLength(this)" required="required" name="complaint_category" value="<?php echo $complaint_category; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
                             </div>
@@ -76,7 +76,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label control-label-left col-sm-5" for="active_status">Status:</label>
+                            <label class="control-label control-label-left col-sm-5" for="active_status">Status:<span><font color='red'>*</font></span></label>
                             <div class="controls col-sm-7">
                                 <select id="active_status" class="form-control" data-role="select" selected="selected" required="required" name="status"  data-parsley-errors-container="#errId4">
                                     <?php

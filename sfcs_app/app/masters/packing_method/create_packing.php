@@ -31,18 +31,18 @@
             <div class="row">
                 <div class="col-md-3">
         			<input type='hidden' id='row_id' name='row_id' value=<?php echo $row_id; ?> >
-                    <b>Packing Method Code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="text" onkeyup="return validateCodeLength(this)" class="form-control" id="packing_method_code" maxlength="16" name="packing_method_code" value="<?php echo $packing_method_code; ?>" required>
+                    <b>Packing Method Code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b><input type="text" onkeyup="return validateCodeLength(this)" class="form-control" id="packing_method_code" maxlength="16" name="packing_method_code" value="<?php echo $packing_method_code; ?>" required>
                 </div>
 				<div class="col-md-3">
-                    <b>Packing Method Description<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
+                    <b>Packing Method Description<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b>
                     <textarea type="text" onkeyup="return validateLength(this)" class="form-control" id="packing_description" maxlength="31" name="packing_description" required><?php echo $packing_description; ?></textarea>
                 </div>
                 <div class="col-md-3">
-                    <b>SMV<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="text" class="form-control float" id="smv" name="smv" maxlength="10" value="<?php echo $smv; ?>" required>
+                    <b>SMV<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></b><input type="text" class="form-control float" id="smv" name="smv" maxlength="10" value="<?php echo $smv; ?>" required>
                 </div>
                 <div class="col-md-3">
                     <div class="dropdown">
-                        <b>Status</b> <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span>
+                        <b>Status</b> <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span>
                         <select class="form-control" id="status" name="status" required>
                        <?php
                         if($status=='Active'){
