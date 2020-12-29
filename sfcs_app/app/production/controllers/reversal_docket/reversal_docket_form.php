@@ -83,7 +83,7 @@
 
 <body>
 <div class="panel panel-primary"> 
-    <div class="panel-heading">Cutting Reversal</div>
+    <div class="panel-heading">Cut Qty Reporting</div>
         <div class='panel-body'>
             <div id='post_post'>
                 <div class='panel-body'>    

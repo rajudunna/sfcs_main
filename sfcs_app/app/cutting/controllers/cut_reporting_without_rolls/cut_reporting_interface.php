@@ -118,7 +118,7 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
 <!-- Cut Reporting Code -->
 <div class='panel panel-primary cut_tab'>
     <div class='panel-heading'>
-        <b>Cut Quantity Reporting Without Rolls</b>
+        <b>Lay Qty Reporting</b>
     </div>
     <div class='panel-body'>  
         <div class='col-sm-10 user_msg'>

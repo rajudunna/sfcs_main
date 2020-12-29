@@ -747,6 +747,7 @@ window.onload = sivamtime;
 
 <?php
 $plant_code = $_SESSION['plantCode'];
+// $plant_code = 'Q01';
 $username = $_SESSION['userName'];
 echo "<div style='width=100%;'>";
 //NEW to correct
@@ -1313,9 +1314,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	}
 	$value=$fabric_required*($percentage/100);
 	$total_required_qty=$value+$fabric_required;
-  
+  $customer_order_no = [];
       $sql11="select customer_order_no from $oms.oms_mo_details where schedule in ('".implode("','",$schedule)."') and plant_code='$plant_code' group by customer_order_no";
-      //echo $sql11."<br>";
+      echo $sql11."<br>";
       $sql_result111=mysqli_query($link, $sql11) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($sql_row111=mysqli_fetch_array($sql_result111))
       {

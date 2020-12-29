@@ -2,7 +2,7 @@
 function getCheckList($get_style,$get_schedule,$plantcode){
 	$url1 = getFullURL($_GET['r'],'print_bundle_check_list.php','R');
 
-    $table = '<table class="table table-bordered">
+    $table = '<div style = "overflow: auto";><table class="table table-bordered">
     				<thead>
     					<tr class="info">
     						<th>S.No</th>
@@ -161,7 +161,7 @@ function getCheckList($get_style,$get_schedule,$plantcode){
         }
     }
 
-    $table .= "</table>";
+    $table .= "</table></div>";
     return $table;
 }
 
