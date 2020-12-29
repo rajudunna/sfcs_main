@@ -1,5 +1,6 @@
 <?php 
 include("../../../common/config/config_ajax.php");
+include("../../../common/config/server_urls.php");
 $plantcode=$_SESSION['plantCode'];
 if(isset($_GET['date']))
 {
@@ -40,7 +41,9 @@ if(isset($_GET['date']))
         $response_table.= "<td>".$sql_row['color']."</td>";
         $response_table.= "<td>".$sql_row['tot_bindreq_qty']."</td>";
         // $response_table.= "<td>".$sql_row['tot_bindreq_qty']."</td>";
-        $response_table.= "<td><a href=\"$path?binding_id=$i&docket_number=$docket_number\" onclick=\"Popup1=window.open('$path?binding_id=$i&plant_code=$plantcode&username=$username&docket_number=$docket_number','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
+        //$response_table.= "<td><a href=\"$path?binding_id=$i&docket_number=$docket_number\" onclick=\"Popup1=window.open('$path?binding_id=$i&plant_code=$plantcode&username=$username&docket_number=$docket_number','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
+
+        $response_table.= "<td><a href=\"$path\" onclick=\"Popup1=window.open('$path','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
         $response_table.= "</tr>";
     }
     if($index == 0){
