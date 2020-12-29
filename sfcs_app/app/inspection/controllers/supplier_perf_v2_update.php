@@ -154,8 +154,85 @@ if(isset($_POST['update']))
 		}else{
 			$string_include1=0;
 		}
+
+		if($insp_date[$i]!=''){
+			$inspDate=$insp_date[$i];
+		}else{
+			$inspDate="0000-00-00";
+		}
+
+		if($entdate[$i]!=''){
+			$entdate=$entdate[$i];
+		}else{
+			$entdate="0000-00-00";
+		}
+
+		if($pur_gsm[$i]!=''){
+			$pur_gsm=$pur_gsm[$i];
+		}else{
+			$pur_gsm="0";
+		}
+
+		if($act_gsm[$i]!=''){
+			$act_gsm=$act_gsm[$i];
+		}else{
+			$act_gsm="0";
+		}
+
+		if($consumption[$i]!=''){
+			$consumption=$consumption[$i];
+		}else{
+			$consumption="0";
+		}
+
+		if($shrink_l[$i]!=''){
+			$shrink_l=$shrink_l[$i];
+		}else{
+			$shrink_l="0";
+		}
+
+		if($shrink_w[$i]!=''){
+			$shrink_w=$shrink_w[$i];
+		}else{
+			$shrink_w="0";
+		}
+
+		if($srdfs[$i]!=''){
+			$srdfs=$srdfs[$i];
+		}else{
+			$srdfs="0000-00-00";
+		}
+
+		if($srtfs[$i]!=''){
+			$srtfs=$srtfs[$i];
+		}else{
+			$srtfs="0";
+		}
+
+		if($srdfsw[$i]!=''){
+			$srdfsw=$srdfsw[$i];
+		}else{
+			$srdfsw="0";
+		}
+
+		if($reldat[$i]!=''){
+			$reldat=$reldat[$i];
+		}else{
+			$reldat="0000-00-00";
+		}
+
+		if($qty_insp_act[$i]!=''){
+			$qty_insp_act=$reldat[$i];
+		}else{
+			$qty_insp_act="0";
+		}
+
+		
+
+		
+		
 		//echo "test34 :".$string_include1."</br>";
-		$sql1s="insert into $wms.supplier_performance_track_log(tid,bai1_rec,weekno,pkg_no,invoice,srdfs,srtfs,srdfsw,insp_date,reldat,unique_id,grn_date,entdate,buyer, item,lots_ref,po_ref,supplier_name,quality,rms,const,compo,color_ref,syp,batch_ref,rolls_count,tktlen,ctexlen,lenper,qty_insp,qty_insp_act,inches, pur_width_ref,act_width_ref,pur_gsm,act_gsm,consumption,pts,fallout,defects,skew_cat_ref,skew,shrink_l,shrink_w,sup_test_rep,inspec_per_rep,cc_rep, com_ref1, reason_qty,reason_name,reason_ref_explode_ex,reason_name1,reason_ref_explode_ex1,fab_tech, high_pts, fall_out, skew_bowing, wirc_shading,gsm,others, off_shade,hand_feel,length,width,test_report,status_f,impact,host_name,user_name,log_time,plant_code,created_user,updated_user,updated_at) values('".trim($batch_ref[$i])."-".$month_ref[$i]."','".$bai1_rec[$i]."','".$weekno[$i]."','".$pkg_no[$i]."','".$invoice[$i]."','".$srdfs[$i]."','".$srtfs[$i]."','".$srdfsw[$i]."','".$insp_date[$i]."','".$reldat[$i]."','".$unique_id[$i]."','".$grn_date[$i]."','".$entdate[$i]."','".$buyer[$i]."','".$item[$i]."','".$lots_ref[$i]."','".$po_ref[$i]."','".$supplier_name[$i]."','".$quality[$i]."','".$rms[$i]."','".$const[$i]."','".$compo[$i]."','".$color_ref[$i]."','".$syp[$i]."','".$batch_ref[$i]."','".$rolls_count[$i]."','".$tktlen[$i]."','".$ctexlen[$i]."','".$lenper[$i]."','".$qty_insp[$i]."','".$qty_insp_act[$i]."','".$inches[$i]."','".$pur_width_ref[$i]."','".$act_width_ref[$i]."','".$pur_gsm[$i]."','".$act_gsm[$i]."','".$consumption[$i]."','".$pts[$i]."','".$fallout[$i]."','".$defects[$i]."','".$skew_cat_ref[$i]."','".$skew[$i]."','".$shrink_l[$i]."','".$shrink_w[$i]."','".$sup_test_rep[$i]."','".$inspec_per_rep[$i]."','".$cc_rep[$i]."','".$com_ref1[$i]."','".$reason_qty."','0','0','0','0','".$fab_tech."',".$string_include2."'".$status_f[$i]."','".$impact[$i]."','".$host_name."','".$username."','".date("Y-m-d H:i:s")."','".$plant_code."','".$username."','".$username."',NOW())";	
+		$sql1s="insert into $wms.supplier_performance_track_log(tid,bai1_rec,weekno,pkg_no,invoice,srdfs,srtfs,srdfsw,insp_date,reldat,unique_id,grn_date,entdate,buyer, item,lots_ref,po_ref,supplier_name,quality,rms,const,compo,color_ref,syp,batch_ref,rolls_count,tktlen,ctexlen,lenper,qty_insp,qty_insp_act,inches, pur_width_ref,act_width_ref,pur_gsm,act_gsm,consumption,pts,fallout,defects,skew_cat_ref,skew,shrink_l,shrink_w,sup_test_rep,inspec_per_rep,cc_rep, com_ref1, reason_qty,reason_name,reason_ref_explode_ex,reason_name1,reason_ref_explode_ex1,fab_tech, high_pts, fall_out, skew_bowing, wirc_shading,gsm,others, off_shade,hand_feel,length,width,test_report,status_f,impact,host_name,user_name,log_time,plant_code,created_user,updated_user,updated_at) values('".trim($batch_ref[$i])."-".$month_ref[$i]."','".$bai1_rec[$i]."','".$weekno[$i]."','".$pkg_no[$i]."','".$invoice[$i]."','".$srdfs."','".$srtfs."','".$srdfsw."','".$inspDate."','".$reldat."','".$unique_id[$i]."','".$grn_date[$i]."','".$entdate."','".$buyer[$i]."','".$item[$i]."','".$lots_ref[$i]."','".$po_ref[$i]."','".$supplier_name[$i]."','".$quality[$i]."','".$rms[$i]."','".$const[$i]."','".$compo[$i]."','".$color_ref[$i]."','".$syp[$i]."','".$batch_ref[$i]."','".$rolls_count[$i]."','".$tktlen[$i]."','".$ctexlen[$i]."','".$lenper[$i]."','".$qty_insp[$i]."','".$qty_insp_act."','".$inches[$i]."','".$pur_width_ref[$i]."','".$act_width_ref[$i]."','".$pur_gsm."','".$act_gsm."','".$consumption."','".$pts[$i]."','".$fallout[$i]."','".$defects[$i]."','".$skew_cat_ref[$i]."','".$skew[$i]."','".$shrink_l."','".$shrink_w."','".$sup_test_rep[$i]."','".$inspec_per_rep[$i]."','".$cc_rep[$i]."','".$com_ref1[$i]."','".$reason_qty."','0','0','0','0','".$fab_tech."',".$string_include2."'".$status_f[$i]."','".$impact[$i]."','".$host_name."','".$username."','".date("Y-m-d H:i:s")."','".$plant_code."','".$username."','".$username."',NOW())";	
 		mysqli_query($link, $sql1s) or exit("Sql Error at line 141".$sql1s.mysqli_error($GLOBALS["___mysqli_ston"]));
 		//echo $sql1s."<br>";
 
@@ -206,6 +283,12 @@ if(isset($_POST['update']))
 	// 	echo "<script>sweetAlert('Records Not Updated..!','','error');</script>";
 	// 	  echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"supplier_perf_v2.php",0, "N")."\"; }</script>";
 	//  }
+
+	$reldat='';
+	$srdfs='';
+	$qty_insp_act='';
+	$entdate='';
+	$srdfsw='';
 	}
 	 echo "<script>sweetAlert('\"$total_rows_updated\" Records Updated Successfully','','success');</script>";
 		  echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'],"reports/supplier_perf_v2_report.php",1, "N")."\"; }</script>";
