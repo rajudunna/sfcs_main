@@ -894,7 +894,7 @@ if(isset($_POST['allocate']))
 			{
 				$temp_var.="<td>";
 				
-				$sql1="select max(log_time),doc_type,doc_no from $wms.fabric_cad_allocation where plant_code='".$plant_code."' and roll_id=".$sql_row['tid'];
+				$sql1="select max(log_time),doc_type,doc_no from $wms.fabric_cad_allocation where plant_code='".$plant_code."' and roll_id='".$sql_row['tid']."'";
 				//$temp_var.="</br>Qry : ".$sql1."</br>";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))

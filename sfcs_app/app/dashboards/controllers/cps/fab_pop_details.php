@@ -385,11 +385,13 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$shrinkage =$result_docketinfo['shrinkage'];
 		$width =$result_docketinfo['width'];
 		$marker_version_id =$result_docketinfo['marker_version_id'];
+		$schedule_bulk =$result_docketinfo['schedule_bulk'];
 		
 	}
+	//var_dump($schedule_bulk);
 	echo "<tr>";
 	echo "<td>".$style."</td>";
-	echo "<td>".$sql_row1['order_del_no']."</td>";
+	echo "<td>".implode(', ',$schedule_bulk)."</td>";
 	echo "<td>".$colorx."</td>";
 	echo "<td>".$cut_no."</td>";
 	echo "</tr>";
