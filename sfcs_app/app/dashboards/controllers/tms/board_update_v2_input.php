@@ -92,6 +92,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
 	for($x=0;$x<sizeof($mods);$x++)
 	{
+		$sql_num_check=0;
 		//getting workstation code to display
 		$get_wrkcode_qry="select workstation_code from $pms.workstation where workstation_id='".$mods[$x]."'";
 		$wrkcode_resultx=mysqli_query($link,$get_wrkcode_qry) or exit("Sql Error1".mysqli_error());
@@ -285,7 +286,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			{
                 $trimid="pink"; 
 			}
-			
+			$sql_num_check++;
 			
 			echo "<td >".$style."<br/><strong>".$schedule."<br/>".$sewingjobno."</strong><br/>".$sew_qty."<br>".$id."<br>".$trimid."</td>";
 
