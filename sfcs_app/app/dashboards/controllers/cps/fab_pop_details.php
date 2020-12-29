@@ -4,6 +4,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php');
 // include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/user_acl_v1.php');
@@ -384,11 +385,13 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$shrinkage =$result_docketinfo['shrinkage'];
 		$width =$result_docketinfo['width'];
 		$marker_version_id =$result_docketinfo['marker_version_id'];
+		$schedule_bulk =$result_docketinfo['schedule_bulk'];
 		
 	}
+	//var_dump($schedule_bulk);
 	echo "<tr>";
 	echo "<td>".$style."</td>";
-	echo "<td>".$sql_row1['order_del_no']."</td>";
+	echo "<td>".implode(', ',$schedule_bulk)."</td>";
 	echo "<td>".$colorx."</td>";
 	echo "<td>".$cut_no."</td>";
 	echo "</tr>";
@@ -1102,15 +1105,14 @@ if(isset($_POST['submit']))
 			
 		// }
 		
-		$sql111="select roll_id,tran_pin,allocated_qty from $wms.fabric_cad_allocation where doc_no='".$doc_no."' and status=1 and plant_code='$plant_code'";
+		$sql111="select roll_id,allocated_qty from $wms.fabric_cad_allocation where doc_no='".$doc_no."' and status=1 and plant_code='$plant_code'";
 		//echo $sql111."</br>";
-		$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--121".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result111)>0)
 		{
 			while($row2=mysqli_fetch_array($sql_result111))
 			{
 				$code=$row2['roll_id'];
-				$tran_pin=$row2['tran_pin'];
 				$sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty,qty_allocated,status from $wms.store_in where roll_status in (0,2) and tid=\"$code\" and plant_code='$plant_code'";
 				//echo "Qry :".$sql1."</br>";
 				$sql_result=mysqli_query($link, $sql1) or exit("Sql Error--15".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1164,8 +1166,8 @@ if(isset($_POST['submit']))
 							mysqli_query($link, $sql23) or exit("Sql Error----4".mysqli_error($GLOBALS["___mysqli_ston"]));
 						}
 
-						$sql24="update $wms.fabric_cad_allocation set status=2,updated_user='$username',updated_at=NOW() where tran_pin=\"$tran_pin\" and plant_code='$plant_code'";
-						mysqli_query($link, $sql24) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql24="update $wms.fabric_cad_allocation set status=2,updated_user='$username',updated_at=NOW() where doc_no='".$doc_no."' and plant_code='$plant_code'";
+						mysqli_query($link, $sql24) or exit("Sql Error----3111".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 					
 				}
@@ -1191,8 +1193,8 @@ if(isset($_POST['submit']))
 		//Uncheck this	
 		mysqli_query($link, $sql3) or exit("Sql Error----7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql1="INSERT INTO `$pps`.`log_rm_ready_in_pool` (`jm_docket_id`, `date_n_time`, `username`,created_at,created_user,plant_code) VALUES ('$doc_no', '".date("Y-m-d H:i:s")."','$username',NOW(),'$username','$plant_code')";
-		// echo $sql1;
+		$sql1="INSERT INTO `$pps`.`log_rm_ready_in_pool` (`doc_no`, `date_n_time`, `username`,created_at,created_user,plant_code) VALUES ('$doc_no', '".date("Y-m-d H:i:s")."','$username',NOW(),'$username','$plant_code')";
+		 //echo $sql1;
 		mysqli_query($link, $sql1) or exit("Sql Error33".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 

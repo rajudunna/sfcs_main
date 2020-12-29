@@ -7,9 +7,9 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
 	$main_url=getFullURL($_GET['r'],'mrn_request_form_v2.php','R');
     $plant_code = $_SESSION['plantCode'];
+    // $plant_code = 'Q01';
     $username = $_SESSION['userName'];
     $flag=1;
-
     $validation_ref_select="";
     $validation_ref_text="";
 
@@ -263,6 +263,8 @@ $(document).ready(function(){
 			var cut_no=document.getElementById('cutnos').value;
 			var batch_ref=document.getElementById('batch_refs').value;
 			var section=document.getElementById('sections').value;
+			var logurl=document.getElementById('logurl').value;
+            // alert(logurl)
 			// var reasoniddb=document.getElementById('reasonid').value;
 			// var reasoncodedb=document.getElementById('reasoncode').value;
 			//alert(sty_id);
@@ -303,7 +305,10 @@ $(document).ready(function(){
 							text: "Request successfully updated",
 							type: "success"
 						}).then(function() {
-							  location.reload(true);
+							//   location.reload(true);
+                            // alert(logurl)
+                              window.location.href=logurl;
+
 							  console.log(data);
 						});
 					console.log(data);
@@ -324,7 +329,9 @@ $(document).ready(function(){
 <div class="panel panel-primary">
     <div class="panel-heading"><b>MRN Request Form</b></div>
     <div class="panel-body">
-        <?php $pgurl = getFullURL($_GET['r'],'mrn_request_form_v2.php','N'); ?>
+        <?php $pgurl = getFullURL($_GET['r'],'mrn_request_form_v2.php','N');
+            $url2 = getFullURL($_GET['r'],'mrn_form_log.php','N');
+        ?>
         <form name="test" action="<?= $pgurl ?>" method="post">
 	
 			<input type="hidden" name="plantcode" id="plantcode" value="<?php echo $plant_code; ?>">
@@ -441,7 +448,6 @@ $(document).ready(function(){
                         $cut_number=$result_cuts['cut_number'];
                     }
 
-
                     echo "<div class='col-md-2'>Select Cutno: <select name=\"cutno\" onchange=\"fourthbox();\" class='form-control'>";
                     echo "<option value=\"NIL\" selected>NIL</option>";                        
                     foreach ($cut_number as $cut_number_val) {
@@ -455,13 +461,13 @@ $(document).ready(function(){
                         }
                     } 
                     echo "</select></div>";
-
+                
                     //Fetching the batch number against to the lot issued to docket(cutno)
                     echo "<div class='col-md-2'>Select Batch No: <select name=\"batchno\" onchange=\"fifthbox();\" class='form-control'>";
-
                     echo "<option value=\"0\" selected>NIL</option>";
 
-                    $sql11="select jm_cut_job_id from $pps.jm_cut_job where cut_number=\"".$cut_no."\"";
+                    $sql11="select jm_cut_job_id from $pps.jm_cut_job where cut_number=\"".$cut_no."\" and plant_code='".$plant_code."'";
+                    
                     $sql_result11=mysqli_query($link, $sql11) or die("Error".$sql11.mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row11=mysqli_fetch_array($sql_result11))
                     {
@@ -469,7 +475,7 @@ $(document).ready(function(){
                        
                     }
 
-                    $sql111="select jm_docket_id from $pps.jm_dockets where jm_cut_job_id=\"".$cut_num."\"";
+                    $sql111="select jm_docket_id from $pps.jm_cut_docket_map where jm_cut_job_id=\"".$cut_num."\" and plant_code='".$plant_code."'";
                     // echo "<option value=\"0\" selected>".$sql11."</option>";
                     $sql_result111=mysqli_query($link, $sql111) or die("Error".$sql111.mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row111=mysqli_fetch_array($sql_result111))
@@ -478,16 +484,9 @@ $(document).ready(function(){
 
 
                     }
-                    $sql1111="select jm_docket_id from $pps.jm_dockets where plant_code='$plant_code' AND jm_docket_id IN ('".implode("','" , $jm_docket_id)."')";
-                //    echo "<option value=\"0\" selected>".$sql1111."</option>";
-                    $sql_result111=mysqli_query($link, $sql1111) or die("Error".$sql111.mysqli_error($GLOBALS["___mysqli_ston"]));
-                    while($sql_row111=mysqli_fetch_array($sql_result111))
-                    {
-                        $jm_docket_id[]=$sql_row111["jm_docket_id"];
-
-
-                    }
-                        $sql12="select group_concat(plan_lot_ref) as plan_lot_ref,docket_number from $pps.requested_dockets where (fabric_status=5 or LENGTH(plan_lot_ref) > 0) AND jm_docket_id IN ('".implode("','" , $jm_docket_id)."')";
+                    
+                        $sql12="select group_concat(plan_lot_ref) as plan_lot_ref,docket_number from $pps.requested_dockets rd LEFT JOIN $pps.jm_dockets jm ON rd.jm_docket_id=jm.jm_docket_id  where (fabric_status=5 or LENGTH(plan_lot_ref) > 0) AND jm.jm_docket_id IN ('".implode("','" , $jm_docket_id)."') and jm.plant_code='".$plant_code."'";
+                       // echo $sql12;
                         //echo "<option value=\"0\" selected>".$sql12."</option>";
                         $sql_result12=mysqli_query($link, $sql12) or die("Error".$sql12.mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($sql_row12=mysqli_fetch_array($sql_result12))
@@ -547,7 +546,7 @@ $(document).ready(function(){
                         }
                     }
                     echo "</select></div>";
-
+                    // echo $sql11;
                     //echo "<br/>".$sql13;
 
                     //To check the supplier approved quantity for issue availability 
@@ -655,7 +654,7 @@ $(document).ready(function(){
 							$company_no=$sql_row141["company_code"];
 						}
 
-						$sql ="SELECT mo_number FROM $pps.finished_good fg LEFT JOIN $pps.jm_product_logical_bundle jplb ON jplb.jm_pplb_id=fg.jm_pplb_id WHERE fg.cut_number=$inp_4 AND fg.plant_code='$plant_code'";
+						$sql ="SELECT mo_number FROM $pps.finished_good fg LEFT JOIN $pps.jm_product_logical_bundle jplb ON jplb.jm_pplb_id=fg.jm_pplb_id WHERE jplb.cut_number=$inp_4 AND fg.plant_code='$plant_code'";
 					
 						$sql_result=mysqli_query($link, $sql) or die(exception($sql));
 						$MIRecords = array();
@@ -814,7 +813,7 @@ $(document).ready(function(){
 							$reason_id_db = array();
                             $reason_code_db = array();
                            
-                            $sql_reason="select reason_id,internal_reason_code,internal_reason_description from $mdm.reasons where department_type='RMWAREHOUSE'  order by internal_reason_description";
+                            $sql_reason="select reason_id,internal_reason_code,internal_reason_description from $mdm.reasons where department_type='RMWAREHOUSE' AND reason_group='MRN'  order by internal_reason_description";
                             //echo $sql_reason;
 							$sql_result=mysqli_query($link, $sql_reason) or die(exception($sql_reason));
 							$count = mysqli_num_rows($sql_result);
@@ -974,7 +973,8 @@ $(document).ready(function(){
 						}
 
 						echo "</table>";
-						echo "<input type=\"hidden\" name=\"style\" id=\"styles\" value=\"$inp_1\"><input type=\"hidden\" name=\"schedule\" id=\"schedules\" value=\"$inp_2\"><input type=\"hidden\" id=\"colors\" name=\"color\" value=\"$inp_3\"><input type=\"hidden\" id=\"cutnos\" name=\"cutno\" value=\"$inp_4\"><input type=\"hidden\"  id=\"batch_refs\" name=\"batch_ref\" value=\"$inp_5\"><input type=\"hidden\" name=\"trows\" id=\"trows\" value=\"$x\"><input type=\"hidden\" name=\"plantcode\" id=\"plantcode\" value=\"$plant_code\"><input type=\"hidden\" name=\"username\" id=\"username\" value=\"$username\">";
+                        echo "<input type=\"hidden\" name=\"style\" id=\"styles\" value=\"$inp_1\"><input type=\"hidden\" name=\"schedule\" id=\"schedules\" value=\"$inp_2\"><input type=\"hidden\" id=\"colors\" name=\"color\" value=\"$inp_3\"><input type=\"hidden\" id=\"cutnos\" name=\"cutno\" value=\"$inp_4\"><input type=\"hidden\"  id=\"batch_refs\" name=\"batch_ref\" value=\"$inp_5\"><input type=\"hidden\" name=\"trows\" id=\"trows\" value=\"$x\"><input type=\"hidden\" name=\"plantcode\" id=\"plantcode\" value=\"$plant_code\"><input type=\"hidden\" name=\"username\" id=\"username\" value=\"$username\">";
+                        
 						
 						//echo "<input type=\"text\" name=\"rest[]\"  id=\"final\" value=''>ABC";
 						echo "<br/>";
@@ -990,7 +990,8 @@ $(document).ready(function(){
 								echo "<option value=\"".$sql_sec."\">".$section_display_name."</option>";
 									
 							}
-							echo "</select></div>";
+                            echo "</select></div>";
+                            echo "<input type=\"hidden\" name=\"logurl\" id=\"logurl\" value=\"$url2\">";
 
 							echo '<div class="col-md-3"><input type="checkbox" name="option" id="option" 
 									onclick="return enableButton();">Enable';

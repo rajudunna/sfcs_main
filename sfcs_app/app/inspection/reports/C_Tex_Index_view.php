@@ -50,7 +50,7 @@ $username=$_SESSION['userName'];
 <div class="row">
 <div class="col-md-3">
 <label>Enter Batch No: </label>
-<input type="text" id="course" name="lot_no" class="form-control textbox alpha" />
+<input type="text" id="course" name="lot_no" class="form-control" />
 </div>
 <input type="submit" id="submit" style="margin-top:22px;" name="submit" class="btn btn-success"  onclick='return pop_check();' value="Search">
 </div>

@@ -32,8 +32,8 @@
             }
             // get the sizes involved in the docket
             $doc_info_query = "SELECT fg_color, doc.plies, ratio_comp_group_id, ratio_id FROM $pps.jm_dockets doc
-            LEFT JOIN  $pps.lp_ratio_component_group lrcg ON lrcg.component_group_id = doc.ratio_comp_group_id
-            WHERE doc.jm_docket_id = '$docket_id' ";
+            LEFT JOIN  $pps.lp_ratio_component_group lrcg ON lrcg.lp_ratio_cg_id = doc.ratio_comp_group_id
+            WHERE doc.docket_number = $docket_number ";
             $doc_info_result = mysqli_query($link, $doc_info_query);
             while ($row1 = mysqli_fetch_array($doc_info_result)) {   
                 $fg_color = $row1['fg_color'];
@@ -46,7 +46,7 @@
             $doc_sizes_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id = '$ratio_id' ";
             $doc_size_result = mysqli_query($link, $doc_sizes_query);
             while ($row2 = mysqli_fetch_array($doc_size_result)) {   
-                $size = $row2['size']; 
+                $size = $row2['size'];
                 $size_ratio = $row2['size_ratio'];
                 $unsorted_size_ratios[$size] = $size_ratio;
             }
@@ -313,10 +313,8 @@ if(isset($_POST['reversesubmit']))
        mysqli_query($link, $updateQry) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
    }
    $updateLayQty = "UPDATE $pps.jm_actual_docket set plies = plies - $lay_plies where jm_ad_id = '$lay_id'";
+   
    mysqli_query($link, $updateLayQty) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-   $updateDocketQty = "UPDATE $pps.jm_dockets set lay_status = 'OPEN' where jm_docket_id = '$docket_number'";
-   mysqli_query($link, $updateDocketQty) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
    $url = '?r='.$_GET['r'].'&sidemenu=false';
    echo "<script> sweetAlert('Lay Reversed Successfully!!!','','success'); setTimeout(window.location = '$url', 2000); </script>"; 
 }
@@ -586,7 +584,7 @@ function reportCut(id) {
     $('#post_post').show();
     $('#reportcut').hide();
     var reportData = new Object();
-    reportData.layId = id;
+    reportData.actualDocketId = id;
     reportData.createdUser = '<?= $username ?>';
     reportData.plantCode = '<?= $plantcode ?>';
     reportData.sizeRejections = [];
@@ -639,7 +637,7 @@ function deleteCut(id) {
     $('#post_post').show();
     $('#deletecut').hide();
     var reportData = new Object();
-    reportData.layId = id;
+    reportData.actualDocketId = id;
     reportData.createdUser = '<?= $username ?>';
     reportData.plantCode = '<?= $plantcode ?>';
     var bearer_token;

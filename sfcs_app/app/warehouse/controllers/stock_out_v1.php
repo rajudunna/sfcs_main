@@ -37,8 +37,8 @@ $().ready(function() {
 
 <div style="float:right;">
 <FORM method="post" name="input2" action="?r=<?= $_GET['r'] ?>">
-<div id="seract_lot">Search Lot No/Location: <!--<input type="text" id="course" name="lot_no">-->
-<textarea id="course" name="lot_no" cols=12 rows=10 style="height: 107px;"></textarea>
+<div id="seract_lot">Search Lot No: <!--<input type="text" id="course" name="lot_no">-->
+<textarea id="course" name="lot_no" cols=12 rows=10 style="height: 107px;" required></textarea>
 <input type="submit" name="submit" value="Search" class="btn btn-success"></div>
 </form>
 
@@ -78,6 +78,14 @@ if(strlen($lot_no)>2)
 	 else{
 	  echo"<style>#back1{display:none;}</style>";
 	 }
+	 $check_lots="select * from $wms.sticker_report where lot_no in ('".trim($lot_no)."') and plant_code='".$plant_code."'";
+	$check_lots_result=mysqli_query($link, $check_lots) or exit("Sql Errorchecklots".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_checklot=mysqli_num_rows($check_lots_result);
+	if($sql_num_checklot == 0)
+	{
+		echo "<script>swal('Invalid Lot Number')</script>";
+		die();
+	}
 
 //$sql="select * from sticker_report where lot_no=\"".trim($lot_no)."\"";
 $sql5="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date from $wms.sticker_report where lot_no in ('".trim($lot_no)."') and plant_code='".$plant_code."'";
@@ -100,6 +108,7 @@ while($sql_row=mysqli_fetch_array($sql_result5))
   $pkg_no=$sql_row['pkg_no'];
   $grn_date=$sql_row['grn_date'];
 }
+
 
 $sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where lot_no in ('".trim($lot_no)."') and plant_code='".$plant_code."'";
 //mysqli_query($sql,$link) or exit("Sql Error3".mysqli_error());
@@ -218,10 +227,10 @@ if(trim($product_group)=='Fabric')
 			  echo "<td  style='background-color:white;'>$location</td><td style='background-color:white;'>$lot_ref</td><td style='background-color:white;'>$barcode_number</td><td style='background-color:white;'>$box</td><td style='background-color:white;'>$available</td>";
 			  echo '<td style="background-color:white;"><input style="width:88px; type="text" name="date[]" value="'.date("Y-m-d").'"></td>';
 			  echo '<td style="background-color:white;"><input class="float" style="width: 72px; type="text" name="qty_issued[]"  value="" onchange="if(check(this.value, '.$available.')==1010){ this.value=0;}"></td>';
-			  echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="style[]"  value=""></td>';
-			  echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="schedule[]"  value=""></td>';
-			  echo '<td style="background-color:white;"><input style="width: 62px; type="text" name="cut[]" value=""></td>';
-			  echo '<td style="background-color:white;"><input style="width: 125px; type="text" name="remarks[]" value="">';
+			  echo '<td style="background-color:white;"><input style="width: 110px; type="text" maxlength="10" name="style[]"  value=""></td>';
+			  echo '<td style="background-color:white;"><input style="width: 110px; type="text" maxlength="10" name="schedule[]"  value=""></td>';
+			  echo '<td style="background-color:white;"><input style="width: 62px; type="text" maxlength="10" name="cut[]" value=""></td>';
+			  echo '<td style="background-color:white;"><input style="width: 125px; type="text" maxlength="20" name="remarks[]" value="">';
 			  echo '<input type="hidden" name="tid[]" value="'.$tid.'"><input type="hidden" name="available[]" value="'.$available.'"><input type="hidden" name="available2[]" value="'.$available2.'"></td>';
 		  }
 		  
@@ -253,10 +262,10 @@ else
 		  echo "<td  style='background-color:white;'>$location</td><td style='background-color:white;'>$lot_ref</td><td style='background-color:white;'>$barcode_number</td><td style='background-color:white;'>$box</td><td style='background-color:white;'>$available</td>";
 		  echo '<td style="background-color:white;"><input style="width:88px; type="text" name="date[]" value="'.date("Y-m-d").'"></td>';
 		  echo '<td style="background-color:white;"><input class="float" style="width: 72px; type="text" name="qty_issued[]"  value="" onchange="if(check(this.value, '.$available.')==1010){ this.value=0;}"></td>';
-		  echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="style[]"  value=""></td>';
-		  echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="schedule[]"  value=""></td>';
-		  echo '<td style="background-color:white;"><input style="width: 62px; type="text" name="cut[]" value=""></td>';
-		  echo '<td style="background-color:white;"><input style="width: 125px; type="text" name="remarks[]" value="">';
+		  echo '<td style="background-color:white;"><input style="width: 110px; type="text" maxlength="10" name="style[]"  value=""></td>';
+		  echo '<td style="background-color:white;"><input style="width: 110px; type="text" maxlength="10" name="schedule[]"  value=""></td>';
+		  echo '<td style="background-color:white;"><input style="width: 62px; type="text" maxlength="10" name="cut[]" value=""></td>';
+		  echo '<td style="background-color:white;"><input style="width: 125px; type="text" maxlength="20" name="remarks[]" value="">';
 		  echo '<input type="hidden" name="tid[]" value="'.$tid.'"><input type="hidden" name="available[]" value="'.$available.'"><input type="hidden" name="available2[]" value="'.$available2.'"></td>';
 	  }
 	  
@@ -491,7 +500,7 @@ if(isset($_POST['put']))
 				if($balance_qty[$j]==0)
 				{
 					$status_new=2;
-					$sql44="update $wms.store_in set status=$status_new, allotment_status=$status_new ,updated_at=NOW(),updated_user='".$username."' where tid=".$tid_ref[$j]." and plant_code='".$plant_code."'";
+					$sql44="update $wms.store_in set status=$status_new, allotment_status=$status_new ,updated_at=NOW(),updated_user='".$username."' where tid='".$tid_ref[$j]."' and plant_code='".$plant_code."'";
 					//echo $sql44."</br>";
 					mysqli_query($link, $sql44) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}

@@ -4,6 +4,7 @@ include("$url1");
 $url2 =  $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'); 
 include("$url2");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R')); 
 $plant_code=$_SESSION['plantCode'];
 // $plant_code='Q01';
 $username=$_SESSION['userName'];
@@ -421,7 +422,7 @@ if(isset($_POST['submit']))
 
 					// to get fabric not allocated qty
 					$tot_qty=0;
-					$Qry_get_cut_details="SELECT docket_number,jm_ad_id, jm_actual_docket.plies as actualplies, jm_dockets.created_at as docket_date, jm_actual_docket.created_at as cut_date, jm_actual_docket.cut_report_status, lay_number, shift  FROM $pps.`jm_actual_docket` LEFT JOIN $pps.`jm_dockets` ON jm_dockets.`jm_docket_id` = jm_actual_docket.jm_docket_id WHERE po_number='$sub_po' AND jm_dockets.plant_code='$plant_code'";
+					$Qry_get_cut_details="SELECT docket_number,jm_ad_id, jm_actual_docket.plies as actualplies, jm_dockets.created_at as docket_date, jm_actual_docket.created_at as cut_date, jm_actual_docket.cut_report_status, shift  FROM $pps.`jm_actual_docket` LEFT JOIN $pps.`jm_dockets` ON jm_dockets.`jm_docket_id` = jm_actual_docket.jm_docket_id WHERE po_number='$sub_po' AND jm_dockets.plant_code='$plant_code'";
 					$sql_result6=mysqli_query($link, $Qry_get_cut_details) or die("Error".$Qry_get_cut_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	
@@ -441,7 +442,8 @@ if(isset($_POST['submit']))
 												cut.cut_number, cut.po_number,
 												ratio_cg.component_group_id as cg_id, ratio_cg.ratio_id, ratio_cg.master_po_details_id
 												FROM $pps.jm_dockets doc
-												LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
+												LEFT JOIN $pps.jm_cut_docket_map jcdm ON jcdm.jm_docket_id = doc.jm_docket_id
+												LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = jcdm.jm_cut_job_id
 												LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
 												WHERE doc.plant_code = '$plant_code' AND doc.docket_number='$docket_no' AND doc.is_active=true";
 											$docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -737,7 +739,8 @@ if(isset($_POST['submit']))
 											cut.cut_number, cut.po_number,
 											ratio_cg.component_group_id as cg_id, ratio_cg.ratio_id, ratio_cg.master_po_details_id
 											FROM $pps.jm_dockets doc
-											LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
+											LEFT JOIN $pps.jm_cut_docket_map jcdm ON jcdm.jm_docket_id = doc.jm_docket_id
+											LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = jcdm.jm_cut_job_id
 											LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
 											WHERE doc.plant_code = '$plant_code' AND doc.docket_number='$docket_no' AND doc.is_active=true";
 										$docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));

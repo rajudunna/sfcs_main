@@ -327,7 +327,7 @@ table{
 			{
 				$rej_lots=array();
 				
-				$sql5="select * FROM $wms.inspection_complaint_db a,$wms.inspection_complaint_db_log b WHERE a.complaint_no=b.complaint_track_id AND a.supplier_name=\"".$supplier_name."\" AND b.complaint_reason='".$comaplint_sno[$i1]."' AND a.reject_batch_no='".$batch_ref."' and plant_code='".$plant_code."'";
+				$sql5="select * FROM $wms.inspection_complaint_db a,$wms.inspection_complaint_db_log b WHERE a.complaint_no=b.complaint_track_id AND a.supplier_name=\"".$supplier_name."\" AND b.complaint_reason='".$comaplint_sno[$i1]."' AND a.reject_batch_no='".$batch_ref."' and a.plant_code='".$plant_code."'";
 				$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error".$sql5.mysqli_error($GLOBALS["___mysqli_ston"]));
 				//echo mysql_num_rows($sql_result5)."-".$sql5."<br>";
 				if(mysqli_num_rows($sql_result5) > 0)

@@ -286,7 +286,7 @@ function getDocketInfo($doc_num,$doc_type,$plant_code){
     global $link_new;
     global $wms;
     global $pps;
-    $sql1="SELECT plan_lot_ref from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_line_id='$doc_num' and plan_lot_ref!=''";
+    $sql1="SELECT plan_lot_ref from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_id='$doc_num' and plan_lot_ref!=''";
     $sql_result1=mysqli_query($link_new, $sql1) or exit("Sql Error at Doscket123 roll details".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sql_num1=mysqli_num_rows($sql_result1);
         if($sql_num1>0){
@@ -698,7 +698,8 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
 
     }
     //qry to get dockets in through dockets id
-    $qry_get_docketlines="SELECT jm_docket_id,docket_number FROM $pps.jm_dockets WHERE jm_docket_id IN ('$jm_dockets') AND plant_code='$plantcode' AND is_binding='$4' AND is_active=1";
+    $binding_value=1;
+    $qry_get_docketlines="SELECT jm_docket_id,docket_number FROM $pps.jm_dockets WHERE jm_docket_id IN ('$jm_dockets') AND plant_code='$plantcode' AND is_binding='$binding_value' AND is_active=1";
     $qry_get_docketlines_result=mysqli_query($link_new, $qry_get_docketlines) or exit("Sql Error at docket lines".mysqli_error($GLOBALS["___mysqli_ston"]));
     $docketlines_num=mysqli_num_rows($qry_get_docketlines_result);
     if($docketlines_num>0){
@@ -1432,24 +1433,24 @@ function getDocketInformation($docket_no, $plant_code) {
     
     $schedules = [];
     // get the docket info
-    $docket_info_query = "SELECT doc.plies, doc.fg_color,doc.docket_number,
-        doc.marker_version_id, doc.ratio_comp_group_id,
-        cut.cut_number, cut.po_number,
+    // LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
+    $docket_info_query = "SELECT doc.jm_docket_id, doc.plies, doc.fg_color,doc.docket_number,
+        doc.marker_version_id, doc.ratio_comp_group_id, doc.sub_po as po_number,
         ratio_cg.component_group_id as cg_id, ratio_cg.ratio_id, ratio_cg.master_po_details_id
         FROM $pps.jm_dockets doc
-        LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
         LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
         WHERE doc.plant_code = '$plant_code' AND doc.docket_number='$docket_no' AND doc.is_active=true";
     $docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
  
     while($row = mysqli_fetch_array($docket_info_result))
     {
+        $docket_id = $row['jm_docket_id'];
         $fg_color = $row['fg_color'];
         $plies =  $row['plies'];
         $comp_group =  $row['cg_name'];
-        $cut_no = $row['cut_number'];
+        // $cut_no = $row['cut_number'];
         $ratio_comp_group_id = $row['ratio_comp_group_id'];
-        $docket_line_number = $row['docket_number'];
+        $docket_number = $row['docket_number'];
         $po_number = $row['po_number'];
         $marker_version_id = $row['marker_version_id'];
         $ratio_id = $row['ratio_id'];
@@ -1457,13 +1458,22 @@ function getDocketInformation($docket_no, $plant_code) {
         $mp_detail_id = $row['master_po_details_id'];
     }
 
+    // get the cut numbers for the docket
+    $doc_type = DocOwningTypeEnum::MAIN;
+    $cut_num_query = "SELECT DISTINCT cut_number from $pps.jm_cut_job cut
+        LEFT JOIN $pps.jm_cut_docket_map cdm ON cdm.jm_cut_job_id = cut.jm_cut_job_id
+        WHERE cdm.jm_docket_id='$docket_id' AND doc_owning_type = '$doc_type' ";
+    $cut_num_result = mysqli_query($link_new, $cut_num_query) or exit("Sql cut_num_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row = mysqli_fetch_array($cut_num_result))
+    {
+        $cut_no = $row['cut_number'];
+    }
     // get the style and master po info
     $style_info_query = "SELECT mpc.style, mp.master_po_number, mp.master_po_description 
     FROM $pps.mp_color_detail mpc 
     LEFT JOIN $pps.mp_order mp ON mpc.master_po_number = mp.master_po_number
     WHERE mpc.master_po_details_id = '$mp_detail_id' ";
     $style_info_result=mysqli_query($link_new, $style_info_query) or exit("Sql style_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
-  
     while($row = mysqli_fetch_array($style_info_result))
     {
         $style = $row['style'];
@@ -1479,7 +1489,17 @@ function getDocketInformation($docket_no, $plant_code) {
         $sub_po = $row['po_number'];
         $sub_po_desc = $row['po_description'];
     }
-
+    $schedule=array();
+    //To get schedule,color
+    $qry_get_sch_col="SELECT schedule FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`mp_mo_qty_id`= mp_mo_qty.`mp_mo_qty_id`
+    WHERE po_number='$po_number' AND mp_sub_mo_qty.plant_code='$plant_code'";
+    $qry_get_sch_col_result=mysqli_query($link_new, $qry_get_sch_col) or exit("Sql Error at qry_get_sch_col".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row=mysqli_fetch_array($qry_get_sch_col_result))
+    {
+      $schedule[]=$row['schedule'];
+    }
+    $schedule_bulk=array_unique($schedule);
+    //var_dump($schedule_bulk);
     // get the rm sku, fabric catrgory
     $fabric_info_query = "SELECT fabric_category, material_item_code FROM $pps.lp_component_group where lp_cg_id = '$cg_id' ";
     $fabric_info_result=mysqli_query($link_new, $fabric_info_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1560,8 +1580,9 @@ function getDocketInformation($docket_no, $plant_code) {
         'shrinkage'=>$shrinkage,
         'ratio_comp_group_id' => $ratio_comp_group_id,
         'marker_version_id' => $marker_version_id,
-        'docket_line_number'=>$docket_line_number,
-        'required_qty'=>$required_qty
+        'docket_number'=>$docket_number,
+        'required_qty'=>$required_qty,
+        'schedule_bulk'=>$schedule_bulk
     ];
 
 }

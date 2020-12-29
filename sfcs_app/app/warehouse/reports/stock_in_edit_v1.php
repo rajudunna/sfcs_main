@@ -5,6 +5,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 //$view_access=user_acl("SFCS_0156",$username,1,$group_id_sfcs); 
 $plantcode=$_SESSION['plantCode'];
+// $plantcode='Q01';
 $username=$_SESSION['userName'];
 // $plantcode="AIP"
 ?>
@@ -147,7 +148,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			echo "<tr><th>Lot No</th><td>$lot_no</td></tr>";
 			echo "<tr><th>Batch</th><td>$batch_no</td></tr>";
 			echo "<tr><th>Item Description</th><td>$item_desc</td></tr>";
-			echo "<tr><th>Item Name</th><td>$item_name</td></tr>";
+			echo "<tr><th>Item Name</th><td style = 'word-break: break-word;'>$item_name</td></tr>";
 			echo "<tr><th>Product</th><td>$product_group</td></tr>";
 			echo "<tr><th>GRN Date</th><td>$grn_date</td></tr>";
 			echo "</table>";
@@ -165,7 +166,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			$shades=array("","A","B","C","D","E","F","G");
 
 
-			$sql="select tid,ref1,ref2,qty_rec,status,qty_issued,qty_ret,ref4,ref3,ref5 from $wms.store_in where plant_code='$plantcode' and lot_no=\"".trim($lot_no)."\"";
+			$sql="select tid,ref1,ref2,qty_rec,status,qty_issued,qty_ret,ref4,ref3,ref5,barcode_number from $wms.store_in where plant_code='$plantcode' and lot_no=\"".trim($lot_no)."\"";
 			// echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error-c".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
@@ -175,6 +176,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			{
 				$MRN_tid[] = $sql_row['tid'];
 				$tid=$sql_row['tid'];
+				$barcode_number=$sql_row['barcode_number'];
 				$location=$sql_row['ref1'];
 				$box=$sql_row['ref2'];
 				$qty_rec=$sql_row['qty_rec'];
@@ -188,7 +190,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 				
 				if($status==0)
 				{	
-					echo '<td>'.leading_zeros($tid,8).'</td>';
+					echo '<td>'.leading_zeros($barcode_number,8).'</td>';
 					if($location=="")
 					{
 						echo '<td><select name="ref1[]">';
@@ -260,6 +262,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 
 			echo "</tbody></table></div>";
 			echo '<input type="hidden" name="lot_no" value="'.$lot_no.'">';
+			echo '<input type="hidden" name="plant_code" id = "plant_code" value="'.$plantcode.'">';
 
 			echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable &nbsp;<input type="submit" value="Submit" class="btn btn-info" name="put" id="put" onclick="javascript:button_disable();"/></form>';
 			echo "<div class='col-md-12'>";
@@ -341,27 +344,29 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			
 
 <?php
-
 	if(isset($_POST['put']))
 	{
 		$ref1=$_POST['ref1'];
 		$ref4=$_POST['ref4'];
+		$plant_code=$_POST['plant_code'];
 		$ref3=$_POST['ref3'];
 		$ref5=$_POST['ref5'];
 		$tid=$_POST['tid'];
 		$lot_no_new=$_POST['lot_no'];
 		$user_name=$_SESSION['SESS_MEMBER_ID'];
 		
+		
 		for($i=0; $i<sizeof($ref1); $i++)
 		{
 					
 				//Changed to update only locations.	
-				$sql="update $wms.store_in set ref1=\"".$ref1[$i]."\",updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid=".$tid[$i];
+				$sql="update $wms.store_in set ref1=\"".$ref1[$i]."\",updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plant_code' and tid='".$tid[$i]."'";
+				// echo $sql;die();
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error-g".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			
 		}
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = '".getFullURL($_GET['r'],'stock_in_edit_v1.php','N')."&lot_no=".$lot_no_new."'; }</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = '".getFullURL($_GET['r'],'stock_in_edit_v1.php','N')."&lot_no=".$lot_no_new."&plantcode=".$plant_code."'; }</script>";
 		
 	}
 

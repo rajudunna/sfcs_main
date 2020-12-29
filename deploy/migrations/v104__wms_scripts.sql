@@ -798,7 +798,7 @@ CREATE TABLE `store_in_backup` (
 DROP TABLE IF EXISTS `store_in_deleted`;
 
 CREATE TABLE `store_in_deleted` (
-  `tid` bigint(20) NOT NULL AUTO_INCREMENT,
+  `tid` varchar(36) NOT NULL AUTO_INCREMENT,
   `lot_no` varchar(150) NOT NULL,
   `ref1` varchar(50) NOT NULL COMMENT 'Location No',
   `ref2` varchar(100) NOT NULL COMMENT 'Box/Roll No',
@@ -825,7 +825,6 @@ CREATE TABLE `store_in_deleted` (
   `shrinkage_group` varchar(255) NOT NULL,
   `roll_remarks` varchar(255) NOT NULL,
   `rejection_reason` varchar(255) NOT NULL,
-  `m3_call_status` enum('Y','N') DEFAULT 'N',
   `split_roll` varchar(50) DEFAULT NULL,
   `barcode_number` varchar(255) DEFAULT NULL,
   `ref_tid` int(11) DEFAULT '0',
