@@ -590,15 +590,15 @@ function verify_date(){
 					while($sql_row99=mysqli_fetch_array($sql_result99))
 					{
 						$attribute_value=$sql_row99['attribute_value'];
-						$sql11="SELECT component_name,docket_number,jm_docket_cg_bundle.jm_docket_id FROM $pps.jm_docket_cg_bundle LEFT JOIN $pps.jm_dockets ON 
+						$sql11="SELECT cg_name,docket_number,jm_docket_cg_bundle.jm_docket_id FROM $pps.jm_docket_cg_bundle LEFT JOIN $pps.jm_dockets ON 
 						jm_docket_cg_bundle.jm_docket_id=jm_dockets.jm_docket_id 
-						WHERE jm_dockets.plant_code='$plantcode' AND jm_dockets.docket_type='RECUT' AND jm_dockets.docket_number IN ($attribute_value) GROUP BY component_name";
+						WHERE jm_dockets.plant_code='$plantcode' AND jm_dockets.docket_type='RECUT' AND jm_dockets.docket_number IN ($attribute_value) GROUP BY cg_name";
 						//mysqli_query($link, $sql2) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error222".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row8=mysqli_fetch_array($sql_result11))
 						{
 
-							$category_name=$sql_row8['component_name'];
+							$category_name=$sql_row8['cg_name'];
 							$jm_docket_id=$sql_row8['jm_docket_id'];
 							// $size_ratio=$sql_row8['size_ratio'];
 							$docket_number=$sql_row8['docket_number'];
