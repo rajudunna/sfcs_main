@@ -286,18 +286,10 @@ function getDocketInfo($doc_num,$doc_type,$plant_code){
     global $link_new;
     global $wms;
     global $pps;
-    $sql1="SELECT plan_lot_ref from $pps.requested_dockets where plant_code='$plant_code' and jm_docket_id='$doc_num' and plan_lot_ref!=''";
-    $sql_result1=mysqli_query($link_new, $sql1) or exit("Sql Error at Doscket123 roll details".mysqli_error($GLOBALS["___mysqli_ston"]));
-    $sql_num1=mysqli_num_rows($sql_result1);
-        if($sql_num1>0){
-            while($sql_row1=mysqli_fetch_array($sql_result1))
-            {
-                $lot_ref[]=$sql_row1['plan_lot_ref'];               
-            }
-               
-        $lot_no=implode("','" , $lot_ref);
-      
-       $sql="SELECT store_in.ref2,store_in.shrinkage_width,store_in.qty_allocated,store_in.ref4,sticker_report.batch_no,store_in.ref1,store_in.lot_no,sticker_report.inv_no,store_in.tid,store_in.ref5,store_in.qty_rec,store_in.ref3,store_in.ref6,sticker_report.item from $wms.store_in left join $wms.sticker_report on store_in.lot_no=sticker_report.lot_no where store_in.lot_no in ($lot_no) and store_in.plant_code='$plant_code'";
+   
+    $sql="SELECT store_in.ref2,store_in.shrinkage_width,store_in.qty_allocated,store_in.ref4,sticker_report.batch_no,store_in.ref1,store_in.lot_no,sticker_report.inv_no,store_in.tid,store_in.ref5,store_in.qty_rec,store_in.ref3,store_in.ref6,sticker_report.item from $wms.store_in 
+    left join $wms.fabric_cad_allocation on fabric_cad_allocation.roll_id=store_in.tid
+    left join $wms.sticker_report on store_in.lot_no=sticker_report.lot_no where doc_no='".$doc_num."' and store_in.plant_code='$plant_code'";
        $sql_result=mysqli_query($link_new, $sql) or exit("$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
        $sql_num=mysqli_num_rows($sql_result);    
         if($sql_num>0){
@@ -339,7 +331,6 @@ function getDocketInfo($doc_num,$doc_type,$plant_code){
             'item_name' => $item_name
         );
 
-        }
 }
 
 /*
