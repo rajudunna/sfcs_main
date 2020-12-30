@@ -48,10 +48,6 @@ function check_val()
 
 <?php
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
-//include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
-
-//$view_access=user_acl("SFCS_0250",$username,1,$group_id_sfcs); 
-
 error_reporting(0);
 
 // Report simple running errors
@@ -109,7 +105,7 @@ if(isset($_POST['submit']))
 				//echo $check_box[$i]."<br>";
 				if($check_box[$i]==1)
 				{
-					$filter.="module_id,";
+					$filter.="module,";
 				}
 				else if($check_box[$i]==2)
 				{
@@ -138,8 +134,7 @@ if(isset($_POST['submit']))
 	
 	
 //echo $filter."<br>";
-	$sql="SELECT date(date_time) as date_time,$filter bundle_id,user_name,remark from $pps.re_print_table where plant_code='$plant_code' AND date(date_time)
-BETWEEN '$sdate' AND '$edate' GROUP BY date_time $filter_n ORDER BY date_time";
+	$sql="SELECT date(created_at) as created_at,$filter bundle_number,created_user,remarks from $pps.bundle_reprint_log where plant_code='$plant_code' AND date(created_at) BETWEEN '$sdate' AND '$edate' GROUP BY created_at $filter_n ORDER BY created_at";
 //echo $sql."<br>";
 	//$sets=explode(",",$filter_n);
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -157,7 +152,6 @@ BETWEEN '$sdate' AND '$edate' GROUP BY date_time $filter_n ORDER BY date_time";
 			{
 				for($i=0;$i < sizeof($check_box);$i++)
 				{
-					//echo $check_box[$i]."<br>";
 					if($check_box[$i]==1)
 					{
 						echo "<th>Module</th>";
@@ -173,20 +167,13 @@ BETWEEN '$sdate' AND '$edate' GROUP BY date_time $filter_n ORDER BY date_time";
 					
 				}
 			}
-		}
-		
-		
-		//echo "<th>Shift</th>";
-		//for($i=0;$i<sizeof($hours);$i++)
-		//{
-		//	echo "<th>".$hours[$i]."</th>";
-		//}
+		}		
 		echo "<th>Bundle Number</th>";
 		echo "<th>Username</th>";
 		echo "<th>Remark</th></tr>";
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
-			$date=$sql_row['date_time'];
+			$date=$sql_row['created_at'];
 			echo "<tr>";
 			echo "<td>".$date."</td>";
 			if(empty($check_box)) {
@@ -197,7 +184,7 @@ BETWEEN '$sdate' AND '$edate' GROUP BY date_time $filter_n ORDER BY date_time";
 					//echo $check_box[$i]."<br>";
 					if($check_box[$i]==1)
 					{
-						echo "<td>".$sql_row['module_id']."</td>";
+						echo "<td>".$sql_row['module']."</td>";
 					}
 					else if($check_box[$i]==2)
 					{
@@ -211,9 +198,9 @@ BETWEEN '$sdate' AND '$edate' GROUP BY date_time $filter_n ORDER BY date_time";
 				}
 			}
 			
-			echo "<td>".$sql_row['bundle_id']."</td>";
-			echo "<td>".$sql_row['user_name']."</td>";
-			echo "<td>".$sql_row['remark']."</td>";
+			echo "<td>".$sql_row['bundle_number']."</td>";
+			echo "<td>".$sql_row['created_user']."</td>";
+			echo "<td>".$sql_row['remarks']."</td>";
 			
 			echo "</tr>";
 		}
