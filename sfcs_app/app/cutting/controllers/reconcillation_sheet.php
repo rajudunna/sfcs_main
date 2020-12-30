@@ -79,7 +79,7 @@ $(document).ready(function() {
 <form name="test" action="?r=<?php echo $_GET['r']; ?>" method="post">
 <?php
 //function to get style from mp_color_details
-$plantcode = 'Q01';
+// $plantcode = 'Q01';
 // var_dump($plantcode);
 if($plantcode!=''){
 	$result_mp_color_details=getMpColorDetail($plantcode);
