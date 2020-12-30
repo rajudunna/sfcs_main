@@ -8,31 +8,17 @@ if($_GET['some'] == 'bundle_no')
 	$bundle_number = $_GET['bundle'];
 	$plantCode = $_GET['plantCode'];
 
-	$qryGetBundleDetails="SELECT external_ref_id,barcode_id FROM $pts.barcode WHERE barcode='$bundle_number' AND plant_code='$plantCode' AND barcode_type='PSLB' AND is_active=1";
+	$qryGetBundleDetails="SELECT external_ref_id,barcode FROM $pts.barcode WHERE barcode='$bundle_number' AND plant_code='$plantCode' AND barcode_type='PPLB' AND is_active=1";
 	$bundleResult = $link_new->query($qryGetBundleDetails);
 	while($bundleRow = $bundleResult->fetch_assoc())
 	{
 		$external_ref_id = $bundleRow['external_ref_id'];
-		$barcode_id = $bundleRow['barcode_id'];
-	}
-	/**getting parent barcode from parentbarcode */
-	$qryGetParentBarcode="SELECT parent_barcode FROM $pts.parent_barcode WHERE child_barcode='$barcode_id' AND `parent_barcode_type`='PPLB' and plant_code='$plantCode' and is_active=1";
-	$parentBarcodeResult = $link_new->query($qryGetParentBarcode);
-	while($parentRow = $parentBarcodeResult->fetch_assoc())
-	{
-		$parent_barcode = $parentRow['parent_barcode'];
-	}
-	/**get planned bacrcode*/
-	$qryPlannedbarcode="SELECT barcode FROM $pts.barcode WHERE barcode_id='$parent_barcode' AND plant_code='$plantCode' AND is_active=1";
-	$plannedBUndleResult = $link_new->query($qryPlannedbarcode);
-	while($pplbRow = $plannedBUndleResult->fetch_assoc())
-	{
-		$barcodePPLB = $pplbRow['barcode'];
+		$barcode_id = $bundleRow['barcode'];
 	}
 
 	/**getting jm jg header id based on external ref id */
 	if($external_ref_id!=''){
-	$qryGetjobbundles="SELECT jm_jg_header_id,fg_color,size,quantity FROM $pps.jm_job_bundles WHERE jm_job_bundle_id='$external_ref_id' AND plant_code='$plantCode' AND is_active=1";
+	$qryGetjobbundles="SELECT jm_jg_header_id,fg_color,size,quantity FROM $pps.jm_job_bundles WHERE jm_pplb_id='$external_ref_id' AND plant_code='$plantCode' AND is_active=1";
 	$jobbundlesResult = $link_new->query($qryGetjobbundles);
 		while($jobRow = $jobbundlesResult->fetch_assoc())
 		{
@@ -110,7 +96,7 @@ if($_GET['some'] == 'bundle_no')
 	</thead>
 	<tbody>";
 
-	$qryGetoperation="SELECT operation,good_quantity,rejected_quantity,created_user,shift,created_at,resource_id FROM $pts.transaction_log WHERE parent_barcode='$barcodePPLB' AND style='$style' AND SCHEDULE='$schedule' AND color='$color' AND size='$size' AND plant_code='$plantCode' AND is_active=1 GROUP BY operation";
+	$qryGetoperation="SELECT operation,good_quantity,rejected_quantity,created_user,shift,created_at,resource_id FROM $pts.transaction_log WHERE parent_barcode='$barcode_id' AND style='$style' AND SCHEDULE='$schedule' AND color='$color' AND size='$size' AND plant_code='$plantCode' AND is_active=1 GROUP BY operation";
 	$bcd_get_result =$link_new->query($qryGetoperation);
 	//echo $bcd_data_query.'<br/>';
 	while ($row3 = $bcd_get_result->fetch_assoc())
