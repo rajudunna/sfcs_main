@@ -272,7 +272,8 @@ if($section){
                         $docketPlies = 0;
                         $sizeRatioSum = 0;
                         // Get sum of size ratio for the docket
-                        $getRatioQuery = "select jcj.ratio_id from $pps.jm_cut_job as jcj left join $pps.jm_cut_docket_map as dm on jcj.jm_cut_job_id = jd.jm_cut_job_id left join $pps.jm_dockets as jd on dm.jm_docket_id = jd.jm_docket_id where jd.jm_docket_id='".$docketId."' and jd.plant_code='".$plantCode."'";
+                        $getRatioQuery = "SELECT rcg.ratio_id FROM pps.jm_dockets AS jd LEFT JOIN pps.lp_ratio_component_group AS rcg ON rcg.lp_ratio_cg_id = jd.ratio_comp_group_id 
+                        WHERE jd.jm_docket_id='".$docketId."' and jd.plant_code='".$plantCode."'";
                         $ratioResult = mysqli_query($link_new,$getRatioQuery) or exit('Problem in getting ratio for  docket');
                         $row = mysqli_fetch_assoc($ratioResult);
                         ($row['ratio_id'])? $ratioId= $row['ratio_id']: $ratioId = '';
