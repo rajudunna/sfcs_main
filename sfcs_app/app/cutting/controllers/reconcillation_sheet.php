@@ -79,6 +79,8 @@ $(document).ready(function() {
 <form name="test" action="?r=<?php echo $_GET['r']; ?>" method="post">
 <?php
 //function to get style from mp_color_details
+$plantcode = 'Q01';
+// var_dump($plantcode);
 if($plantcode!=''){
 	$result_mp_color_details=getMpColorDetail($plantcode);
 	$style=$result_mp_color_details['style'];
@@ -322,6 +324,8 @@ if(isset($_POST['submit']))
 			$sno++;
 		}
 		echo "</table></div>";
+	}else{
+		echo "<div><h3 style = 'color:red;font-weight:bold;text-align:center;'>No Data Found</h3></div>";
 	}
 }
 

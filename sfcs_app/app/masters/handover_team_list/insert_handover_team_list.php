@@ -1,6 +1,6 @@
 
 <?php 
- $selected_user = getrbac_user()['uname']; 
+ //$selected_user = getrbac_user()['uname']; 
 ?>
 <script src="<?= getFullURLLevel($_GET['r'],'common/js/jquery-2.1.3.min.js',3,'R'); ?>"></script>
   <script src="<?= getFullURLLevel($_GET['r'],'common/js/sweetalert-dev.js',3,'R'); ?>"></script>
@@ -97,7 +97,7 @@ if (strlen(trim($emp_id)) == 0 || strlen(trim($emp_call_name)) == 0 )
 			// echo "<script>alert('Enter data correctly.')</script>";
 		}
 		else{
-			$sql = "INSERT INTO $pms.tbl_fg_crt_handover_team_list (emp_id, emp_call_name,selected_user, emp_status,plant_code,created_user,updated_user,updated_at) VALUES('$emp_id','$emp_call_name','$selected_user','$emp_status','$plant_code','$username','".$username."',NOW())";
+			$sql = "INSERT INTO $pms.tbl_fg_crt_handover_team_list (emp_id, emp_call_name,selected_user, emp_status,plant_code,created_user,updated_user,updated_at) VALUES('$emp_id','$emp_call_name','$username','$emp_status','$plant_code','$username','".$username."',NOW())";
 		
 			 
 			if (mysqli_query($conn, $sql)) {

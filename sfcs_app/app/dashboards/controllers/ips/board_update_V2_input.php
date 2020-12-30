@@ -12,6 +12,7 @@ include("../../../../common/config/config.php");
 include("../../../../common/config/functions.php");
 include("../../../../common/config/functions_dashboard.php");
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
+include("../../../../common/config/enums.php");
 error_reporting(0);
 $section_no=$_GET['section_no'];
 ?>
@@ -310,7 +311,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 	$task_jobs_qry = "SELECT DISTINCT  tj.task_jobs_id as task_jobs_id FROM `$tms`.`task_header` th 
 	LEFT JOIN $tms.`task_jobs` tj ON tj.`task_header_id` = th.`task_header_id`
 	LEFT  JOIN $tms.`job_trims` tm ON tm.`task_job_id` = tj.`task_jobs_id`
-	WHERE `resource_id` = '$module' AND trim_status = 'OPEN' ORDER BY tj.`priority`";
+	WHERE `resource_id` = '$module' AND trim_status = 'OPEN' ORDER BY tj.`priority` ASC LIMIT 14";
 	$task_jobs_qry_result1=mysqli_query($link, $task_jobs_qry) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($task_job_row=mysqli_fetch_array($task_jobs_qry_result1))
 	{
@@ -360,18 +361,24 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 		{
 			$docket_line_ids=$docket_row123['docket_line_ids'];
 		}
-		if($doc_no_ref){
-			$sql1x1="select * from $pps.docket_number where lay_status<>'DONE' and docket_number in ($doc_no_ref)";
-			$sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error81".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($sql_result1x1)>0)
-			{
-				$cut_status="0";
-			}
-			else
-			{
-				$cut_status="5";
-			}
+		$jobstatus=JobStatusEnum::DONE;
+		$sql1x1="select * from $pps.jm_actual_docket where jm_docket_id in ($docket_line_ids) AND cut_report_status='$jobstatus'";
+		$sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error81".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_result1x1)>0)
+		{
+				if(sizeof($doc_no_ref_explode)<>mysqli_num_rows($sql_result1x1))
+				{
+						$cut_status="5";
+				}
+				else
+				{
+						$cut_status="0";
+				}
 		}
+		else 
+		{
+				$cut_status="0";
+		} 
 		$fabric_req= '0';
 		if($docket_line_ids){
 			// fabric request logic
