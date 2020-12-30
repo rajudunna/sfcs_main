@@ -154,51 +154,53 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 						}
 						else
 						{
+							if(sizeof($values)<=0){
+								echo "<script>sweetAlert('Uploaded File has no data','please verify','warning'); </script>";
+								echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"$url&lot_no=$lot_no\"; }</script>";
+								exit;
+							}else{
+									$sql_result1=mysqli_query($link, $sql1 . implode(', ', $values)) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+									$last_id_ref = mysqli_insert_id($link);
+									$for_last_val = $last_id_ref+$iro_cnt;
 							
-							
-							$sql_result1=mysqli_query($link, $sql1 . implode(', ', $values)) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$last_id_ref = mysqli_insert_id($link);
-							$for_last_val = $last_id_ref+$iro_cnt;
-							
-							$bundlenumber=0;
-							foreach ($uuidArray as $uuidValue) {
-								//To check bundle count for plant
-								$checkcount="SELECT count(barcode_number) as barcodecount FROM $wms.store_in WHERE plant_code='$plantcode'";
-								$sql_result12=mysqli_query($link, $checkcount) or exit("Sql Error at checkcount".mysqli_error($GLOBALS["___mysqli_ston"]));
-								$count_num=mysqli_num_rows($sql_result12);
-								if($count_num > 0){
-									while($count_row=mysqli_fetch_array($sql_result12))
-									{
-										$barcodecount=$count_row['barcodecount'];
-										$bundlenumber=$barcodecount+1;
+									$bundlenumber=0;
+									foreach ($uuidArray as $uuidValue) {
+										//To check bundle count for plant
+										$checkcount="SELECT count(barcode_number) as barcodecount FROM $wms.store_in WHERE plant_code='$plantcode'";
+										$sql_result12=mysqli_query($link, $checkcount) or exit("Sql Error at checkcount2".mysqli_error($GLOBALS["___mysqli_ston"]));
+										$count_num=mysqli_num_rows($sql_result12);
+										if($count_num > 0){
+											while($count_row=mysqli_fetch_array($sql_result12))
+											{
+												$barcodecount=$count_row['barcodecount'];
+												$bundlenumber=$barcodecount+1;
+											}
+										} else 
+										{
+											$bundlenumber++;
+										}
+										$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$plantcode."-',$bundlenumber),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='$uuidValue'";
+										//echo "Update : ".$update_query."</br>"; 
+										$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error at line 181".mysqli_error($GLOBALS["___mysqli_ston"]));
 									}
-								} else 
-								{
-									$bundlenumber++;
-								}
-								$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$plantcode."-',$bundlenumber),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='$uuidValue'";
-								//echo "Update : ".$update_query."</br>"; 
-								$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							}
 
-							// for($last_id=$last_id_ref;$last_id<$for_last_val;$last_id++){
-							// 	$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$plantcode."-',tid),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='$last_id'";
-							// 	//echo "Update : ".$update_query."</br>"; 
-							// 	$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							// }
+									// for($last_id=$last_id_ref;$last_id<$for_last_val;$last_id++){
+									// 	$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$plantcode."-',tid),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='$last_id'";
+									// 	//echo "Update : ".$update_query."</br>"; 
+									// 	$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+									// }
 						  
 						  	
-							fclose($handle);
-							// echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color='red'>Stock Updated Successfully.... Please Wait</font></h1></center></div>";
-							  
-							$ext = $filename[1]; // get the extension of the file
-							$newname = "$upload_file"."."."$ext";
-							$path_new=$_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],"Upload_files/$newname","R");
-							 //echo $path_new;
-							move_uploaded_file($_FILES["file"]["tmp_name"],$path_new);
-							
-				
-			}  
+									fclose($handle);
+									// echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color='red'>Stock Updated Successfully.... Please Wait</font></h1></center></div>";
+									
+									$ext = $filename[1]; // get the extension of the file
+									$newname = "$upload_file"."."."$ext";
+									$path_new=$_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],"Upload_files/$newname","R");
+									//echo $path_new;
+									move_uploaded_file($_FILES["file"]["tmp_name"],$path_new);
+							}
+						}  
 						//	echo "<script>sweetAlert('Stock Updated Successfully...','Please Wait','success')</script>";
 						echo "<script>
 							swal({
@@ -212,10 +214,6 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url&lot_no=$lot_no\"; }</script>";
 							// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"insert_v1.php?lot_no=$lot_no\"; }</script>";
 						
-
-
-					
-
 				}else{
 					echo "<script>sweetAlert('File format not supported','please upload .csv format','warning')</script>";
 				}
@@ -315,12 +313,12 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 					}
 
 					$sql="insert into $wms.store_in (tid,lot_no, ref1, ref2, ref3,supplier_no, qty_rec, date, remarks, log_user,plant_code,created_user,created_at,updated_user,updated_at) values ('$uuid','$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', '$ref4[$i]', $qty[$i], '$date', '$remarks','".$username."-".$plant_name."','$plantcode','$username','".date('Y-m-d')."','$username','".date('Y-m-d')."')";
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_result=mysqli_query($link, $sql) or exit("Sql Error at line 318".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$qty_count += 1;
 					//$last_id = mysqli_insert_id($link);
 					
 					$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$plantcode."-',$bundlenumber),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='$uuid'";
-					$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error at 323".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				}
 				
