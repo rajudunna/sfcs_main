@@ -47,14 +47,18 @@ $username=$_GET['username'];
 <html>
 <head>
 <title>Board Update</title>
+
+
 </head>
 
 <body>
-	<form action="board_update_v2_input_excel.php" method="post">
-		<input type="hidden" name="section" value="<?= $_GET['section_no']; ?>">
-		<input type="hidden" name="plant_code" value="<?= $_GET['plant_code']; ?>">
-		<input type="submit" name="export_excel" value="Export to Excel">
+
+
+	<form action="board_update_v2_input_excel.php" method="post" name="export" id="expo">
+		<input type="hidden" name="csv_text" id="csv_text">
+		<input type="submit" name="export"  onclick="getCSVData()" value="Export to Excel">
 	</form>
+
 <div class="panel panel-primary">
 	<div class="panel-heading">Input Job Plan Details</div><br/>
 	<div class="panel-body">
@@ -71,8 +75,8 @@ $username=$_GET['username'];
 		}
 		?>
 		<div class="table table-responsive">
-		<table class="table table-bordered">
-			<tr>
+		<table class = 'table table-striped jambo_table bulk_action table-bordered' id="table1" name="table1">
+			<tr class='headings'>
 			<th colspan=10 >Production Plan for <?= $section_display_name; ?></th>
 			<th colspan=20 >Date :<?= date('Y-m-d H:i'); ?></th>
 			</tr>
@@ -100,7 +104,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		{
 			$workstation_code=$code_row['workstation_code'];
 		}
-		echo "<tr>";
+		echo "<tr class='headings'>";
 		echo "<td>".$workstation_code."</td>";
 		echo "<td align=\"right\">Style:<br/>Schedule:<br/>Job:<br/>Total Qty:<br/>Fab. Status:<br/>Trim Status:</td>";
 		$work_id=$mods[$x];
@@ -302,6 +306,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
 echo "</table>";
 ?>
+<script src="../../../../common/js/jquery.min.js"></script>
+<script src="../../../../common/js/table2CSV.js"></script>
+<script src="../../../../common/js/TableFilter_EN/actb.js"></script>
+<script src="../../../../common/js/TableFilter_EN/tablefilter.js"></script>
+<script src="../../../../common/js//dropdowntabs.js"></script>
 </body>
 <script>
 	document.getElementById("msg").style.display="none";		
@@ -328,3 +337,9 @@ th {
 }
 </style>
 
+<script language="javascript" type="text/javascript">
+function getCSVData(){
+ var csv_value=$('#table1').table2CSV({delivery:'value'});
+ $("#csv_text").val(csv_value);	
+}
+</script> 
