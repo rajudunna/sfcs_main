@@ -1862,7 +1862,7 @@ function getShifts($plant_code){
     global $link_new;
     global $pms;
     $shift_data=[];
-    $query="select * from $pms.shifts where plant_code='$plant_code' and is_active=1 and ORDER BY shift_code";
+    $query="select * from $pms.shifts where plant_code='$plant_code' and is_active=1 ORDER BY shift_code";
     $sql_res = mysqli_query($link_new, $query) or exit("Sql Error at shift details" . mysqli_error($GLOBALS["___mysqli_ston"]));
     $shifts_rows_num = mysqli_num_rows($sql_res);
     if ($shifts_rows_num > 0) {
