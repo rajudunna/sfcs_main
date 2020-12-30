@@ -2655,13 +2655,20 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	$lot_ref=$_POST['lot_ref'];	
 	
 	if($head_check>0)
-	{
+	{	
+		$select_uuid="SELECT UUID() as uuid";
+		$uuid_result=mysqli_query($link, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($uuid_row=mysqli_fetch_array($uuid_result))
+		{
+			$uuid=$uuid_row['uuid'];
+		}
+						
 		$sql_check="select batch_ref from $wms.inspection_db where plant_code='$plantcode' and  batch_ref=\"$lot_no_new\"";
 		$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_check_res)==0)
 		{
-			$sql="insert into $wms.inspection_db(batch_ref,plant_code,created_user,created_at,updated_user,updated_at) values (\"$lot_no_new\",'$plantcode','$username',NOW(),'$username',NOW())";
-			mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql="insert into $wms.inspection_db(batch_ref_id,batch_ref,plant_code,created_user,created_at,updated_user,updated_at) values (\"$uuid\",\"$lot_no_new\",'$plantcode','$username',NOW(),'$username',NOW())";
+			mysqli_query($uuid, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}	
 			
 		if(mysqli_affected_rows($link))

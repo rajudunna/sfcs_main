@@ -416,9 +416,9 @@ $.ajax
               $shifts = (isset($_GET['shift']))?$_GET['shift']:'';
               foreach($shifts_array as $shift){
                 if($shifts == $shift){
-                  echo "<option value='".$shift['shiftValue']."' selected>".$shift['shiftLabel']."</option>";
+                  echo "<option value='".$shift['shiftValue']."' selected>".$shift['shiftValue']."</option>";
                 }else{
-                  echo "<option value='".$shift['shiftValue']."' >".$shift['shiftLabel']."</option>";
+                  echo "<option value='".$shift['shiftValue']."' >".$shift['shiftValue']."</option>";
                 }
               }
           ?>
@@ -486,7 +486,7 @@ $.ajax
                 <?= $workstations['workstationCode'] ?></a>
               </div>  
               <!-- module number DIV END -->
-              <div style="float:left;padding-left:25px;">
+              <div style="float:left;padding-left:38px;">
               <?php
               /**
              * get planned sewing jobs(JG) for the workstation
