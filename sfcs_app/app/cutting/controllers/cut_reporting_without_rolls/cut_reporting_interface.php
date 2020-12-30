@@ -233,7 +233,7 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
                 <select class='form-control' name='shift' id='shift' required>
                     <option value='' disabled selected>Select Shift</option>
                 <?php
-                $shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plantcode' and is_active=1";
+                $shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plantcode' and is_active=1  ORDER BY created_at";
                 $shift_sql_res=mysqli_query($link, $shift_sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($shift_row = mysqli_fetch_array($shift_sql_res))
                 {
