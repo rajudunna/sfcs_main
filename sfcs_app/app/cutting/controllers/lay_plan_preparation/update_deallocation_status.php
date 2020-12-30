@@ -14,7 +14,6 @@ function exception($sql_result)
 try
 {
 	$is_requested="SELECT doc_no FROM $wms.material_deallocation_track WHERE id=$id and plant_code='".$plant_code."'";
-
     $is_requested_result=mysqli_query($link, $is_requested) or die(exception($is_requested));
     while($sql_row1=mysqli_fetch_array($is_requested_result))
     {
@@ -51,7 +50,7 @@ try
 					$allocated_qty=$sql_row1['allocated_qty'];
 					$roll_id=$sql_row1['roll_id'];
 											   
-					$sql="update $wms.store_in set qty_allocated=qty_allocated-".$allocated_qty.",updated_user='$username',updated_at=NOW() where tid=".$roll_id." and plant_code='".$plant_code."'";
+					$sql="update $wms.store_in set qty_allocated=qty_allocated-".$allocated_qty.",updated_user='$username',updated_at=NOW() where tid='".$roll_id."' and plant_code='".$plant_code."'";
 					mysqli_query($link, $sql)or die(exception($sql));
 					$query_status="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid='$roll_id' and plant_code='".$plant_code."'";
 					//echo $query_status;
