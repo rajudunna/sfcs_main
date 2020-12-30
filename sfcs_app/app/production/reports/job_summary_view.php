@@ -3,6 +3,7 @@
 
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 // $plantcode='Q01';
@@ -102,6 +103,19 @@ function validateQty(event)
 }
 		
 </script>
+<script>
+function firstbox()
+{
+	var url4 = '<?= getFullUrl($_GET['r'],'job_summary_view.php','N'); ?>';
+	window.location.href =url4+"&mpo="+document.filter.mpo.value;
+}
+
+// function secondbox()
+// {
+// 	var url5 = '<?= getFullUrl($_GET['r'],'job_summary_view.php','N'); ?>';
+// 	window.location.href =url5+"&mpo="+document.filter.mpo.value+"&sub_po="+document.filter.sub_po.value;
+// }
+</script>
 <script type="text/javascript">
 jQuery(document).ready(function($){
    $('#schedule').keypress(function (e) {
@@ -127,7 +141,10 @@ function check_spo()
 	return true;
 }
 </script>
-
+<?php
+$get_mpo=$_GET['mpo'];
+$get_sub_po=$_GET['sub_po']; 
+?>
 <div class="panel panel-primary">
 <div class="panel-heading">Sub PO Wise Job Reconciliation Report</div>
 <div class="panel-body">
@@ -135,23 +152,52 @@ function check_spo()
 <?php $phppageurl = getFullURL($_GET['r'],'print_input_sheet_ch.php','N'); ?>
 <form name="filter" method="post" action="<?= $phppageurl ?>">
 <div class="row">
+<div class="col-md-4">
+		<label>Select Master PO:</label>
+		<?php
+			$master_po_description=array();
+			$qry_toget_master_order="SELECT master_po_description,master_po_number FROM $pps.mp_order WHERE plant_code='$plantcode'";
+			$toget_master_order_result=mysqli_query($link_new, $qry_toget_master_order) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$togetmaster_podescri_num=mysqli_num_rows($toget_master_order_result);
+			if($togetmaster_podescri_num>0){
+				while($toget_master_order_row=mysqli_fetch_array($toget_master_order_result))
+				{
+					$master_po_description[$toget_master_order_row["master_po_description"]]=$toget_master_order_row["master_po_number"];
+				}
+			}
+			echo "<select name=\"mpo\" id=\"mpo\" onchange=\"firstbox();\" class='form-control' required>
+					<option value=\"NIL\" selected>Please Select</option>";
+					foreach ($master_po_description as $key=>$master_po_description_val) {
+						if(str_replace(" ","",$master_po_description_val)==str_replace(" ","",$get_mpo)) 
+						{ 
+						 echo '<option value=\''.$master_po_description_val.'\' selected>'.$key.'</option>'; 
+						}
+						else
+						{
+							echo '<option value=\''.$master_po_description_val.'\'>'.$key.'</option>';
+						}
+					} 
+			echo "</select>";
+		?>
+	</div>
 	<div class="col-md-4">
 		<label>Select Sub PO:</label>
 		<?php
+			
 			$sub_po_description=array();
-			$qry_toget_sub_order="SELECT po_description,po_number FROM $pps.mp_sub_order WHERE plant_code='$plantcode'";
+			$qry_toget_sub_order="SELECT po_description,po_number FROM $pps.mp_sub_order WHERE plant_code='$plantcode' AND master_po_number='$get_mpo'";
 			$toget_sub_order_result=mysqli_query($link_new, $qry_toget_sub_order) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$toget_podescri_num=mysqli_num_rows($toget_sub_order_result);
 			if($toget_podescri_num>0){
 				while($toget_sub_order_row=mysqli_fetch_array($toget_sub_order_result))
 				{
-					$sub_po_description[$toget_sub_order_row["po_description"]]=$toget_sub_order_row["po_number"];
+					$sub_po_description[$toget_sub_order_row["po_number"]]=$toget_sub_order_row["po_description"];
 				}
 			}
-			echo "<select name=\"sub_po\" id=\"sub_po\" class='form-control' >
+			echo "<select name=\"sub_po\" id=\"sub_po\"  class='form-control' >
 					<option value=\"NIL\" selected>Please Select</option>";
 					foreach ($sub_po_description as $key=>$sub_po_description_val) {
-						echo '<option value=\''.$sub_po_description_val.'\'>'.$key.'</option>'; 
+						echo '<option value=\''.$key.'\'>'.$sub_po_description_val.'</option>';
 					} 
 			echo "</select>";
 		?>
