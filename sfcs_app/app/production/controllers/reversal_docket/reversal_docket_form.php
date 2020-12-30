@@ -154,9 +154,10 @@
                                         // $trimmed_size = str_replace('/','___',$size);
                                         $trimmed_size =  preg_replace('/[^A-Za-z0-9\-]/', '___', $size);
                                         // $trimmed_size = $size;
+                                        $qty = $size_ratio*$doc_plies;
                                         echo "<td>
                                             <input id='size_ratio_$trimmed_size' type='hidden' value=$size_ratio readonly />
-                                            <input class='hidden_size hidden_size_act_qty' id='actual_size_qty_$trimmed_size' type='number' value=$size_ratio readonly />
+                                            <input class='hidden_size hidden_size_act_qty' id='actual_size_qty_$trimmed_size' type='number' value=$qty readonly />
                                             <input class='hidden_size rej' id='rejected_size_qty_$trimmed_size' type='number' value=0 readonly />
                                         </td>";
                                     }
@@ -556,7 +557,7 @@ if(isset($_GET['sidemenu'])){
 
     function removeSpecialCharsFromSize(size) {
         const size_new = JSON.parse(JSON.stringify(size));
-        const trimmedSize = size_new.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '___');
+        const trimmedSize = size_new.replace(/[`\s~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '___');
         // const trimmedSize = size_new.replace('/', '___');
         return trimmedSize;
         // return size;

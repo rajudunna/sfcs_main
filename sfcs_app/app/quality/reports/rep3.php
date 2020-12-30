@@ -242,8 +242,10 @@ if(isset($_POST['color']))
 		}
 		else
 		{
+			$start_date=str_replace("-", "", $sdate);
+			$end_date=str_replace("-", "", $edate);
 			$sql="
-			SELECT DISTINCT SCHEDULE FROM $oms.oms_mo_details WHERE planned_delivery_date between '$sdate' and '$edate'";
+			SELECT DISTINCT SCHEDULE FROM $oms.oms_mo_details WHERE planned_delivery_date between '$start_date' and '$end_date'";
 			$sql_result=mysqli_query($link, $sql) or exit("Fetching Schedule Information".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
