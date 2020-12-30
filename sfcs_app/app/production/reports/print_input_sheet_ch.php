@@ -51,8 +51,7 @@
         }
     }
     
-    $get_job_details = "SELECT jg.job_group,jg.jm_jg_header_id,jg.job_number as job_number FROM $pps.jm_jg_header jg WHERE jg.plant_code = '$plantcode' AND jg.jm_job_header IN ('".implode("','" , $jm_job_header_id)."') AND jg.job_group=3 AND jg.is_active=1";
-    // echo $get_job_details;
+    $get_job_details = "SELECT jg.job_group,jg.jm_jg_header_id,jg.job_number as job_number FROM $pps.jm_jg_header jg WHERE jg.plant_code = '$plantcode' AND jg.jm_job_header IN ('".implode("','" , $jm_job_header_id)."') AND jg.is_active=1";
     $get_job_details_result=mysqli_query($link_new, $get_job_details) or exit("$get_job_details".mysqli_error($GLOBALS["___mysqli_ston"]));
     if($get_job_details_result>0){
         while($get_job_details_row=mysqli_fetch_array($get_job_details_result))
@@ -202,7 +201,6 @@
             $cum_qty = 0;
             foreach($sizes as $s){
                 $size_qty_list = "SELECT size,sum(quantity) as qty FROM $pps.jm_job_bundles where jm_jg_header_id='$job_id' and size='$s' and plant_code='$plantcode' and is_active=1 group by size";
-                // echo $size_qty_list;
                 $size_qty_list_result = mysqli_query($link_new, $size_qty_list) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
                 $size_qty_list_result_num=mysqli_num_rows($size_qty_list_result);
 
@@ -269,7 +267,6 @@
                 $output_qty = 0;
                 $get_io_qty = "SELECT SUM(IF(operation = $input_ops,good_quantity,0)) AS input,
                 SUM(IF(operation = $out_put_ops,good_quantity,0)) AS output FROM $pts.`transaction_log` WHERE style in ('$styles') AND schedule=('$schedules') AND color= ('$colors') AND size = '$siz' AND parent_job ='$job_number[$job_id]' and plant_code='$plantcode' AND is_active=1 GROUP BY size";
-                // echo $get_io_qty;
                 mysqli_query($link_new,$get_io_qty) or exit("Sql Error70".mysqli_error());
                 $get_io_qty_result=mysqli_query($link_new,$get_io_qty) or exit("Sql Error5".mysqli_error());
                 while($row7 = mysqli_fetch_array($get_io_qty_result))
