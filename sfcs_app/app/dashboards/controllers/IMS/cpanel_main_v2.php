@@ -464,6 +464,7 @@ $.ajax
             $sectionId=$department['sectionId'];
             $workstationsArray=getWorkstationsForSectionId($plantCode, $sectionId);
             $wip=0;
+            $form_unique_id=1;
             foreach($workstationsArray as $workstations)
               {
                 $module=$workstations['workstationId'];
@@ -476,15 +477,27 @@ $.ajax
                 $popup_url=getFullURL($_GET['r'],'mod_rep.php','R');
                 $authToken=$_SESSION['authToken'];
                 $modsec=$workstations['workstationCode'];
-                '<form id="' . $modsec . '" method="post" action="' . $popup_url . '" target="TheWindow">
-                <input type="hidden" name="authToken" value="' . $authToken . '" />
-                </form>';
+                $dataToPrint='';
+                $dataToPrint.='<div class="line_no">';
+                $dataToPrint.='
+                     <form id="TheForm_' .$sectionId.$form_unique_id . '" method="post" action="' . $popup_url . '" target="TheWindow">
+                     <input type="hidden" name="module" value="' . $module . '" />
+                     <input type="hidden" name="plantCode" value="' . $plantCode . '" />
+                     <input type="hidden" name="username" value="' . $username . '" />
+                     <input type="hidden" name="authToken" value="' . $authToken . '" />
+                    </form>'; 
+                $dataToPrint.="
+                <a href='javascript:void(0)' onclick=\"window.open('', 'TheWindow');document.getElementById('TheForm_$sectionId$form_unique_id').submit();\">$modsec</a>";
+                $dataToPrint.='</div>';
+                echo $dataToPrint;
                 ?>
-              <div class="line_no">
+              <!-- <div class="line_no">
                 <a href="#" data-toggle="tooltip" tile="M-<?php echo $workstations['workstationCode']; ?> WIP :  
                 <?php echo $wip; ?>" class="red-tooltip" onclick="window.open('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?= $workstations['workstationId'] ?>&plantCode=<?= $plantCode?>&username=<?= $username?>', 'myPop1');">
                 <?= $workstations['workstationCode'] ?></a>
-              </div>  
+              </div>   -->
+
+              
               <!-- module number DIV END -->
               <div style="float:left;padding-left:25px;">
               <?php
@@ -638,6 +651,7 @@ $.ajax
               <div class="clear"></div>
               </div>
               <?php 
+              $form_unique_id++;
             } 
             // modules Loop -End 
             echo '</div>';
