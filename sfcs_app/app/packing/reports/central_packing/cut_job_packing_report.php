@@ -202,22 +202,22 @@ $username = $_SESSION['userName'];
 
 
 					$query5="SELECT jm_ppb_id FROM $pps.jm_product_bundle WHERE plant_code='$plant_code' AND jm_cut_job_id='$jm_cut_job_id'";
-				
 					$query4_result1=mysqli_query($link, $query5) or exit("Sql Error54".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					while($query4_result_row1=mysqli_fetch_array($query4_result1)) 
 					{ 
-						$jm_ppb_id[]=$query4_result_row11['jm_ppb_id']; 
+						$jm_ppb_id[]=$query4_result_row1['jm_ppb_id']; 
 						
 					}
 					$jm_ppb_id1="'".implode("','",$jm_ppb_id)."'";
 					
-					$query7="select jm_pplb_id,feature_value,fg_color,size,sum(quantity) as quantity FROM $pps.jm_product_logical_bundle WHERE jm_ppb_id in ($jm_ppb_id1)  and plant_code='$plant_code' group by feature_value,fg_color,size";
+					
+					$query7="select jm_pplb_id,schedule,fg_color,size,sum(quantity) as quantity FROM $pps.jm_product_logical_bundle WHERE jm_ppb_id in ($jm_ppb_id1)  and plant_code='$plant_code' group by schedule,fg_color,size";
 					
 					$query4_result111=mysqli_query($link, $query7) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					while($query4_result_row111=mysqli_fetch_array($query4_result111)) 
 					{ 
 						$jm_pplb_id[]=$query4_result_row111['jm_pplb_id']; 
-						$schedule=$query4_result_row111['feature_value']; 
+						$schedule=$query4_result_row111['schedule']; 
 						$color=$query4_result_row111['fg_color']; 
 						$size_array=$query4_result_row111['size']; 
 						$original_quantity=$query4_result_row111['quantity']; 
@@ -286,7 +286,7 @@ $username = $_SESSION['userName'];
 						
 							$sql13="SELECT  task_jobs_id from $tms.task_jobs where task_job_reference in($jm_jg_header_id2) and plant_code='$plant_code'"; 
 							// echo $sql13."<br>";
-							$result13=mysqli_query($link, $sql13) or die("Error-".$sql13."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$result13=mysqli_query($link, $sql13) or die("Error- 289".$sql13."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row13=mysqli_fetch_array($result13)) 
 							{
 
@@ -318,16 +318,16 @@ $username = $_SESSION['userName'];
 					
 					$balance=$minGoodQty-($maxGoodQty+$maxRejQty);
 							
-							  $result14=mysqli_query($link, $sql14) or die("Error-".$sql13."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-								while($sql_row14=mysqli_fetch_array($result14)) 
-								{
-									$sewing_qty=$sql_row14['qty'];
-									$sewing_out_qty=$sql_row14['sew_qty'];
-									//$original_quantity=$sql_row14['original_quantity'];
-									$total_qty=$sql_row14['total_qty'];
+							//   $result14=mysqli_query($link_new, $sql14) or die("Error-321".$sql14."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+							// 	while($sql_row14=mysqli_fetch_array($result14)) 
+							// 	{
+							// 		$sewing_qty=$sql_row14['qty'];
+							// 		$sewing_out_qty=$sql_row14['sew_qty'];
+							// 		//$original_quantity=$sql_row14['original_quantity'];
+							// 		$total_qty=$sql_row14['total_qty'];
 
 
-								}
+							// 	}
 							}
 							
 							for ($j=0; $j < sizeof($size_array); $j++) 
