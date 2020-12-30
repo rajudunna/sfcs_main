@@ -1158,6 +1158,7 @@ function getWorkstationsForSectionId($plantCode, $sectionId) {
         throw $e;
     }
 }
+
   //function to get jobs
   /** function to get jobs which are unplanned
    * @param:po,task_type,plant_code
@@ -1521,7 +1522,7 @@ function getDocketInformation($docket_no, $plant_code) {
  
     // get the marker requierement
     $markers_query="SELECT `length`,`width`,`efficiency`,`marker_version`,`marker_version_id`,`marker_type_name`,`pattern_version`,`perimeter`,`remark1`,`remark2`,`remark3`,`remark4`,`shrinkage`
-    FROM $pps.`lp_markers` WHERE `lp_ratio_cg_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plant_code'";
+    FROM $pps.`lp_markers` WHERE `lp_ratio_cg_id`='$ratio_comp_group_id' AND marker_version_id='$marker_version_id' AND `plant_code`='$plant_code'";
    
     $markers_result = mysqli_query($link_new, $markers_query) or exit("Sql markers_query".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row11 = mysqli_fetch_array($markers_result))
