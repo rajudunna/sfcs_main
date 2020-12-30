@@ -248,9 +248,10 @@ function check_val()
                                                         $data_array_pplb[$row_23['bundle_number']] = $row_23['jm_pplb_id'];
                                                         $data_array_num[$row_23['bundle_number']] = $row_23['jm_job_bundle_id'];
                                                         $data_array_bundle[] = $row_23['jm_job_bundle_id'];
+                                                        $data_array_barcode_bundle[] = $row_23['jm_pplb_id'];
                                                         $jm_jg_header1[] = $row_23['jm_jg_header_id'];
                                                     }
-                                                    $data_array_bundle1="'".implode("','",$data_array_bundle)."'";
+                                                    $data_array_bundle1="'".implode("','",$data_array_barcode_bundle)."'";
                                                     // $query4="select jm_jg_header_id from `$pps`.`jm_job_bundles` WHERE jm_pplb_id in($pplb) AND  plant_code='$plant_code' group by jm_jg_header_id";
                                                     // // echo $query4;
                                                     // $bundle_sql_result1=mysqli_query($link,$query4) or exit($bundle_sql_result1."Error at something");
@@ -291,7 +292,7 @@ function check_val()
 
                                                         // $query="SELECT SUM(IF(operation=$sew_in_op,1,0)) AS sew_in,SUM(IF(operation=$sew_out_op,1,0)) AS sew_out from $pts."
                                                        
-                                                        $selectSQL = "SELECT parent_job,parent_barcode,size,color,sum(rejected_quantity) as rejected_quantity,sum(good_quantity) as good_quantity,sum(if(operation=".$sew_in_op.",good_quantity+rejected_quantity,0)) as total_good_quantity,sum(if(operation=".$sew_out_op.",good_quantity+rejected_quantity,0)) as total_quantity,operation,schedule FROM `$pts`.`transaction_log` WHERE style='".$style."' AND schedule='".$schedule."'  AND parent_barcode IN ('".$operation_bundles."') and parent_barcode_type='PPLB' and operation in($opcodes)  group by parent_barcode,operation order by operation";
+                                                        $selectSQL = "SELECT parent_job,parent_barcode,size,color,sum(rejected_quantity) as rejected_quantity,sum(good_quantity) as good_quantity,sum(if(operation=".$sew_in_op.",good_quantity+rejected_quantity,0)) as total_good_quantity,sum(if(operation=".$sew_out_op.",good_quantity+rejected_quantity,0)) as total_quantity,operation,schedule FROM `$pts`.`transaction_log` WHERE style='".$style."' AND schedule='".$schedule."'  AND parent_barcode IN ('".implode("','" , $barcode)."') and parent_barcode_type='PPLB' and operation in($opcodes)  group by parent_barcode,operation order by operation";
                                                         //   echo   $selectSQL ;
                                                            
                                                         $selectRes=mysqli_query($link,$selectSQL) or exit($selectSQL."Error at something");
@@ -331,66 +332,71 @@ function check_val()
                                                     $tot_bundles=array_values(array_unique($tot_bundles));
                                                     for($i=0;$i<sizeof($bundle_num);$i++)
                                                     {  
-                                                        
-                                                        if($data_array_total_good_quantity[$bundle_num[$i]]== $data_array_total_quantity[$bundle_num[$i]] or $data_array_total_good_quantity[$bundle_num[$i]]>0 ){
-                                                        $quantity_query="select external_ref_id from $pts.barcode WHERE  barcode='".$barcode[$i]."' and plant_code='$plant_code' ";
-                                                         //echo $quantity_query;
-                                                            $selectRes1=mysqli_query($link,$quantity_query) or exit($quantity_query."Error at something");
-                                                            while( $row1 = mysqli_fetch_assoc( $selectRes1 ))
-                                                            {    
-                                                                $external_ref_id=$row1['external_ref_id'];
-                                                            }
-                                                                $quantity_query1="select size,quantity,jm_jg_header_id,bundle_number from $pps.jm_job_bundles WHERE  jm_job_bundle_id='".$external_ref_id."' and plant_code='$plant_code' group by jm_pplb_id";
-                                                          
-                                                                $selectRes11=mysqli_query($link,$quantity_query1) or exit($quantity_query1."Error at something");
-                                                                while( $row11 = mysqli_fetch_assoc( $selectRes11 ))
-                                                                {    
-                                                                    $bundle_number=$row11['bundle_number'];
-                                                                    $quantity=$row11['quantity'];
-                                                                    $size=$row11['size'];
-                                                                    $jm_jg_header_id=$row11['jm_jg_header_id'];
-                                                                    
-                                                                }
-                                                               
-                                                                $quantity_query111="select job_number,job_group_type from $pps.jm_jg_header WHERE  jm_jg_header_id='".$jm_jg_header_id ."' and plant_code='$plant_code'  AND job_group_type!='PCEJ'";
-                                                                //echo $quantity_query111;
-                                                                $selectRes111=mysqli_query($link,$quantity_query111) or exit($quantity_query111."Error at something");
-                                                                while( $row111 = mysqli_fetch_assoc( $selectRes111 ))
-                                                                {   
-                                                                    $job_number=$row111['job_number'];
-                                                                    $job_group_type=$row111['job_group_type'];
-                                                                }
-                                                                // if($job_group_type!='PCEJ'){
-                                                                //     $job_number=$job_number1;
-                                                                // }
-
-                                                            //  }
-                                                        
-
-                                                            
-                                                           // echo $data_array_total_good_quantity[$barcode[$i]];$data_array_size[$row['parent_barcode']] = $row['size'];
-                                                    //    if($data_array_total_good_quantity[$barcode[$i]]!= $data_array_total_quantity[$barcode[$i]]){
-                                                       echo "<tr><td>{$schedule}</td><td>{$job_number}</td><td>{$color}</td><td>{$size}</td><td>$quantity</td>
-                                                        <td>{$barcode[$i]}</td>";
-                                                        for ($ii=0; $ii< count($operation_codes); $ii++) 
+                                                        if ($barcode[$i]!='') 
                                                         {
-                                                            if($data_array_rec[$barcode[$i]][$operation_codes[$ii]]==0){
-                                                                echo "<td>--</td>";
-                                                            }else{
-                                                                 echo "<td>".$data_array_rec[$barcode[$i]][$operation_codes[$ii]]."</td>";
+                                                            if($data_array_total_good_quantity[$bundle_num[$i]]== $data_array_total_quantity[$bundle_num[$i]] or $data_array_total_good_quantity[$bundle_num[$i]]>0 )
+                                                            {
+                                                            
+                                                                    $quantity_query="select DISTINCT(external_ref_id) as external_ref_id from $pts.barcode WHERE  barcode='".$barcode[$i]."' and plant_code='$plant_code'";
+                                                                    $selectRes1=mysqli_query($link,$quantity_query) or exit($quantity_query."Error at something");
+                                                                    while( $row1 = mysqli_fetch_assoc( $selectRes1 ))
+                                                                    {    
+                                                                        $external_ref_id=$row1['external_ref_id'];
+                                                                    }
+                                                                
+                                                                
+                                                                    $quantity_query1="select size,quantity,jm_jg_header_id,bundle_number from $pps.jm_job_bundles WHERE  jm_pplb_id='".$external_ref_id."' and plant_code='$plant_code' group by jm_pplb_id";
+                                                                    //echo $quantity_query1;
+                                                                    $selectRes11=mysqli_query($link,$quantity_query1) or exit($quantity_query1."Error at something");
+                                                                    while( $row11 = mysqli_fetch_assoc( $selectRes11 ))
+                                                                    {    
+                                                                        $bundle_number=$row11['bundle_number'];
+                                                                        $quantity=$row11['quantity'];
+                                                                        $size=$row11['size'];
+                                                                        $jm_jg_header_id=$row11['jm_jg_header_id'];
+                                                                        
+                                                                    }
+                                                                
+                                                                    $quantity_query111="select job_number,job_group_type from $pps.jm_jg_header WHERE  jm_jg_header_id='".$jm_jg_header_id ."' and plant_code='$plant_code'  AND job_group_type!='PCEJ' order by job_number";
+                                                                // echo $quantity_query111;
+                                                                    $selectRes111=mysqli_query($link,$quantity_query111) or exit($quantity_query111."Error at something");
+                                                                    while( $row111 = mysqli_fetch_assoc( $selectRes111 ))
+                                                                    {   
+                                                                        $job_number=$row111['job_number'];
+                                                                        $job_group_type=$row111['job_group_type'];
+                                                                    }
+                                                                    // if($job_group_type!='PCEJ'){
+                                                                    //     $job_number=$job_number1;
+                                                                    // }
+
+                                                                //  }
+                                                            
+
+                                                                
+                                                                // echo $data_array_total_good_quantity[$barcode[$i]];$data_array_size[$row['parent_barcode']] = $row['size'];
+                                                                //    if($data_array_total_good_quantity[$barcode[$i]]!= $data_array_total_quantity[$barcode[$i]]){
+                                                                echo "<tr><td>{$schedule}</td><td>{$job_number}</td><td>{$color}</td><td>{$size}</td><td>$quantity</td>
+                                                                <td>{$barcode[$i]}</td>";
+                                                                for ($ii=0; $ii< count($operation_codes); $ii++) 
+                                                                {
+                                                                    if($data_array_rec[$barcode[$i]][$operation_codes[$ii]]==0){
+                                                                        echo "<td>--</td>";
+                                                                    }else{
+                                                                        echo "<td>".$data_array_rec[$barcode[$i]][$operation_codes[$ii]]."</td>";
+                                                                    }
+                                                                    if($data_array_rej[$barcode[$i]][$operation_codes[$ii]]==0){
+                                                                        echo "<td>--</td>";
+                                                                    }else{
+                                                                        echo "<td>".$data_array_rej[$barcode[$i]][$operation_codes[$ii]]."</td>";
+                                                                    }
+                                                                    if(($data_array_rej[$barcode[$i]][$operation_codes[$ii]]-$data_array_recut[$barcode[$i]][$operation_codes[$ii]])==0){
+                                                                        echo "<td>--</td>";
+                                                                    }else{
+                                                                        echo "<td>".($data_array_rej[$barcode[$i]][$operation_codes[$ii]]-$data_array_recut[$barcode[$i]][$operation_codes[$ii]])."</td>";
+                                                                    }
+                                                                }
                                                             }
-                                                            if($data_array_rej[$barcode[$i]][$operation_codes[$ii]]==0){
-                                                                echo "<td>--</td>";
-                                                            }else{
-                                                                echo "<td>".$data_array_rej[$barcode[$i]][$operation_codes[$ii]]."</td>";
-                                                            }
-                                                            if(($data_array_rej[$barcode[$i]][$operation_codes[$ii]]-$data_array_recut[$barcode[$i]][$operation_codes[$ii]])==0){
-                                                                echo "<td>--</td>";
-                                                            }else{
-                                                                echo "<td>".($data_array_rej[$barcode[$i]][$operation_codes[$ii]]-$data_array_recut[$barcode[$i]][$operation_codes[$ii]])."</td>";
-                                                            }
-                                                        }
-                                                     }
+                                                        }    
                                                     }
                                                 }
                                             

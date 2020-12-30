@@ -62,6 +62,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 	$supplier=$sql_row1['supplier'];
     $buyer=$sql_row1['buyer'];
 	$log_time=$sql_row1['log_time'];
+	$barcode_number=$sql_row1['barcode_number'];
 
 	//For #2711 we will show roll remarks in report if remarks are null/empty values
 	if($remarks==''){
@@ -107,16 +108,16 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 	{
 		$invoice=$row_1["inv_no"];
 	}
-    $current_date=date('Y-m-d');
-    $sqly="select sum(ROUND(qty_issued,2)) as qty FROM `$wms`.`store_out` where plant_code='$plantcode' and tran_tid='".$tid."' and date=\"$current_date\" ";
-    $sql_result1y =$link->query($sqly);
-    if(mysqli_num_rows($sql_result1y)> 0) {
-        while ($rowy = $sql_result1y->fetch_assoc())
-        {
-            $qty_issued=$qty_issued+$rowy["qty"];
-            $qty_balance=$qty_rec+$qty_return- $qty_issued;
-		}
-	}
+    // $current_date=date('Y-m-d');
+    // $sqly="select sum(ROUND(qty_issued,2)) as qty FROM `$wms`.`store_out` where plant_code='$plantcode' and tran_tid='".$tid."' and date=\"$current_date\" ";
+    // $sql_result1y =$link->query($sqly);
+    // if(mysqli_num_rows($sql_result1y)> 0) {
+    //     while ($rowy = $sql_result1y->fetch_assoc())
+    //     {
+    //         $qty_issued=$qty_issued+$rowy["qty"];
+    //         $qty_balance=$qty_rec+$qty_return- $qty_issued;
+	// 	}
+	// }
 
 	$sql_mrn="SELECT sum(ROUND(iss_qty,2)) as mrn_qty FROM `$wms`.`mrn_out_allocation`  WHERE  lable_id = '$tid' and DATE(log_time)=\"$current_date\" and plant_code='".$plantcode."'";
     $sql_result_mrn =$link->query($sql_mrn);
@@ -141,7 +142,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 
 	$qty_balance=round($qty_balance,2);
 	
-	$single_data = ["location"=>$location,"lotno"=>$lot_no,"style"=>$style_no,"batchno"=>$batch_no,"sku"=>$item,"itemdescription"=>$item_desc,"itemname"=>$item_name,"box_roll_no"=>$boxno,"measuredwidth"=>$ref3,"receivedqty"=>$qty_rec,"issuedqty"=>$qty_issued,"returnqty"=>$qty_return,"balanceqty"=>$qty_balance,"shade"=>$shade,"allocatedqty"=>$qty_allocated,"shrinkagelength"=>$shrinkage_length,"shrinkagewidth"=>$shrinkage_width,"shrinkagegroup"=>$shrinkage_group,"invoice"=>$invoice,"status"=>$status,"grndate"=>$grn_date,"remarks"=>$remarks,"labelid"=>$tid,"productgroup"=>$product,"buyer"=>$buyer,"supplier"=>$supplier];
+	$single_data = ["location"=>$location,"lotno"=>$lot_no,"style"=>$style_no,"batchno"=>$batch_no,"sku"=>$item,"itemdescription"=>$item_desc,"itemname"=>$item_name,"box_roll_no"=>$boxno,"measuredwidth"=>$ref3,"receivedqty"=>$qty_rec,"issuedqty"=>$qty_issued,"returnqty"=>$qty_return,"balanceqty"=>$qty_balance,"shade"=>$shade,"allocatedqty"=>$qty_allocated,"shrinkagelength"=>$shrinkage_length,"shrinkagewidth"=>$shrinkage_width,"shrinkagegroup"=>$shrinkage_group,"invoice"=>$invoice,"status"=>$status,"grndate"=>$grn_date,"remarks"=>$remarks,"labelid"=>$barcode_number,"productgroup"=>$product,"buyer"=>$buyer,"supplier"=>$supplier];
     if($qty_balance > 0)
 	{
 		array_push($main_data,array_map('utf8_encode', $single_data));
@@ -156,7 +157,7 @@ while ($sql_max_row1 = $qry_max_result->fetch_assoc())
 	$max_id=$sql_max_row1['updated_at'];
 }
 if($max_id!=''){
-		$stock_report_inventory="SELECT store_in.ref1,store_in.lot_no,store_in.ref2,store_in.ref3,store_in.status,store_in.remarks,store_in.tid,store_in.qty_rec,store_in.qty_issued,store_in.qty_ret,store_in.qty_allocated,ROUND(ROUND(store_in.qty_rec,2)-ROUND(store_in.qty_issued,2)+ROUND(store_in.qty_ret,2)-ROUND(store_in.qty_allocated,2)) AS balance,store_in.log_stamp,store_in.roll_remarks,sticker_report.batch_no,sticker_report.item_desc,sticker_report.item_name,sticker_report.item,sticker_report.supplier,sticker_report.buyer,sticker_report.style_no,sticker_report.pkg_no,sticker_report.grn_date,sticker_report.product_group,store_in.plant_code FROM $wms.store_in LEFT JOIN $wms.sticker_report ON store_in.lot_no=sticker_report.lot_no WHERE (ROUND(store_in.qty_rec,2)-ROUND(store_in.qty_issued,2)+ROUND(store_in.qty_ret,2)) >0 and store_in.plant_code='$plantcode' and DATE(store_in.updated_at)>$max_id";
+		$stock_report_inventory="SELECT store_in.ref1,store_in.lot_no,store_in.ref2,store_in.ref3,store_in.status,store_in.remarks,store_in.tid,store_in.qty_rec,store_in.qty_issued,store_in.qty_ret,store_in.qty_allocated,ROUND(ROUND(store_in.qty_rec,2)-ROUND(store_in.qty_issued,2)+ROUND(store_in.qty_ret,2)-ROUND(store_in.qty_allocated,2)) AS balance,store_in.log_stamp,store_in.roll_remarks,sticker_report.batch_no,sticker_report.item_desc,sticker_report.item_name,sticker_report.item,sticker_report.supplier,sticker_report.buyer,sticker_report.style_no,sticker_report.pkg_no,sticker_report.grn_date,sticker_report.product_group,store_in.barcode_number,store_in.plant_code FROM $wms.store_in LEFT JOIN $wms.sticker_report ON store_in.lot_no=sticker_report.lot_no WHERE (ROUND(store_in.qty_rec,2)-ROUND(store_in.qty_issued,2)+ROUND(store_in.qty_ret,2)) >0 and store_in.plant_code='$plantcode' and DATE(store_in.updated_at)>$max_id";
 		$stock_report_inventory_result =$link->query($stock_report_inventory);
 		while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 		{
@@ -170,6 +171,7 @@ if($max_id!=''){
 			$location=trim($sql_row1['ref1']);
 			$boxno=trim($sql_row1['ref2']);
 			$tid=$sql_row1['tid'];
+			$barcode_number=$sql_row1['barcode_number'];
 			
 			$item=trim($sql_row1['item']);
 			$ref3=trim($sql_row1['ref3']);
@@ -257,7 +259,7 @@ if($max_id!=''){
 			*/
 			$qty_balance=$qty_rec+$qty_return - $qty_issued;
 			$qty_balance=round($qty_balance,2);
-			$single_data = ["location"=>$location,"lotno"=>$lot_no,"style"=>$style_no,"batchno"=>$batch_no,"sku"=>$item,"itemdescription"=>$item_desc,"itemname"=>$item_name,"box_roll_no"=>$boxno,"measuredwidth"=>$ref3,"receivedqty"=>$qty_rec,"issuedqty"=>$qty_issued,"returnqty"=>$qty_return,"balanceqty"=>$qty_balance,"shade"=>$shade,"allocatedqty"=>$qty_allocated,"shrinkagelength"=>$shrinkage_length,"shrinkagewidth"=>$shrinkage_width,"shrinkagegroup"=>$shrinkage_group,"invoice"=>$invoice,"status"=>$status,"grndate"=>$grn_date,"remarks"=>$remarks,"labelid"=>$tid,"productgroup"=>$product,"buyer"=>$buyer,"supplier"=>$supplier];
+			$single_data = ["location"=>$location,"lotno"=>$lot_no,"style"=>$style_no,"batchno"=>$batch_no,"sku"=>$item,"itemdescription"=>$item_desc,"itemname"=>$item_name,"box_roll_no"=>$boxno,"measuredwidth"=>$ref3,"receivedqty"=>$qty_rec,"issuedqty"=>$qty_issued,"returnqty"=>$qty_return,"balanceqty"=>$qty_balance,"shade"=>$shade,"allocatedqty"=>$qty_allocated,"shrinkagelength"=>$shrinkage_length,"shrinkagewidth"=>$shrinkage_width,"shrinkagegroup"=>$shrinkage_group,"invoice"=>$invoice,"status"=>$status,"grndate"=>$grn_date,"remarks"=>$remarks,"labelid"=>$barcode_number,"productgroup"=>$product,"buyer"=>$buyer,"supplier"=>$supplier];
 			if($qty_balance > 0)
 			{
 				array_push($main_data,array_map('utf8_encode', $single_data));

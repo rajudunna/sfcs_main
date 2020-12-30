@@ -1,0 +1,1 @@
+ALTER TABLE `wms`.`stock_report_inventory` ADD COLUMN `barcode_number` VARCHAR(255) NULL AFTER `tid`;

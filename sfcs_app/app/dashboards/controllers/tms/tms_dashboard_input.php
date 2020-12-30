@@ -509,7 +509,7 @@ foreach($departments as $department)
   $section=$department['sectionId'];
   $section_display_name= $department['sectionName'];
 
-	$url_path = getFullURLLevel($_GET['r'],'board_update_V2_input.php',0,'R');
+	$url_path = getFullURLLevel($_GET['r'],'board_update_v2_input.php',0,'R');
 	echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;height:100%;" class="hide_table">';
 	echo "<p>";
 	echo "<table>";
