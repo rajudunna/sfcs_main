@@ -6,7 +6,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
 $plant_Code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
-
+$PPLB=BarcodeType::PPLB;
 ?>
 <script>
 function verify_dates(){
@@ -158,7 +158,7 @@ if(isset($_POST['filter']))
 				}
 				$deptSize[$dept_type]=$i;
 			}
-			$sql_rejection="SELECT * FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.workstation_id in ('".implode("','",$moduleId)."') AND rt.created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 00:00:00' GROUP BY rt.reason_id";
+			$sql_rejection="SELECT * FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.workstation_id in ('".implode("','",$moduleId)."') AND DATE(rt.created_at) BETWEEN '".$sdate."' AND '".$edate."' GROUP BY rt.reason_id";
 			$sql_result=mysqli_query($link, $sql_rejection) or exit("Fetching Out put Information".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result)>0)
 			{
@@ -191,22 +191,22 @@ if(isset($_POST['filter']))
 			
 				if($choice==0)
 				{
-					$sql="SELECT group_concat(distinct schedule) as schedule,resource_id,operation as operation_id,style,color,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 23:59:59' AND parent_barcode_type='PPLB' and resource_id in ('".implode("','",$moduleId)."') and plant_code='".$plant_Code."' group by resource_id";
+					$sql="SELECT group_concat(distinct schedule) as schedule,resource_id,operation as operation_id,style,color,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE DATE(created_at) BETWEEN '".$sdate."' AND '".$edate."' AND parent_barcode_type='$PPLB' and resource_id in ('".implode("','",$moduleId)."') and plant_code='".$plant_Code."' group by resource_id";
 				}
 
 				if($choice==1)
 				{
-					$sql="SELECT resource_id,operation as operation_id,style,color,SUM(good_quantity) AS output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color FROM $pts.transaction_log WHERE created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 23:59:59' AND parent_barcode_type='PPLB' and resource_id in ('".implode("','",$moduleId)."') and plant_code='".$plant_Code."' group by style order by style";
+					$sql="SELECT resource_id,operation as operation_id,style,color,SUM(good_quantity) AS output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color FROM $pts.transaction_log WHERE DATE(created_at) BETWEEN '".$sdate."' AND '".$edate."' AND parent_barcode_type='$PPLB' and resource_id in ('".implode("','",$moduleId)."') and plant_code='".$plant_Code."' group by style order by style";
 				}
 
 				if($choice==2)
 				{
-					$sql="SELECT resource_id,operation as operation_id,style,color,SUM(good_quantity) AS output,shift, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color FROM $pts.transaction_log WHERE created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 23:59:59' AND parent_barcode_type='PPLB' and resource_id in ('".implode("','",$moduleId)."') and plant_code='".$plant_Code."' group by resource_id,shift order by resource_id,shift";
+					$sql="SELECT resource_id,operation as operation_id,style,color,SUM(good_quantity) AS output,shift, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color FROM $pts.transaction_log WHERE DATE(created_at) BETWEEN '".$sdate."' AND '".$edate."' AND parent_barcode_type='$PPLB' and resource_id in ('".implode("','",$moduleId)."') and plant_code='".$plant_Code."' group by resource_id,shift order by resource_id,shift";
 				}
 
 				if($choice==3)
 				{
-					$sql="SELECT resource_id,operation as operation_id,style,color,SUM(good_quantity) AS output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color, style,resource_id,shift FROM $pts.transaction_log WHERE created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 23:59:59' AND parent_barcode_type='PPLB' and resource_id in ('".implode("','",$moduleId)."') and plant_code='".$plant_Code."' group by style,resource_id,shift order by resource_id,shift";
+					$sql="SELECT resource_id,operation as operation_id,style,color,SUM(good_quantity) AS output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color, style,resource_id,shift FROM $pts.transaction_log WHERE DATE(created_at) BETWEEN '".$sdate."' AND '".$edate."' AND parent_barcode_type='$PPLB' and resource_id in ('".implode("','",$moduleId)."') and plant_code='".$plant_Code."' group by style,resource_id,shift order by resource_id,shift";
 				}
 				$grand_reject=array();
 				$grand_output=0;
@@ -230,24 +230,24 @@ if(isset($_POST['filter']))
 					
 					if($choice==0)
 					{
-						$sql1="SELECT reason_id,SUM(rt.rejection_quantity) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.workstation_id='$mod' AND rt.created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 00:00:00' GROUP BY rt.reason_id";
+						$sql1="SELECT reason_id,SUM(rt.rejection_quantity) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.workstation_id='$mod' AND DATE(rt.created_at) BETWEEN '".$sdate."' AND '".$edate."' GROUP BY rt.reason_id";
 					}
 					
 					if($choice==1)
 					{
-						$sql1="SELECT reason_id,SUM(rt.rejection_quantity) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.workstation_id='$mod' and rh.schedule in ($schedule) AND rt.created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 00:00:00' GROUP BY rt.reason_id";
+						$sql1="SELECT reason_id,SUM(rt.rejection_quantity) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.workstation_id='$mod' and rh.schedule in ($schedule) AND DATE(rt.created_at) BETWEEN '".$sdate."' AND '".$edate."' GROUP BY rt.reason_id";
 					}
 					
 					if($choice==2)
 					{
 						// Shift not maintining
-						$sql1="SELECT reason_id,SUM(rt.rejection_quantity) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.workstation_id='$mod' and rh.schedule in ($schedule) AND rt.created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 00:00:00' GROUP BY rt.reason_id";
+						$sql1="SELECT reason_id,SUM(rt.rejection_quantity) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.workstation_id='$mod' and rh.schedule in ($schedule) AND DATE(rt.created_at) BETWEEN '".$sdate."' AND '".$edate."' GROUP BY rt.reason_id";
 					}
 					
 					if($choice==3)
 					{
 						// Shift not maintining
-						$sql1="SELECT reason_id,SUM(rt.rejection_quantity) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.workstation_id='$mod' and rh.schedule in ($schedule) AND rt.created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 00:00:00' GROUP BY rt.reason_id";
+						$sql1="SELECT reason_id,SUM(rt.rejection_quantity) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.workstation_id='$mod' and rh.schedule in ($schedule) AND DATE(rt.created_at) BETWEEN '".$sdate."' AND '".$edate."' GROUP BY rt.reason_id";
 					}
 					$rej_qty=array();
 					$sql_result1=mysqli_query($link, $sql1) or exit("Fetching Rejection Quantity".mysqli_error($GLOBALS["___mysqli_ston"]));
