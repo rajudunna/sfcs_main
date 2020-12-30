@@ -58,7 +58,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 ?>
 
 <!-- <form name="mini_order_report" action="?r=<?php //echo $_GET['r'];?>" method="post" > -->
-<form name="mini_order_report" action="?r=<?php echo $_GET['r'];?>" method="post" onsubmit=" return check_val();">
+<form name="mini_order_report" action="" method="post" onsubmit=" return check_val();">
 <br>
 <table><tr>
 <!-- <td>
@@ -83,6 +83,12 @@ Start Date: <input id="demo1" onclick="javascript:NewCssCal('demo1','yyyymmdd','
 
 </div>
 <?php
+if ($_REQUEST['plantCode']) {
+	$_SESSION['plantCode'] = $_REQUEST['plantCode'];
+}
+if ($_REQUEST['userName']) {
+	$_SESSION['userName'] = $_REQUEST['userName'];
+}
 //$hours=array('6-7AM','7-8AM','8-9AM','9-10AM','10-11AM','11-12AM','12-13PM','13-14PM','14-15PM','15-16PM','16-17PM','17-18PM','18-19PM','19-20PM','20-21PM','21-22PM','22-23PM');
 if(isset($_POST['submit']))
 {
