@@ -2668,7 +2668,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 		if(mysqli_num_rows($sql_check_res)==0)
 		{
 			$sql="insert into $wms.inspection_db(batch_ref_id,batch_ref,plant_code,created_user,created_at,updated_user,updated_at) values (\"$uuid\",\"$lot_no_new\",'$plantcode','$username',NOW(),'$username',NOW())";
-			mysqli_query($uuid, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
+			mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}	
 			
 		if(mysqli_affected_rows($link))
