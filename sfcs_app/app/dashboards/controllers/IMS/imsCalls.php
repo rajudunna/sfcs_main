@@ -8,7 +8,7 @@ function getShifts($plantCode) {
     global $pms;
     global $link_new;
     try{
-        $shiftsQuery = "select shift_id,shift_code,shift_description from $pms.shifts where plant_code='".$plantCode."' and is_active=1";
+        $shiftsQuery = "select shift_id,shift_code,shift_description from $pms.shifts where plant_code='".$plantCode."' and is_active=1 order by shift_code";
         $shiftQueryResult = mysqli_query($link_new,$shiftsQuery) or exit('Problem in getting shifts');
         if(mysqli_num_rows($shiftQueryResult)>0){
             $shifts = [];
