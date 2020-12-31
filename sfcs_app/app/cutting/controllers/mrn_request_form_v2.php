@@ -329,8 +329,12 @@ $(document).ready(function(){
 <div class="panel panel-primary">
     <div class="panel-heading"><b>MRN Request Form</b></div>
     <div class="panel-body">
-        <?php $pgurl = getFullURL($_GET['r'],'mrn_request_form_v2.php','N');
-            $url2 = getFullURL($_GET['r'],'mrn_form_log.php','N');
+        <?php 
+            $date=date("Y-m-d");
+            $pgurl = getFullURL($_GET['r'],'mrn_request_form_v2.php','N');
+            $logurl = getFullURL($_GET['r'],'mrn_form_log.php','N');
+            $main_log_url = "$logurl&date=$date&status_filter=1";
+            // echo $main_log_url;
         ?>
         <form name="test" action="<?= $pgurl ?>" method="post">
 	
@@ -991,7 +995,7 @@ $(document).ready(function(){
 									
 							}
                             echo "</select></div>";
-                            echo "<input type=\"hidden\" name=\"logurl\" id=\"logurl\" value=\"$url2\">";
+                            echo "<input type=\"hidden\" name=\"logurl\" id=\"logurl\" value=\"$main_log_url\">";
 
 							echo '<div class="col-md-3"><input type="checkbox" name="option" id="option" 
 									onclick="return enableButton();">Enable';

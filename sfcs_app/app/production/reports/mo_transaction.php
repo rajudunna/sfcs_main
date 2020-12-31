@@ -32,36 +32,52 @@
 		<div class="panel panel-primary">
 			<div class="panel-heading">Mo Transaction Report</div>
 			<div class="panel-body">
-				<div class='row'>
-					<div class="form-inline col-sm-10">
-
-						<label><font size="2">Style : </font></label>
-						<select  name="style" class="form-control" id="style" required>
-							<option value="" disabled selected>Select Style</option>
-						</select>
-						
-						<label><font size="2">Schedule : </font></label>
-						<select  name="schedule" class="form-control"  id="schedule" required>
-	                     	<option value="" disabled selected>Select Schedule</option>
-						</select>
-
-						<label><font size="2">Color : </font></label>
-						<select  name="color" class="form-control"  id="color" required>
-	                     	<option value="" disabled selected>Select color</option>
-						</select>
-
-						<label><font size="2">Po : </font></label>
-						<select  name="po" class="form-control"  id="po" required>
-	                     	<option value="" disabled selected>Select Po</option>
-						</select>
-
-						<label><font size="2">Sub Po : </font></label>
-						<select  name="subpo" class="form-control"  id="subpo" required>
-	                     	<option value="" disabled selected>Select Sub Po</option>
-						</select>
-	               
-					<input type="button"  class="btn btn-success" value="Submit" name="submit" id="submit" value="1" onclick="getdata()"> 
+				
+					<div class="row col-md-12">
+						<div class="col-md-3">
+							<label><font size="2">Style : </font></label>
+							<select  name="style" class="form-control" id="style" required>
+								<option value="" disabled selected>Select Style</option>
+							</select>
+						</div>
+						<div class="col-md-3">
+							<label><font size="2">Schedule : </font></label>
+							<select  name="schedule" class="form-control"  id="schedule" required>
+								<option value="" disabled selected>Select Schedule</option>
+							</select>
+						</div>
+						<div class="col-md-3">
+							<label><font size="2">Color : </font></label>
+							<select  name="color" class="form-control"  id="color" required>
+								<option value="" disabled selected>Select color</option>
+							</select>
+						</div>
+						<div class="col-md-3">
+							<label><font size="2">Po : </font></label>
+							<select  name="po" class="form-control"  id="po" required>
+								<option value="" disabled selected>Select Po</option>
+							</select>
+						</div>
 					</div>
+
+					<div class="row col-md-12">
+						<div class="col-md-3">
+							<label><font size="2">Sub Po : </font></label>
+							<select  name="subpo" class="form-control"  id="subpo" required>
+								<option value="" disabled selected>Select Sub Po</option>
+							</select>
+						</div>
+						<br/>
+						<div class="col-md-3">
+							<input type="button"  class="btn btn-success" value="Submit" name="submit" id="submit" value="1" onclick="getdata()"> 
+						</div>
+					</div>
+						
+					
+
+
+
+	               
 				</div>
 				<br><br>
 						<div style='display:none' id='excel_form'>
@@ -113,7 +129,9 @@
 
     $('#style').change(function(){
         $('#schedule option').remove();
-        //$('#color option').remove();
+        $('#color option').remove();
+        $('#po option').remove();
+        $('#subpo option').remove();
         var style = $(this).val();
 	    $.ajax({
 			type: "POST",
@@ -139,7 +157,9 @@
     });
 
     $('#schedule').change(function(){
-        $('#color option').remove();
+		$('#color option').remove();
+        $('#po option').remove();
+        $('#subpo option').remove();
         var schedule = $('#schedule').val();
         var style = $('#style').val();
 	    $.ajax({
@@ -167,7 +187,8 @@
 	
 
 	$('#color').change(function(){
-        $('#po option').remove();
+		$('#po option').remove();
+        $('#subpo option').remove();
         var schedule = $('#schedule').val();
         var style = $('#style').val();
         var color = $('#color').val();
@@ -195,7 +216,7 @@
 	
 
 	$('#po').change(function(){
-        //$('#color option').remove();
+        $('#subpo option').remove();
         var schedule = $('#schedule').val();
         var color = $('#color').val();
         var po = $('#po').val();
