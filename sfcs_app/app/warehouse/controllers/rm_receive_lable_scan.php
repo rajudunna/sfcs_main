@@ -331,9 +331,15 @@ else
                                         break;
                                     }
                                     if($qry_batchval_sendplant_check->num_rows > 0)
-                                    {
+                                    {   
+                                        $select_uuid="SELECT UUID() as uuid";
+                                        $uuid_result=mysqli_query($link, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        while($uuid_row=mysqli_fetch_array($uuid_result))
+                                        {
+                                            $uuid=$uuid_row['uuid'];
+                                        }
                                         //logic for insert inspected db details based on batch
-                                        $insert_insp_db = "insert into $wms.inspection_db (batch_ref,act_gsm,pur_width,act_width,sp_rem,qty_insp,gmt_way,pts,fallout,skew,skew_cat,shrink_l,shrink_w,supplier,log_date,unique_id,status,pur_gsm,consumption,plant_code,created_user,updated_user) values('".$sticker_data['batch_no']."','".$inspection_data['act_gsm']."','".$inspection_data['pur_width']."','".$inspection_data['act_width']."','".str_replace( array( "'",'"' ),'',$inspection_data['sp_rem'])."','".$inspection_data['qty_insp']."','".$inspection_data['gmt_way']."','".$inspection_data['pts']."','".$inspection_data['fallout']."','".$inspection_data['skew']."','".$inspection_data['skew_cat']."','".$inspection_data['shrink_l']."','".$inspection_data['shrink_w']."','".$inspection_data['supplier']."','".$inspection_data['log_date']."','".$inspection_data['unique_id']."','".$inspection_data['status']."','".$inspection_data['pur_gsm']."','".$inspection_data['consumption']."','".$plant_code."','".$user_name."','".$user_name."')";
+                                        $insert_insp_db = "insert into $wms.inspection_db (batch_ref_id,batch_ref,act_gsm,pur_width,act_width,sp_rem,qty_insp,gmt_way,pts,fallout,skew,skew_cat,shrink_l,shrink_w,supplier,log_date,unique_id,status,pur_gsm,consumption,plant_code,created_user,updated_user) values('".$uuid."','".$sticker_data['batch_no']."','".$inspection_data['act_gsm']."','".$inspection_data['pur_width']."','".$inspection_data['act_width']."','".str_replace( array( "'",'"' ),'',$inspection_data['sp_rem'])."','".$inspection_data['qty_insp']."','".$inspection_data['gmt_way']."','".$inspection_data['pts']."','".$inspection_data['fallout']."','".$inspection_data['skew']."','".$inspection_data['skew_cat']."','".$inspection_data['shrink_l']."','".$inspection_data['shrink_w']."','".$inspection_data['supplier']."','".$inspection_data['log_date']."','".$inspection_data['unique_id']."','".$inspection_data['status']."','".$inspection_data['pur_gsm']."','".$inspection_data['consumption']."','".$plant_code."','".$user_name."','".$user_name."')";
                                         $qry_inspectiondb_check=mysqli_query($link_new, $insert_insp_db) or exit("Sql Error getting at 320 line".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         $qry_inspectiondb_check = $link->query($insert_insp_db);
                                     }

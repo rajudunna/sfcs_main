@@ -7,6 +7,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
 $plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
+// $plant_code = 'Q01';
 ?>
 
 
@@ -479,8 +480,8 @@ if(isset($_POST['submit']))
 </div>
 
 
- <div class='col-sm-3'>
-	<table class="table table-bordered table-responsive">
+ <div class='col-sm-3 table-responsive'>
+	<table class="table table-bordered">
 			<tr>
 				<th class='success'>Ordering Consumption:</th>
 				<td><?php echo $order_consumption; ?></td>
@@ -503,8 +504,8 @@ if(isset($_POST['submit']))
 			</tr>	
 	</table>
 </div>
-<div class='col-sm-3'>
-	<table class="table table-bordered table-responsive">
+<div class='col-sm-3 table-responsive'>
+	<table class="table table-bordered">
 			<tr>
 				<th class='success'>Ordered Fabric:</th>
 				<td><?php echo round(($cat_yy*$o_total),0); ?></td>
