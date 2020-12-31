@@ -31,7 +31,7 @@ if(isset($_POST['filter']))
 	$sdate=$_POST['sdate'];
 	$edate=$_POST['edate'];
 	
-	$sql_rejection ="SELECT date(rt.created_at) as rej_date,rt.workstation_id,rh.style,rh.schedule,rh.fg_color,rh.size,rt.job_number,SUM(rt.rejection_quantity) AS rej_qty,SUM(rt.replaced_quantity) AS rep_qty,rt.reason_id FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 00:00:00' group by rh.style,rh.schedule,rh.fg_color,rh.size";
+	$sql_rejection ="SELECT date(rt.created_at) as rej_date,rt.workstation_id,rh.style,rh.schedule,rh.fg_color,rh.size,rt.job_number,SUM(rt.rejection_quantity) AS rej_qty,SUM(rt.replaced_quantity) AS rep_qty,rt.reason_id FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE DATE(rt.created_at) BETWEEN '".$sdate."' AND '".$edate."' group by rh.style,rh.schedule,rh.fg_color,rh.size";
 	$sql_result=mysqli_query($link, $sql_rejection) or exit("Error while Fetching Out put Information".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_result) > 0) {
 		$export_excel = getFullURLLevel($_GET['r'],'export_excel.php',0,'R');
