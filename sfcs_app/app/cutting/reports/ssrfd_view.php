@@ -278,11 +278,13 @@ if(isset($_POST['category']))
 			<div class="col-sm-2 form-group">
 				<label for='category'>Select Category:</label>
 				<select required class='form-control' name='category' onchange='sixthbox();'  id='category'>
-				<?php				
-					 $sql="SELECT fabric_category FROM $pps.`mp_color_detail` LEFT JOIN $pps.`mp_fabric` ON mp_fabric.master_po_details_id=mp_color_detail.master_po_details_id WHERE style='$get_style' AND color='$get_color' AND mp_fabric.master_po_number='$get_mpo' AND mp_fabric.plant_code='$plant_code'";		
+				<?php		
+			
+					 $sql="SELECT distinct(fabric_category) as fabric_category FROM $pps.`mp_color_detail` LEFT JOIN $pps.`mp_fabric` ON mp_fabric.master_po_details_id=mp_color_detail.master_po_details_id WHERE style='$get_style' AND color='$get_color' AND mp_fabric.master_po_number='$get_mpo' AND mp_fabric.plant_code='$plant_code'";		
+					
 					 $sql_result=mysqli_query($link, $sql) or exit();
 					 $sql_num_check=mysqli_num_rows($sql_result);
- 
+					
 					 echo "<option value=\"NIL\" selected>NIL</option>";
 						 
 					 while($sql_row=mysqli_fetch_array($sql_result))
@@ -313,7 +315,6 @@ if(isset($_POST['submit']))
 	$schedule=$_POST['schedule'];
 	$category=$_POST['category'];
 	$sub_po=$_POST['sub_po'];
-	
 	if($style!="NIL" && $color!="NIL" && $schedule!="NIL" && $category!="NIL"){
 	}else{
 	echo"Please Select All Filters</br>";
