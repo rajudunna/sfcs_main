@@ -7,7 +7,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
 $plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-// $plant_code = 'Q01';
+$plant_code = 'Q01';
 ?>
 
 
