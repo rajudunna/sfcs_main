@@ -5,7 +5,7 @@
     set_time_limit(6000); 
 
  ?>   
-
+<script type="text/javascript" src="/sfcs_app/common/js/jquery.min.js" ></script>
 <?php  
 
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
@@ -194,7 +194,8 @@
                     <div style="overflow-x:auto;">
                     <table class="table table-bordered table-striped" id="table1">
                         <tr class="info">
-                            <th>Select</th>
+                            <th id='selectjob'>Select</th>
+                            <th id='select_all' style='display:none'><input type="checkbox" >Select All</th>
                             <th>Barcode</th>
                             <th style="max-width: 80px">Input Date</th>
                             <!-- <th>Exp. to Comp.</th> -->
@@ -218,7 +219,7 @@
                             $input_qty=array();
                             	//To get input operation
 							$application='IPS';
-
+                            $k=1;
 							$scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
 							$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row1111=mysqli_fetch_array($scanning_result))
@@ -306,6 +307,7 @@
                                  
                                 $sql12="select * from $bai_pro3.ims_log where ims_mod_no='$module' and tid=$tid and ims_status<>\"DONE\" and ims_remarks='$ims_remarks' and ims_size='$ims_size'  order by ims_schedule, ims_size DESC";
                                 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2.3".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                
                                 while($sql_row12=mysqli_fetch_array($sql_result12)) 
                                 { 
                                     $flag++;
@@ -387,15 +389,17 @@
                                         $recevied_qty1=$sql_row1['recevied_qty'];
                                     }
                                     // echo $recevied_qty1;
-                                     
-                                     
-                                    echo "<tr>
+                                     $val=$k++;
+                                     $id="row-$val";
+                                    
+                                    echo "<tr id=\"$val\">
+                                   
                                             <td>"; 
                                                 if($original_qty == $recevied_qty and $sql_row12['ims_pro_qty']==0 )   
                                                 { 
                                                     if($recevied_qty1 == 0)
                                                     {    
-                                                        echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$sql_row12['tid']."\">"; 
+                                                        echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$sql_row12['tid']."\" class=\"checkBoxClass\" id=$id>"; 
                                                     }
                                                     else 
                                                     { 
@@ -531,3 +535,45 @@
     };
     setFilterGrid( "table1", table2_Props);
 </script>
+<script>
+$(document).ready(function() {
+    $("#select_all").hide();
+
+  
+
+    $("#flt6_table1").change(function() {
+        
+        if($("#flt6_table1").val()!==''){
+        $("#selectjob").hide();
+        $("#select_all").show();
+        }else{
+            $("#selectjob").show();
+        $("#select_all").hide();
+        }
+        
+        $('#table1 tr:visible').each(function() {
+            var checkboxid=this.id;
+
+        
+         $('#select_all').click(function() {
+        
+      
+        
+            $('#row-'+checkboxid).each(function() {
+            
+            $('#row-'+checkboxid).attr('checked',!$('#row-'+checkboxid).attr('checked'));
+        });
+        
+    });
+
+     });
+    });
+    
+
+});
+</script>
+<style>
+#select_all{
+   display: none;
+}
+</style>
