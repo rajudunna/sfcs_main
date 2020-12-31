@@ -7,7 +7,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
 $plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-// $plant_code = 'Q01';
+$plant_code = 'Q01';
 ?>
 
 
@@ -280,7 +280,7 @@ if(isset($_POST['category']))
 				<select required class='form-control' name='category' onchange='sixthbox();'  id='category'>
 				<?php		
 			
-					 $sql="SELECT fabric_category FROM $pps.`mp_color_detail` LEFT JOIN $pps.`mp_fabric` ON mp_fabric.master_po_details_id=mp_color_detail.master_po_details_id WHERE style='$get_style' AND color='$get_color' AND mp_fabric.master_po_number='$get_mpo' AND mp_fabric.plant_code='$plant_code' group by fabric_max_plies_id";		
+					 $sql="SELECT distinct(fabric_category) as fabric_category FROM $pps.`mp_color_detail` LEFT JOIN $pps.`mp_fabric` ON mp_fabric.master_po_details_id=mp_color_detail.master_po_details_id WHERE style='$get_style' AND color='$get_color' AND mp_fabric.master_po_number='$get_mpo' AND mp_fabric.plant_code='$plant_code'";		
 					
 					 $sql_result=mysqli_query($link, $sql) or exit();
 					 $sql_num_check=mysqli_num_rows($sql_result);
