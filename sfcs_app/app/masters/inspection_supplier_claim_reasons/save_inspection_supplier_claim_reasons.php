@@ -96,11 +96,13 @@
                             </div>         
                         </div>
                     </div>
+                    <div class="row">
                     <div class="col-md-12">
-                        <div class="form-group btn-group pull-right">
-                            <button id="btn_save" type="submit" class="btn btn-primary" name="btn_save">Save</button>
+                        <div class="form-group pull-right">
+                            <button id="btn_save" type="submit" class="btn btn-primary" name="btn_save">Save</button>&nbsp;&nbsp;&nbsp;
                             <input type='reset' class="btn btn-danger" value="Clear">
                         </div>
+                    </div>
                     </div>
                 </div>
         </div>

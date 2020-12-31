@@ -1158,6 +1158,7 @@ function getWorkstationsForSectionId($plantCode, $sectionId) {
         throw $e;
     }
 }
+
   //function to get jobs
   /** function to get jobs which are unplanned
    * @param:po,task_type,plant_code
@@ -1521,7 +1522,7 @@ function getDocketInformation($docket_no, $plant_code) {
  
     // get the marker requierement
     $markers_query="SELECT `length`,`width`,`efficiency`,`marker_version`,`marker_version_id`,`marker_type_name`,`pattern_version`,`perimeter`,`remark1`,`remark2`,`remark3`,`remark4`,`shrinkage`
-    FROM $pps.`lp_markers` WHERE `lp_ratio_cg_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plant_code'";
+    FROM $pps.`lp_markers` WHERE `lp_ratio_cg_id`='$ratio_comp_group_id' AND marker_version_id='$marker_version_id' AND `plant_code`='$plant_code'";
    
     $markers_result = mysqli_query($link_new, $markers_query) or exit("Sql markers_query".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row11 = mysqli_fetch_array($markers_result))
@@ -1728,7 +1729,7 @@ function getOpsWiseJobQtyInfo($schedule, $bundle_types) {
     $out_put_ops = 130;
     $sql_resouce = "SELECT distinct resource_id FROM $pts.`transaction_log` trans 
     WHERE trans.`barcode_type` = 'APLB' AND schedule = '$schedule'";
-    $sql_result_sql_resouce = mysqli_query($link_new,$sql_resouce) or exit("Sql Error5".mysqli_error());
+    $sql_result_sql_resouce = mysqli_query($link_new,$sql_resouce) or exit("Sql Error51".mysqli_error());
     while($sql_row_sql_result_sql_resouce = mysqli_fetch_array($sql_result_sql_resouce))
     {   
         $resource = $sql_row_sql_result_sql_resouce['resource_id'];
@@ -1738,14 +1739,14 @@ function getOpsWiseJobQtyInfo($schedule, $bundle_types) {
     $sql_plb = "SELECT distinct external_ref_id, parent_barcode FROM $pts.`transaction_log` trans 
     left join $pts.barcode on barcode.barcode = trans.parent_barcode
     WHERE trans.`barcode_type` = 'APLB' AND schedule = '$schedule'";
-    $sql_result_sql_sql_plb=mysqli_query($link_new,$sql_plb) or exit("Sql Error5".mysqli_error());
+    $sql_result_sql_sql_plb=mysqli_query($link_new,$sql_plb) or exit("Sql Error52".mysqli_error());
     while($sql_row_sql_result_sql_sql_plb = mysqli_fetch_array($sql_result_sql_sql_plb))
     {   
         $pplb = $sql_row_sql_result_sql_sql_plb['external_ref_id'];
         $pplb_barcode =  $sql_row_sql_result_sql_sql_plb['parent_barcode'];
-        $sql_bundle_type = "SELECT bundle_type, ppb.fg_color, ppb.size FROM $pps.`jm_product_bundle` ppb LEFT JOIN $pps.`jm_product_logical_bundle` pplb ON pplb.`jm_ppb_id` = ppb.jm_ppb_id
+        $sql_bundle_type = "SELECT ppb.bundle_type, ppb.fg_color, ppb.size FROM $pps.`jm_product_bundle` ppb LEFT JOIN $pps.`jm_product_logical_bundle` pplb ON pplb.`jm_ppb_id` = ppb.jm_ppb_id
         WHERE pplb.jm_pplb_id = '$pplb'";
-        $sql_result_sql_bundle_type=mysqli_query($link_new,$sql_bundle_type) or exit("Sql Error5".mysqli_error());
+        $sql_result_sql_bundle_type=mysqli_query($link_new,$sql_bundle_type) or exit("Sql Error53".mysqli_error());
         while($sql_row_bundle_type = mysqli_fetch_array($sql_result_sql_bundle_type))
         {   
             $bundle_type = $sql_row_bundle_type['bundle_type'];
@@ -1756,7 +1757,7 @@ function getOpsWiseJobQtyInfo($schedule, $bundle_types) {
                     $sql_pts_trans = "SELECT sum(good_quantity)as good_qty, sum(rejected_quantity)as rej_qty FROM $pts.`transaction_log` trans 
                     WHERE trans.parent_barcode = '$pplb_barcode'
                     AND operation = '$input_ops' AND resource_id = '$resource_id'";
-                    $sql_result_sql_pts_trans=mysqli_query($link_new,$sql_pts_trans) or exit("Sql Error5".mysqli_error());
+                    $sql_result_sql_pts_trans=mysqli_query($link_new,$sql_pts_trans) or exit("Sql Error54".mysqli_error());
                     while($sql_row_pts_trans = mysqli_fetch_array($sql_result_sql_pts_trans))
                     {
                         $input_qty = $sql_row_pts_trans['good_qty'];
@@ -1765,7 +1766,7 @@ function getOpsWiseJobQtyInfo($schedule, $bundle_types) {
                     $sql_pts_trans_out = "SELECT sum(good_quantity)as good_qty, sum(rejected_quantity)as rej_qty FROM $pts.`transaction_log` trans 
                     WHERE trans.parent_barcode = '$pplb_barcode'
                     AND operation = '$out_put_ops' AND resource_id = '$resource_id'";
-                    $sql_result_sql_pts_trans_out=mysqli_query($link_new,$sql_pts_trans_out) or exit("Sql Error5".mysqli_error());
+                    $sql_result_sql_pts_trans_out=mysqli_query($link_new,$sql_pts_trans_out) or exit("Sql Error55".mysqli_error());
                     if(mysqli_num_rows($sql_result_sql_pts_trans_out)>0) {
                         while($sql_row_pts_trans_out = mysqli_fetch_array($sql_result_sql_pts_trans_out))
                         {
@@ -1862,7 +1863,7 @@ function getShifts($plant_code){
     global $link_new;
     global $pms;
     $shift_data=[];
-    $query="select * from $pms.shifts where plant_code='$plant_code' and is_active=1";
+    $query="select * from $pms.shifts where plant_code='$plant_code' and is_active=1 ORDER BY shift_code";
     $sql_res = mysqli_query($link_new, $query) or exit("Sql Error at shift details" . mysqli_error($GLOBALS["___mysqli_ston"]));
     $shifts_rows_num = mysqli_num_rows($sql_res);
     if ($shifts_rows_num > 0) {
