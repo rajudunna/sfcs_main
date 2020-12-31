@@ -3,6 +3,7 @@
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 // error_reporting(0);
 $plantcode = $_SESSION['plantCode'];
+// $plantcode = 'Q01';
 if(isset($_GET['submit']))
 {
   $row_count = 0;
@@ -39,7 +40,7 @@ if(isset($_GET['submit']))
 	// {
 	//   $ops_get_code[$row3['operation_code']] = $row3['operation_name'];
   // }
-  
+    // $toget_sub_order_result = '';
     $qryGetOps="SELECT DISTINCT(operation) as ops FROM $pts.fg_m3_transaction WHERE sub_po='$subpo' AND plant_code='$plantcode' AND is_active=1 order by operation";
     $toget_sub_order_result=mysqli_query($link_new, $qryGetOps) or exit("Sql Error at getting fg_m3 at 1nt".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_podescri_num=mysqli_num_rows($toget_sub_order_result);
@@ -53,6 +54,8 @@ if(isset($_GET['submit']))
    <thead class='cf'>
    <tr><th>S.NO</th><th>Size</th>
    <th>Color</th><th>MO Number</th><th>Mo Quantity</th>";
+
+
    while($opsRow=mysqli_fetch_array($toget_sub_order_result))
     { 
       //$spo_sequnce = $mpo_sequence."-".$toget_sub_order_row['sub_po_serial'];
@@ -69,38 +72,47 @@ if(isset($_GET['submit']))
     $toget_podescri_num=mysqli_num_rows($resultMoQant);
     while($moRow=mysqli_fetch_array($resultMoQant))
    {  
+
         $mos=$moRow['mo'];
         $qty=$moRow['qty'];
          $counter++;
       /**getting mo quantiy,color,size */
       $qryGetMoSize="SELECT color_name,size_name FROM $oms.oms_products_info WHERE mo_number='$mos'";
+      // echo $qryGetMoSize;
       $resultqryGetMoSize=mysqli_query($link_new, $qryGetMoSize) or exit("Sql Error at oms Pro Info".mysqli_error($GLOBALS["___mysqli_ston"]));
       $toget_podescri_num=mysqli_num_rows($resultqryGetMoSize);
       while($sizeRow=mysqli_fetch_array($resultqryGetMoSize))
       { 
-        $color_name=$moRow['color_name'];
-        $size_name=$moRow['size_name'];
+        $color_name=$sizeRow['color_name'];
+        $size_name=$sizeRow['size_name'];
       }
+      // echo $color_name
 
       /**getting mo quantiy,color,size */
-      $qryGetMoQty="SELECT mo_quantity FROM $oms.oms_mo_details WHERE mo_numebr='$mos'";
-      $resultqryGetMoQty=mysqli_query($link_new, $qryGetMoSize) or exit("Sql Error at mo details".mysqli_error($GLOBALS["___mysqli_ston"]));
+      $qryGetMoQty="SELECT mo_quantity FROM $oms.oms_mo_details WHERE mo_number='$mos'";
+      // echo $qryGetMoQty;
+      $resultqryGetMoQty=mysqli_query($link_new, $qryGetMoQty) or exit("Sql Error at mo details".mysqli_error($GLOBALS["___mysqli_ston"]));
       $toget_podescri_num=mysqli_num_rows($resultqryGetMoQty);
       while($moQtyRow=mysqli_fetch_array($resultqryGetMoQty))
       { 
         $mo_quantity=$moQtyRow['mo_quantity'];
       }
-   	  $table_data .= "<tr><td>$counter</td><td>$size_name</td><td>$color_name</td><td>$mos</td><td>$mo_quantity</td>";
-       while($opsRow=mysqli_fetch_array($toget_sub_order_result))
+       $table_data .= "<tr><td>$counter</td><td>$size_name</td><td>$color_name</td><td>$mos</td><td>$mo_quantity</td>";
+       $qryGetOps="SELECT DISTINCT(operation) as ops FROM $pts.fg_m3_transaction WHERE sub_po='$subpo' AND plant_code='$plantcode' AND is_active=1 order by operation";
+      $toget_sub_order_result=mysqli_query($link_new, $qryGetOps) or exit("Sql Error at getting fg_m3 at 1nt".mysqli_error($GLOBALS["___mysqli_ston"]));
+       
+      
+
+       while($opsRow1=mysqli_fetch_array($toget_sub_order_result))
        { 
          //$spo_sequnce = $mpo_sequence."-".$toget_sub_order_row['sub_po_serial'];
          //$table_data .= "<th>".$opsRow['ops']."</th>";
 	       $good_qty = 0;
 	       $get_m3_quantities="select SUM(quantity) AS qty FROM $pts.fg_m3_transaction 
-	                           where mo_number = '$mos' and op_code='".$opsRow['ops']."'";
-                             //echo $get_m3_quantities;
+	                           where mo_number = '$mos' and op_code='".$opsRow1['ops']."'";
+                            //  echo $get_m3_quantities;
 	       $get_m3__result=$link->query($get_m3_quantities);
-         while($row=mysqli_fetch_array($toget_sub_order_result))
+         while($row=mysqli_fetch_array($get_m3__result))
 	       {
 	       	   $good_qty = $row['qty'];
 	       }
