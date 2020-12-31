@@ -3,6 +3,7 @@
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 error_reporting(0);
 $plantcode = $_SESSION['plantCode'];
+// $plantcode = 'Q01';
 if(isset($_GET['style']))
   	$styles = $_GET['style'];
 else
@@ -74,23 +75,27 @@ else
   
   /**getting color details */
   //$color=array();
+  if($_GET['style'] && $_GET['schedule']){
 
-  if(sizeof($bulk_schedule)>0){
-    $qry_mp_mo_qty="SELECT color FROM $pps.mp_mo_qty WHERE plant_code='$plantcode' AND schedule IN ('".implode("','" , $bulk_schedule)."') AND is_active=1";
-    $mp_color_detail_result=mysqli_query($link_new, $qry_mp_mo_qty) or exit("Sql Error at getting colors".mysqli_error($GLOBALS["___mysqli_ston"]));
-    $mp_color_detail_num=mysqli_num_rows($mp_color_detail_result);
-        if($mp_color_detail_num>0){
-            while($mp_color_detail_row=mysqli_fetch_array($mp_color_detail_result))
-                {
-                    
-                    $color[]=$mp_color_detail_row["color"];
-                }
-
-                $color_bulk1=array_unique($color);
-        }
-     
-
+      if(sizeof($bulk_schedule)>0){
+          $schedule = $_GET['schedule'];
+        $qry_mp_mo_qty="SELECT color FROM $pps.mp_mo_qty WHERE plant_code='$plantcode' AND schedule ='$schedule' AND is_active=1";
+        $mp_color_detail_result=mysqli_query($link_new, $qry_mp_mo_qty) or exit("Sql Error at getting colors".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $mp_color_detail_num=mysqli_num_rows($mp_color_detail_result);
+            if($mp_color_detail_num>0){
+                while($mp_color_detail_row=mysqli_fetch_array($mp_color_detail_result))
+                    {
+                        
+                        $color[]=$mp_color_detail_row["color"];
+                    }
+    
+                    $color_bulk1=array_unique($color);
+            }
+         
+    
+      }
   }
+
   
     // $color_bulk = implode(',',$color_bulk1);
     // $color_bulk = '"'.$color_bulk.'"';
@@ -104,10 +109,14 @@ else
         $leading_zeros = sprintf('%010d', $master_po_serial);
         return  $plant_code ."-".$leading_zeros;
     }
+
+  if($_GET['style'] && $_GET['schedule'] && $_GET['color']){
+
     if(sizeof($color_bulk1)>0){
+        $color = $_GET['color'];
         /**getting MPO's */
         $master_po_details_id=array();
-        $qry_mmp_mo_qty="SELECT master_po_details_id FROM $pps.`mp_mo_qty` WHERE plant_code='$plantcode' AND color IN ('".implode("','" , $color_bulk1)."') AND is_active=1";
+        $qry_mmp_mo_qty="SELECT master_po_details_id FROM $pps.`mp_mo_qty` WHERE plant_code='$plantcode' AND color ='$color' AND is_active=1";
         $mp_mo_qty_result=mysqli_query($link_new, $qry_mmp_mo_qty) or exit("Sql Error at master po details".mysqli_error($GLOBALS["___mysqli_ston"]));
         $mp_mo_qty_num=mysqli_num_rows($mp_mo_qty_result);
         /**From above query we get master po details id */
@@ -149,12 +158,14 @@ else
         }
 
     }
+}
     
 
-
+if($_GET['style'] && $_GET['schedule'] && $_GET['color'] && $_GET['po']){
+    $po = $_GET['po'];
     $sub_po_description=array();
     /**Below query to get sub po's by using master po's */
-    $qry_toget_sub_order="SELECT po_description,po_number,mpo_serial,sub_po_serial FROM $pps.mp_sub_order LEFT JOIN $pps.mp_order ON mp_order.master_po_number = mp_sub_order.master_po_number WHERE mp_sub_order.master_po_number IN ('".implode("','" , $po)."')  AND mp_sub_order.plant_code='$plantcode' AND mp_sub_order.is_active=1";
+    $qry_toget_sub_order="SELECT po_description,po_number,mpo_serial,sub_po_serial FROM $pps.mp_sub_order LEFT JOIN $pps.mp_order ON mp_order.master_po_number = mp_sub_order.master_po_number WHERE mp_sub_order.master_po_number = '$po'  AND mp_sub_order.plant_code='$plantcode' AND mp_sub_order.is_active=1";
     $toget_sub_order_result=mysqli_query($link_new, $qry_toget_sub_order) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_podescri_num=mysqli_num_rows($toget_sub_order_result);
     if($toget_podescri_num>0){
@@ -168,6 +179,7 @@ else
 
             $sub_po_description=array_unique($sub_po_description);
     }
+}
     
 
 
