@@ -19,6 +19,12 @@ td{ color : black;}
 	font-weight : bold;
 	color : #000;
 }
+.table-bordered {
+    background-color: #dff0d8;
+}
+tr.primary {
+    background-color: #abada4;
+}
 </style>
 
 
@@ -152,8 +158,6 @@ if(isset($_POST['sub_po']))
 				<label for='style'>Select Style</label>
 				<select required class='form-control' name='style' onchange='firstbox()' id='style'>
 				<?php
-// var_dump($plant_code);
-
 					echo "<option value=\"NIL\" selected>NIL</option>";
 					if($plant_code!=''){
 						$result_mp_color_details=getMpColorDetail($plant_code);
@@ -290,7 +294,6 @@ if(isset($_POST['sub_po']))
 <?php
 if(isset($_POST['submit']))
 {
-
 	$style=$_POST['style'];
 	$color=$_POST['color'];
 	$schedule=$_POST['schedule'];
@@ -702,7 +705,7 @@ if(isset($_POST['submit']))
 								<th>Cut No</th>
 								<?php
 									foreach($size_code as $key => $value){
-									echo "<td class='danger'><b>".$key."</b></td>";
+										echo "<td class='danger'><b>".$key."</b></td>";
 									} 
 								?>
 								<th>Total of the size ratio</th>
@@ -711,7 +714,7 @@ if(isset($_POST['submit']))
 								<th>Actual plies</th>
 								<?php
 									foreach($size_code as $key => $value){
-									echo "<td class='danger'><b>".$key."</b></td>";
+										echo "<td class='danger'><b>".$key."</b></td>";
 									} 
 								?>
 								<th>Total</th>
@@ -774,44 +777,42 @@ if(isset($_POST['submit']))
 											echo "<td>$get_cut_no</td>";
 										 // get the docket qty
 											$size_ratio_sum = 0;
-											$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id = '$ratio_id' order by size";
-											$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
 											$actual_cut = array();
-											$fabric_allocated_plies = 0;
-											while($row = mysqli_fetch_array($size_ratios_result))
-											{
-												// $size_ratio_sum += ($row['size_ratio'])?(int)($row['size_ratio']):0;
-												// echo "<td>".$row['size_ratio']."</td>";
-												$sizeratio[$row['size']] = $row['size_ratio'];
-												$actual_cut[$row['size']] = $actual_plies*$row['size_ratio'];
-												$fabric_allocated_plies+= $plies*$row['size_ratio'];
-											}
-
 											foreach($size_code as $key => $value){
-												$sizeratio = ($sizeratio[$key])?$sizeratio[$key]:0;
-												echo "<td class='success'>".$sizeratio."</td>";
-												$sizeratiosum+=$sizeratio;
+												$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id = '$ratio_id' AND size='$key' order by size";
+												// echo "$size_ratios_query.</br>";
+												$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+												$noofraios=mysqli_num_rows($size_ratios_result);
+												$fabric_allocated_plies = 0;
+												if($noofraios>0){
+													while($row = mysqli_fetch_array($size_ratios_result))
+													{
+														$size_ratio_sum += $row['size_ratio'];
+														echo "<td>".$row['size_ratio']."</td>";
+														$actual_cut[$key] = $actual_plies*$row['size_ratio'];
+														$fabric_allocated_plies+= $plies*$row['size_ratio'];
+													}
+												}else{
+														$size_ratio_sum += 0;
+														echo "<td>0</td>";
+														$actual_cut[$key] = 0;
+														$fabric_allocated_plies+= 0;
+												}
+												
 											}
-
-											$actual_plies = ($actual_plies)?(int)($actual_plies):0;
-											echo "<td>$sizeratiosum</td>";
+											
+											echo "<td>$size_ratio_sum</td>";
 											echo "<td>$plies</td>";
+											// echo "<td>$fabric_allocated_plies</td>";
 											echo "<td>$actual_plies</td>";
 											$sumqty = 0;
-											
-											// foreach($actual_cut as $key => $value){
-											// 	echo "<td>".$value."</td>";
-											// 	$sumqty+=$value;
-											// 	$cnt++;
-											// }
-
-											foreach($size_code as $key => $value){
-												$allocated = ($actual_cut[$key])?$actual_cut[$key]:0;
-												echo "<td class='success'>".$allocated."</td>";
-												$allocatedsum+=$allocated;
+											//var_dump($actual_cut);
+											foreach($actual_cut as $key => $value){
+												echo "<td>".$value."</td>";
+												$sumqty+=$value;
+												$cnt++;
 											}
-											
-											echo "<td>".$allocatedsum."</td>";
+											echo "<td>".$sumqty."</td>";
 											if($actual_plies==$plies){
 												echo "<td> Full Completed </td>";
 											}else if($actual_plies<$plies){
