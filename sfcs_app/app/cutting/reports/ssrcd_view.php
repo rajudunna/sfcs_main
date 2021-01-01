@@ -152,6 +152,8 @@ if(isset($_POST['sub_po']))
 				<label for='style'>Select Style</label>
 				<select required class='form-control' name='style' onchange='firstbox()' id='style'>
 				<?php
+var_dump($plant_code);
+
 					echo "<option value=\"NIL\" selected>NIL</option>";
 					if($plant_code!=''){
 						$result_mp_color_details=getMpColorDetail($plant_code);
@@ -288,6 +290,7 @@ if(isset($_POST['sub_po']))
 <?php
 if(isset($_POST['submit']))
 {
+
 	$style=$_POST['style'];
 	$color=$_POST['color'];
 	$schedule=$_POST['schedule'];
@@ -600,17 +603,24 @@ if(isset($_POST['submit']))
 						<th class='danger'>Fabric not allocated qty</th>
 						<?php
 							$notallocatedsum = 0;
-							if(count($fabric_not_allocated_qty)){
-								foreach($fabric_not_allocated_qty as $key => $value){
-									$notallocated = ($value)?$value:0;
-									echo "<td class='success'>".$notallocated."</td>";
-									$notallocatedsum+=$notallocated;
-								}
-							}else{
-								foreach($size_code as $key => $value){
-									echo "<td class='success'>0</td>";
-								}	
+							foreach($size_code as $key => $value){
+								$notallocated = ($fabric_not_allocated_qty[$key])?$fabric_not_allocated_qty[$key]:0;
+								echo "<td class='success'>".$notallocated."</td>";
+								$notallocatedsum+=$notallocated;
 							}
+
+							// var_dump($fabric_not_allocated_qty);
+							// if(count($fabric_not_allocated_qty)){
+							// 	foreach($fabric_not_allocated_qty as $key => $value){
+							// 		$notallocated = ($value)?$value:0;
+							// 		echo "<td class='success'>".$notallocated."</td>";
+							// 		$notallocatedsum+=$notallocated;
+							// 	}
+							// }else{
+							// 	foreach($size_code as $key => $value){
+							// 		echo "<td class='success'>0</td>";
+							// 	}	
+							// }
 							
 							echo "<td class='success'>".$notallocatedsum."</td>";
 						?>
@@ -770,22 +780,38 @@ if(isset($_POST['submit']))
 											$fabric_allocated_plies = 0;
 											while($row = mysqli_fetch_array($size_ratios_result))
 											{
-												$size_ratio_sum += $row['size_ratio'];
-												echo "<td>".$row['size_ratio']."</td>";
+												// $size_ratio_sum += ($row['size_ratio'])?(int)($row['size_ratio']):0;
+												// echo "<td>".$row['size_ratio']."</td>";
+												$sizeratio[$row['size']] = $row['size_ratio'];
 												$actual_cut[$row['size']] = $actual_plies*$row['size_ratio'];
 												$fabric_allocated_plies+= $plies*$row['size_ratio'];
 											}
-											echo "<td>$size_ratio_sum</td>";
+
+											foreach($size_code as $key => $value){
+												$sizeratio = ($sizeratio[$key])?$sizeratio[$key]:0;
+												echo "<td class='success'>".$sizeratio."</td>";
+												$sizeratiosum+=$sizeratio;
+											}
+
+											$actual_plies = ($actual_plies)?(int)($actual_plies):0;
+											echo "<td>$sizeratiosum</td>";
 											echo "<td>$plies</td>";
-											// echo "<td>$fabric_allocated_plies</td>";
 											echo "<td>$actual_plies</td>";
 											$sumqty = 0;
-											foreach($actual_cut as $key => $value){
-												echo "<td>".$value."</td>";
-												$sumqty+=$value;
-												$cnt++;
+											
+											// foreach($actual_cut as $key => $value){
+											// 	echo "<td>".$value."</td>";
+											// 	$sumqty+=$value;
+											// 	$cnt++;
+											// }
+
+											foreach($size_code as $key => $value){
+												$allocated = ($actual_cut[$key])?$actual_cut[$key]:0;
+												echo "<td class='success'>".$allocated."</td>";
+												$allocatedsum+=$allocated;
 											}
-											echo "<td>".$sumqty."</td>";
+											
+											echo "<td>".$allocatedsum."</td>";
 											if($actual_plies==$plies){
 												echo "<td> Full Completed </td>";
 											}else if($actual_plies<$plies){
