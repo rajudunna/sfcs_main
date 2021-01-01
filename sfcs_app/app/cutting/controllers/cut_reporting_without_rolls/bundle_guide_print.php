@@ -669,7 +669,8 @@ for($j=0;$j<sizeof(array_unique($sizesarr));$j++)
 	$bundlestart=1;
 	for($i=0;$i<sizeof($bundle_no);$i++)
 	{	
-		$getdetails21="SELECT dcgb_number,fg_color,size,quantity,org_db_number from $pps.jm_docket_cg_bundle where dcgb_number='".$bundle_no[$i]."' and plant_code='$plant_code'";
+		$getdetails21="SELECT dcgb_number,fg_color,size,quantity from $pps.jm_docket_cg_bundle where dcgb_number='".$bundle_no[$i]."' and plant_code='$plant_code'";
+		// echo $getdetails21; 
 		$getdetailsresult1 = mysqli_query($link,$getdetails21);
 		while($sql_row1=mysqli_fetch_array($getdetailsresult1))
 		{	

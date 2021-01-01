@@ -48,7 +48,7 @@
             <div class='col-sm-12'>";
             $inc=0;
     foreach($sections as $sec){
-        echo "<div style='width:20%;float:left;padding:5px'>
+        echo "<div style='width:25%;float:left;padding:5px'>
             <div class='panel panel-success'>
                 <div class='panel-body sec-box'>
                     <div class='loading-block' id='sec-load-".$sec['section_id']."' style='display:block'></div>
