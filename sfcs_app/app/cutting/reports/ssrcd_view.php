@@ -152,7 +152,7 @@ if(isset($_POST['sub_po']))
 				<label for='style'>Select Style</label>
 				<select required class='form-control' name='style' onchange='firstbox()' id='style'>
 				<?php
-var_dump($plant_code);
+// var_dump($plant_code);
 
 					echo "<option value=\"NIL\" selected>NIL</option>";
 					if($plant_code!=''){
