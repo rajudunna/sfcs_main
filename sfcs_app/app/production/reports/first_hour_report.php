@@ -208,7 +208,11 @@ if(isset($_POST['submit']))
 		echo "<td>".$sql_row['style']."</td>";
 		echo "<td>".$sql_row['schedule']."</td>";
 		echo "<td>".$nop."</td>";
+			if($plan_eff!=''){
 		echo "<td>$plan_eff</td>";
+			}else{
+				echo "<td>Not Planned</td>";		
+			}
 		echo "<td bgcolor=\"$color\" style=\"color:black;\">".round(($sah/$clh)*100,0)."</td>";
 		echo "<td>".$plan_out."</td>";
 		echo "<td>".$qty."</td>";
