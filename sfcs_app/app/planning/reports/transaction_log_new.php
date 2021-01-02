@@ -491,7 +491,8 @@ if(isset($_POST['submit']))
 				$sdate = date ("Y-m-d", strtotime("+1 days", strtotime($sdate)));			
 			}
 			while (strtotime($sdate) <= strtotime($edate)); 
-			echo "<tr style='background-color:#FFFFCC;' class='total_excel' id='total_excel'><td colspan=14>Total</td><td id='table1Tot1'>$total_qty</td><td id='table1Tot2'>$total_qty_sah</td></tr></tbody></table></div></div>";
+			echo "<tr style='background-color:#FFFFCC;' class='total_excel' id='total_excel'><td colspan=14>Total</td><td id='table1Tot1'>$total_qty</td><td id='table1Tot2'>$total_qty_sah</td></tr></tbody>
+			</table></div></div>";
 		}
 		else
 		{
@@ -529,7 +530,7 @@ var fnsFilters = {
 		btn_reset_text: "Clear",
 	col_operation: {						
 						id: ["table1Tot1","table1Tot2"],
-						col: [12,13],  
+						col: [14,15],  
 						operation: ["sum","sum"],
 						decimal_precision: [1,1],
 						write_method: ["innerHTML","innerHTML"] 
