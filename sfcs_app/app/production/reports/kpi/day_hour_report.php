@@ -179,6 +179,14 @@
 						$end_time = $row['plant_end_time'];
 						//$time_display = $row['time_display'].' '.$row['day_part'];
 					}
+					//echo $selected_hour;
+					if($selected_hour == '')
+					{
+						$start_time=$start_time;
+					} else 
+					{
+                        $start_time=$selected_hour;
+					}
 					$from       = $start_time;
 					$to         = $end_time;
 					
@@ -240,7 +248,7 @@
 																	
 																	$bai_log_qry1="SELECT SUM(good_quantity) as qty,style FROM $pts.transaction_log WHERE plant_code='$plant_code'  AND resource_id='$team1' AND DATE_FORMAT(created_at,'%Y-%m-%d')='$selected_date' AND TIME(created_at) BETWEEN '$start_time' AND '$end_time' ";
 																	
-																	// echo $bai_log_qry1;
+																	//echo $bai_log_qry1;
 																	$bai_log_result1=mysqli_query($link,$bai_log_qry1);
 																	while($res1=mysqli_fetch_array($bai_log_result1))
 																	{
@@ -264,7 +272,7 @@
 																	if ($plan_pcs == '' || $plan_pcs == null) {	$plan_pcs = 0;	}
 																	if ($act_pcs == '' || $act_pcs == null) {	$act_pcs = 0;	}
 																	$variation=$act_pcs-$plan_pcs;
-																	$acheivement = round($act_pcs*100/div_by_zero($plan_pcs),0);
+																	$acheivement = round(($act_pcs*100/div_by_zero($plan_pcs)/100),0);
 																	echo "<tr>
 																			<td>$team</td>
 																			<td>$style</td>
@@ -278,7 +286,7 @@
 																}
 															}
 															$variation_tot=$act_pcs_tot-$plan_pcs_tot;
-															$acheivement_tot = round($act_pcs_tot*100/div_by_zero($plan_pcs_tot),0);
+															$acheivement_tot = round(($act_pcs_tot*100/div_by_zero($plan_pcs_tot)/100),0);
 															echo "<tr style=\"background-color:lightgreen;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;\">
 																	<td colspan=2>$section_display_name</td>
 																	<td>$plan_pcs_tot</td>
@@ -447,7 +455,7 @@
 																	if ($plan_pcs == '' || $plan_pcs == null) {	$plan_pcs = 0;	}
 																	if ($act_pcs == '' || $act_pcs == null) {	$act_pcs = 0;	}
 																	$variation=$act_pcs-$plan_pcs;
-																	$acheivement = round($act_pcs*100/div_by_zero($plan_pcs),0);
+																	$acheivement = round(($act_pcs*100/div_by_zero($plan_pcs)/100),0);
 																	echo "<tr>
 																			<td>$team</td>
 																			<td>$style</td>
@@ -461,7 +469,7 @@
 																}
 															}
 															$variation_tot=$act_pcs_tot-$plan_pcs_tot;
-															$acheivement_tot = round($act_pcs_tot*100/div_by_zero($plan_pcs_tot),0);
+															$acheivement_tot = round(($act_pcs_tot*100/div_by_zero($plan_pcs_tot)/100),0);
 															echo "<tr style=\"background-color:lightgreen;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;\">
 																	<td colspan=2>$section_display_name</td>
 																	<td>$plan_pcs_tot</td>
