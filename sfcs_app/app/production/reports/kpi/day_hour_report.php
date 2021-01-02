@@ -183,11 +183,13 @@
 					if($selected_hour == '')
 					{
 						$start_time=$start_time;
+						$from       = $start_time;
 					} else 
 					{
-                        $start_time=$selected_hour;
+						$start_time=$selected_hour;
+						$from       = $selected_hour;
 					}
-					$from       = $start_time;
+					
 					$to         = $end_time;
 					
 					$total      = strtotime($to) - strtotime($from);
@@ -258,7 +260,7 @@
 																	}
 																	
 																	// $plan_pcs_qry="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM $pts.pro_plan WHERE plant_code='$plant_code' and DATE='$selected_date' and sec_no='$section' and mod_no='$team1' ";
-																	$plan_pcs_qry12="SELECT round(SUM(planned_qty)/".$total_hours.") as PlanPcs FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date' and row_name='$team1' ";
+																	$plan_pcs_qry12="SELECT round(SUM(planned_qty)/".$total_hours.") as PlanPcs FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date' and row_name='$team' ";
 																	//echo $plan_pcs_qry12.';<br>';
 																	$plan_pcs_result12=mysqli_query($link,$plan_pcs_qry12);
 																
@@ -443,7 +445,7 @@
 																		$style = $res1['style'];
 																		$act_pcs = $res1['qty'];
 																	}
-																	$plan_pcs_qry="SELECT SUM(planned_qty/".$total_hours.") as PlanPcs FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date' and row_name='$team1'";
+																	$plan_pcs_qry="SELECT SUM(planned_qty/".$total_hours.") as PlanPcs FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date' and row_name='$team'";
 																	//  echo $plan_pcs_qry.';<br>';
 																	$plan_pcs_result=mysqli_query($link,$plan_pcs_qry);
 																	while($res12=mysqli_fetch_array($plan_pcs_result))
