@@ -116,6 +116,7 @@ width:450px;
 }
 #tooltip {
 position:absolute;
+margin-left:150px;
 z-index:9999;
 color:#fff;
 font-size:12px;
