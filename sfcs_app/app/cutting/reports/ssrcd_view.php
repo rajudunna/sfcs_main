@@ -19,6 +19,12 @@ td{ color : black;}
 	font-weight : bold;
 	color : #000;
 }
+.table-bordered {
+    background-color: #dff0d8;
+}
+tr.primary {
+    background-color: #abada4;
+}
 </style>
 
 
@@ -274,6 +280,7 @@ if(isset($_POST['sub_po']))
 					echo "</select>";
 				?>
 			</div>
+			<br/>
 
 			
 			<div class="col-sm-2 form-group">
@@ -359,9 +366,23 @@ if(isset($_POST['submit']))
 				$size_code=array();
 				$excess_size_code=array();
 				$quantitydetails = array();
+				 //get master po details 
+				 $qry_mp_color_details="SELECT  master_po_details_id FROM $pps.mp_color_detail WHERE master_po_number = '$mpo'";
+				$mp_color_details_result=mysqli_query($link_new, $qry_mp_color_details) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$mp_color_details_num=mysqli_num_rows($mp_color_details_result);
+				if($mp_color_details_num>0){
+					while($mp_color_details_row=mysqli_fetch_array($mp_color_details_result))
+						{
+							
+							$master_po_details_id=$mp_color_details_row["master_po_details_id"];
+						}
+				}
+
 				//To get sizes and qty
-				$sql="SELECT SUM(quantity) AS quantity,size, percentage FROM $pps.`mp_mo_qty` left join $pps.mp_additional_qty on mp_additional_qty.mp_add_qty_id = mp_mo_qty.mp_add_qty_id WHERE SCHEDULE='$schedule' AND color='$color' AND mp_qty_type='ORIGINAL_QUANTITY' AND mp_mo_qty.plant_code='$plant_code' GROUP BY size order by size";
+
+				$sql="SELECT SUM(quantity) AS quantity,size, percentage FROM $pps.`mp_mo_qty` left join $pps.mp_additional_qty on mp_additional_qty.mp_add_qty_id = mp_mo_qty.mp_add_qty_id WHERE SCHEDULE='$schedule' AND color='$color' AND mp_qty_type='ORIGINAL_QUANTITY' AND mp_mo_qty.plant_code='$plant_code' and master_po_details_id = '$master_po_details_id' GROUP BY size order by size";
 				$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+				// echo $sql;
 				while($row=mysqli_fetch_array($sql_result))
 				{
 					$size_code[$row['size']]=$row['quantity'];
@@ -370,7 +391,7 @@ if(isset($_POST['submit']))
 				}
 
 				//To get excess qty
-				$sql1="SELECT SUM(quantity) AS quantity,size, percentage FROM $pps.`mp_mo_qty` left join $pps.mp_additional_qty on mp_additional_qty.mp_add_qty_id = mp_mo_qty.mp_add_qty_id WHERE SCHEDULE='$schedule' AND color='$color' AND mp_qty_type='EXTRA_SHIPMENT' and size is not null AND mp_mo_qty.plant_code='$plant_code' GROUP BY size order by size";
+				$sql1="SELECT SUM(quantity) AS quantity,size, percentage FROM $pps.`mp_mo_qty` left join $pps.mp_additional_qty on mp_additional_qty.mp_add_qty_id = mp_mo_qty.mp_add_qty_id WHERE SCHEDULE='$schedule' AND color='$color' AND mp_qty_type='EXTRA_SHIPMENT' and size is not null AND mp_mo_qty.plant_code='$plant_code' and master_po_details_id = '$master_po_details_id' GROUP BY size order by size";
 				$sql_result1=mysqli_query($link, $sql1) or die("Error".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row1=mysqli_fetch_array($sql_result1))
 				{
@@ -381,7 +402,8 @@ if(isset($_POST['submit']))
 				}
 
 				//To get Cutting wastage percentage
-				$cuttingwastage="SELECT SUM(quantity) AS quantity,size, percentage FROM $pps.`mp_mo_qty` left join $pps.mp_additional_qty on mp_additional_qty.mp_add_qty_id = mp_mo_qty.mp_add_qty_id WHERE SCHEDULE='$schedule' AND color='$color' AND mp_qty_type='CUTTING_WASTAGE' and size is not null AND mp_mo_qty.plant_code='$plant_code' GROUP BY size order by size";
+				$cuttingwastage="SELECT SUM(quantity) AS quantity,size, percentage FROM $pps.`mp_mo_qty` left join $pps.mp_additional_qty on mp_additional_qty.mp_add_qty_id = mp_mo_qty.mp_add_qty_id WHERE SCHEDULE='$schedule' AND color='$color' AND mp_qty_type='CUTTING_WASTAGE' and size is not null AND mp_mo_qty.plant_code='$plant_code' and master_po_details_id = '$master_po_details_id' GROUP BY size order by size";
+				// echo $cuttingwastage;
 				$sql_result1=mysqli_query($link, $cuttingwastage) or die("Error".$cuttingwastage.mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($cutting_wastage=mysqli_fetch_array($sql_result1))
 				{
@@ -397,7 +419,7 @@ if(isset($_POST['submit']))
 				
 				// To get planned cut qty 
 
-				$cutqtyqry = "SELECT SUM(quantity) AS quantity, size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND mp_qty_type='CUTTING_WASTAGE' AND plant_code='$plant_code' GROUP BY size order by size";
+				$cutqtyqry = "SELECT SUM(quantity) AS quantity, size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND mp_qty_type='CUTTING_WASTAGE' AND plant_code='$plant_code' and master_po_details_id = '$master_po_details_id' GROUP BY size order by size";
 
 
 
@@ -692,7 +714,7 @@ if(isset($_POST['submit']))
 								<th>Cut No</th>
 								<?php
 									foreach($size_code as $key => $value){
-									echo "<td class='danger'><b>".$key."</b></td>";
+										echo "<td class='danger'><b>".$key."</b></td>";
 									} 
 								?>
 								<th>Total of the size ratio</th>
@@ -701,7 +723,7 @@ if(isset($_POST['submit']))
 								<th>Actual plies</th>
 								<?php
 									foreach($size_code as $key => $value){
-									echo "<td class='danger'><b>".$key."</b></td>";
+										echo "<td class='danger'><b>".$key."</b></td>";
 									} 
 								?>
 								<th>Total</th>
@@ -764,22 +786,36 @@ if(isset($_POST['submit']))
 											echo "<td>$get_cut_no</td>";
 										 // get the docket qty
 											$size_ratio_sum = 0;
-											$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id = '$ratio_id' order by size";
-											$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
 											$actual_cut = array();
-											$fabric_allocated_plies = 0;
-											while($row = mysqli_fetch_array($size_ratios_result))
-											{
-												$size_ratio_sum += $row['size_ratio'];
-												echo "<td>".$row['size_ratio']."</td>";
-												$actual_cut[$row['size']] = $actual_plies*$row['size_ratio'];
-												$fabric_allocated_plies+= $plies*$row['size_ratio'];
+											foreach($size_code as $key => $value){
+												$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id = '$ratio_id' AND size='$key' order by size";
+												// echo "$size_ratios_query.</br>";
+												$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+												$noofraios=mysqli_num_rows($size_ratios_result);
+												$fabric_allocated_plies = 0;
+												if($noofraios>0){
+													while($row = mysqli_fetch_array($size_ratios_result))
+													{
+														$size_ratio_sum += $row['size_ratio'];
+														echo "<td>".$row['size_ratio']."</td>";
+														$actual_cut[$key] = $actual_plies*$row['size_ratio'];
+														$fabric_allocated_plies+= $plies*$row['size_ratio'];
+													}
+												}else{
+														$size_ratio_sum += 0;
+														echo "<td>0</td>";
+														$actual_cut[$key] = 0;
+														$fabric_allocated_plies+= 0;
+												}
+												
 											}
+											
 											echo "<td>$size_ratio_sum</td>";
 											echo "<td>$plies</td>";
 											// echo "<td>$fabric_allocated_plies</td>";
 											echo "<td>$actual_plies</td>";
 											$sumqty = 0;
+											//var_dump($actual_cut);
 											foreach($actual_cut as $key => $value){
 												echo "<td>".$value."</td>";
 												$sumqty+=$value;
