@@ -622,24 +622,17 @@ if(isset($_POST['submit']))
 						<th class='danger'>Fabric not allocated qty</th>
 						<?php
 							$notallocatedsum = 0;
-							foreach($size_code as $key => $value){
-								$notallocated = ($fabric_not_allocated_qty[$key])?$fabric_not_allocated_qty[$key]:0;
-								echo "<td class='success'>".$notallocated."</td>";
-								$notallocatedsum+=$notallocated;
+							if(count($fabric_not_allocated_qty)){
+								foreach($fabric_not_allocated_qty as $key => $value){
+									$notallocated = ($value)?$value:0;
+									echo "<td class='success'>".$notallocated."</td>";
+									$notallocatedsum+=$notallocated;
+								}
+							}else{
+								foreach($size_code as $key => $value){
+									echo "<td class='success'>0</td>";
+								}	
 							}
-
-							// var_dump($fabric_not_allocated_qty);
-							// if(count($fabric_not_allocated_qty)){
-							// 	foreach($fabric_not_allocated_qty as $key => $value){
-							// 		$notallocated = ($value)?$value:0;
-							// 		echo "<td class='success'>".$notallocated."</td>";
-							// 		$notallocatedsum+=$notallocated;
-							// 	}
-							// }else{
-							// 	foreach($size_code as $key => $value){
-							// 		echo "<td class='success'>0</td>";
-							// 	}	
-							// }
 							
 							echo "<td class='success'>".$notallocatedsum."</td>";
 						?>
