@@ -179,7 +179,17 @@
 						$end_time = $row['plant_end_time'];
 						//$time_display = $row['time_display'].' '.$row['day_part'];
 					}
-					$from       = $start_time;
+					//echo $selected_hour;
+					if($selected_hour == '')
+					{
+						$start_time=$start_time;
+						$from       = $start_time;
+					} else 
+					{
+						$start_time=$selected_hour;
+						$from       = $selected_hour;
+					}
+					
 					$to         = $end_time;
 					
 					$total      = strtotime($to) - strtotime($from);
@@ -240,7 +250,7 @@
 																	
 																	$bai_log_qry1="SELECT SUM(good_quantity) as qty,style FROM $pts.transaction_log WHERE plant_code='$plant_code'  AND resource_id='$team1' AND DATE_FORMAT(created_at,'%Y-%m-%d')='$selected_date' AND TIME(created_at) BETWEEN '$start_time' AND '$end_time' ";
 																	
-																	// echo $bai_log_qry1;
+																	//echo $bai_log_qry1;
 																	$bai_log_result1=mysqli_query($link,$bai_log_qry1);
 																	while($res1=mysqli_fetch_array($bai_log_result1))
 																	{
@@ -250,7 +260,7 @@
 																	}
 																	
 																	// $plan_pcs_qry="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM $pts.pro_plan WHERE plant_code='$plant_code' and DATE='$selected_date' and sec_no='$section' and mod_no='$team1' ";
-																	$plan_pcs_qry12="SELECT round(SUM(planned_qty)/".$total_hours.") as PlanPcs FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date' and row_name='$team1' ";
+																	$plan_pcs_qry12="SELECT round(SUM(planned_qty)/".$total_hours.") as PlanPcs FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date' and row_name='$team' ";
 																	//echo $plan_pcs_qry12.';<br>';
 																	$plan_pcs_result12=mysqli_query($link,$plan_pcs_qry12);
 																
@@ -264,7 +274,7 @@
 																	if ($plan_pcs == '' || $plan_pcs == null) {	$plan_pcs = 0;	}
 																	if ($act_pcs == '' || $act_pcs == null) {	$act_pcs = 0;	}
 																	$variation=$act_pcs-$plan_pcs;
-																	$acheivement = round($act_pcs*100/div_by_zero($plan_pcs),0);
+																	$acheivement = round(($act_pcs*100/div_by_zero($plan_pcs)/100),0);
 																	echo "<tr>
 																			<td>$team</td>
 																			<td>$style</td>
@@ -278,7 +288,7 @@
 																}
 															}
 															$variation_tot=$act_pcs_tot-$plan_pcs_tot;
-															$acheivement_tot = round($act_pcs_tot*100/div_by_zero($plan_pcs_tot),0);
+															$acheivement_tot = round(($act_pcs_tot*100/div_by_zero($plan_pcs_tot)/100),0);
 															echo "<tr style=\"background-color:lightgreen;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;\">
 																	<td colspan=2>$section_display_name</td>
 																	<td>$plan_pcs_tot</td>
@@ -435,7 +445,7 @@
 																		$style = $res1['style'];
 																		$act_pcs = $res1['qty'];
 																	}
-																	$plan_pcs_qry="SELECT SUM(planned_qty/".$total_hours.") as PlanPcs FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date' and row_name='$team1'";
+																	$plan_pcs_qry="SELECT SUM(planned_qty/".$total_hours.") as PlanPcs FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date' and row_name='$team'";
 																	//  echo $plan_pcs_qry.';<br>';
 																	$plan_pcs_result=mysqli_query($link,$plan_pcs_qry);
 																	while($res12=mysqli_fetch_array($plan_pcs_result))
@@ -447,7 +457,7 @@
 																	if ($plan_pcs == '' || $plan_pcs == null) {	$plan_pcs = 0;	}
 																	if ($act_pcs == '' || $act_pcs == null) {	$act_pcs = 0;	}
 																	$variation=$act_pcs-$plan_pcs;
-																	$acheivement = round($act_pcs*100/div_by_zero($plan_pcs),0);
+																	$acheivement = round(($act_pcs*100/div_by_zero($plan_pcs)/100),0);
 																	echo "<tr>
 																			<td>$team</td>
 																			<td>$style</td>
@@ -461,7 +471,7 @@
 																}
 															}
 															$variation_tot=$act_pcs_tot-$plan_pcs_tot;
-															$acheivement_tot = round($act_pcs_tot*100/div_by_zero($plan_pcs_tot),0);
+															$acheivement_tot = round(($act_pcs_tot*100/div_by_zero($plan_pcs_tot)/100),0);
 															echo "<tr style=\"background-color:lightgreen;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;\">
 																	<td colspan=2>$section_display_name</td>
 																	<td>$plan_pcs_tot</td>

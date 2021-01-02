@@ -351,8 +351,13 @@ if(isset($_POST['submit']))
 	$size_code=array();
 	$excess_size_code=array();
 	//To get sizes and qty
-	
-	$sql="SELECT SUM(quantity) AS quantity,size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND master_po_details_id = '$mpo' AND plant_code='$plant_code' AND mp_qty_type='ORIGINAL_QUANTITY' GROUP BY size";
+	$get_supo_qty="SELECT mp_mo_qty_id FROM $pps.`mp_sub_mo_qty` WHERE plant_code='$plant_code' AND po_number='$sub_po'";
+    $sql_result_moqtyid=mysqli_query($link, $get_supo_qty) or die("Error".$get_supo_qty.mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($mpmoqty_row=mysqli_fetch_array($sql_result_moqtyid))
+	{
+		$mp_mo_qty_id[]=$mpmoqty_row['mp_mo_qty_id'];
+	}	
+	$sql="SELECT SUM(quantity) AS quantity,size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND mp_mo_qty_id  IN ('".implode("','" , $mp_mo_qty_id)."') AND plant_code='$plant_code' AND mp_qty_type='ORIGINAL_QUANTITY' GROUP BY size";
 	$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($sql_result))
 	{
@@ -360,7 +365,7 @@ if(isset($_POST['submit']))
 		$order_qty=$row['quantity'];
 	}
 	//To get excess qty
-	$sql1="SELECT SUM(quantity) AS quantity,size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND master_po_details_id = '$mpo' AND plant_code='$plant_code' AND mp_qty_type='EXTRA_SHIPMENT' GROUP BY size";
+	$sql1="SELECT SUM(quantity) AS quantity,size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND mp_mo_qty_id  IN ('".implode("','" , $mp_mo_qty_id)."') AND plant_code='$plant_code' AND mp_qty_type='EXTRA_SHIPMENT' GROUP BY size";
 	$sql_result1=mysqli_query($link, $sql1) or die("Error".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($sql_result1))
 	{
@@ -368,7 +373,7 @@ if(isset($_POST['submit']))
 		$excess_order_qty=$row1['quantity'];
 	}
 	//To get Total order qty
-	$sql2="SELECT SUM(quantity) AS quantity FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plant_code'";
+	$sql2="SELECT SUM(quantity) AS quantity FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND mp_mo_qty_id  IN ('".implode("','" , $mp_mo_qty_id)."') AND plant_code='$plant_code'";
 	$sql_result2=mysqli_query($link, $sql2) or die("Error".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row2=mysqli_fetch_array($sql_result2))
 	{
