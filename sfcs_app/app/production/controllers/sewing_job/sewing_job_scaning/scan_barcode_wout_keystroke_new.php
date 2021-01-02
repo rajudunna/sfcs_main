@@ -204,7 +204,8 @@ $(document).ready(function()
 				$('#loading-image').hide();
 				swal('Error',' in getting data','error');
 			}
-		}); 			
+		});
+		$('#barcode').val("");  			
 	});			
 });
 
