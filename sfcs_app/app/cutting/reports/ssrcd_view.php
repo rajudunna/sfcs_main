@@ -693,7 +693,7 @@ if(isset($_POST['submit']))
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-12">
+		<div class="col-sm-12 table-responsive">
 							<?php
 									$tot_qty=0;
 									$Qry_get_cut_details="SELECT docket_number,jm_ad_id, jm_actual_docket.plies as actualplies, jm_dockets.created_at as docket_date, jm_actual_docket.created_at as cut_date, jm_actual_docket.cut_report_status,shift  FROM $pps.`jm_actual_docket` LEFT JOIN $pps.`jm_dockets` ON jm_dockets.`jm_docket_id` = jm_actual_docket.jm_docket_id WHERE po_number='$sub_po' AND jm_dockets.plant_code='$plant_code' order by docket_number";
@@ -701,7 +701,7 @@ if(isset($_POST['submit']))
 									if(mysqli_num_rows($sql_result6))
 									{
 							?>
-					<table class="table table-bordered table-responsive">
+					<table class="table table-bordered">
 							<tr>
 								<th colspan=2></th>
 								<th colspan=<?=count($size_code)?>>Size Ratio</th>
