@@ -315,16 +315,44 @@ if(isset($_POST['submit']))
 	$schedule=$_POST['schedule'];
 	$category=$_POST['category'];
 	$sub_po=$_POST['sub_po'];
+	$mpo=$_POST['mpo'];
 	if($style!="NIL" && $color!="NIL" && $schedule!="NIL" && $category!="NIL"){
 	}else{
 	echo"Please Select All Filters</br>";
 	}
 	
+		// get master po
+		$qry_toget_podescri="SELECT master_po_description,master_po_number,mpo_serial FROM $pps.mp_order WHERE master_po_number ='$mpo' AND is_active=1";
+		$toget_podescri_result=mysqli_query($link_new, $qry_toget_podescri) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$toget_podescri_num=mysqli_num_rows($toget_podescri_result);
+		if($toget_podescri_num>0){
+			while($toget_podescri_row=mysqli_fetch_array($toget_podescri_result))
+				{   
+					$mpo_seq = getMasterPoSequence($toget_podescri_row['mpo_serial'],$plant_code);
+					$masterr_po_seq = $mpo_seq."/".$toget_podescri_row["master_po_description"];
+				}
+		}
+	
+		// get sub po
+		 /**Below query to get sub po's by using master po's */
+		 $qry_toget_sub_order="SELECT po_description,po_number,mpo_serial,sub_po_serial FROM $pps.mp_sub_order LEFT JOIN $pps.mp_order ON mp_order.master_po_number = mp_sub_order.master_po_number WHERE mp_sub_order.master_po_number='$mpo' AND mp_sub_order.po_number='$sub_po'  AND mp_sub_order.plant_code='$plant_code' AND mp_sub_order.is_active=1";
+		 $toget_sub_order_result=mysqli_query($link_new, $qry_toget_sub_order) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
+	
+		 $toget_podescri_num=mysqli_num_rows($toget_sub_order_result);
+		 if($toget_podescri_num>0){
+			 while($toget_sub_order_row=mysqli_fetch_array($toget_sub_order_result))
+				 {
+					 $mpo_sequence = getMasterPoSequence($toget_sub_order_row['mpo_serial'],$plant_code);
+					 $spo_sequnce = $mpo_sequence."-".$toget_sub_order_row['sub_po_serial'];
+					 $spo_seq_desc = $spo_sequnce."/".$toget_sub_order_row['po_description'];
+				 }
+		 }
+		 
 	$size_code=array();
 	$excess_size_code=array();
 	//To get sizes and qty
 	
-	$sql="SELECT SUM(quantity) AS quantity,size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plant_code' AND mp_qty_type='ORIGINAL_QUANTITY' GROUP BY size";
+	$sql="SELECT SUM(quantity) AS quantity,size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND master_po_details_id = '$mpo' AND plant_code='$plant_code' AND mp_qty_type='ORIGINAL_QUANTITY' GROUP BY size";
 	$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($sql_result))
 	{
@@ -332,7 +360,7 @@ if(isset($_POST['submit']))
 		$order_qty=$row['quantity'];
 	}
 	//To get excess qty
-	$sql1="SELECT SUM(quantity) AS quantity,size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plant_code' AND mp_qty_type='EXTRA_SHIPMENT' GROUP BY size";
+	$sql1="SELECT SUM(quantity) AS quantity,size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND master_po_details_id = '$mpo' AND plant_code='$plant_code' AND mp_qty_type='EXTRA_SHIPMENT' GROUP BY size";
 	$sql_result1=mysqli_query($link, $sql1) or die("Error".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($sql_result1))
 	{
@@ -445,12 +473,21 @@ if(isset($_POST['submit']))
 			<div class="col-sm-6"><p class='text-danger'><?php echo $color ?></p></div>
 		</div>
 		<div class="col-sm-3">
+			<div class="col-sm-6 black"><b>Master PO : </b></div>
+			<div class="col-sm-6"><p class='text-danger'><?php echo $masterr_po_seq ?></p></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="col-sm-6 black"><b>Sub PO : </b></div>
+			<div class="col-sm-6 "><p class='text-danger'><?php echo $spo_seq_desc ?></p></div>
+		</div>
+		<div class="col-sm-3">
 			<div class="col-sm-6 black"><b>Category : </b></div>
 			<div class="col-sm-6"><p class='text-danger'><?php echo $category ?></p></div>
 		</div>
 	</div>
 </div>
-
 <div class='col-sm-6' style='overflow-x:scroll'>
 	<table class="table table-bordered table-responsive">
 		<tr>
