@@ -351,7 +351,7 @@ if(isset($_POST['submit']))
 	$size_code=array();
 	$excess_size_code=array();
 	//To get sizes and qty
-	$get_supo_qty="SELECT mp_mo_qty_id FROM pps.`mp_sub_mo_qty` WHERE plant_code='$plant_code' AND po_number='$sub_po'";
+	$get_supo_qty="SELECT mp_mo_qty_id FROM $pps.`mp_sub_mo_qty` WHERE plant_code='$plant_code' AND po_number='$sub_po'";
     $sql_result_moqtyid=mysqli_query($link, $get_supo_qty) or die("Error".$get_supo_qty.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($mpmoqty_row=mysqli_fetch_array($sql_result_moqtyid))
 	{
