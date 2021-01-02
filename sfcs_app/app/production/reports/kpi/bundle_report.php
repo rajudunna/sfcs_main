@@ -27,7 +27,7 @@
 		// $time_display = $row['time_display'].' '.$row['day_part'];
 	}
 
-	$bai_log_qry="SELECT * FROM $pts.transaction_log WHERE plant_code='$plantcode' and DATE_FORMAT(created_at,'%Y-%m-%d')='$selected_date' AND TIME(updated_at) BETWEEN '$start_time' AND '$end_time'";
+	$bai_log_qry="SELECT * FROM $pts.transaction_log WHERE plant_code='$plantcode' and DATE_FORMAT(created_at,'%Y-%m-%d')='$selected_date' AND TIME(updated_at) BETWEEN '$start_time' AND '$end_time' AND parent_barcode_type='PPLB'";
 	//   echo $bai_log_qry.';<br>';
 	$bai_log_result=mysqli_query($link,$bai_log_qry);
 
@@ -65,7 +65,7 @@
 								$qty = $res1['good_quantity'];
 								$user = $res1['created_user'];
 								$shift = $res1['shift'];
-								$barcode = $res1['barcode'];
+								$barcode = $res1['parent_barcode'];
 								$temp = explode('-', $ims_pro_ref);
 
 								echo "
