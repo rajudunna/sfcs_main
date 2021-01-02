@@ -514,9 +514,13 @@ if(isset($_POST['submit']))
 		<tr>
 			<th class='danger'>Extra Cut</th>
 			<?php
-				foreach($excess_size_code as $key => $value){
-					echo "<td class='danger'>".$value."</td>";
-				}
+				foreach($size_code as $key => $value){
+					$excess_size = ($excess_size_code)?$excess_size_code:0;
+					echo "<td class='danger'>".($excess_size)."</td>";
+				  } 
+				// foreach($excess_size_code as $key => $value){
+				// 	echo "<td class='danger'>".$value."</td>";
+				// }
 			?>
 		</tr>		
 	</table>
