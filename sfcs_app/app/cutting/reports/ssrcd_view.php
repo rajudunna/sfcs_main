@@ -274,6 +274,7 @@ if(isset($_POST['sub_po']))
 					echo "</select>";
 				?>
 			</div>
+			<br/>
 
 			
 			<div class="col-sm-2 form-group">
@@ -359,9 +360,23 @@ if(isset($_POST['submit']))
 				$size_code=array();
 				$excess_size_code=array();
 				$quantitydetails = array();
+				 //get master po details 
+				 $qry_mp_color_details="SELECT  master_po_details_id FROM $pps.mp_color_detail WHERE master_po_number = '$mpo'";
+				$mp_color_details_result=mysqli_query($link_new, $qry_mp_color_details) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$mp_color_details_num=mysqli_num_rows($mp_color_details_result);
+				if($mp_color_details_num>0){
+					while($mp_color_details_row=mysqli_fetch_array($mp_color_details_result))
+						{
+							
+							$master_po_details_id=$mp_color_details_row["master_po_details_id"];
+						}
+				}
+
 				//To get sizes and qty
-				$sql="SELECT SUM(quantity) AS quantity,size, percentage FROM $pps.`mp_mo_qty` left join $pps.mp_additional_qty on mp_additional_qty.mp_add_qty_id = mp_mo_qty.mp_add_qty_id WHERE SCHEDULE='$schedule' AND color='$color' AND mp_qty_type='ORIGINAL_QUANTITY' AND mp_mo_qty.plant_code='$plant_code' GROUP BY size order by size";
+
+				$sql="SELECT SUM(quantity) AS quantity,size, percentage FROM $pps.`mp_mo_qty` left join $pps.mp_additional_qty on mp_additional_qty.mp_add_qty_id = mp_mo_qty.mp_add_qty_id WHERE SCHEDULE='$schedule' AND color='$color' AND mp_qty_type='ORIGINAL_QUANTITY' AND mp_mo_qty.plant_code='$plant_code' and master_po_details_id = '$master_po_details_id' GROUP BY size order by size";
 				$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+				// echo $sql;
 				while($row=mysqli_fetch_array($sql_result))
 				{
 					$size_code[$row['size']]=$row['quantity'];
@@ -370,7 +385,7 @@ if(isset($_POST['submit']))
 				}
 
 				//To get excess qty
-				$sql1="SELECT SUM(quantity) AS quantity,size, percentage FROM $pps.`mp_mo_qty` left join $pps.mp_additional_qty on mp_additional_qty.mp_add_qty_id = mp_mo_qty.mp_add_qty_id WHERE SCHEDULE='$schedule' AND color='$color' AND mp_qty_type='EXTRA_SHIPMENT' and size is not null AND mp_mo_qty.plant_code='$plant_code' GROUP BY size order by size";
+				$sql1="SELECT SUM(quantity) AS quantity,size, percentage FROM $pps.`mp_mo_qty` left join $pps.mp_additional_qty on mp_additional_qty.mp_add_qty_id = mp_mo_qty.mp_add_qty_id WHERE SCHEDULE='$schedule' AND color='$color' AND mp_qty_type='EXTRA_SHIPMENT' and size is not null AND mp_mo_qty.plant_code='$plant_code' and master_po_details_id = '$master_po_details_id' GROUP BY size order by size";
 				$sql_result1=mysqli_query($link, $sql1) or die("Error".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row1=mysqli_fetch_array($sql_result1))
 				{
@@ -381,7 +396,8 @@ if(isset($_POST['submit']))
 				}
 
 				//To get Cutting wastage percentage
-				$cuttingwastage="SELECT SUM(quantity) AS quantity,size, percentage FROM $pps.`mp_mo_qty` left join $pps.mp_additional_qty on mp_additional_qty.mp_add_qty_id = mp_mo_qty.mp_add_qty_id WHERE SCHEDULE='$schedule' AND color='$color' AND mp_qty_type='CUTTING_WASTAGE' and size is not null AND mp_mo_qty.plant_code='$plant_code' GROUP BY size order by size";
+				$cuttingwastage="SELECT SUM(quantity) AS quantity,size, percentage FROM $pps.`mp_mo_qty` left join $pps.mp_additional_qty on mp_additional_qty.mp_add_qty_id = mp_mo_qty.mp_add_qty_id WHERE SCHEDULE='$schedule' AND color='$color' AND mp_qty_type='CUTTING_WASTAGE' and size is not null AND mp_mo_qty.plant_code='$plant_code' and master_po_details_id = '$master_po_details_id' GROUP BY size order by size";
+				// echo $cuttingwastage;
 				$sql_result1=mysqli_query($link, $cuttingwastage) or die("Error".$cuttingwastage.mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($cutting_wastage=mysqli_fetch_array($sql_result1))
 				{
@@ -397,7 +413,7 @@ if(isset($_POST['submit']))
 				
 				// To get planned cut qty 
 
-				$cutqtyqry = "SELECT SUM(quantity) AS quantity, size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND mp_qty_type='CUTTING_WASTAGE' AND plant_code='$plant_code' GROUP BY size order by size";
+				$cutqtyqry = "SELECT SUM(quantity) AS quantity, size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND mp_qty_type='CUTTING_WASTAGE' AND plant_code='$plant_code' and master_po_details_id = '$master_po_details_id' GROUP BY size order by size";
 
 
 
