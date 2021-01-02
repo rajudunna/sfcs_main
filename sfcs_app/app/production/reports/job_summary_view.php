@@ -3,7 +3,7 @@
 
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 // $plantcode='Q01';
@@ -156,13 +156,16 @@ $get_sub_po=$_GET['sub_po'];
 		<label>Select Master PO:</label>
 		<?php
 			$master_po_description=array();
-			$qry_toget_master_order="SELECT master_po_description,master_po_number FROM $pps.mp_order WHERE plant_code='$plantcode'";
+			$qry_toget_master_order="SELECT master_po_description,master_po_number,mpo_serial FROM $pps.mp_order WHERE plant_code='$plantcode'";
 			$toget_master_order_result=mysqli_query($link_new, $qry_toget_master_order) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$togetmaster_podescri_num=mysqli_num_rows($toget_master_order_result);
 			if($togetmaster_podescri_num>0){
 				while($toget_master_order_row=mysqli_fetch_array($toget_master_order_result))
 				{
-					$master_po_description[$toget_master_order_row["master_po_description"]]=$toget_master_order_row["master_po_number"];
+					// $master_po_description[$toget_master_order_row["master_po_description"]]=$toget_master_order_row["master_po_number"];
+					$mpo_seq = getMasterPoSequence($toget_master_order_row['mpo_serial'],$plantcode);
+					$masterr_po_seq = $mpo_seq."/".$toget_master_order_row["master_po_description"];
+					$master_po_description[$masterr_po_seq]=$toget_master_order_row["master_po_number"];
 				}
 			}
 			echo "<select name=\"mpo\" id=\"mpo\" onchange=\"firstbox();\" class='form-control' required>
@@ -185,19 +188,22 @@ $get_sub_po=$_GET['sub_po'];
 		<?php
 			
 			$sub_po_description=array();
-			$qry_toget_sub_order="SELECT po_description,po_number FROM $pps.mp_sub_order WHERE plant_code='$plantcode' AND master_po_number='$get_mpo'";
+			$qry_toget_sub_order="SELECT po_description,po_number,sub_po_serial FROM $pps.mp_sub_order WHERE plant_code='$plantcode' AND master_po_number='$get_mpo'";
 			$toget_sub_order_result=mysqli_query($link_new, $qry_toget_sub_order) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$toget_podescri_num=mysqli_num_rows($toget_sub_order_result);
 			if($toget_podescri_num>0){
 				while($toget_sub_order_row=mysqli_fetch_array($toget_sub_order_result))
 				{
-					$sub_po_description[$toget_sub_order_row["po_number"]]=$toget_sub_order_row["po_description"];
+					$mpo_sequence = getMasterPoSequence($toget_sub_order_row['mpo_serial'],$plantcode);
+					$spo_sequnce = $mpo_sequence."-".$toget_sub_order_row['sub_po_serial'];
+					$spo_seq_desc = $spo_sequnce."/".$toget_sub_order_row['po_description'];
+					$sub_po_description[$spo_seq_desc]=$toget_sub_order_row["po_number"];
 				}
 			}
 			echo "<select name=\"sub_po\" id=\"sub_po\"  class='form-control' >
 					<option value=\"NIL\" selected>Please Select</option>";
 					foreach ($sub_po_description as $key=>$sub_po_description_val) {
-						echo '<option value=\''.$key.'\'>'.$sub_po_description_val.'</option>';
+						echo '<option value=\''.$sub_po_description_val.'\'>'.$key.'</option>';
 					} 
 			echo "</select>";
 		?>
