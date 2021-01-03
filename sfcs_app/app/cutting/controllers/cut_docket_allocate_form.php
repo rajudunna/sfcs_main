@@ -8,7 +8,7 @@ $path="".getFullURLLevel($_GET['r'], "bundle_guide_print.php", "0", "r")."";
 
 $plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-// $plant_code='AIP';
+// $plant_code='Q01';
 // $username='Mounika';
 // L3NmY3NfYXBwL2FwcC9jdXR0aW5nL2NvbnRyb2xsZXJzL2N1dF9kb2NrZXRfYWxsb2NhdGVfZm9ybS5waHA=
 
@@ -213,6 +213,7 @@ if(isset($_POST['submit']))
 	if($sub_po!='' && $plant_code!='')
 	{
 		$qry_cut_numbers="SELECT Distinct(jm_cut_job_id) AS jm_cut_job_id FROM $pps.jm_cut_job WHERE plant_code='$plant_code' AND po_number='$sub_po' GROUP BY cut_number";
+		// echo $qry_cut_numbers;
 		$toget_cut_result=mysqli_query($link_new, $qry_cut_numbers) or exit("Sql Error at cutnumbers".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$toget_cut_num=mysqli_num_rows($toget_cut_result);
 		$count = 0;
@@ -224,7 +225,7 @@ if(isset($_POST['submit']))
 		
 			foreach($cut_job_id as $key1 => $cut_job){
 				//qry to get dockets using cut_job_id
-				$qry_get_dockets="SELECT jm_dockets.jm_docket_id From $pps.jm_dockets LEFT JOIN $pps.jm_cut_docket_map ON jm_dockets.jm_docket_id=jm_cut_docket_map.jm_docket_id WHERE jm_cut_docket_map.plant_code='$plant_code' AND jm_cut_docket_map.jm_cut_job_id in ('$cut_job') order by docket_number ASC";
+				$qry_get_dockets="SELECT jm_docket_id From $pps.jm_cut_docket_map WHERE jm_cut_docket_map.plant_code='$plant_code' AND jm_cut_docket_map.jm_cut_job_id in ('$cut_job')";
 				//echo $qry_get_dockets;
 				$toget_dockets_result=mysqli_query($link_new, $qry_get_dockets) or exit("Sql Error at dockets1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$toget_dockets_num=mysqli_num_rows($toget_dockets_result);
@@ -233,14 +234,18 @@ if(isset($_POST['submit']))
 					while($toget_docket_row=mysqli_fetch_array($toget_dockets_result))
 					{
 						$jm_docketss[]=$toget_docket_row['jm_docket_id']; 
+						
 					}
 					$jm_dockets = implode("','", $jm_docketss);
 				}
 				//qry to get dockets in through dockets id
 				$qry_get_docketlines="SELECT jm_docket_id,docket_number FROM $pps.jm_dockets WHERE plant_code='$plant_code' AND jm_docket_id IN ('$jm_dockets') order by docket_number";
+				$jm_dockets = array();
+				
 				// echo $qry_get_docketlines;
 				$qry_get_docketlines_result=mysqli_query($link_new, $qry_get_docketlines) or exit("Sql Error at docket lines".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$docketlines_num=mysqli_num_rows($qry_get_docketlines_result);
+				$docket_no = array();
 				if($docketlines_num>0){
 					while($docketline_row=mysqli_fetch_array($qry_get_docketlines_result))
 					{
@@ -250,13 +255,16 @@ if(isset($_POST['submit']))
 					$data['cut']['doc_no'] = $doc;
 					$docket_no = implode("','", $docket_nos);
 				}
-		
+				// var_dump($docket_no);
 				$marker_length=0;
 				$cum_qty=0;
 				$docket_info_query = "SELECT doc.plies,doc.fg_color,doc.marker_version_id,doc.ratio_comp_group_id,cut.cut_number,cut.po_number,ratio_cg.ratio_id,mso.po_description FROM $pps.jm_dockets doc  LEFT JOIN $pps.jm_cut_docket_map dm ON dm. jm_docket_id=doc.jm_docket_id LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = dm. jm_cut_job_id LEFT JOIN $pps.mp_sub_order mso ON mso.po_number = cut.po_number LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id WHERE doc.plant_code = '$plant_code' AND doc.docket_number in ('$docket_no') AND dm.jm_cut_job_id = '$cut_job' AND doc.is_active=true";
-				//echo $docket_info_query;
+				// echo $docket_info_query;
 				$docket_info_result=mysqli_query($link_new,$docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if($docket_info_result>0){
+
+				$docketinfonum=mysqli_num_rows($docket_info_result);
+
+				if($docketinfonum>0){
 					while($row = mysqli_fetch_array($docket_info_result))
 					{
 						$data['cut']['color'] = $row['fg_color'];
@@ -303,15 +311,14 @@ if(isset($_POST['submit']))
 						}
 						$data['cut']['marker_length'] =  $marker_length;
 					}
-				}
-		
-		
+					
 				$style=array();
 				$color=array();
 				$schedule=array();
 				//To get schedule,color
 				$qry_get_sch_col="SELECT schedule,color FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`mp_mo_qty_id`= mp_mo_qty.`mp_mo_qty_id`
 				WHERE po_number='$sub_po' AND mp_sub_mo_qty.plant_code='$plant_code'";
+
 				$qry_get_sch_col_result=mysqli_query($link_new, $qry_get_sch_col) or exit("Sql Error at qry_get_sch_col".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($qry_get_sch_col_result))
 				{
@@ -330,11 +337,14 @@ if(isset($_POST['submit']))
 				}    
 				$data['cut']['style']=array_unique($style);
 				$data['cut']['schedule']=array_unique($schedule);
-
+				
 				//Qry to fetch jm_job_header_id from jm_jobs_header
 				$get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_job_header WHERE ref_id='$cut_job' AND plant_code='$plant_code'";
+				
 				$jm_job_header_id_result=mysqli_query($link_new, $get_jm_job_header_id) or exit("Sql Error at get_jm_job_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$jm_job_header_id_result_num=mysqli_num_rows($jm_job_header_id_result);
+				// echo $get_jm_job_header_id;
+
 				if($jm_job_header_id_result_num>0){
 					while($jm_job_header_id_row=mysqli_fetch_array($jm_job_header_id_result))
 					{
@@ -345,7 +355,8 @@ if(isset($_POST['submit']))
 				$get_job_details = "SELECT jg.job_number as job_number FROM $pps.jm_jg_header jg LEFT JOIN $pps.jm_job_bundles bun ON bun.jm_jg_header_id = jg.jm_jg_header_id WHERE jg.plant_code = '$plant_code' AND job_group=3 AND jg.jm_job_header IN ('".implode("','" , $jm_job_header_id)."') AND jg.is_active=1";
 				// echo $get_job_details.'<br/>';
 				$get_job_details_result=mysqli_query($link_new, $get_job_details) or exit("$get_job_details".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if($get_job_details_result>0){
+				$get_job_details_result_num=mysqli_num_rows($get_job_details_result);
+				if($get_job_details_result_num>0){
 					while($get_job_details_row=mysqli_fetch_array($get_job_details_result))
 					{
 						$job_numbers[] = $get_job_details_row['job_number'];
@@ -383,6 +394,9 @@ if(isset($_POST['submit']))
 				unset($style);
 				unset($jm_job_header_id);
 				unset($job_numbers);
+				}
+		
+		
 			}
 			echo "</table></div>";
 		}
