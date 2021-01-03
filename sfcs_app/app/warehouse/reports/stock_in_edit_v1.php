@@ -252,7 +252,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 				}
 				else
 				{
-					echo '<td>'.leading_zeros($barcode_number,8).'</td>';
+					echo '<td>'.leading_zeros($tid,8).'</td>';
 					echo "<td>$location</td><td>$box</td><td>$qty_rec</td><td>$available</td>";
 				}
 				
@@ -298,37 +298,43 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			echo "<h2>MRN Transaction Log:</h2>";
 			echo "<table class='table table-striped table-bordered '>";
 			echo "<thead><tr class=''><th>Date</th><th>Time</th><th>Style</th><th>Schedule</th><th>Qty</th><th>Box/Roll Number</th><th>Label ID</th><th>Remarks</th><th>User</th><th>Host</th></tr></thead>";
-			$mr_tid = implode(',',$MRN_tid);
-			if($mr_tid!='')
+			//$mr_tid = implode(',',$MRN_tid);
+			if($MRN_tid!='')
 			{
-				$sql2="SELECT DATE(mrn_out_allocation.log_time) as dat,TIME(mrn_out_allocation.log_time) as tim,mrn_out_allocation.mrn_tid as tid,mrn_out_allocation.lot_no as lot,mrn_out_allocation.lable_id as label,mrn_out_allocation.iss_qty as qty,SUBSTRING_INDEX(mrn_out_allocation.updated_user,'^',1) AS username,SUBSTRING_INDEX(mrn_out_allocation.updated_user,'^',-1) AS hostname,store_in.ref2 FROM $wms.mrn_out_allocation left join $wms.store_in on mrn_out_allocation.lable_id = store_in.tid WHERE mrn_out_allocation.plant_code='$plantcode' AND mrn_out_allocation.lable_id in (select tid from $wms.store_in where tid in ($mr_tid))";
+				$sql2="SELECT DATE(mrn_out_allocation.log_time) as dat,TIME(mrn_out_allocation.log_time) as tim,mrn_out_allocation.mrn_tid as tid,mrn_out_allocation.lot_no as lot,mrn_out_allocation.lable_id as label,mrn_out_allocation.iss_qty as qty,SUBSTRING_INDEX(mrn_out_allocation.updated_user,'^',1) AS username,SUBSTRING_INDEX(mrn_out_allocation.updated_user,'^',-1) AS hostname,store_in.ref2 FROM $wms.mrn_out_allocation left join $wms.store_in on mrn_out_allocation.lable_id = store_in.tid WHERE mrn_out_allocation.plant_code='$plantcode' AND mrn_out_allocation.lable_id in (select tid from $wms.store_in where tid in ('" . implode("', '", $MRN_tid) . "'))";
 				// echo $sql2."<br>";
 				$sql_result=mysqli_query($link, $sql2) or exit("No Data In MRN Transaction Log".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-			echo "<tbody>";
-			while($sql_row=mysqli_fetch_array($sql_result))
-			{
-				$mrn_date=$sql_row['dat'];	
-				$mrn_time=$sql_row['tim'];	
-				$mrn_tid=$sql_row['tid'];	
-				$mrn_lot=$sql_row['lot'];	
-				$mrn_label=$sql_row['label'];	
-				$mrn_qty=$sql_row['qty'];	
-				$mrn_user=$sql_row['username'];	
-				$mrn_host=$sql_row['hostname'];	
-				$mrn_ref2 = $sql_row['ref2'];
-				
-				$sql3="select style,schedule,remarks from $wms.mrn_track where plant_code='$plantcode' and tid=".$mrn_tid."";
-				$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error-f".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row3=mysqli_fetch_array($sql_result3))
-				{
-					$style_val=$sql_row3['style'];
-					$schedule_val=$sql_row3["schedule"];
-					$remarks=$sql_row3["remarks"];
+				$rows=mysqli_num_rows($sql_result);
+				echo "<tbody>";
+				if($rows>0){
+					while($sql_row=mysqli_fetch_array($sql_result))
+					{
+						$mrn_date=$sql_row['dat'];	
+						$mrn_time=$sql_row['tim'];	
+						$mrn_tid=$sql_row['tid'];	
+						$mrn_lot=$sql_row['lot'];	
+						$mrn_label=$sql_row['label'];	
+						$mrn_qty=$sql_row['qty'];	
+						$mrn_user=$sql_row['username'];	
+						$mrn_host=$sql_row['hostname'];	
+						$mrn_ref2 = $sql_row['ref2'];
+						
+						$sql3="select style,schedule,remarks from $wms.mrn_track where plant_code='$plantcode' and tid=".$mrn_tid."";
+						$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error-f".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row3=mysqli_fetch_array($sql_result3))
+						{
+							$style_val=$sql_row3['style'];
+							$schedule_val=$sql_row3["schedule"];
+							$remarks=$sql_row3["remarks"];
+						}
+						
+						echo "<tr><td>".$mrn_date."</td><td>".$mrn_time."</td><td>".$style_val."</td><td>".$schedule_val."</td><td>".$mrn_qty."</td><td>".$mrn_ref2."</td><td>".$mrn_label."</td><td>".$remarks."</td><td>".$mrn_user."</td><td>".$mrn_host."</td></tr>";
+					}
+				}else{
+					echo "<h4>No Data In MRN Transaction Log</h4>";
 				}
 				
-				echo "<tr><td>".$mrn_date."</td><td>".$mrn_time."</td><td>".$style_val."</td><td>".$schedule_val."</td><td>".$mrn_qty."</td><td>".$mrn_ref2."</td><td>".$mrn_label."</td><td>".$remarks."</td><td>".$mrn_user."</td><td>".$mrn_host."</td></tr>";
-			}
+			
 			echo "</tbody></table></div>";
 			}
 			}
