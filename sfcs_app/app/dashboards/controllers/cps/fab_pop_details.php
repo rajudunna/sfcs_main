@@ -566,7 +566,9 @@ if($print_status=='0000-00-00 00:00:00'){
 		{
 			if(!in_array($sql_row1['category'],$comp_printed))
 			{
-				echo "<td><a href='$path$doc_no'  onclick=\"Popup1=window.open('$path$doc_no','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1024,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+				// echo "<td><a href='$path$doc_no'  onclick=\"Popup1=window.open('$path$doc_no','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1024,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+
+				echo "<td><a href=\"javascript:void(0)\"  onclick=\"printCall('$doc_no');\">Print</a></td>";
 				$comp_printed[]=$sql_row1['category'];
 			}
 			else
@@ -576,7 +578,8 @@ if($print_status=='0000-00-00 00:00:00'){
 		}
 		else
 		{
-			echo "<td><a href='$path$doc_no' onclick=\"Popup1=window.open('$path$doc_no','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1024,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+			echo "<td><a href=\"javascript:void(0)\"  onclick=\"printCall('$doc_no');\">Print</a></td>";
+			// echo "<td><a href='$path$doc_no' onclick=\"Popup1=window.open('$path$doc_no','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1024,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 		}	
 		$Disable_allocate_flag=$Disable_allocate_flag+1;
 		
@@ -936,6 +939,17 @@ function call_marker_update()
 				$('#loading-image').hide();
 				swal('Error',' While trying to update the marker','error');
 			}
-	})
+	});
+
+	
 }	
+function printCall(jm_docket_id){		 
+       var popWin =  window.open('<?= $path ?>'+jm_docket_id,'popwindow','width=1100,height=800,scrollbars=no');
+       var inttimer = setInterval(function() {   
+            if(popWin.closed) {                  
+                clearInterval(inttimer);  
+                location.reload();
+            }  
+         }, 1000);  
+    } 
 </script>
