@@ -24,7 +24,7 @@ try
 		{
 			$jm_docket_id = $sql_row01['jm_docket_id'];
 		}
-		$fab_qry1="SELECT fabric_status FROM $pps.requested_dockets WHERE plant_code='".$plant_code."' and jm_docket_id='$jm_docket_id'";
+		$fab_qry1="SELECT fabric_status FROM $pps.requested_dockets WHERE plant_code='".$plant_code."' and jm_docket_id='$doc_no'";
 
         $fab_qry_result1=mysqli_query($link, $fab_qry1) or die(exception($fab_qry1));
         if(mysqli_num_rows($fab_qry_result1)>0)
@@ -72,7 +72,7 @@ try
 				$delete_fab_result=mysqli_query($link, $delete_fab)or die(exception($delete_fab));
 
 				
-				$update_plan_qry="update $pps.requested_dockets set plan_lot_ref='',print_status='0000-00-00 00:00:00',fabric_status=0,updated_user='$username',updated_at=NOW() where plant_code='".$plant_code."' and jm_docket_id='".$jm_docket_id."'";
+				$update_plan_qry="update $pps.requested_dockets set plan_lot_ref='',print_status='0000-00-00 00:00:00',fabric_status=0,updated_user='$username',updated_at=NOW() where plant_code='".$plant_code."' and jm_docket_id='".$doc_no."'";
 				// $update_plan_qry_fab_result=mysqli_query($link, $update_plan_qry) or die(exception($update_plan_qry));
 				
 				// $update_plan_qry_p="update $bai_pro3.plan_dashboard set fabric_status=0 where doc_no=".$doc_no;
