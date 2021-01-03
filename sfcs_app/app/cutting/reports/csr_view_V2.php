@@ -4,6 +4,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
 $plantcode = $_SESSION['plantCode'];
 $username=$_SESSION['userName'];
+// $plantcode = 'Q01';
+
 ?>
 <script>
 function verify_date(){
@@ -317,7 +319,7 @@ function verify_date(){
 				// 		<th class='tblheading'>Cut No</th><th class='tblheading'>Cut Plies</th><th>Size</th><th>Qty</th>";
 
 			if($sql_num_check > 0){
-				echo "<div class='table-responsive'><table class='table table-bordered'>";
+				echo "<div class='table-responsive'><h2 align='center'><b>Detail Report for Re-Cut Quantity</b></h2><table class='table table-bordered'>";
 				echo "<tr class='warning'>
 						<th class='tblheading'>Date 2</th>
 						<th class='tblheading'>Docket No</th>
@@ -361,7 +363,9 @@ function verify_date(){
 								$rows=mysqli_num_rows($sql_result2);
 								$total=0;
 								$total_qty=0;
-								if($rows>0){	
+								$nodata = true;
+								if($rows>0){
+									$nodata = false;	
 									while($sql_row2=mysqli_fetch_array($sql_result2))
 									{
 										$docket_number=$sql_row2['docket_number'];
@@ -431,6 +435,9 @@ function verify_date(){
 							}
 			
 							
+						}
+						if($nodata){
+							echo "<tr><td colspan=11 style='color:red;font-weight:bold;text-align:center;'>No Data Found</td></tr>";
 						}
 			}
 				echo "</table>
@@ -595,9 +602,10 @@ function verify_date(){
 						WHERE jm_dockets.plant_code='$plantcode' AND jm_dockets.docket_type='RECUT' AND jm_dockets.docket_number IN ($attribute_value) GROUP BY cg_name";
 						//mysqli_query($link, $sql2) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error222".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$nodata1 = true;
 						while($sql_row8=mysqli_fetch_array($sql_result11))
 						{
-
+							$nodata1 = false;
 							$category_name=$sql_row8['cg_name'];
 							$jm_docket_id=$sql_row8['jm_docket_id'];
 							// $size_ratio=$sql_row8['size_ratio'];
@@ -638,6 +646,10 @@ function verify_date(){
 			
 					}		
 				}
+				if($nodata1){
+					echo "<tr><td colspan=4 style='color:red;font-weight:bold;text-align:center;'>No Data Found</td></tr>";
+				}
+
 			if($row_count == 0){
 				echo "<tr><td colspan=4 style='color:#ff0000'>No Data found</td></tr>";
 			}

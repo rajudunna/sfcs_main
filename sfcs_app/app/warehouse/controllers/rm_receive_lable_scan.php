@@ -304,7 +304,7 @@ else
                                     $res_ins_stockout=mysqli_query($link_new, $qry_ins_stockout) or exit("Sql Error getting at 279 line".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     // $res_ins_stockout = $link_new->query($qry_ins_stockout);
                                     
-                                    $update_qty_store_in = "update $wms.store_in set qty_issued= qty_issued + ".$actual_quentity_present." where barcode_number='".$bar_code_new."' AND plant_code='".$plant_name1."'";
+                                    $update_qty_store_in = "update $wms.store_in set qty_issued= ".$actual_quentity_present." where barcode_number='".$bar_code_new."' AND plant_code='".$plant_name1."'";
                                     
                                     $res_update_qty_store_in=mysqli_query($link_new, $update_qty_store_in) or exit("Sql Error getting at 285 line".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     $res_update_qty_store_in = $link_new->query($update_qty_store_in);
