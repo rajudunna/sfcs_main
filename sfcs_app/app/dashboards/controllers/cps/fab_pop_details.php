@@ -566,7 +566,7 @@ if($print_status=='0000-00-00 00:00:00'){
 		{
 			if(!in_array($sql_row1['category'],$comp_printed))
 			{
-				echo "<td><a href='$path$doc_no'  onclick=\"Popup1=window.open('$path$doc_no','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+				echo "<td><a href='$path$doc_no'  onclick=\"Popup1=window.open('$path$doc_no','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1024,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 				$comp_printed[]=$sql_row1['category'];
 			}
 			else
@@ -576,7 +576,7 @@ if($print_status=='0000-00-00 00:00:00'){
 		}
 		else
 		{
-			echo "<td><a href='$path$doc_no' onclick=\"Popup1=window.open('$path$doc_no','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+			echo "<td><a href='$path$doc_no' onclick=\"Popup1=window.open('$path$doc_no','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1024,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 		}	
 		$Disable_allocate_flag=$Disable_allocate_flag+1;
 		
