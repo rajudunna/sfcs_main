@@ -84,8 +84,8 @@
 	include(getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R')); 
 	include(getFullURLLevel($_GET['r'],'common/config/sms_api_calls.php',4,'R')); 
 	include(getFullURLLevel($_GET['r'],'common/config/global_error_function.php',4,'R'));
-	$plant_code = $_session['plantCode'];
-	$username =  $_session['userName'];
+	$plant_code = $_SESSION['plantCode'];
+	$username =  $_SESSION['userName'];
 	// $has_permission=haspermission($_GET['r']);
     $main_url=getFullURL($_GET['r'],'sewing_job_create_mrn.php','R');
 
@@ -168,14 +168,14 @@
 						$bulk_color=$result_bulk_colors['color_bulk'];
 					}
 					echo "<option value=\"NIL\" selected>Select Color</option>";
-					foreach ($bulk_schedule as $bulk_schedule_value) {
-						if(str_replace(" ","",$bulk_schedule_value)==str_replace(" ","",$get_schedule)) 
+					foreach ($bulk_color as $bulk_color_value) {
+						if(str_replace(" ","",$bulk_color_value)==str_replace(" ","",$get_color)) 
 						{ 
-							echo '<option value=\''.$bulk_schedule_value.'\' selected>'.$bulk_schedule_value.'</option>'; 
+							echo '<option value=\''.$bulk_color_value.'\' selected>'.$bulk_color_value.'</option>'; 
 						} 
 						else 
 						{ 
-							echo '<option value=\''.$bulk_schedule_value.'\'>'.$bulk_schedule_value.'</option>'; 
+							echo '<option value=\''.$bulk_color_value.'\'>'.$bulk_color_value.'</option>'; 
 						}
 					}
 					echo "</select>";
@@ -271,7 +271,7 @@
 					else
 					{
 						//check jobs are avaialabe or not
-						$check_jobs="SELECT jm_job_header_id,job_header_type FROM $pps.jm_job_header WHERE sub_po='$sub_po' AND ref_type='SEWING' AND plant_code='$plant_code'";
+						$check_jobs="SELECT jm_job_header_id,job_header_type FROM $pps.jm_job_header WHERE po_number='$sub_po' AND ref_type='SEWING' AND plant_code='$plant_code'";
 						$check_jobs_result=mysqli_query($link_new, $check_jobs) or exit("Sql Error at check_jobs".mysqli_error($GLOBALS["___mysqli_ston"]));
 						log_statement('debug',$check_jobs,$main_url,__LINE__);
 					    log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
