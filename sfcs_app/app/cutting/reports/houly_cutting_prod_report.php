@@ -79,7 +79,7 @@ if(isset($_POST['submit']))
 				echo "<tr><td>".$workstation_description."</td>";
 				for ($val=$hour_start; $val <= $hour_end; $val++)
 				{
-					$qryLayAttributes="SELECT GROUP_CONCAT(DISTINCT(CONCAT('''', jca.jm_docket_id, '''' ))) AS docketLines,SUM(IF(lpa.attribute_name = 'FABRICRECEIVED', lpa.attribute_value,0)) AS fab,
+					$qryLayAttributes="SELECT GROUP_CONCAT(DISTINCT(CONCAT('''', jca.jm_docket_id, '''' ))) AS docketLines,SUM(IF(lpa.attribute_name = 'FABRICRECEIVED', lpa.attribute_value,0)) AS fabRecvd,
 					SUM(IF(attribute_name = 'DAMAGES', attribute_value,0)) AS damages,
 					SUM(IF(attribute_name = 'SHORTAGES', attribute_value,0)) AS shortages 
 					FROM $pps.jm_actual_docket jca 
