@@ -274,7 +274,7 @@
 																	if ($plan_pcs == '' || $plan_pcs == null) {	$plan_pcs = 0;	}
 																	if ($act_pcs == '' || $act_pcs == null) {	$act_pcs = 0;	}
 																	$variation=$act_pcs-$plan_pcs;
-																	$acheivement = round(($act_pcs*100/div_by_zero($plan_pcs)/100),0);
+																	$acheivement = round(($act_pcs*100/div_by_zero($plan_pcs)),0);
 																	echo "<tr>
 																			<td>$team</td>
 																			<td>$style</td>
@@ -288,7 +288,7 @@
 																}
 															}
 															$variation_tot=$act_pcs_tot-$plan_pcs_tot;
-															$acheivement_tot = round(($act_pcs_tot*100/div_by_zero($plan_pcs_tot)/100),0);
+															$acheivement_tot = round(($act_pcs_tot*100/div_by_zero($plan_pcs_tot)),0);
 															echo "<tr style=\"background-color:lightgreen;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;\">
 																	<td colspan=2>$section_display_name</td>
 																	<td>$plan_pcs_tot</td>
@@ -457,7 +457,7 @@
 																	if ($plan_pcs == '' || $plan_pcs == null) {	$plan_pcs = 0;	}
 																	if ($act_pcs == '' || $act_pcs == null) {	$act_pcs = 0;	}
 																	$variation=$act_pcs-$plan_pcs;
-																	$acheivement = round(($act_pcs*100/div_by_zero($plan_pcs)/100),0);
+																	$acheivement = round(($act_pcs*100/div_by_zero($plan_pcs)),0);
 																	echo "<tr>
 																			<td>$team</td>
 																			<td>$style</td>
@@ -471,7 +471,7 @@
 																}
 															}
 															$variation_tot=$act_pcs_tot-$plan_pcs_tot;
-															$acheivement_tot = round(($act_pcs_tot*100/div_by_zero($plan_pcs_tot)/100),0);
+															$acheivement_tot = round(($act_pcs_tot*100/div_by_zero($plan_pcs_tot)),0);
 															echo "<tr style=\"background-color:lightgreen;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;\">
 																	<td colspan=2>$section_display_name</td>
 																	<td>$plan_pcs_tot</td>
