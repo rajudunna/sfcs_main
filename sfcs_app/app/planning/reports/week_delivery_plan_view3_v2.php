@@ -1021,6 +1021,9 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 	// {
 	// 	echo "<div class='alert alert-info'>There are no deliveries in this week.</div>";
 	// }
+	if(mysqli_num_rows($sql_result) == 0){
+		echo "<div class='alert alert-info'>There are no deliveries in this week.</div>";
+	  }
 }
 
 ?>

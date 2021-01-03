@@ -12,29 +12,30 @@ $plantcode = $data['plantcode'];
         //$finishedrolls="SELECT distinct(roll_no) as roll_no,alloc_type_id FROM $bai_pro3.`docket_roll_info` WHERE docket=".$doc_no;
         /**getting jm docket line id based on doc number from jm_docket_line */
         //$qryGetJmDocketLines="SELECT jm_docket_line_id FROM $pps.jm_docket_lines WHERE docket_line_number='$doc_no' AND plant_code='$plantcode' AND is_active=1";
-        $qryGetJmDocketLines="SELECT jdl.`jm_docket_line_id`,jdl.`plies`,jd.`jm_cut_job_id`,jd.`ratio_comp_group_id`,DATE(jdl.created_at) as created_at,ratio_cg.master_po_details_id FROM $pps.jm_dockets jd 
-        LEFT JOIN $pps.jm_docket_lines jdl ON jdl.jm_docket_id=jd.jm_docket_id
-        LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = jd.ratio_comp_group_id
-         WHERE jd.plant_code='$plantcode' AND jdl.docket_line_number='$doc_no'";
+        $qryGetJmDocketLines="SELECT jd.`jm_docket_id`,jd.`plies`,jm_map.`jm_cut_job_id`,jd.`ratio_comp_group_id`,DATE(jd.created_at) as created_at,ratio_cg.master_po_details_id FROM $pps.jm_dockets jd
+        LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = jd.ratio_comp_group_id LEFT JOIN $pps.jm_cut_docket_map jm_map ON jm_map.jm_docket_id=jd.jm_docket_id
+        WHERE jd.plant_code='$plantcode' AND jd.docket_number='$doc_no'";
         $GetJmDocketLinesresult = mysqli_query($link_new,$qryGetJmDocketLines);
+        //echo "</br>testing";
         if(mysqli_num_rows($GetJmDocketLinesresult) > 0)
         {   
+            //echo "</br>Loop";
             while($docketLinesRow = mysqli_fetch_array($GetJmDocketLinesresult))
             {
-                $jmDocketLineId = $docketLinesRow['jm_docket_line_id'];
+                $jmDocketLineId = $docketLinesRow['jm_docket_id'];
                 $ratio_comp_group_id = $docketLinesRow['ratio_comp_group_id'];
                 $jm_cut_job_id = $docketLinesRow['jm_cut_job_id'];
                 $master_po_details_id = $docketLinesRow['master_po_details_id'];
             }
             /**getting lay plies to verify cut qty reporting done or not */
-            $qryGetlpLay="SELECT plies,lp_lay_id FROM $pps.lp_lay WHERE jm_docket_line_id='$jmDocketLineId' AND plant_code='$plantcode' AND is_active=1";
+            $qryGetlpLay="SELECT plies,jm_ad_id FROM $pps.jm_actual_docket WHERE jm_docket_id='$jmDocketLineId' AND plant_code='$plantcode' AND is_active=1";
             $getLpLayresult = mysqli_query($link_new,$qryGetlpLay);
             if(mysqli_num_rows($getLpLayresult) > 0)
             {   
                 $totalPlies=0;
                 while($lpLayRow = mysqli_fetch_array($getLpLayresult))
                 {
-                    $lpLayId[] = $lpLayRow['lp_lay_id'];
+                    $lpLayId[] = $lpLayRow['jm_ad_id'];
                     $totalPlies = $totalPlies+$lpLayRow['plies'];
                 }
 
@@ -74,7 +75,7 @@ $plantcode = $data['plantcode'];
                     //     END) AS existed
                     // FROM $bai_rm_pj1.`fabric_cad_allocation` left join `bai_rm_pj1`.`store_in` on `bai_rm_pj1`.`fabric_cad_allocation`.roll_id=`bai_rm_pj1`.`store_in`.tid left join `bai_pro3`.`docket_roll_info` on `bai_pro3`.`docket_roll_info`.alloc_type_id=`bai_rm_pj1`.`fabric_cad_allocation`.tran_pin WHERE doc_no='".$doc_no."' group by roll_id" ; 
                     // echo $docketrolls;
-                    $docketrolls="SELECT lp_roll_id,roll_no,plies,lay_sequence FROM $pps WHERE lp_lay_id IN ( '" . implode( "', '" , $lpLayId ) . "' ) AND plant_code='$plantcode' AND is_active=1";
+                    $docketrolls="SELECT lp_roll_id,roll_no,plies,lay_sequence FROM $pps.lp_roll WHERE jm_ad_id IN ( '" . implode( "', '" , $lpLayId ) . "' ) AND plant_code='$plantcode' AND is_active=1";
                     $docketrollsresult = mysqli_query($link_new,$docketrolls);
                     $response_data=array();
                     if(mysqli_num_rows($docketrollsresult) > 0){
@@ -167,7 +168,7 @@ $plantcode = $data['plantcode'];
             {
                 //$checkdocket="SELECT * FROM $bai_pro3.`plandoc_stat_log` WHERE doc_no=".$doc_no;
                 /**check entered docket existing or not in requested table*/
-                $checkdocket="SELECT plan_lot_ref FROM $pps.requested_dockets WHERE jm_docket_line_id='$jmDocketLineId' AND plant_code='$plantcode' AND is_active=1";
+                $checkdocket="SELECT plan_lot_ref FROM $pps.requested_dockets WHERE jm_docket_id='$jmDocketLineId' AND plant_code='$plantcode' AND is_active=1";
                 $checkdocketresult = mysqli_query($link_new,$checkdocket);
                     if(mysqli_num_rows($checkdocketresult) > 0)
                     {
@@ -179,7 +180,8 @@ $plantcode = $data['plantcode'];
                                     // $mlength="SELECT mklength FROM $bai_pro3.`order_cat_doc_mk_mix` WHERE doc_no=".$doc_no;
                                     // $mlengthresult = mysqli_query($link,$mlength);
                                     // $marklength = mysqli_fetch_array($mlengthresult);
-                                    $qry_lp_markers="SELECT `length`,`width`,`efficiency`,`marker_version`,`marker_type_name`,`pattern_version`,`perimeter`,`remark1`,`remark2`,`remark3`,`remark4` FROM $pps.`lp_markers` WHERE `ratio_wise_component_group_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plantcode' AND is_active=1";
+                                    $qry_lp_markers="SELECT `length`,`width`,`efficiency`,`marker_version`,`marker_type_name`,`pattern_version`,`perimeter`,`remark1`,`remark2`,`remark3`,`remark4` FROM $pps.`lp_markers` WHERE `lp_ratio_cg_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plantcode' AND is_active=1";
+                                    //echo $qry_lp_markers;
                                     $lp_markers_result=mysqli_query($link_new, $qry_lp_markers) or exit("Sql Errorat_lp_markers".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     $lp_markers_num=mysqli_num_rows($lp_markers_result);
                                     if($lp_markers_num>0){
@@ -189,7 +191,7 @@ $plantcode = $data['plantcode'];
                                         }
                                     }
                                     // $docketrolls="SELECT lay_sequence,reporting_plies,damages,joints,endbits,shortages,fabric_return,allocated_qty,ref2,ref4 AS shade,roll_width,roll_id,fabric_cad_allocation.tran_pin as alloc_type_id FROM $bai_rm_pj1.`fabric_cad_allocation` left join `bai_rm_pj1`.`store_in` on `bai_rm_pj1`.`fabric_cad_allocation`.roll_id=`bai_rm_pj1`.`store_in`.tid left join `bai_pro3`.`docket_roll_info` on `bai_pro3`.`docket_roll_info`.roll_no=`bai_rm_pj1`.`fabric_cad_allocation`.roll_id AND `bai_pro3`.`docket_roll_info`.docket=`bai_rm_pj1`.`fabric_cad_allocation`.doc_no WHERE doc_no='".$doc_no ."' order by `bai_rm_pj1`.`store_in`.ref4, bai_rm_pj1.fabric_cad_allocation.allocated_qty";
-                                    $docketrolls="SELECT allocated_qty,ref2,ref4 AS shade,roll_width,roll_id,fabric_cad_allocation.tran_pin as alloc_type_id FROM $wms.`fabric_cad_allocation` 
+                                    $docketrolls="SELECT allocated_qty,ref2,ref4 AS shade,roll_width,roll_id,fabric_cad_allocation.tran_id as alloc_type_id FROM $wms.`fabric_cad_allocation` 
                                     left join $wms.`store_in` on $wms.`fabric_cad_allocation`.roll_id=$wms.`store_in`.tid 
                                     WHERE $wms.fabric_cad_allocation.doc_no='".$jmDocketLineId ."' AND $wms.fabric_cad_allocation.plant_code='$plantcode' order by $wms.`store_in`.ref4, $wms.fabric_cad_allocation.allocated_qty";
                                     //echo  $docketrolls;

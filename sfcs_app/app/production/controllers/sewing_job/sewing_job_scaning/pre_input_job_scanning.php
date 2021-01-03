@@ -5,6 +5,7 @@ include(getFullURLLevel($_GET['r'],'common/config/enums.php',5,'R'));
 $url = getFullURL($_GET['r'],'scan_job.php','N');
 
 $plant_code = $_SESSION['plantCode'];
+// $plant_code = 'Q01';
 $username=$_SESSION['userName'];
 $configuration_bundle_print_array = [0=>'Bundle Level',1=>'Job Level'];
 // the job_type is OperationCategory enum 
@@ -50,7 +51,7 @@ if ($job_type !== OperationCategory::SEWING && $job_type !== OperationCategory::
                         <select class='form-control' name = 'shift' required>
                             <option value="">Select Shift</option>
                             <?php 
-                            $shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plant_code' and is_active=1";
+                            $shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plant_code' and is_active=1 order By shift_code";
                             $shift_sql_res=mysqli_query($link, $shift_sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                             while($shift_row = mysqli_fetch_array($shift_sql_res))
                             {

@@ -13,7 +13,7 @@
 	$sno = 1; 
 
 	if ($norows > 0) {
-		echo "<table id='tbl_packing_method' class='table'><thead><tr><th>S.No</th><th>Complaint Reason</th><th>Complaint Classification</th><th>Complaint Category</th><th>Status</th><th> Edit / Delete </th></tr></thead><tbody>";
+		echo "<table id='tbl_packing_method' class='table'><thead><tr><th>Complaint Reason</th><th>Complaint Classification</th><th>Complaint Category</th><th>Status</th><th> Edit / Delete </th></tr></thead><tbody>";
 	
 		while($row=mysqli_fetch_array($sql_result)) {
 			$complaint_reason=$row["complaint_reason"];
@@ -31,7 +31,7 @@
 			
 			$edit_url = getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
 			$delete_url = getFullURL($_GET['r'],'delete_inspection_supplier_claim_reasons.php','N');
-			echo "<tr><td>".$sno++."</td><td>".chunk_split($row["complaint_reason"], 30, '<br/>')." </td><td>".chunk_split($row["Complaint_clasification"], 30, '<br/>')."</td><td>".chunk_split($row["complaint_category"], 30, '<br/>')."</td><td>".$cat_status."</td>
+			echo "<tr><td>".chunk_split($row["complaint_reason"], 30, '<br/>')." </td><td>".chunk_split($row["Complaint_clasification"], 30, '<br/>')."</td><td>".chunk_split($row["complaint_category"], 30, '<br/>')."</td><td>".$cat_status."</td>
 			<td><a href='$edit_url&tid=$tid&complaint_reason=$complaint_reason&complaint_clasification=$complaint_clasification&complaint_category=$complaint_category&status=$cat_status' class='btn btn-warning btn-xs editor_edit'>Edit</a> / 
 			<a href='$delete_url&tid=$tid&complaint_reason=$complaint_reason&complaint_clasification=$complaint_clasification&complaint_category=$complaint_category&status=$cat_status' class='btn btn-danger btn-xs' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
 		}
@@ -51,21 +51,24 @@ $(document).ready(function() {
 function confirm_delete(e,t)
     {
         e.preventDefault();
-        var v = sweetAlert({
-        title: "Are you sure to Delete the Record?",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-        buttons: ["No, Cancel It!", "Yes, I am Sure!"],
-        }).then(function(isConfirm){
-        if (isConfirm) {
-        window.location = $(t).attr('href');
-        return true;
-        } else {
-        sweetAlert("Request Cancelled",'','error');
-        return false;
-        }
-        });
+		swal({
+					title: "Are you sure?",
+					text: "Do You Want To Delete the Record?",
+					type: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#DD6B55",confirmButtonText: "Yes, I Want To Delete",
+					cancelButtonText: "No, Cancel!",
+					closeOnConfirm: false,
+					closeOnCancel: false }, 
+				 function(isConfirm){ 
+					if (isConfirm) {
+                        window.location = $(t).attr('href');
+        				return true;
+					} else {
+						sweetAlert("Request Cancelled",'','error');
+        				return false;
+					}
+				 });
     }
 </script>
 <style>

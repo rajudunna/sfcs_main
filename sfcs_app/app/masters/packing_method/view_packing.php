@@ -15,7 +15,7 @@ $sno =1;
 $url=getFullURL($_GET['r'],'create_packing.php','N');
 if ($result->num_rows > 0) {
     echo "<div class='panel panel-primary'><div class='panel-heading'>View Packing Method Details</div><div class='panel-body'><form name ='delete'>";
-    echo "<table id='table_one' class='table'><thead><tr><th>S.No</th><th>Packing Method Code</th><th>Packing Method Description</th><th>SMV</th><th>Status</th><th>Control</th></tr></thead><tbody>";
+    echo "<table id='table_one' class='table'><thead><tr><th>Packing Method Code</th><th>Packing Method Description</th><th>SMV</th><th>Status</th><th>Control</th></tr></thead><tbody>";
     // output data of each row
     while($row = $result->fetch_assoc()) {
 		$rowid=$row["id"];
@@ -28,7 +28,7 @@ if ($result->num_rows > 0) {
         // }else{
         //     $cat_status = "In-Active";
         // }
-        echo "<tr><td>".$sno++."</td><td>".$row["packing_method_code"]." </td><td>".$row["packing_description"]."</td><td>".$row["smv"]."</td><td>".$row["status"]."</td><td><a href='$url&row_id=$rowid&packing_method_code=$packing_method_code&packing_description=$packing_description&smv=$smv&status=$status' class='btn btn-warning btn-xs editor_edit'>Edit</a></td></tr>";
+        echo "<tr><td>".$row["packing_method_code"]." </td><td>".$row["packing_description"]."</td><td>".$row["smv"]."</td><td>".$row["status"]."</td><td><a href='$url&row_id=$rowid&packing_method_code=$packing_method_code&packing_description=$packing_description&smv=$smv&status=$status' class='btn btn-warning btn-xs editor_edit'>Edit</a></td></tr>";
     }
     echo "</tbody></table></form></div></div>";
 } else {

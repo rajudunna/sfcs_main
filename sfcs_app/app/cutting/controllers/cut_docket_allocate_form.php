@@ -212,7 +212,7 @@ if(isset($_POST['submit']))
 	$sno=1;	
 	if($sub_po!='' && $plant_code!='')
 	{
-		$qry_cut_numbers="SELECT jm_cut_job_id FROM $pps.jm_cut_job WHERE plant_code='$plant_code' AND po_number='$sub_po' GROUP BY cut_number";
+		$qry_cut_numbers="SELECT Distinct(jm_cut_job_id) AS jm_cut_job_id FROM $pps.jm_cut_job WHERE plant_code='$plant_code' AND po_number='$sub_po' GROUP BY cut_number";
 		$toget_cut_result=mysqli_query($link_new, $qry_cut_numbers) or exit("Sql Error at cutnumbers".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$toget_cut_num=mysqli_num_rows($toget_cut_result);
 		$count = 0;
@@ -283,6 +283,8 @@ if(isset($_POST['submit']))
 								$s++;
 							}
 						}
+						//echo $ratio_sum;
+						//$cum_qty=0;
 						$data['cut']['qty'] = ($ratio_sum * $data['cut']['plies']);
 						$cum_qty += $data['cut']['qty'];
 						$data['cut']['cum_qty'] = $cum_qty;
@@ -366,9 +368,9 @@ if(isset($_POST['submit']))
 					$count++;
 				}
 				echo "<tr><td>".$count."</td><td>".implode(",",array_unique($data['cut']['color']))."</td><td>".$data['cut']['sewing_job']."</td><td>".$data['cut']['cutjob']."</td><td>".$data['cut']['doc_no']."</td>";
-				// foreach($data['cut']['size'] as $key =>$value){
-				// 	echo "<td>".$data['cut'][$value]."</td>";
-				// }
+				foreach($data['cut']['size'] as $key =>$value){
+					echo "<td>".$data['cut'][$value]."</td>";
+				}
 				echo "<td>".$data['cut']['plies']."</td>";
 				echo "<td>".$data['cut']['qty']."</td>";
 				echo "<td>".$data['cut']['cum_qty']."</td>";

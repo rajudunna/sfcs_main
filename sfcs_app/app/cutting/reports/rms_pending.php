@@ -86,8 +86,7 @@ if(isset($_POST['show']))
 	$s_date=$_POST['sdate'];
 	$e_date=$_POST['edate'];
 	//get cut 
-	$get_cut_jobs="select jm_cut_job_id,cut_number,po_number from $pps.jm_cut_job where date(created_at) between '".$s_date."' and '".$e_date."' and plant_code='$plantcode' and is_active=true";
-	// echo $get_cut_jobs;
+	$get_cut_jobs="select jm_cut_job_id,cut_number,po_number from $pps.jm_cut_job where date(created_at) between '".$s_date."' and '".$e_date."' and plant_code='$plantcode' and is_active=true ORDER BY cut_number ASC";
 	$get_cut_jobs_result=mysqli_query($link, $get_cut_jobs) or exit("Sql Error--1x==".$get_cut_jobs.mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($get_cut_jobs_result)>0)
 	{
@@ -196,102 +195,90 @@ if(isset($_POST['show']))
 				}	
 
 				//get component_group_id from ratio_id
-				$get_component_id="select component_group_id from $pps.lp_ratio_component_group where ratio_id in ('".implode("','" , $ratio_id)."') and plant_code='$plantcode' and is_active=true";
-				// echo $get_component_id;
+				$get_component_id="select component_group_id,cg_name from $pps.lp_ratio_component_group where ratio_id in ('".implode("','" , $ratio_id)."') and plant_code='$plantcode' and is_active=true GROUP BY cg_name";
 				$get_component_id_result=mysqli_query($link, $get_component_id) or exit("Sql Error--1x==".$get_component_id.mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($get_component_id_result)>0)
 				{
+					$component_group_id = [];
+					$component_group_name = [];
 					while($get_component_id_row=mysqli_fetch_array($get_component_id_result))
 					{
-						$component_group_id=$get_component_id_row['component_group_id'];
-
-						//get main component from master_po_component_group_id
-						$get_component_name="select component_group_name from $pps.lp_component_group where lp_cg_id='$component_group_id' and is_main_component_group =true and is_active=true";
-						// echo $get_component_name;
-						$get_component_name_result=mysqli_query($link, $get_component_name) or exit("Sql Error--1x==".$get_component_name.mysqli_error($GLOBALS["___mysqli_ston"]));
-						if(mysqli_num_rows($get_component_name_result)>0)
+						array_push($component_group_name,$get_component_id_row['cg_name']);
+					}						
+					// var_dump($component_group_name);
+					//get docket numbers from cut number
+					$open_dockets_list = array();
+					$pending_dockets_list = array();
+					$completed_list = array();
+					$open_dockets = '';
+					$pending_dockets = '';
+					$completed_dockets = '';
+					$completed = '';
+					$component_groups = "'".implode("','" , $component_group_name)."'";
+					$get_docket="SELECT jd.jm_docket_id,jd.docket_number,jd.component_group_name FROM $pps.jm_dockets jd LEFT JOIN $pps.jm_cut_docket_map jcdm ON jcdm.jm_docket_id=jd.jm_docket_id  WHERE jcdm.jm_cut_job_id='$jm_cut_job_id' and jd.component_group_name In($component_groups) AND jd.plant_code='$plantcode' AND jd.is_active=true order by jd.docket_number";
+					// echo $get_docket.'<br/>';
+					$get_docket_result=mysqli_query($link, $get_docket) or exit("Sql Error--1x== get_docket".mysqli_error($GLOBALS["___mysqli_ston"]));
+					if(mysqli_num_rows($get_docket_result)>0)
+					{
+						while($get_docket_row=mysqli_fetch_array($get_docket_result))
 						{
-							while($get_component_name_row=mysqli_fetch_array($get_component_name_result))
+							$jm_docket_id = $get_docket_row['jm_docket_id'];
+							$dockets_list[]= $get_docket_row['component_group_name'].':'.$get_docket_row['docket_number'];
+							$get_pending_dockets="select cut_report_status from $pps.jm_actual_docket where jm_docket_id='$jm_docket_id' and plant_code='$plantcode' and is_active=true limit 1";
+							// echo $get_pending_dockets.'<br/>';
+							$get_pending_dockets_result=mysqli_query($link, $get_pending_dockets) or exit("Sql Error--1x==".$get_pending_dockets.mysqli_error($GLOBALS["___mysqli_ston"]));
+							if(mysqli_num_rows($get_pending_dockets_result) > 0)
 							{
-								$component_group_name=$get_component_name_row['component_group_name'];
-								
-								//get docket numbers from cut number
-								$open_dockets_list = array();
-								$pending_dockets_list = array();
-								$completed_list = array();
-								$open_dockets = '';
-								$pending_dockets = '';
-								$completed_dockets = '';
-								$completed = '';
-								$get_docket="SELECT jd.jm_docket_id,jd.docket_number FROM $pps.jm_dockets jd LEFT JOIN $pps.jm_cut_docket_map jcdm ON jcdm.jm_docket_id=jd.jm_docket_id  WHERE jcdm.jm_cut_job_id='$jm_cut_job_id' AND jd.plant_code='$plantcode' AND jd.is_active=true order by jd.docket_number";
-								// echo $get_docket.'<br/>';
-								$get_docket_result=mysqli_query($link, $get_docket) or exit("Sql Error--1x== get_docket".mysqli_error($GLOBALS["___mysqli_ston"]));
-								if(mysqli_num_rows($get_docket_result)>0)
+								while($get_pending_docket_row=mysqli_fetch_array($get_pending_dockets_result))
 								{
-									while($get_docket_row=mysqli_fetch_array($get_docket_result))
-									{
-										$jm_docket_id = $get_docket_row['jm_docket_id'];
-										$dockets_list[]= $component_group_name.':'.$get_docket_row['docket_number'];
-										$get_pending_dockets="select cut_report_status from $pps.jm_actual_docket where jm_docket_id='$jm_docket_id' and plant_code='$plantcode' and is_active=true limit 1";
-										// echo $get_pending_dockets.'<br/>';
-										$get_pending_dockets_result=mysqli_query($link, $get_pending_dockets) or exit("Sql Error--1x==".$get_pending_dockets.mysqli_error($GLOBALS["___mysqli_ston"]));
-										if(mysqli_num_rows($get_pending_dockets_result) > 0)
-										{
-											while($get_pending_docket_row=mysqli_fetch_array($get_pending_dockets_result))
-											{
-												if($get_pending_docket_row['cut_report_status']=='OPEN'){
-													$pending_dockets_list[] = $component_group_name.':'.$get_docket_row['docket_number'];
-													$completed = 1;
-												} 
-												else if($get_pending_docket_row['cut_report_status']=='DONE'){
-													$completed_dockets_list[] =$component_group_name.':'.$get_docket_row['docket_number'];
-													$completed = 1;
-												} 
-											}
-										}else {
-											$open_dockets_list[] =$component_group_name.':'.$get_docket_row['docket_number'];
-										}
-									}
-									
-									$open_dockets = implode(",",$open_dockets_list);
-									$pending_dockets = implode(",",$pending_dockets_list);
-									$completed_dockets = implode(",",$completed_dockets_list);
-									
-									echo "<tr>";
-									echo "<td>".$style."</td>";
-									echo "<td>".$master_po_description."</td>";
-									echo "<td>".$po_description."</td>";
-									echo "<td style='word-break:break-all;'>".$schedules."</td>";
-									echo "<td>".$color."</td>";
-									echo "<td>".$cut_number."</td>";
-									echo "<td>".$open_dockets."</td>";
-									echo "<td>".$pending_dockets."</td>";
-									echo "<td>".$completed_dockets."</td>";
-									echo "</tr>";
+									if($get_pending_docket_row['cut_report_status']=='OPEN'){
+										$pending_dockets_list[] = $get_docket_row['component_group_name'].':'.$get_docket_row['docket_number'];
+										$completed = 1;
+									} 
+									else if($get_pending_docket_row['cut_report_status']=='DONE'){
+										$completed_dockets_list[] =$get_docket_row['component_group_name'].':'.$get_docket_row['docket_number'];
+										$completed = 1;
+									} 
 								}
-
-								Unset($ratio_id);
-								unset($jm_cut_job_id);
-								unset($cut_number);
-								unset($po_number);
-								unset($po_description);
-								unset($master_po_number);
-								unset($style);	
-								unset($colors);	
-								unset($schedule);	
-								unset($component_group_id);	
-								unset($component_group_name);	
-								unset($open_dockets);	
-								unset($pending_dockets);	
-								unset($completed_dockets);	
-								unset($pending_dockets_list);	
-								unset($completed_dockets_list);	
-								unset($open_dockets_list);	
+							}else {
+								$open_dockets_list[] =$get_docket_row['component_group_name'].':'.$get_docket_row['docket_number'];
 							}
 						}
+						
+						$open_dockets = implode(",",$open_dockets_list);
+						$pending_dockets = implode(",",$pending_dockets_list);
+						$completed_dockets = implode(",",$completed_dockets_list);
+						
+						echo "<tr>";
+						echo "<td>".$style."</td>";
+						echo "<td>".$master_po_description."</td>";
+						echo "<td>".$po_description."</td>";
+						echo "<td style='word-break:break-all;'>".$schedules."</td>";
+						echo "<td>".$color."</td>";
+						echo "<td>".$cut_number."</td>";
+						echo "<td>".$open_dockets."</td>";
+						echo "<td>".$pending_dockets."</td>";
+						echo "<td>".$completed_dockets."</td>";
+						echo "</tr>";
 					}
+					unset($ratio_id);
+					// unset($jm_cut_job_id);
+					unset($cut_number);
+					unset($po_number);
+					unset($po_description);
+					unset($master_po_number);
+					unset($style);	
+					unset($colors);	
+					unset($schedule);	
+					unset($component_group_id);	
+					unset($component_group_name);	
+					unset($open_dockets);	
+					unset($pending_dockets);	
+					unset($completed_dockets);	
+					unset($pending_dockets_list);	
+					unset($completed_dockets_list);	
+					unset($open_dockets_list);	
 				}
-
 			}
 		}
 		

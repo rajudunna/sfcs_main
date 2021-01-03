@@ -22,17 +22,18 @@
     $ref_no=time();
     //echo $ref_no;
 
-    if($_GET['module'])
+    if($_POST['module'])
     {
-        $module=$_GET['module']; 
-        $plantCode=$_GET['plantCode']; 
-        $user_name=$_GET['username']; 
+        $module=$_POST['module']; 
+        $plantCode=$_POST['plantCode']; 
+        $user_name=$_POST['username']; 
     }
     else
     {
         $module=$_POST['module'];
     }
-
+   
+    //
     /**
      * getting setion name wrt section id
      */
@@ -342,19 +343,22 @@ $(document).ready(function(){
                         if(res.status)
                         {
                             swal('','Bundle Transfered Successfully','success')
-                            setTimeout(function(){window.location.replace("mod_rep.php?module="+module1+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
+                            setTimeout("window.close()", 5000);
+                            // setTimeout(function(){window.location.replace("mod_rep.php?module="+module1+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
                             
                         }
                         else
                         {
                             swal('',res.internalMessage,'error');
-                            setTimeout(function(){window.location.replace("mod_rep.php?module="+module1+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
+                            setTimeout("window.close()", 5000);
+                            // setTimeout(function(){window.location.replace("mod_rep.php?module="+module1+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
                         }                       
                         //$('#loading-image').hide();
                     },
                     error: function(res){
                         swal('Error in getting data');
-                        setTimeout(function(){window.location.replace("mod_rep.php?module="+module1+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
+                        setTimeout("window.close()", 5000);
+                        // setTimeout(function(){window.location.replace("mod_rep.php?module="+module1+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
                         //$('#loading-image').hide();
                     }
                 });
