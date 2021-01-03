@@ -55,7 +55,7 @@
                             **/
                             $department = DepartmentTypeEnum::SEWING;
                             $result_worksation_id=getWorkstations($department,$plant_code);
-                            $workstations=$result_worksation_id['workstation'];
+                            $workstations=$result_worksation_id['workstation_codes'];
                             foreach($workstations as $work_id=>$work_des)
                             {
                                 echo "<option value='".$work_id."&".$work_des."'>".$work_des."</option>";
