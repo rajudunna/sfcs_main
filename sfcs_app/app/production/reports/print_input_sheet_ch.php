@@ -284,10 +284,14 @@
                     {
                         $get_details="SELECT sum(if(operation_id=".$op_code.",rejected_quantity,0)) as rejected_qty FROM $pts.transaction_log WHERE style in ('$styles') AND schedule=('$schedules') AND color= ('$colors') AND size = '$siz' AND parent_job ='$job_number[$job_id]' and plant_code='$plantcode' AND is_active=1 GROUP BY size";
                         $result5 = $link->query($get_details);
-                        while($row5 = $result5->fetch_assoc())
+                        $result5_num=mysqli_num_rows($result5);
+                        if($result5_num > 0)
                         {
-                            echo "<td>".$row5['rejected_qty']."</td>";
-                            $tot += $row5['rejected_qty'];
+                            while($row5 = $result5->fetch_assoc())
+                            {
+                                echo "<td>".$row5['rejected_qty']."</td>";
+                                $tot += $row5['rejected_qty'];
+                            }
                         }
                     }
                 } else {
@@ -334,26 +338,37 @@
         $cut_recevied_quantity = 0;
         $cut_report_details="SELECT sum(if(operation=".$cut_operation.",good_quantity,0)) as good_quantity FROM $pts.transaction_log WHERE style in ('$styles') AND schedule=('$schedules') AND color= ('$colors') and operation=$cut_operation and plant_code='$plantcode' AND is_active=1 GROUP BY size";
         $result6 = $link->query($cut_report_details);
-        while($row6 = $result6->fetch_assoc())
+        $result6_num=mysqli_num_rows($result6);
+        if($result6_num > 0)
         {
-            $cut_recevied_quantity += $row6['good_quantity'];
+            while($row6 = $result6->fetch_assoc())
+            {
+                $cut_recevied_quantity += $row6['good_quantity'];
+            }
         }
 
         $tot_in = 0;
         $tot_in_details="SELECT sum(if(operation=".$input_ops.",good_quantity,0)) as good_quantity FROM $pts.transaction_log WHERE style in ('$styles') AND schedule=('$schedules') AND color= ('$colors') and operation=$input_ops and plant_code='$plantcode' AND is_active=1 GROUP BY size";
         $result7 = $link->query($tot_in_details);
-        while($row7 = $result7->fetch_assoc())
-        {
-            $tot_in += $row7['good_quantity'];
+        $result7_num=mysqli_num_rows($result7);
+        if($result7_num > 0){
+            while($row7 = $result7->fetch_assoc())
+            {
+                $tot_in += $row7['good_quantity'];
+            }
         }
 
         $tot_out = 0;
         $tot_out_details="SELECT sum(if(operation=".$out_put_ops.",good_quantity,0)) as good_quantity FROM $pts.transaction_log WHERE style in ('$styles') AND schedule=('$schedules') AND color= ('$colors') and operation=$out_put_ops and plant_code='$plantcode' AND is_active=1 GROUP BY size";
         $result8 = $link->query($tot_out_details);
-        while($row8 = $result8->fetch_assoc())
-        {
-            $tot_out += $row8['good_quantity'];
+        $result8_num=mysqli_num_rows($result8);
+        if($result8_num > 0){
+            while($row8 = $result8->fetch_assoc())
+            {
+                $tot_out += $row8['good_quantity'];
+            }
         }
+        
         $balance = $cut_recevied_quantity - $tot_in;
         $tot_balance = $tot_in - $tot_out;
         echo "<table class='table table-bordered'><tr style='background-color:#286090;color:white;'><th>Order Quantity</th><th>Cut Reported Quantity</th><th>Total Sewing IN</th><th>Total Sewing OUT</th><th>Balance to Sewing In</th><th>Balance to Sewing Out</th></tr>";

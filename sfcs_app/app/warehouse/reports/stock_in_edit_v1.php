@@ -252,7 +252,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 				}
 				else
 				{
-					echo '<td>'.leading_zeros($tid,8).'</td>';
+					echo '<td>'.leading_zeros($barcode_number,8).'</td>';
 					echo "<td>$location</td><td>$box</td><td>$qty_rec</td><td>$available</td>";
 				}
 				
