@@ -44,7 +44,7 @@
 	{
 		$emp_id = $_GET['emp_id'];
 		$team_id = $_GET['team_id'];
-		$carton_id = $_GET['carton_id'];
+		$carton_id = trim($_GET['carton_id']);
 		$b_op_id = $_GET['operation_id'];
 		//echo $b_op_id;
 		$shift = $_GET['shift'];
