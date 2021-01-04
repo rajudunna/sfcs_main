@@ -261,71 +261,71 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 																// Break reasons 
 																$breakResons = array(20, 21, 22);
 																// Get distinct reason id's form hourlly downtime for every hour
-																$sqlReasons = "SELECT distinct(reason_id) FROM $pps.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('" . $start . "') AND TIME('" . $end . "') AND team='$workstationId' AND plant_code='$plantCode' ";
-																$resReasons = mysqli_query($link, $sqlReasons) or exit("sql Error hourly down time-". mysqli_error($link));
-																$k = 0;
-																while ($rowsReason = mysqli_fetch_array($resReasons)) {
-																	$reasons[$k] = $rowsReason['reason_id'];
-																	$k++;
-																}
+																// $sqlReasons = "SELECT distinct(reason_id) FROM $pps.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('" . $start . "') AND TIME('" . $end . "') AND team='$workstationId' AND plant_code='$plantCode' ";
+																// $resReasons = mysqli_query($link, $sqlReasons) or exit("sql Error hourly down time-". mysqli_error($link));
+																// $k = 0;
+																// while ($rowsReason = mysqli_fetch_array($resReasons)) {
+																// 	$reasons[$k] = $rowsReason['reason_id'];
+																// 	$k++;
+																// }
 
-																$only_others = sizeof(array_intersect($master_resons, $reasons));
-																$only_breaks = sizeof(array_intersect($break_resons, $reasons));
-																$color = 'white';
-																if ($only_breaks > 0 && $only_others > 0) {
-																	$bgColor = '#D4AC0D';
-																} else if ($only_breaks > 0 && $only_others == 0) {
-																	$bgColor = '#D40D86';
-																} else {
+																// $only_others = sizeof(array_intersect($master_resons, $reasons));
+																// $only_breaks = sizeof(array_intersect($break_resons, $reasons));
+																// $color = 'white';
+																// if ($only_breaks > 0 && $only_others > 0) {
+																// 	$bgColor = '#D4AC0D';
+																// } else if ($only_breaks > 0 && $only_others == 0) {
+																// 	$bgColor = '#D40D86';
+																// } else {
 																	$bgColor = '#DD3636';
-																}
+																// }
 																// Get reason count for hour
-																$sqlReasonsCount = "SELECT count(reason_id) as reasons_count FROM $pps.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('" . $start . "') AND TIME('" . $end . "') AND team='$workstationId' AND plant_code='$plantCode' ";
-																// echo $sql6_2.'<br><br>';
-																$resReasonsCount = mysqli_query($link, $sqlReasonsCount) or exit("sql Error hourly down time-". mysqli_error($link));;
-																$rowCount = mysqli_fetch_row($resReasonsCount);
-																if ($rowCount[0] > 0) {
-																	$displayQty = 0;
-																} else {
-																	if (($start > date('H') && $frdate == date('Y-m-d'))) {
+																// $sqlReasonsCount = "SELECT count(reason_id) as reasons_count FROM $pps.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('" . $start . "') AND TIME('" . $end . "') AND team='$workstationId' AND plant_code='$plantCode' ";
+																// // echo $sql6_2.'<br><br>';
+																// $resReasonsCount = mysqli_query($link, $sqlReasonsCount) or exit("sql Error hourly down time-". mysqli_error($link));;
+																// $rowCount = mysqli_fetch_row($resReasonsCount);
+																// if ($rowCount[0] > 0) {
+																// 	$displayQty = 0;
+																// } else {
+																// 	if (($start > date('H') && $frdate == date('Y-m-d'))) {
 																		$displayQty = '-';
-																	}
-																}
+																// 	}
+																// }
 															} else {
 																$reasons = array();
 																// Break reasons 
 																$breakResons = array(20, 21, 22);
 																// Get distinct reason id's form hourlly downtime for every hour
-																$sqlReasons = "SELECT distinct(reason_id) FROM $pps.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('" . $start . "') AND TIME('" . $end . "') AND team='$workstationId' AND plant_code='$plantCode' ";
-																$resReasons = mysqli_query($link, $sqlReasons) or exit("sql Error hourly down time-". mysqli_error($link));;
-																$k = 0;
-																while ($rowsReason = mysqli_fetch_array($resReasons)) {
-																	$reasons[$k] = $rowsReason['reason_id'];
-																	$k++;
-																}
+																// $sqlReasons = "SELECT distinct(reason_id) FROM $pps.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('" . $start . "') AND TIME('" . $end . "') AND team='$workstationId' AND plant_code='$plantCode' ";
+																// $resReasons = mysqli_query($link, $sqlReasons) or exit("sql Error hourly down time-". mysqli_error($link));;
+																// $k = 0;
+																// while ($rowsReason = mysqli_fetch_array($resReasons)) {
+																// 	$reasons[$k] = $rowsReason['reason_id'];
+																// 	$k++;
+																// }
 
-																$only_others = sizeof(array_intersect($master_resons, $reasons));
-																$only_breaks = sizeof(array_intersect($break_resons, $reasons));
-																$color = 'white';
-																if ($only_breaks > 0 && $only_others > 0) {
-																	$bgColor = '#D4AC0D';
-																} else if ($only_breaks > 0 && $only_others == 0) {
-																	$bgColor = '#D40D86';
-																} else {
+																// $only_others = sizeof(array_intersect($master_resons, $reasons));
+																// $only_breaks = sizeof(array_intersect($break_resons, $reasons));
+																// $color = 'white';
+																// if ($only_breaks > 0 && $only_others > 0) {
+																// 	$bgColor = '#D4AC0D';
+																// } else if ($only_breaks > 0 && $only_others == 0) {
+																// 	$bgColor = '#D40D86';
+																// } else {
 																	$bgColor = '#DD3636';
-																}
+																// }
 																// Get reason count for hour
-																$sqlReasonsCount = "SELECT count(reason_id) as reasons_count FROM $pps.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('" . $start . "') AND TIME('" . $end . "') AND team='$workstationId' AND plant_code='$plantCode' ";
-																// echo $sql6_2.'<br><br>';
-																$resReasonsCount = mysqli_query($link, $sqlReasonsCount) or exit("sql Error hourly down time-". mysqli_error($link));
-																$rowCount = mysqli_fetch_row($resReasonsCount);
-																if ($rowCount[0] > 0) {
-																	$displayQty = $goodQty;
-																	$ttlQtyForHourly[$j] = $ttlQtyForHourly[$j] + $goodQty;
-																	$totalPcs += $goodQty;
-																} else {
+																// $sqlReasonsCount = "SELECT count(reason_id) as reasons_count FROM $pps.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('" . $start . "') AND TIME('" . $end . "') AND team='$workstationId' AND plant_code='$plantCode' ";
+																// // echo $sql6_2.'<br><br>';
+																// $resReasonsCount = mysqli_query($link, $sqlReasonsCount) or exit("sql Error hourly down time-". mysqli_error($link));
+																// $rowCount = mysqli_fetch_row($resReasonsCount);
+																// if ($rowCount[0] > 0) {
+																// 	$displayQty = $goodQty;
+																// 	$ttlQtyForHourly[$j] = $ttlQtyForHourly[$j] + $goodQty;
+																// 	$totalPcs += $goodQty;
+																// } else {
 																	$displayDownTimeImg = true;
-																}
+																// }
 															}
 														}
 
