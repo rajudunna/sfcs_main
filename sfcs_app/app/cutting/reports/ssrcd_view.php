@@ -822,13 +822,14 @@ if(isset($_POST['submit']))
 												$cnt++;
 											}
 											echo "<td>".$sumqty."</td>";
-											if($actual_plies==$plies){
-												echo "<td> Full Completed </td>";
-											}else if($actual_plies<$plies){
-												echo "<td> Partially Completed</td>";
-											}else if($actual_plies==0){
-												echo "<td> Not Started </td>";
-											}
+											echo "<td>".$cut_report_status."</td>";
+											// if($actual_plies==$plies){
+											// 	echo "<td> Full Completed </td>";
+											// }else if($actual_plies<$plies){
+											// 	echo "<td> Partially Completed</td>";
+											// }else if($actual_plies==0){
+											// 	echo "<td> Not Started </td>";
+											// }
 											
 											// get docket date 
 											$get_docket_date = "SELECT task_attributes.task_header_id, task_header.created_at as docket_date, task_header.updated_at as latest_updated_date, task_header.resource_id FROM $tms.task_attributes left join $tms.task_header on  task_header.task_header_id = task_attributes.task_header_id WHERE attribute_value = '$docket_no' and task_attributes.plant_code = '$plant_code' and task_attributes.task_header_id is not null";
