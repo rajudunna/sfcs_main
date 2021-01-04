@@ -3,6 +3,7 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
 	//$has_permission=haspermission($_GET['r']);
 	$plantcode=$_SESSION['plantCode'];
+	$plantcode='Q01';
 	$username=$_SESSION['userName'];
 ?> 
 <script type="text/javascript"> 
@@ -125,6 +126,7 @@ if(isset($_POST['submit']))
 	$month=$split_date[1];
 	$department_type="SEWING";
 	$reason_type="SEWING";
+	$reason_group="LINE";
 	$result_worksation_id=getWorkstations($department_type,$plantcode);
 	$workstations=$result_worksation_id['workstation'];
 
@@ -216,7 +218,7 @@ if(isset($_POST['submit']))
 				<td>         
 				<?php 
 				echo "<select name='line_reson[".$i."]' class='form-control' id='line_reson".$i."' onchange='check_stat(this.value,$i)'>";
-				$qryLineReasons="SELECT internal_reason_description FROM $mdm.reasons WHERE department_type='$reason_type'"; 
+				$qryLineReasons="SELECT internal_reason_description FROM $mdm.reasons WHERE department_type='$reason_type' and reason_group = '$reason_group'"; 
 				echo "<option value='NIL'>Select Reason</option>";
 				$ResultLineReasons=mysqli_query($link_new, $qryLineReasons) or exit("Sql Error at line Reasons" . mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($row=mysqli_fetch_array($ResultLineReasons)) 
