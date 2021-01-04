@@ -314,8 +314,11 @@ if(isset($_POST['reversesubmit']))
        mysqli_query($link, $updateQry) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
    }
    $updateLayQty = "UPDATE $pps.jm_actual_docket set plies = plies - $lay_plies where jm_ad_id = '$lay_id'";
-   
    mysqli_query($link, $updateLayQty) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+   $updateDocQty = "UPDATE $pps.jm_dockets set fully_reported = false where docket_number = $docket_number";
+   mysqli_query($link, $updateDocQty) or exit("updateDocQty".mysqli_error($GLOBALS["___mysqli_ston"]));
+   
    $url = '?r='.$_GET['r'].'&sidemenu=false';
    echo "<script> sweetAlert('Lay Reversed Successfully!!!','','success'); setTimeout(window.location = '$url', 2000); </script>"; 
 }
