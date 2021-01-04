@@ -198,7 +198,6 @@ $mk_files=array();
 
 
 $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
-// echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 // var_dump($sql_result);
@@ -216,7 +215,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $sql="select *,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where clubbing=$clubbing and pcutno=$cut_no and category=\"$cat_title\" and order_del_no=\"$order_del_no\" and clubbing>0";
-//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -3393,7 +3391,7 @@ tags will be replaced.-->
 	$divide=14;
 	$divide1=$divide;
 	$temp = 0;
-	// $fab_uom = 'Yds';
+	$fab_uom = 'Yds';
 	$temp_len1=0;
 	echo "<th style='border:.5pt solid black;'>Barcode</th>";
 	echo "<th style='border:.5pt solid black;'>Color</th>";
@@ -3773,7 +3771,7 @@ tags will be replaced.-->
 	}
 	echo "</tr>";
 	echo "</table>";
-	
+
   ?>
   
 
@@ -3820,7 +3818,7 @@ tags will be replaced.-->
   <td></td>
   <td class=xl8217319></td>
  </tr>
-
+<?php $fab_lay = $purlength*(1+$cuttable_wastage)*array_sum($plies); ?>
  <tr height=21 style='height:15.75pt'>
   <td height=21 class=xl6417319 style='height:15.75pt'></td>
   <td rowspan=2 colspan=1 class=xl9817319 width=64 style='border-bottom:.5pt solid black;
@@ -3835,7 +3833,7 @@ tags will be replaced.-->
   border-top:none;'><?php echo $actwidth; ?></td>
   <td rowspan=2 class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php echo $cuttable_wastage*100; ?></td>	
-  <td rowspan=2 colspan=1 class=xl10017319 width=70 style='border-bottom:.5pt solid black;'><?php  ?></td>
+  <td rowspan=2 colspan=1 class=xl10017319 width=70 style='border-bottom:.5pt solid black;'><?php echo $fab_lay; ?></td>
   <td rowspan=2 colspan=1 class=xl10017319 width=64 style='border-bottom:.5pt solid black;width:48pt'><?php echo $fab_uom; ?></td>
   <td rowspan=2 colspan=2  class=xl10017319 width=64 style='border-bottom:.5pt solid black;
   width:48pt'><?php $fab_bind = round($fab_total,2); echo round($fab_total,2);echo '<br/>('.$fab_uom.')'; ?></td>
@@ -3899,9 +3897,15 @@ tags will be replaced.-->
   <td colspan=16 rowspan=2 class=xl9117319 style='border-right:.5pt solid black;
   border-bottom:.5pt solid black'>Inspection Comments:
   <?php
-  	$idocs_2 = "'" . implode ( "', '", $docs ) . "'";
-
+	  $idocs_2 = "'" . implode ( "', '", $docs ) . "'";
+if($remarks=='Normal'){
 	$sql_batch="select distinct * from $bai_rm_pj1.docket_ref where doc_no in ($idocs_2) and doc_type='normal'  group by roll_id order by batch_no,ref4 asc";
+}
+else if($remarks=='Recut'){
+	$sql_batch="select distinct * from $bai_rm_pj1.docket_ref where doc_no in ($idocs_2) and doc_type='recut'  group by roll_id order by batch_no,ref4 asc";
+}else{
+	$sql_batch="select distinct * from $bai_rm_pj1.docket_ref where doc_no in ($idocs_2)  group by roll_id order by batch_no,ref4 asc";
+}
 	$sql_result_batch=mysqli_query($link, $sql_batch) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row_batch=mysqli_fetch_array($sql_result_batch))
 	{
@@ -3966,8 +3970,14 @@ $ctex_width=array();
 $tkt_width=array();
 
 $idocs_1 = "'" . implode ( "', '", $docs ) . "'";
-
+if($remarks=='Normal'){
 $sql="select distinct * from $bai_rm_pj1.docket_ref where doc_no in ($idocs_1) and doc_type='normal'  group by roll_id order by batch_no,ref4 asc";
+}
+else if($remarks=='Recut'){
+	$sql="select distinct * from $bai_rm_pj1.docket_ref where doc_no in ($idocs_1) and doc_type='recut'  group by roll_id order by batch_no,ref4 asc";	
+}else{
+	$sql="select distinct * from $bai_rm_pj1.docket_ref where doc_no in ($idocs_1)   group by roll_id order by batch_no,ref4 asc";
+}
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -3975,7 +3985,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$width_det[]=round($sql_row['roll_width'],2);
 	$leng_det[]=$sql_row['allocated_qty'];
 	$batch_det[]=trim($sql_row['batch_no']);
+	if($sql_row['inv_no']!=''){
 	$shade_det[]=$sql_row['ref4']."-".$sql_row['inv_no'];
+	}else{
+		$shade_det[]=$sql_row['ref4'];	
+	}
 	$locan_det[]=$sql_row['ref1'];
 	$lot_det[]=$sql_row['lot_no'];
 	$roll_id[]=$sql_row['roll_id'];
@@ -4040,8 +4054,8 @@ if(sizeof($roll_det)>0)
 		?>
 		<tr class=xl654118 height=30 style='mso-height-source:userset;height:30pt'>
 			<td height=20 class=xl654118 style='height:30pt'></td>
-			<td class=xl804118 style='text-align:center;padding-bottom:5pt;'><?php echo $batch_det[$i]; ?></td>
-			<td class=xl804118 style='text-align:center;padding-bottom:5pt;'><?php echo $item_name[$i]; ?></td>
+			<td class=xl804118 style='text-align:center;padding-bottom:5pt;font-size:22px;'><?php echo $batch_det[$i]; ?></td>
+			<td class=xl804118 style='text-align:center;padding-bottom:5pt;font-size:22px;'><?php echo $item_name[$i]; ?></td>
 			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $lot_det[$i]; ?></td>
 			
 			<td class=xl814118 style='text-align:center;padding-bottom:5pt;'><?php echo $shade_det[$i]; ?></td>
