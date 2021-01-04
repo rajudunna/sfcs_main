@@ -287,7 +287,7 @@
                 if(count($operation_code) > 0) {
                     foreach ($operation_code as $op_code) 
                     {
-                        $get_details="SELECT sum(if(operation_id=".$op_code.",rejected_quantity,0)) as rejected_qty FROM $pts.transaction_log WHERE style='$style' AND schedule='$schedule' AND color='$color' AND size = '$siz' AND parent_job ='$job_number[$job_id]' and plant_code='$plantcode' AND is_active=1 GROUP BY size";
+                        $get_details="SELECT sum(if(operation=".$op_code.",rejected_quantity,0)) as rejected_qty FROM $pts.transaction_log WHERE style='$style' AND schedule='$schedule' AND color='$color' AND size = '$siz' AND parent_job ='$job_number[$job_id]' and plant_code='$plantcode' AND is_active=1 GROUP BY size";
                         $result5 = $link->query($get_details);
                         $result5_num=mysqli_num_rows($result5);
                         if($result5_num > 0)
