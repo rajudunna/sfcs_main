@@ -1,3 +1,6 @@
+<script src="<?= getFullURLLevel($_GET['r'],'common/js/jquery-2.1.3.min.js',3,'R'); ?>"></script>
+  <script src="<?= getFullURLLevel($_GET['r'],'common/js/sweetalert-dev.js',3,'R'); ?>"></script>
+  <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/sweetalert.css',3,'R'); ?>">
 <?php
 	// $servername = "192.168.0.110:3326";
 	// $username = "baiall";
@@ -6,7 +9,7 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	$plant_code=$_SESSION['plantCode'];
 	$username=$_SESSION['userName'];
-
+	// $plant_code='N02';
 	$conn=$link;
 
 	// Create connection
@@ -24,7 +27,7 @@
 	$url1=getFullURL($_GET['r'],'delete_cutting_table.php','N');
 	if ($result->num_rows > 0) {
 		
-		echo "<table id='tbl_cutting_table' class='table'><thead><tr><th>S.No</th><th>Employee Id</th><th>Employee Name</th><th> Edit / Delete </th></tr></thead><tbody>";
+		echo "<div class='row col-sm-12 table-responsive'><table id='tbl_cutting_table' class='table'><thead><tr><th>S.No</th><th>Employee Id</th><th>Employee Name</th><th> Edit / Delete </th></tr></thead><tbody>";
 		// output data of each row
 		while($row = $result->fetch_assoc()) {
 			$tid=$row["id"];
@@ -38,7 +41,7 @@
 					 </td>
 				 </tr>";
 		}
-		echo "</tbody></table>";
+		echo "</tbody></table></div>";
 	} else {
 		echo "0 results";
 	}
@@ -54,21 +57,43 @@ $(document).ready(function() {
 function confirm_delete(e,t)
     {
         e.preventDefault();
-        var v = sweetAlert({
-        title: "Are you sure to Delete the Record?",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-        buttons: ["No, Cancel It!", "Yes, I am Sure!"],
-        }).then(function(isConfirm){
-        if (isConfirm) {
-        window.location = $(t).attr('href');
-        return true;
-        } else {
-        sweetAlert("Request Cancelled",'','error');
-        return false;
-        }
-        });
+        // var v = swal({
+        // title: "Are you sure to Delete the Record?",
+        // icon: "warning",
+        // buttons: true,
+        // dangerMode: true,
+        // buttons: ["No, Cancel It!", "Yes, I am Sure!"],
+        // }, function(isConfirm){
+        // if (isConfirm) {
+        // window.location = $(t).attr('href');
+        // return true;
+        // } else {
+        // sweetAlert("Request Cancelled",'','error');
+        // return false;
+        // }
+        // });
+
+		swal({
+					title: "Are you sure?",
+					text: "Do You Want To Delete the Record?",
+					type: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#DD6B55",
+					confirmButtonText: "Yes, I Want To Delete",
+					cancelButtonText: "No, Cancel!",
+					closeOnConfirm: false,
+					closeOnCancel: false 
+					}, 
+				 function(isConfirm){ 
+					if (isConfirm) {
+                        window.location = $(t).attr('href');
+        				return true;
+					} else {
+						sweetAlert("Request Cancelled",'','error');
+        				return false;
+					}
+				 });
+
     }
 </script>
 <style>
