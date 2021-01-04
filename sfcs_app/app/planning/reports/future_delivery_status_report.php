@@ -62,7 +62,7 @@ $table_flag = false;
 	}	
 	echo "</tr>";
 	//getting deatils from oms_mo_details
-	$get_po_sch_qry="SELECT mo_number,schedule,buyer_desc,po_number,mo_quantity,planned_delivery_date FROM $oms.`oms_mo_details` WHERE planned_delivery_date>='".$next_mon."' AND plant_code='$plantcode'";
+	$get_po_sch_qry="SELECT mo_number,schedule,buyer_desc,po_number,mo_quantity,planned_delivery_date FROM $oms.`oms_mo_details` WHERE planned_delivery_date='20200928' AND plant_code='$plantcode' AND po_number!=''";
 	$get_po_sch_qry_result=mysqli_query($link, $get_po_sch_qry) or die ("sql error getting details from oms".$sql.mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($get_po_sch_row=mysqli_fetch_array($get_po_sch_qry_result))
 	{
@@ -82,111 +82,110 @@ $table_flag = false;
 			$style=$get_style_col_row['style'];
 			$color=$get_style_col_row['color'];
 		}
-		//getting jm_product_logical_bundle_id
-		$get_jplbid_qry="SELECT jm_pplb_id FROM $pps.`` WHERE plant_code='$plantcode' AND schedule='$schedule' AND po_number='$po_number'";
-		$get_jplbid_qry_result=mysqli_query($link, $get_jplbid_qry) or die ("sql error getting details from jm_product_logical_bundle".$sql.mysqli_error($GLOBALS["___mysqli_ston"])); 
-		while($get_jplbid_row=mysqli_fetch_array($get_jplbid_qry_result))
+
+		//To get subpo for style,schedule,color
+		$get_subpo="SELECT sub_po FROM $pts.transaction_log WHERE plant_code='$plantcode' AND style='$style' AND schedule='$schedule' AND color='$color'"; 
+		$get_subpo_qry_result=mysqli_query($link, $get_subpo) or die ("sql error getting details of subpo".$get_subpo.mysqli_error($GLOBALS["___mysqli_ston"])); 
+		while($subpo_row=mysqli_fetch_array($get_subpo_qry_result))
 		{
-			$jm_pplb_id=$get_jplbid_row['jm_pplb_id'];
+           $subpo=$subpo_row['sub_po'];
+		}	
+		//Get taskjobreference with subpo
+		$gettsakjobref="SELECT jm_jg_header_id FROM $pps.`jm_jg_header` LEFT JOIN $pps.`jm_job_header` ON jm_job_header.jm_job_header_id=jm_jg_header.jm_job_header WHERE po_number='$subpo' AND job_group='PSJ' AND jm_jg_header.`plant_code`='$plantcode'";
+		$gettsakjobref_result=mysqli_query($link, $gettsakjobref) or die ("sql error getting details of tasljobref".$gettsakjobref.mysqli_error($GLOBALS["___mysqli_ston"])); 
+		while($ref_row=mysqli_fetch_array($gettsakjobref_result))
+		{
+			$parent_ext_ref_id=$ref_row['jm_jg_header_id'];
 			
-			//getting jm_job_bundle_id
-			$get_jjbid_qry="SELECT jm_job_bundle_id FROM $pps.`jm_job_bundles` WHERE plant_code='$plantcode' AND jm_pplb_id='$jm_pplb_id'";
-			$get_jjbid_qry_result=mysqli_query($link, $get_jjbid_qry) or die ("sql error getting details from jm_job_bundles".$sql.mysqli_error($GLOBALS["___mysqli_ston"])); 
-			while($get_jjbid_row=mysqli_fetch_array($get_jjbid_qry_result))
+			//getting task job id
+			$get_taskjobid_qry="SELECT task_jobs_id FROM $tms.`task_jobs` WHERE task_job_reference='$parent_ext_ref_id' AND plant_code='$plant_code'";
+			$get_taskjobid_qry_result=mysqli_query($link, $get_taskjobid_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($get_taskjobid_qry_result_row=mysqli_fetch_array($get_taskjobid_qry_result))
 			{
-				$jm_job_bundle_id=$get_jjbid_row['jm_job_bundle_id'];
-				
-				//getting barcode_id
-				$get_barcode_qry="SELECT barcode_id,parent_ext_ref_id FROM $pts.`barcode` WHERE external_ref_id='$jm_job_bundle_id' AND plant_code='$plantcode' AND barcode_type='PSLB'";
-				$get_barcode_qry_result=mysqli_query($link, $get_barcode_qry) or die ("sql error getting details from barcode".$sql.mysqli_error($GLOBALS["___mysqli_ston"])); 
-				while($get_barcode_row=mysqli_fetch_array($get_barcode_qry_result))
+				$task_jobs_id=$get_taskjobid_qry_result_row['task_jobs_id'];
+			}
+			//getting min operation
+			$qrytoGetMinOperation="SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id='".$task_jobs_id."' AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
+			$minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting min operations data for job');
+			if(mysqli_num_rows($minOperationResult)>0)
+			{
+				while($minOperationResultRow = mysqli_fetch_array($minOperationResult))
 				{
-					$barcode_id=$get_barcode_row['barcode_id'];
-					$parent_ext_ref_id=$get_barcode_row['parent_ext_ref_id'];
-					
-					//getting task job id
-					$get_taskjobid_qry="SELECT task_jobs_id FROM $tms.`task_jobs` WHERE task_job_reference='$parent_ext_ref_id' AND plant_code='$plant_code'";
-					$get_taskjobid_qry_result=mysqli_query($link, $get_taskjobid_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($get_taskjobid_qry_result_row=mysqli_fetch_array($get_taskjobid_qry_result))
-					{
-						$task_jobs_id=$get_taskjobid_qry_result_row['task_jobs_id'];
-					}
-					//getting min operation
-					$qrytoGetMinOperation="SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id='".$task_jobs_id."' AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
-					$minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting min operations data for job');
-					if(mysqli_num_rows($minOperationResult)>0)
-					{
-						while($minOperationResultRow = mysqli_fetch_array($minOperationResult))
-						{
-							$minOperation=$minOperationResultRow['operation_code'];
-						}
-					}
-					
-					//getting max operation
-					$qrytoGetMaxOperation="SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id='".$task_jobs_id."' AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
-					$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting max operations data for job');
-					if(mysqli_num_rows($maxOperationResult)>0)
-					{
-						while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult))
-						{
-							$maxOperation=$maxOperationResultRow['operation_code'];
-						}
-					}
-					
-					//getting sections
-					$sql_sec_qry="SELECT section_id FROM $pms.`sections` WHERE plant_code='$plantcode' AND is_active=1";
-					$sql_sec_qry_result=mysqli_query($link, $sql_sec_qry) or die ("sql error while getting sections".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
-					$sectionid=array();   
-					while($sql_row_sec=mysqli_fetch_array($sql_sec_qry_result))
-					{
-						$sectionid[]=$sql_row_sec["section_id"];		
-					}
-					echo "<tr>";
-					echo "<td>".$buyer_desc."</td>";
-					echo "<td>".$style."</td>";
-					echo "<td>".$schedule."</td>";
-					echo "<td>".$color."</td>";
-					echo "<td>".$mo_quantity."</td>";
-					echo "<td>".$outputqty."</td>";
-					echo "<td>".round($outputqty*100/$mo_quantity,2)."</td>";
-					echo "<td>Sewing</td>";
-					echo "<td>".$planned_delivery_date."</td>";
-					
-					for($j=0;$j<sizeof($sectionid);$j++)
-					{
-						//getting workstations against to the section
-						$get_ws_qry="SELECT workstation_id FROM $pms.`workstation` WHERE plant_code='$plantcode' AND is_active=1 AND section_id='".$sectionid[$j]."'";
-						$get_ws_qry_result=mysqli_query($link, $get_ws_qry) or die ("sql error while getting workstations".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
-						$workstationid=array();   
-						while($sql_row_ws=mysqli_fetch_array($get_ws_qry_result))
-						{
-							$workstationid[]=$sql_row_ws['workstation_id'];
-						}
-						$workstatid="'".implode("','",$workstationid)."'";
-						
-						//getting details from transaction_log for input
-						$get_inpdet_qry="SELECT SUM(quantity) AS input FROM $pts.`transaction_log` WHERE barcode_id='$barcode_id' AND plant_code='$plantcode' AND resource_id IN ($workstatid) AND operation='$minOperation'";
-						$get_inpdet_qry_result=mysqli_query($link, $get_inpdet_qry) or exit("Sql Error getting input".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($get_inpdet_qry_result_row=mysqli_fetch_array($get_inpdet_qry_result))
-						{
-							$inputqty=$get_inpdet_qry_result_row['input'];
-						}
-						
-						//getting details from transaction_log for output
-						$get_outdet_qry="SELECT SUM(quantity) AS output FROM $pts.`transaction_log` WHERE barcode_id='$barcode_id' AND plant_code='$plantcode' AND resource_id IN ($workstatid) AND operation='$maxOperation'";
-						$get_outdet_qry_result=mysqli_query($link, $get_outdet_qry) or exit("Sql Error getting output".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($get_outdet_qry_result_row=mysqli_fetch_array($get_outdet_qry_result))
-						{
-							$outputqty=$get_outdet_qry_result_row['output'];
-						}
-						echo "<td>".$inputqty."</td>";
-						echo "<td>".$outputqty."</td>";
-						unset($workstationid);
-					}
-					unset($sectionid);
-					echo "</tr>";
+					$minOperation=$minOperationResultRow['operation_code'];
 				}
 			}
+			
+			//getting max operation
+			$qrytoGetMaxOperation="SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id='".$task_jobs_id."' AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
+			$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting max operations data for job');
+			if(mysqli_num_rows($maxOperationResult)>0)
+			{
+				while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult))
+				{
+					$maxOperation=$maxOperationResultRow['operation_code'];
+				}
+			}
+			
+			//getting sections
+			$sql_sec_qry="SELECT section_id FROM $pms.`sections` WHERE plant_code='$plantcode' AND is_active=1";
+			$sql_sec_qry_result=mysqli_query($link, $sql_sec_qry) or die ("sql error while getting sections".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sectionid=array();   
+			while($sql_row_sec=mysqli_fetch_array($sql_sec_qry_result))
+			{
+				$sectionid[]=$sql_row_sec["section_id"];		
+			}
+			//To get overall output qty
+			//getting details from transaction_log for output
+			$get_totoutput_qry="SELECT SUM(quantity) AS output FROM $pts.`transaction_log` WHERE sub_po='$subpo' AND plant_code='$plantcode' AND operation='$maxOperation'";
+			$get_totoutput_qry_result=mysqli_query($link, $get_totoutput_qry) or exit("Sql Error getting output".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($get_totoutput_qry_result_row=mysqli_fetch_array($get_totoutput_qry_result_row))
+			{
+				$totoutputqty=$get_totoutput_qry_result_row['output'];
+			}
+			echo "<tr>";
+			echo "<td>".$buyer_desc."</td>";
+			echo "<td>".$style."</td>";
+			echo "<td>".$schedule."</td>";
+			echo "<td>".$color."</td>";
+			echo "<td>".$mo_quantity."</td>";
+			echo "<td>".$totoutputqty."</td>";
+			echo "<td>".round($totoutputqty*100/$mo_quantity,2)."</td>";
+			echo "<td>Sewing</td>";
+			echo "<td>".$planned_delivery_date."</td>";
+			
+			for($j=0;$j<sizeof($sectionid);$j++)
+			{
+				//getting workstations against to the section
+				$get_ws_qry="SELECT workstation_id FROM $pms.`workstation` WHERE plant_code='$plantcode' AND is_active=1 AND section_id='".$sectionid[$j]."'";
+				$get_ws_qry_result=mysqli_query($link, $get_ws_qry) or die ("sql error while getting workstations".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+				$workstationid=array();   
+				while($sql_row_ws=mysqli_fetch_array($get_ws_qry_result))
+				{
+					$workstationid[]=$sql_row_ws['workstation_id'];
+				}
+				$workstatid="'".implode("','",$workstationid)."'";
+				
+				//getting details from transaction_log for input
+				$get_inpdet_qry="SELECT SUM(quantity) AS input FROM $pts.`transaction_log` WHERE sub_po='$subpo' AND plant_code='$plantcode' AND resource_id IN ($workstatid) AND operation='$minOperation'";
+				$get_inpdet_qry_result=mysqli_query($link, $get_inpdet_qry) or exit("Sql Error getting input".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($get_inpdet_qry_result_row=mysqli_fetch_array($get_inpdet_qry_result))
+				{
+					$inputqty=$get_inpdet_qry_result_row['input'];
+				}
+				
+				//getting details from transaction_log for output
+				$get_outdet_qry="SELECT SUM(quantity) AS output FROM $pts.`transaction_log` WHERE sub_po='$subpo' AND plant_code='$plantcode' AND resource_id IN ($workstatid) AND operation='$maxOperation'";
+				$get_outdet_qry_result=mysqli_query($link, $get_outdet_qry) or exit("Sql Error getting output".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($get_outdet_qry_result_row=mysqli_fetch_array($get_outdet_qry_result))
+				{
+					$outputqty=$get_outdet_qry_result_row['output'];
+				}
+				echo "<td>".$inputqty."</td>";
+				echo "<td>".$outputqty."</td>";
+				unset($workstationid);
+			}
+			unset($sectionid);
+			echo "</tr>";
 		}
 	}
 	echo "</table>";

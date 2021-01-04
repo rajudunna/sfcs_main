@@ -216,11 +216,12 @@ else
 		}
 		else
 		{
-			$main_query =  $main_query.' limit 1';
+			$main_query =  $main_query.'';
+			$main_query2 = ' LIMIT 1';
 		}
 	}
 	
-	$operation_mapping="SELECT operation_code,operation_name,priority FROM $pms.`operation_mapping` WHERE sequence=1 AND plant_code='$plant_code' and is_active = 1 and operations_to_display=1 ORDER BY priority ASC";
+	$operation_mapping="SELECT DISTINCT(operation_code) AS operation_code,operation_name,priority FROM $pms.`operation_mapping` WHERE sequence=1 AND plant_code='$plant_code' and is_active = 1 and operations_to_display=1 ORDER BY priority ASC";
 	$result4 = $link->query($operation_mapping);
 	while($row5 = $result4->fetch_assoc())
 	{
@@ -295,9 +296,32 @@ else
 		$table_data .= "<th>$ops_get_code[$op_code]</th>";
 	}
 	$table_data .= "</tr></thead><tbody>";
+   
+	//Get mos for style,schedule and color
+	$get_mos="SELECT DISTINCT(mo_number) AS mo_number,size FROM $pts.finished_good $main_query";
+	$sql_mos_result = mysqli_query($link,$get_mos);
+	while($row_mos = mysqli_fetch_array($sql_mos_result))
+	{
+      $monumbers[]=$row_mos['mo_number'];
+	}
+	//To get good quantities
+	$get_good_qtys="SELECT COALESCE(SUM(quantity),0) AS good_quantity,operation FROM $pts.fg_m3_transaction WHERE mo_number IN ('".implode("','" , $monumbers)."') GROUP BY operation";
+	$sql_good_qtys_result = mysqli_query($link,$get_good_qtys);
+	while($row_goodqty = mysqli_fetch_array($sql_good_qtys_result))
+	{		
+      $goodqty[$row_goodqty['operation']]=$row_goodqty['good_quantity'];
+	}
+	//To get rejection quantities
+	$get_rejected_qtys="SELECT COALESCE(SUM(quantity),0) AS rejected_quantity,operation FROM $pts.fg_m3_transaction WHERE mo_number IN ('".implode("','" , $monumbers)."') AND reason_code!='' GROUP BY operation";
+	$sql_rejected_qtys_result = mysqli_query($link,$get_rejected_qtys);
+	while($row_rejqty = mysqli_fetch_array($sql_rejected_qtys_result))
+	{	
+      $rejectedqty[$row_goodqty['operation']]=$row_rejqty['rejected_quantity'];
+	}
 
-	$sql_trans="SELECT style,schedule,color,size $op_string_data FROM $pts.transaction_log $main_query";
+	$sql_trans="SELECT style,schedule,color,size FROM $pts.transaction_log $main_query $main_query2";
 	// die();
+	//echo $sql_trans;
 	$sql_trans_result = mysqli_query($link,$sql_trans);
 	while($row_main = mysqli_fetch_array($sql_trans_result))
 	{
@@ -305,7 +329,6 @@ else
 		$schedule = $row_main['schedule'];
 		$color = $row_main['color'];
 		$size = $row_main['size'];
-		$barcodes = $row_main['barcodes'];
 		if($size_get != '')
 		{
 			$order_qty_qry = "SELECT sum(mo_quantity) as quantity FROM oms.oms_products_info AS opi LEFT JOIN oms.oms_mo_details AS omd ON omd.mo_number=opi.mo_number where schedule ='$schedule' AND color_desc ='$color' AND plant_code='$plant_code' AND size_desc='".$size."'";
@@ -327,20 +350,24 @@ else
 			$table_data .="<td>$size</td>";
 		}
 		$table_data .="<td>$order_qty</td>";
-		foreach ($operation_ids as $key => $value)
-		{
-			if(strlen($ops_get_code[$value]) > 0){
-
-			$table_data .= "<td>".$row_main['good_'.$value]."</td>";
-			$table_data .= "<td>".$row_main['rej_'.$value]."</td>";
+		
+			foreach ($operation_ids as $key => $value)
+			{
+				if(strlen($ops_get_code[$value]) > 0){
+				//$table_data .= "<td>".'0'."</td>";
+					//$goodqty=$goodqty[$value] ? $goodqty[$value] : 0;
+					$table_data .= "<td>".$goodqty[$value]."</td>";
+					$table_data .= "<td>".$rejectedqty[$value]."</td>";	
+					//$table_data .= "<td>".'0'."</td>";
+				}
 			}
-		}
+
 		$ii=1;
 		foreach ($operation_ids as $key => $value)
 		{
 			if($ii==1)
 			{
-				$diff = $order_qty -($row_main['good_'.$value]+$row_main['rej_'.$value]); 
+				$diff = $order_qty -($goodqty[$value]+$rejectedqty[$value]); 
 				if($diff < 0)  
 				{
 					$diff = 0;
@@ -357,7 +384,7 @@ else
 				}
 				if(strlen($ops_pre) > 0)
 				{
-					$diff=$row_main['good_'.$ops_pre]-($row_main['good_'.$value]+$row_main['rej_'.$value]);
+					$diff=$goodqty[$ops_pre]-($goodqty[$value]+$rejectedqty[$value]);
 					if($diff <0){
 					$diff=0;
 					}
