@@ -3,7 +3,7 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
 	//$has_permission=haspermission($_GET['r']);
 	$plantcode=$_SESSION['plantCode'];
-	$plantcode='Q01';
+	// $plantcode='Q01';
 	$username=$_SESSION['userName'];
 ?> 
 <script type="text/javascript"> 
