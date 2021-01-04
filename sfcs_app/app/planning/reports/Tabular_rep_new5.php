@@ -368,7 +368,7 @@ if(isset($_POST['submit1']))
 		</form>';
 
 		//To get Total order qty
-		$sql2="SELECT mo_quantity AS quantity FROM $oms.`oms_mo_details` WHERE schedule='$schedule' AND plant_code='$plant_code'";
+		$sql2="SELECT SUM(mo_quantity) AS quantity FROM $oms.`oms_mo_details` LEFT JOIN $oms.oms_products_info ON oms_products_info.mo_number=oms_mo_details.mo_number WHERE style='$style' AND schedule='$schedule' AND color_desc='$color' AND plant_code='$plant_code'";
 		$sql_result2=mysqli_query($link, $sql2) or die("Error".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row2=mysqli_fetch_array($sql_result2))
 		{
