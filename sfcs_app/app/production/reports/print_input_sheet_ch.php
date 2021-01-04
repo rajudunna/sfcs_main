@@ -178,7 +178,7 @@
             if($key == 0){
                 echo "<div style='float:left'><table class='table table-bordered' style='font-size:11px;font-family:verdana;text-align:left;'>";
                 echo "<tr>";
-                echo "<td>PO Description :</td>";
+                echo "<td>Sub PO Description :</td>";
                 echo "<td>$sub_po_description</td>";
                 echo "</tr>";
                 echo "<tr>";
