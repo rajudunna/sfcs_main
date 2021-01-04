@@ -4,6 +4,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 $excel_form_action = getFullURL($_GET['r'], 'export_excel.php', 'R');
 $table_csv = getFullURLLevel($_GET['r'], 'common/js/table2CSV.js', 1, 'R');
 $plantcode=$_SESSION['plantCode'];
+// $plantcode='Q01';
 $username=$_SESSION['userName'];
 ?>
 <style>
@@ -106,7 +107,7 @@ $username=$_SESSION['userName'];
 			LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = jcdm.jm_cut_job_id
 			LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
 			LEFT JOIN $pps.log_rm_ready_in_pool l ON doc.jm_docket_id=l.doc_no
-			WHERE doc.plant_code='$plantcode' AND DATE(doc.created_at) BETWEEN '$sdate' AND '$edate'";
+			WHERE doc.plant_code='$plantcode' AND DATE(doc.created_at) BETWEEN '$sdate' AND '$edate' group by docket_number";
 			//echo $qrydocketLines;
 			$docketLinesResult=mysqli_query($link_new, $qrydocketLines) or exit("Sql Error at getting taskJobs".mysqli_error($GLOBALS["___mysqli_ston"]));
             $docketLinesNum=mysqli_num_rows($docketLinesResult);
