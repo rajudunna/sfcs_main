@@ -62,7 +62,7 @@ $table_flag = false;
 	}	
 	echo "</tr>";
 	//getting deatils from oms_mo_details
-	$get_po_sch_qry="SELECT mo_number,schedule,buyer_desc,po_number,mo_quantity,planned_delivery_date FROM $oms.`oms_mo_details` WHERE planned_delivery_date='20200928' AND plant_code='$plantcode' AND po_number!=''";
+	$get_po_sch_qry="SELECT mo_number,schedule,buyer_desc,po_number,mo_quantity,planned_delivery_date FROM $oms.`oms_mo_details` WHERE planned_delivery_date='$next_mon' AND plant_code='$plantcode' AND po_number!=''";
 	$get_po_sch_qry_result=mysqli_query($link, $get_po_sch_qry) or die ("sql error getting details from oms".$sql.mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($get_po_sch_row=mysqli_fetch_array($get_po_sch_qry_result))
 	{
