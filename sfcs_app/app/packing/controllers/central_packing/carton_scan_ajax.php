@@ -254,7 +254,11 @@
 								if($carton_id[0]!='0')
 								{
 									$carton_id=leading_zeros($carton_id,10);
-								}		
+								}
+								else if($carton_id[0]=='')
+								{
+									$carton_id=trim($carton_id);
+								}	
 
 								$carton_info = '[
 								{
