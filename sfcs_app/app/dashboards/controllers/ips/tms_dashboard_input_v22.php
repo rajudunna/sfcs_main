@@ -28,7 +28,7 @@
               <div class='col-sm-3'>
                 Shift :<select class='form-control' id='shift' name='shift' required>
                   <option value=''>Select Shift</option>";
-                  $shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plant_code' and is_active=1";
+                  $shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plant_code' and is_active=1 order by created_at";
                   $shift_sql_res=mysqli_query($link, $shift_sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                   while($shift_row = mysqli_fetch_array($shift_sql_res))
                   {
