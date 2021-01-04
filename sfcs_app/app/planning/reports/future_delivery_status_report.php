@@ -82,7 +82,13 @@ $table_flag = false;
 			$style=$get_style_col_row['style'];
 			$color=$get_style_col_row['color'];
 		}
-
+		echo "<tr>";
+			echo "<td>".$buyer_desc."</td>";
+			echo "<td>".$style."</td>";
+			echo "<td>".$schedule."</td>";
+			echo "<td>".$color."</td>";
+			echo "<td>".$mo_quantity."</td>";
+		echo "</tr>";
 		//To get subpo for style,schedule,color
 		$get_subpo="SELECT sub_po FROM $pts.transaction_log WHERE plant_code='$plantcode' AND style='$style' AND schedule='$schedule' AND color='$color'"; 
 		$get_subpo_qry_result=mysqli_query($link, $get_subpo) or die ("sql error getting details of subpo".$get_subpo.mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -143,11 +149,6 @@ $table_flag = false;
 				$totoutputqty=$get_totoutput_qry_result_row['output'];
 			}
 			echo "<tr>";
-			echo "<td>".$buyer_desc."</td>";
-			echo "<td>".$style."</td>";
-			echo "<td>".$schedule."</td>";
-			echo "<td>".$color."</td>";
-			echo "<td>".$mo_quantity."</td>";
 			echo "<td>".$totoutputqty."</td>";
 			echo "<td>".round($totoutputqty*100/$mo_quantity,2)."</td>";
 			echo "<td>Sewing</td>";
