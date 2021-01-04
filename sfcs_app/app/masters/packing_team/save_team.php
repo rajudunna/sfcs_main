@@ -6,12 +6,15 @@
     $conn=$link;
     $url=getFullURL($_GET['r'],'create_team.php','N');
     $plant_code = $_SESSION['plantCode'];
+    // $plant_code = 'N02';
     $username = $_SESSION['userName'];
 
     $row_id=$_POST['row_id'];
     $packing_team=$_POST['packing_team'];
     $team_leader=$_POST['team_leader'];
     $status=$_POST['status'];
+    $packing_team=trim($packing_team);
+    $team_leader=trim($team_leader);
         if(strlen(trim($packing_team)) > 0 && strlen(trim($team_leader)) > 0) {
        
             if($row_id > 0){
