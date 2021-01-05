@@ -26,11 +26,7 @@ class ReactApp extends React.Component {
             loadingimage:true,
         }
         this.currentDate = currentDate;
-        var url_string = window.location.href; //window.location.href
-        var url = new URL(url_string);
-        this.plant_code = url.searchParams.get("plantCode");
         this.getData(event);
-
         // alert(c);s
     }    
 				
@@ -45,7 +41,7 @@ class ReactApp extends React.Component {
         }else{
             value = this.currentDate;
         }
-        let url = '/sfcs_app/app/production/reports/daily_performance/apicalls.php/getData?date='+value+'&plant='+ this.plant_code;
+        let url = '/sfcs_app/app/production/reports/daily_performance/apicalls.php/getData?date='+value;
         axios.get(url, {
             responseType: 'json'
         }).then(response => {
