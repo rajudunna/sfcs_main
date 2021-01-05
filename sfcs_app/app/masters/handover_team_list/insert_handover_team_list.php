@@ -15,6 +15,7 @@ $emp_call_name =$_POST['emp_call_name'];
 //$lastup = $_POST['lastup'];
 $emp_status = $_POST['emp_status'];
 $plant_code=$_SESSION['plantCode'];
+// $plant_code='N02';
 $username=$_SESSION['userName'];
 
 //echo $color_code;

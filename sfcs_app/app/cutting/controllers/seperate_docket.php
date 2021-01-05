@@ -309,12 +309,19 @@ th{
     }
 
     function printCall(jm_docket_id,parentId){
-        window.open('<?= $path ?>'+jm_docket_id,'popwindow');
+       var popWin =  window.open('<?= $path ?>'+jm_docket_id,'popwindow','width=1100,height=800,scrollbars=no');
+       var inttimer = setInterval(function() {   
+            if(popWin.closed) {
+                clearInterval(inttimer);  
+                location.reload();
+            }  
+         }, 1000); 
         $.ajax({
             url  : '<?= $updateURL ?>?parentId='+parentId,
             type : 'GET',
         }).then(function(res){
             
         });
+
     } 
     </script>
