@@ -175,7 +175,7 @@ if(isset($_POST['submit']))
 		//caliculation for plan_out
 		$plan_out=round($plan_qty/$act_hrs,0);
 		//To get SMV
-		$qrysmv = "SELECT smv FROM $oms.oms_products_info AS opi LEFT JOIN $oms.oms_mo_operations AS omo ON opi.mo_number=omo.mo_number LEFT JOIN $oms.oms_mo_details AS omd ON omd.mo_number=omo.mo_number WHERE opi.style='".$sql_row['style']."' AND opi.color_desc='".$color."' AND omo.operation_code=".$operation." and omd.plant_code='".$plantCode."' LIMIT 1";
+		$qrysmv = "SELECT smv FROM $oms.oms_products_info AS opi LEFT JOIN $oms.oms_mo_operations AS omo ON opi.mo_number=omo.mo_number LEFT JOIN $oms.oms_mo_details AS omd ON omd.mo_number=omo.mo_number WHERE opi.style='".$sql_row['style']."' AND opi.color_desc='".$color."' AND omo.operation_code=".$operation." and omd.plant_code='".$plant_code."' LIMIT 1";
 		$qrysmvresult = mysqli_query($link, $qrysmv) or exit("Error while getting smv".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($smv_res=mysqli_fetch_array($qrysmvresult))
 		{
