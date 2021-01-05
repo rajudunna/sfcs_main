@@ -218,9 +218,16 @@ else
 		{
 			$main_query =  $main_query.'';
 			$main_query2 = ' LIMIT 1';
+			
 		}
 	}
-	
+	$get_operations_version_id="SELECT operations_version_id FROM $pps.mp_color_detail WHERE style='$style' AND color='$color' AND master_po_number='$master_po_number' AND plant_code='$plantcode' AND is_active=1";
+	$version_id_result=mysqli_query($link_new, $get_operations_version_id) or exit("Sql Error at get_operations_version_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row14=mysqli_fetch_array($version_id_result))
+	{
+		$operations_version_id = $row14['operations_version_id'];
+	}
+
 	$operation_mapping="SELECT DISTINCT(operation_code) AS operation_code,operation_name,priority FROM $pms.`operation_mapping` WHERE sequence=1 AND plant_code='$plant_code' and is_active = 1 and operations_to_display=1 ORDER BY priority ASC";
 	$result4 = $link->query($operation_mapping);
 	while($row5 = $result4->fetch_assoc())
@@ -298,27 +305,43 @@ else
 	$table_data .= "</tr></thead><tbody>";
    
 	//Get mos for style,schedule and color
-	$get_mos="SELECT DISTINCT(mo_number) AS mo_number,size FROM $pts.finished_good $main_query";
+	$get_mos="SELECT DISTINCT(mo_number) AS mo_number FROM $pts.finished_good $main_query";
 	$sql_mos_result = mysqli_query($link,$get_mos);
 	while($row_mos = mysqli_fetch_array($sql_mos_result))
 	{
       $monumbers[]=$row_mos['mo_number'];
 	}
 	//To get good quantities
-	$get_good_qtys="SELECT COALESCE(SUM(quantity),0) AS good_quantity,operation FROM $pts.fg_m3_transaction WHERE mo_number IN ('".implode("','" , $monumbers)."') GROUP BY operation";
-	$sql_good_qtys_result = mysqli_query($link,$get_good_qtys);
-	while($row_goodqty = mysqli_fetch_array($sql_good_qtys_result))
-	{		
-      $goodqty[$row_goodqty['operation']]=$row_goodqty['good_quantity'];
+	// $get_good_qtys="SELECT COALESCE(SUM(quantity),0) AS good_quantity,operation FROM $pts.fg_m3_transaction WHERE mo_number IN ('".implode("','" , $monumbers)."') GROUP BY operation";
+	// $sql_good_qtys_result = mysqli_query($link,$get_good_qtys);
+	// while($row_goodqty = mysqli_fetch_array($sql_good_qtys_result))
+	// {		
+    //   $goodqty[$row_goodqty['operation']]=$row_goodqty['good_quantity'];
+	// }
+	// //To get rejection quantities
+	// $get_rejected_qtys="SELECT COALESCE(SUM(quantity),0) AS rejected_quantity,operation FROM $pts.fg_m3_transaction WHERE mo_number IN ('".implode("','" , $monumbers)."') AND reason_code!='' GROUP BY operation";
+	// $sql_rejected_qtys_result = mysqli_query($link,$get_rejected_qtys);
+	// while($row_rejqty = mysqli_fetch_array($sql_rejected_qtys_result))
+	// {	
+    //   $rejectedqty[$row_goodqty['operation']]=$row_rejqty['rejected_quantity'];
+	// }
+	if($size_get != '')
+	{
+		$sql_quantities_qry="SELECT size,COALESCE(SUM(quantity),0) AS good_quantity,SUM(if(reason_code!='',quantity,0)) AS rejected_quantity,operation FROM $pts.`fg_m3_transaction` LEFT JOIN $pts.finished_good fg ON fg_m3_transaction.fg_id = fg.finished_good_id WHERE fg_m3_transaction.mo_number IN ('".implode("','" , $monumbers)."') GROUP BY operation,size";
+	} else 
+	{
+        $sql_quantities_qry="SELECT size,COALESCE(SUM(quantity),0) AS good_quantity,SUM(if(reason_code!='',quantity,0)) AS rejected_quantity,operation FROM $pts.`fg_m3_transaction` LEFT JOIN $pts.finished_good fg ON fg_m3_transaction.fg_id = fg.finished_good_id WHERE fg_m3_transaction.mo_number IN ('".implode("','" , $monumbers)."') GROUP BY operation";
+	}	
+	$sql_qtys_result = mysqli_query($link,$sql_quantities_qry);
+	while($row_qty = mysqli_fetch_array($sql_qtys_result))
+	{
+		$main_size=$row_qty['size'];
+		$operationcode=$row_qty['operation'];
+		$goodqty[$operationcode]=$row_qty['good_quantity'];
+		$rejectedqty[$operationcode]=$row_qty['rejected_quantity'];
+		$goodqtysizewise[$main_size][$operationcode]=$row_qty['good_quantity'];
+		$rejectedqtysizewise[$main_size][$operationcode]=$row_qty['rejected_quantity'];
 	}
-	//To get rejection quantities
-	$get_rejected_qtys="SELECT COALESCE(SUM(quantity),0) AS rejected_quantity,operation FROM $pts.fg_m3_transaction WHERE mo_number IN ('".implode("','" , $monumbers)."') AND reason_code!='' GROUP BY operation";
-	$sql_rejected_qtys_result = mysqli_query($link,$get_rejected_qtys);
-	while($row_rejqty = mysqli_fetch_array($sql_rejected_qtys_result))
-	{	
-      $rejectedqty[$row_goodqty['operation']]=$row_rejqty['rejected_quantity'];
-	}
-
 	$sql_trans="SELECT style,schedule,color,size FROM $pts.transaction_log $main_query $main_query2";
 	// die();
 	//echo $sql_trans;
@@ -351,6 +374,21 @@ else
 		}
 		$table_data .="<td>$order_qty</td>";
 		
+		if($size_get != '')
+		{
+			foreach ($operation_ids as $key => $value)
+			{
+				if(strlen($ops_get_code[$value]) > 0){
+				//$table_data .= "<td>".'0'."</td>";
+					//$goodqty=$goodqty[$value] ? $goodqty[$value] : 0;
+					$table_data .= "<td>".$goodqtysizewise[$size][$value]."</td>";
+					$table_data .= "<td>".$rejectedqtysizewise[$size][$value]."</td>";	
+					//$table_data .= "<td>".'0'."</td>";
+				}
+			}
+		} 
+		else 
+		{
 			foreach ($operation_ids as $key => $value)
 			{
 				if(strlen($ops_get_code[$value]) > 0){
@@ -361,40 +399,81 @@ else
 					//$table_data .= "<td>".'0'."</td>";
 				}
 			}
+		}
+		
 
 		$ii=1;
-		foreach ($operation_ids as $key => $value)
+		if($size_get != '')
 		{
-			if($ii==1)
+			foreach ($operation_ids as $key => $value)
 			{
-				$diff = $order_qty -($goodqty[$value]+$rejectedqty[$value]); 
-				if($diff < 0)  
+				if($ii==1)
 				{
-					$diff = 0;
-				}
-				$wip = $diff;
-				$ii=0;
-			}
-			else {
-				$operation_mapping="SELECT operation_code FROM $pms.`operation_mapping` WHERE sequence=1 AND plant_code='$plant_code' and is_active = 1 and priority < ".$ops_get_pri[$value]." and operations_to_display=1 ORDER BY priority desc limit 1";
-				$result4 = $link->query($operation_mapping);
-				while($row5 = $result4->fetch_assoc())
-				{
-					$ops_pre = $row5['operation_code'];
-				}
-				if(strlen($ops_pre) > 0)
-				{
-					$diff=$goodqty[$ops_pre]-($goodqty[$value]+$rejectedqty[$value]);
-					if($diff <0){
-					$diff=0;
+					$diff = $order_qty -($goodqtysizewise[$size][$value]+$rejectedqtysizewise[$size][$value]); 
+					if($diff < 0)  
+					{
+						$diff = 0;
 					}
 					$wip = $diff;
+					$ii=0;
 				}
+				else {
+					$operation_mapping="SELECT operation_code FROM $pms.`operation_mapping` WHERE sequence=1 AND plant_code='$plant_code' and is_active = 1 and priority < ".$ops_get_pri[$value]." and operations_to_display=1 ORDER BY priority desc limit 1";
+					$result4 = $link->query($operation_mapping);
+					while($row5 = $result4->fetch_assoc())
+					{
+						$ops_pre = $row5['operation_code'];
+					}
+					if(strlen($ops_pre) > 0)
+					{
+						$diff=$goodqtysizewise[$size][$ops_pre]-($goodqtysizewise[$size][$value]+$rejectedqtysizewise[$size][$value]);
+						if($diff <0){
+						$diff=0;
+						}
+						$wip = $diff;
+					}
+	
+				}			
+				
+				$table_data .= "<td>".$wip."</td>";
+			}
+		} 
+		else
+		{
+            foreach ($operation_ids as $key => $value)
+			{
+				if($ii==1)
+				{
+					$diff = $order_qty -($goodqty[$value]+$rejectedqty[$value]); 
+					if($diff < 0)  
+					{
+						$diff = 0;
+					}
+					$wip = $diff;
+					$ii=0;
+				}
+				else {
+					$operation_mapping="SELECT operation_code FROM $pms.`operation_mapping` WHERE sequence=1 AND plant_code='$plant_code' and is_active = 1 and priority < ".$ops_get_pri[$value]." and operations_to_display=1 ORDER BY priority desc limit 1";
+					$result4 = $link->query($operation_mapping);
+					while($row5 = $result4->fetch_assoc())
+					{
+						$ops_pre = $row5['operation_code'];
+					}
+					if(strlen($ops_pre) > 0)
+					{
+						$diff=$goodqty[$ops_pre]-($goodqty[$value]+$rejectedqty[$value]);
+						if($diff <0){
+						$diff=0;
+						}
+						$wip = $diff;
+					}
 
-			}			
-			
-			$table_data .= "<td>".$wip."</td>";
+				}			
+				
+				$table_data .= "<td>".$wip."</td>";
+			}
 		}
+		
 	}
 		$table_data .= "</tr>";
 	echo $table_data."</tbody></table>";
