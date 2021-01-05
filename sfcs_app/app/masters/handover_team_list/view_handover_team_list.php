@@ -32,7 +32,7 @@
 			
 			$edit_url = getFullURL($_GET['r'],'save_handover_team_list.php','N');
 			$delete_url = getFullURL($_GET['r'],'delete_handover_team_list.php','N');
-			echo "<tr><td>".$sno++."</td><td>".$row["emp_id"]." </td><td>".$row["emp_call_name"]."</td><td>".$row["selected_user"]."</td><td>".$cat_status."</td>
+			echo "<tr><td style='text-align:right;'>".$sno++."</td><td style='text-align:right;'>".$row["emp_id"]." </td><td style='text-align:left;'>".$row["emp_call_name"]."</td><td style='text-align:left;'>".$row["selected_user"]."</td><td style='text-align:left;'>".$cat_status."</td>
 			<td><a href='$edit_url&team_id=$team_id&emp_id=$emp_id&emp_call_name=$emp_call_name&emp_status=$cat_status' class='btn btn-warning btn-xs editor_edit'>Edit</a> / 
 			<a href='$delete_url&team_id=$team_id&emp_id=$emp_id&emp_call_name=$emp_call_name&selected_user=$selected_user&lastup=$lastup&emp_status=$cat_status' class='btn btn-danger btn-xs' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
 		}

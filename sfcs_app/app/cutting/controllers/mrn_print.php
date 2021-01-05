@@ -1460,20 +1460,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 <style>
 
-@media print {
-@page narrow {size: 9in 11in}
-@page rotated {size: landscape}
-DIV {page: narrow}
-TABLE {page: rotated}
-#non-printable { display: none; }
-#printable { display: block; }
-#logo { display: block; }
-body { zoom:75%;}
-#ad{ display:none;}
-#leftbar{ display:none;}
-#Book1_14212{ width:75%; margin-left:20px;}
-}
-div.solid {border-style: solid;}
+@media print{@page {size: landscape}}
+
 </style>
 
 <script>
