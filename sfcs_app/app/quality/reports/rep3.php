@@ -316,15 +316,15 @@ if(isset($_POST['color']))
 				echo "</tr>";
 				if($choice == 3)
 				{
-					$sql="SELECT resource_id,operation as operation_id,style,color,schedule,size,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE parent_barcode_type='PPLB' and schedule in ($sch_db_grand) and color = '$sch_color' and plant_code='".$plant_Code."' group by schedule,color,size";
+					$sql="SELECT resource_id,operation as operation_id,style,color,schedule,size,sub_po,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE parent_barcode_type='PPLB' and schedule in ($sch_db_grand) and color = '$sch_color' and plant_code='".$plant_Code."' group by schedule,color,size";
 				}
 				else if($choice == 1)
 				{
-					$sql="SELECT resource_id,operation as operation_id,style,color,schedule,size,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE parent_barcode_type='PPLB' and schedule in ($sch_db_grand)  and plant_code='".$plant_Code."' group by schedule,color,size";
+					$sql="SELECT resource_id,operation as operation_id,style,color,schedule,size,sub_po,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE parent_barcode_type='PPLB' and schedule in ($sch_db_grand)  and plant_code='".$plant_Code."' group by schedule,color,size";
 				}
 				else if($choice==2)
 				{
-					$sql="SELECT resource_id,operation as operation_id,style,color,schedule,size,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE parent_barcode_type='PPLB' and schedule in ($sch_db_grand)  and plant_code='".$plant_Code."' group by schedule,color,size,resource_id";
+					$sql="SELECT resource_id,operation as operation_id,style,color,schedule,size,sub_po,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE parent_barcode_type='PPLB' and schedule in ($sch_db_grand)  and plant_code='".$plant_Code."' group by schedule,color,size,resource_id";
 				}
 				$grand_reject=array();
 				$grand_output=0;
@@ -333,9 +333,10 @@ if(isset($_POST['color']))
 				{
 					$mod=$sql_row['resource_id'];
 					$sw_out=$sql_row['output'];
+					$sub_po=$sql_row['sub_po'];
 					//Order_Qty Data
 					$query="SELECT SUM(omd.mo_quantity) as qty FROM oms.oms_mo_details AS omd LEFT JOIN 
-					oms.oms_products_info opi ON omd.mo_number=opi.mo_number WHERE omd.plant_code='".$plant_Code."' and omd.schedule='".$sql_row['schedule']."' AND opi.color_name='".$sql_row['color']."' AND opi.size_name='".$sql_row['size']."'";
+					oms.oms_products_info opi ON omd.mo_number=opi.mo_number WHERE omd.plant_code='".$plant_Code."' and omd.schedule='".$sql_row['schedule']."' AND opi.color_desc='".$sql_row['color']."' AND opi.size_name='".$sql_row['size']."'";
 					$sql_oms_result = mysqli_query($link_new, $query) or exit("Fetching order quantity" . mysqli_error($GLOBALS["___mysqli_ston"]));
 					while ($oms_row = mysqli_fetch_array($sql_oms_result)) {
 						$order_qty = $oms_row['qty'];
@@ -351,11 +352,11 @@ if(isset($_POST['color']))
 								
 					if($choice==1 || $choice==3)
 					{
-						$sql1="SELECT reason_id,SUM(rh.total_rejection) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rh.schedule='".$sql_row['schedule']."' and  fg_color = '".$sql_row['color']."' and size='".$sql_row['size']."' group by reason_id";
+						$sql1="SELECT reason_id,rh.total_rejection AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rh.schedule='".$sql_row['schedule']."' and  fg_color = '".$sql_row['color']."' and size='".$sql_row['size']."' and sub_po='$sub_po' group by reason_id";
 					}
 					else
 					{
-						$sql1="SELECT reason_id,SUM(rh.total_rejection) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rh.schedule='".$sql_row['schedule']."' and  fg_color = '".$sql_row['color']."' and size='".$sql_row['size']."' and rt.workstation_id='".$mod."' group by reason_id";
+						$sql1="SELECT reason_id,rh.total_rejection AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rh.schedule='".$sql_row['schedule']."' and  fg_color = '".$sql_row['color']."' and size='".$sql_row['size']."' and rt.workstation_id='".$mod."' and sub_po='$sub_po' group by reason_id";
 					}
 					//echo $sql1."<br>"; 
 					$rej_qty=array();
