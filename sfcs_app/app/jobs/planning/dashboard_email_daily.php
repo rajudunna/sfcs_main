@@ -248,7 +248,7 @@ else
 }
 
  
-$subject = 'SAH Report';
+$subject = $plant_name.' SAH Report';
 
 
 // To send HTML mail, the Content-type header must be set
