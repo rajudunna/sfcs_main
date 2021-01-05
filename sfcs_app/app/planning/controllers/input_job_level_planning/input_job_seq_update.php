@@ -229,8 +229,8 @@ $userName = getrbac_user()['uname'];
     }
 	// remove docs
 	$remove_docs=array();
-	$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where
-	input_job_input_status(input_job_no_random,$operation_code)=\"DONE\"";
+	$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dashboard_input where
+	input_job_input_status(input_job_no_random_ref,$operation_code)=\"DONE\"";
 	//echo $sqlx;
 	$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowx=mysqli_fetch_array($sql_resultx))
