@@ -3,15 +3,14 @@ error_reporting(0);
 
 if(isset($_GET['date'])){
 	$date = $_GET['date'];
-	$plant = $_GET['plant'];
-	getData($date, $plant);
+	getData($date);
 }
 
-function getData($date, $plant){
+function getData($date){
 	
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 
-	$plant_code = $plant;
+	$plant_code = $_SESSION['plantCode'];
 	$operation_code = [];	
 	$operations_yes = [];
 	$operations_no = [];
