@@ -6,13 +6,13 @@ error_reporting(0);
 
 set_time_limit(6000000);
 
-$insert_shipment_plan="INSERT INTO $m3_inputs.shipment_plan SELECT * FROM $m3_inputs.shipment_plan_original WHERE CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) NOT IN (SELECT CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) FROM $m3_inputs.shipment_plan) ORDER BY TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)";
-echo $insert_shipment_plan."<br><br>";
-$res=mysqli_query($link, $insert_shipment_plan) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
-if($res)
-{
-	print("Data Inserted into shipment_plan from shipment_plan_original ")."\n";
-}
+// $insert_shipment_plan="INSERT INTO $m3_inputs.shipment_plan SELECT * FROM $m3_inputs.shipment_plan_original WHERE CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) NOT IN (SELECT CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) FROM $m3_inputs.shipment_plan) ORDER BY TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)";
+// echo $insert_shipment_plan."<br><br>";
+// $res=mysqli_query($link, $insert_shipment_plan) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
+// if($res)
+// {
+// 	print("Data Inserted into shipment_plan from shipment_plan_original ")."\n";
+// }
 // function check_style($string)
 // {
 // 	global $link;

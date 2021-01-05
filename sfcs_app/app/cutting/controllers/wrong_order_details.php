@@ -186,8 +186,8 @@ $(document).ready(function() {
 							// $result17 = $link->query($del_order_original);
 							
 
-                            $del_shipment_original="DELETE FROM $m3_inputs.shipment_plan_original WHERE style_no='$style' AND schedule_no='$schdule' AND colour='$color'";
-							$result18 = $link->query($del_shipment_original);
+                            // $del_shipment_original="DELETE FROM $m3_inputs.shipment_plan_original WHERE style_no='$style' AND schedule_no='$schdule' AND colour='$color'";
+							// $result18 = $link->query($del_shipment_original);
 							
 
 	                        $del_mo_details="DELETE FROM $bai_pro3.mo_details where style='$style' and schedule='$schdule' and color='$color'";
