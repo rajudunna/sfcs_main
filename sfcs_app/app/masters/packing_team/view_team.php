@@ -5,7 +5,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
 $plant_code = $_SESSION['plantCode'];
-// $plant_code = 'N02';
+$plant_code = 'N02';
 $username = $_SESSION['userName'];
 
 if ($conn->connect_error) {
@@ -25,7 +25,7 @@ if ($result->num_rows > 0) {
         $team_leader=$row["team_leader"];
         $status=$row["status"];
       
-        echo "<tr><td>".$sno++."</td><td>".$row["packing_team"]." </td><td>".$row["team_leader"]."</td><td>".$row["status"]."</td><td><a href='$url&row_id=$rowid&packing_team=$packing_team&team_leader=$team_leader&status=$status' class='btn btn-warning btn-xs editor_edit'>Edit</a></td></tr>";
+        echo "<tr><td style='text-align:right;'>".$sno++."</td><td style='text-align:left;'>".$row["packing_team"]." </td><td style='text-align:left;'>".$row["team_leader"]."</td><td style='text-align:left;'>".$row["status"]."</td><td><a href='$url&row_id=$rowid&packing_team=$packing_team&team_leader=$team_leader&status=$status' class='btn btn-warning btn-xs editor_edit'>Edit</a></td></tr>";
     }
     echo "</tbody></table></div></form></div></div>";
 } else {
