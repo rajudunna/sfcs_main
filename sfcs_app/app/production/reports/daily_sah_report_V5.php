@@ -1282,7 +1282,7 @@ function getSectionByDeptTypeSewing($plantCode){
             while($row = mysqli_fetch_array($sectionsQueryResult)){
                 $sectionRecord = [];
                 $sectionRecord["sectionId"] = $row['section_id'];
-                $sectionRecord["sectionCode"] = $row["section_code"];
+                $sectionRecord["sectionCode"] = $row["section_id"];
                 $sectionRecord["sectionName"] = $row["section_name"];
                 array_push($sections, $sectionRecord);
             }
@@ -1302,7 +1302,7 @@ function getShifts($plantCode) {
     global $pms;
     global $link_new;
     try{
-        $shiftsQuery = "select shift_id,shift_code,shift_description from $pms.shifts where plant_code='".$plantCode."' and is_active=1";
+        $shiftsQuery = "select shift_id,shift_code,shift_description from $pms.shifts where plant_code='".$plantCode."' and is_active=1 ORDER BY shift_code ASC";
         $shiftQueryResult = mysqli_query($link_new,$shiftsQuery) or exit('Problem in getting shifts');
         if(mysqli_num_rows($shiftQueryResult)>0){
             $shifts = [];
@@ -1567,10 +1567,13 @@ echo "<hr/><div class='table-responsive' id=\"SAH -JUN_13441\">
  //$plan_sah_b=0;
  //$plan_sah_general=0;
  foreach($shifts_array as $shift)
-	{
-		$plan_sah_.$shift=0;
-		$act_sah_.$shift=0;
-	} 
+	{	
+		// echo $shift['shiftValue']."</br>";
+		$plan_sah_.$shift['shiftValue']=0;
+		//echo "</br>Shift : ".$shift['shiftValue']." => ".$plan_sah_.$shift['shiftValue'];
+		$act_sah_.$shift['shiftValue']=0;
+		
+	}
  $act_sah=0;
 //  $act_sah_a=0;
 //  $act_sah_b=0;
@@ -1711,11 +1714,12 @@ while($row=mysqli_fetch_array($sql_dat))
 				$plan_clh=$plan_clh+round($rows["clh"],$decimal_factor);
 				if(sizeof($shifts_array)>0){
 					foreach($shifts_array as $shift)
-					{
-						$shift=$shift['shiftValue'];
-						if($rows["shift"] == $shift){
-							$act_sah_.$shift=$act_sah_.$shift.+round($rows["act"],$decimal_factor);
-							$plan_sah_.$shift=$plan_sah_.$shift.+round($rows["plan"],$decimal_factor);
+					{	
+						// echo $shift['shiftValue']."</br>";
+						// $shift=$shift['shiftValue'];
+						if($rows["shift"] == $shift['shiftValue']){
+							$act_sah_.$shift=$act_sah_.$shift['shiftValue'].+round($rows["act"],$decimal_factor);
+							$plan_sah_.$shift=$plan_sah_.$shift['shiftValue'].+round($rows["plan"],$decimal_factor);
 						} 
 							
 					}
@@ -1756,7 +1760,12 @@ while($row=mysqli_fetch_array($sql_dat))
 				foreach($shifts_array as $shift)
 				{	
 					$shift=$shift['shiftValue'];
-					echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_.$shift,$decimal_factor)."</td>";
+					$sql=mysqli_query($link, "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantCode' and DATE=\"".$row["date"]."\" AND section=\"".$sec_array[$i]."\" AND shift=\"".$shift."\"");
+					while($rows=mysqli_fetch_array($sql))
+					{
+						echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".round($rows["act"],$decimal_factor)."</td>";
+					}
+					
 				}
 			
 			echo "<td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($totalActSAH,$decimal_factor)."</td>";
