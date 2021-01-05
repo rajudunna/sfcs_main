@@ -8,11 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-	
-	
-    
 </head>
-
 <body>
     <?php
 	if(isset($_GET['team_id'])){
@@ -43,77 +39,62 @@
 		<b>Team List</b>
 	</div>
 	<div class='panel-body'>
-
               <form action="<?= $action_url ?>" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
-			  <input type='hidden' id='tid' name='team_id' value=<?php echo $team_id; ?> >
-                <div class="container-fluid shadow">
-                    <div class="row">
-                        <div id="valErr" class="row viewerror clearfix hidden">
-                            <div class="alert alert-danger">Oops! Seems there are some errors..</div>
-                        </div>
-                        <div id="valOk" class="row viewerror clearfix hidden">
-                            <div class="alert alert-success">Yay! ..</div>
-                        </div>
+			        <input type='hidden' id='tid' name='team_id' value=<?php echo $team_id; ?> >
+                    <div class="container-fluid shadow">
+                            <div class="row">
+                                <div id="valErr" class="row viewerror clearfix hidden">
+                                    <div class="alert alert-danger">Oops! Seems there are some errors..</div>
+                                </div>
+                                <div id="valOk" class="row viewerror clearfix hidden">
+                                    <div class="alert alert-success">Yay! ..</div>
+                                </div>
+                            </div>
 
                         <div class="row">
-            
-            <div class="col-md-4">
-                
-                <div class="form-group">
-                <label class="control-label control-label-left col-sm-3"  for="complaint_reason">Employee Ids:</label>
-                <div class="controls col-sm-9">
-                    
-                <input id="emp_id" type="text" class="form-control k-textbox alpha" maxlength="16" onkeyup="return validateEmpIdNum(this)" data-role="text" required="required" <?= $jj ?>  name="emp_id" value="<?php echo $emp_id; ?>"  data-parsley-errors-container="#errId1" />
-                    <span id="errId1" class="error"></span></div>
-                
-        </div></div>
-            <div class="col-md-4"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="complaint_clasification" >Employee Name:</label>
-			    <div class="controls col-sm-9">
-                    
-                <input id="emp_call_name" type="text" class="form-control k-textbox alpha" maxlength="21" onkeyup="return validateEmpNameLength(this)" data-role="text" required="required" name="emp_call_name" value="<?php echo $emp_call_name; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
-                
-		</div></div>
-        
-        
-        <div class="col-md-4"><div class="form-group">
-			    <label class="control-label control-label-left col-sm-3" for="active_status">Status:</label>
-			    <div class="controls col-sm-9">
-                    
-                <select id="active_status" class="form-control" data-role="select" selected="selected" required="required" name="emp_status"  data-parsley-errors-container="#errId4">
-                <?php
-                    if($emp_status=="Active"){
-                    echo '<option value="0" selected>Active</option>';
-                    echo '<option value="1">In-Active</option>';
-                    }else if($emp_status=="In-Active"){
-                        echo '<option value="0">Active</option>';
-                        echo '<option value="1" selected>In-Active</option>';
-                    }else {
-                        echo '<option value="0" selected>Active</option>';
-                        echo '<option value="1">In-Active</option>';
-                    }
+                            <div class="col-md-4">
+                                <label class="control-label"  for="complaint_reason"><font color='red'>*</font>Employee Ids:</label>
+                                    <input id="emp_id" type="text" class="form-control k-textbox alpha" maxlength="16" onkeyup="return validateEmpIdNum(this)" data-role="text" <?= $jj ?>  name="emp_id" value="<?php echo $emp_id; ?>"  data-parsley-errors-container="#errId1" />
+                                    <span id="errId1" class="error"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label" for="complaint_clasification" ><font color='red'>*</font>Employee Name:</label>
+                                    <input id="emp_call_name" type="text" class="form-control k-textbox alpha" maxlength="21" onkeyup="return validateEmpNameLength(this)" data-role="text" name="emp_call_name" value="<?php echo $emp_call_name; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
+                            </div>
+                            <div class="col-md-4">
+                                    <label class="control-label" for="active_status"><font color='red'>*</font>Status:</label>
+                                    <select id="active_status" class="form-control" data-role="select" selected="selected" required="required" name="emp_status"  data-parsley-errors-container="#errId4">
+                                    <?php
+                                        if($emp_status=="Active"){
+                                        echo '<option value="0" selected>Active</option>';
+                                        echo '<option value="1">In-Active</option>';
+                                        }else if($emp_status=="In-Active"){
+                                            echo '<option value="0">Active</option>';
+                                            echo '<option value="1" selected>In-Active</option>';
+                                        }else {
+                                            echo '<option value="0" selected>Active</option>';
+                                            echo '<option value="1">In-Active</option>';
+                                        }
 
-                ?>
-                </select><span id="errId4" class="error"></span></div>
-                
-		</div></div>
-        <div class="col-md-12">
-            <div class="form-group btn-group pull-right">
-		<button id="btn_save" type="submit" class="btn btn-primary" name="btn_save">Save</button>
-    </div></div></div>
-
-
+                                    ?>
+                                    </select><span id="errId4" class="error"></span>
+                            </div>
+                        </div>
+                        </br>
+                        <div class = 'row'>
+                            <div class="col-md-12">
+                                <div class="form-group btn-group pull-right">
+                                <button id="btn_save" type="submit" class="btn btn-primary btn-sm" name="btn_save">Save</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
             </form>
-        </div>
+    </div>
     
-    
-
-   
 	<?php
-include('view_handover_team_list.php');
-?>
+        include('view_handover_team_list.php');
+    ?>
+    </div>
 </body>
 
 </html>
