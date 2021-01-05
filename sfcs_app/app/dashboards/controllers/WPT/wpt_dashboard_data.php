@@ -2,7 +2,7 @@
 error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
-$url = base64_encode('/sfcs_app/app/dashboards/controllers/Cut_table_dashboard/fabric_requisition.php');
+$url = base64_encode('/sfcs_app/app/dashboards/controllers/cut_table_dashboard/fabric_requisition.php');
 $section = $_GET['section'];
 $blocks_per_sec = $_GET['blocks'];
 
