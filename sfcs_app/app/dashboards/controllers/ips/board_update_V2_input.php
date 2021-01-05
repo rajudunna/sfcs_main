@@ -355,25 +355,26 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 		$doc_no_ref_explode=explode(",",$doc_no_ref);
 		$num_docs=sizeof($doc_no_ref_explode);
 		$sqlDocketLineIds="SELECT GROUP_CONCAT(CONCAT('''', jm_docket_id, '''' )) AS docket_line_ids FROM $pps.`jm_dockets` WHERE docket_number IN ($doc_no_ref)";
-		// echo $sqlDocketLineIds.'<br/>';
 		$sql_resultsqlDocketLineIds=mysqli_query($link, $sqlDocketLineIds) or exit("Sql Error1000".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($docket_row123=mysqli_fetch_array($sql_resultsqlDocketLineIds))
 		{
 			$docket_line_ids=$docket_row123['docket_line_ids'];
 		}
 		$jobstatus=JobStatusEnum::DONE;
-		$sql1x1="select * from $pps.jm_actual_docket where jm_docket_id in ($docket_line_ids) AND cut_report_status='$jobstatus'";
-		$sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error81".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if(mysqli_num_rows($sql_result1x1)>0)
-		{
-				if(sizeof($doc_no_ref_explode)<>mysqli_num_rows($sql_result1x1))
-				{
-						$cut_status="5";
-				}
-				else
-				{
-						$cut_status="0";
-				}
+		if($docket_line_ids!=''){
+			$sql1x1="select * from $pps.jm_actual_docket where jm_docket_id in ($docket_line_ids) AND cut_report_status='$jobstatus'";
+			$sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error81".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_result1x1)>0)
+			{
+					if(sizeof($doc_no_ref_explode)<>mysqli_num_rows($sql_result1x1))
+					{
+							$cut_status="5";
+					}
+					else
+					{
+							$cut_status="0";
+					}
+			}
 		}
 		else 
 		{
