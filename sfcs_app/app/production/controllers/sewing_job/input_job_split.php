@@ -107,7 +107,9 @@
                     console.log(data);
                     var sewing_job_list ='<h5><b><u>Select Sewing Job :</u></b></h5>';
                     $.each(data.job_number, function( index, sewing_job ) {
-                        sewing_job_list = sewing_job_list + '<input type="button" class="btn btn-info" onclick=sendData(this.value,"'+po_desc+'") value='+sewing_job+'>';
+                        sewing_job_list = sewing_job_list + `<input type="button" class="btn btn-info"
+                        onclick="sendData(this.value,'${po_desc}')" 
+                        value='${sewing_job.jobNumber}' >`;
                     });
                     console.log(sewing_job_list);
                     $('#dynamic_table').html(sewing_job_list);
