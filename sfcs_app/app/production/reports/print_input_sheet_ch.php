@@ -50,8 +50,8 @@
             $jm_job_header_id[]=$jm_job_header_id_row['jm_job_header_id'];
         }
     }
-    
-    $get_job_details = "SELECT jg.job_group,jg.jm_jg_header_id,jg.job_number as job_number FROM $pps.jm_jg_header jg WHERE jg.plant_code = '$plantcode' AND jg.jm_job_header IN ('".implode("','" , $jm_job_header_id)."') AND jg.is_active=1";
+    $job_type=TaskTypeEnum::PLANNEDSEWINGJOB;
+    $get_job_details = "SELECT jg.job_group,jg.jm_jg_header_id,jg.job_number as job_number FROM $pps.jm_jg_header jg WHERE jg.plant_code = '$plantcode' AND job_group_type='$job_type' AND jg.jm_job_header IN ('".implode("','" , $jm_job_header_id)."') AND jg.is_active=1";
     $get_job_details_result=mysqli_query($link_new, $get_job_details) or exit("$get_job_details".mysqli_error($GLOBALS["___mysqli_ston"]));
     if($get_job_details_result>0){
         while($get_job_details_row=mysqli_fetch_array($get_job_details_result))
@@ -122,7 +122,7 @@
                     $workstation_code = $row6['workstation_code'];
                 }
                 //get task jobs 
-                $sql_tms = "SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id = '$task_job_id'  ORDER BY operation_seq  DESC LIMIT 0,1";
+                $sql_tms = "SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id = '$task_job_id' and plant_code='$plantcode'   ORDER BY operation_seq  DESC LIMIT 0,1";
                 // echo $sql_tms;
                 mysqli_query($link_new,$sql_tms) or exit("Sql Error78".mysqli_error());
                 $sql_result_tms=mysqli_query($link_new,$sql_tms) or exit("Sql Error5".mysqli_error());
@@ -130,7 +130,7 @@
                 {
                     $out_put_ops = $sql_row_tms['operation_code'];
                 }
-                $sql_tms_in = "SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id = '$task_job_id' ORDER BY operation_seq  ASC LIMIT 0,1";
+                $sql_tms_in = "SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id = '$task_job_id' and plant_code='$plantcode' ORDER BY operation_seq  ASC LIMIT 0,1";
                 // echo $sql_tms_in;
                 mysqli_query($link_new,$sql_tms_in) or exit("Sql Error79".mysqli_error());
                 $sql_result_tms_in=mysqli_query($link_new,$sql_tms_in) or exit("Sql Error5".mysqli_error());
@@ -326,7 +326,19 @@
         }
         //To get Total order qty
         $total_order_qty=0;
-        $get_order_qty="SELECT SUM(quantity) AS quantity FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plantcode'";
+        // $order_qty_qry = "SELECT sum(mo_quantity) as quantity FROM $oms.oms_products_info AS opi LEFT JOIN oms.oms_mo_details AS omd ON omd.mo_number=opi.mo_number where schedule ='$schedule' AND color_desc ='$color' AND plant_code='$plant_code'";
+        // $sql_result3=mysqli_query($link, $order_qty_qry) or die("Error".$order_qty_qry.mysqli_error($GLOBALS["___mysqli_ston"]));
+        // while($row3=mysqli_fetch_array($sql_result3))
+        // {
+        //     $total_order_qty=$row3['quantity'];
+        // }
+        $get_supo_qty="SELECT mp_mo_qty_id FROM $pps.`mp_sub_mo_qty` WHERE plant_code='$plantcode' AND po_number='$sub_po'";
+        $sql_result_moqtyid=mysqli_query($link, $get_supo_qty) or die("Error".$get_supo_qty.mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($mpmoqty_row=mysqli_fetch_array($sql_result_moqtyid))
+        {
+            $mp_mo_qty_id[]=$mpmoqty_row['mp_mo_qty_id'];
+        }
+        $get_order_qty="SELECT SUM(quantity) AS quantity FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plantcode' AND mp_mo_qty_id  IN ('".implode("','" , $mp_mo_qty_id)."')";
         $sql_result3=mysqli_query($link, $get_order_qty) or die("Error".$get_order_qty.mysqli_error($GLOBALS["___mysqli_ston"]));
         while($row3=mysqli_fetch_array($sql_result3))
         {
@@ -341,14 +353,22 @@
             $cut_operation=$row4['operation_code'];
         }
         $cut_recevied_quantity = 0;
-        $cut_report_details="SELECT sum(if(operation=".$cut_operation.",good_quantity,0)) as good_quantity FROM $pts.transaction_log WHERE style='$style' AND schedule='$schedule' AND color='$color' and operation=$cut_operation and plant_code='$plantcode' AND is_active=1 GROUP BY size";
+        //Get mos for style,schedule and color
+        $get_mos="SELECT DISTINCT(mo_number) AS mo_number FROM $pts.finished_good where style='$style' and schedule='$schedule' and color ='$color' AND plant_code='$plant_code'";
+        $sql_mos_result = mysqli_query($link,$get_mos);
+        while($row_mos = mysqli_fetch_array($sql_mos_result))
+        {
+          $monumbers[]=$row_mos['mo_number'];
+        }
+
+        $cut_report_details="SELECT sum(if(operation=".$cut_operation.",quantity,0)) AS good_quantity FROM $pts.`fg_m3_transaction` LEFT JOIN $pts.finished_good fg ON fg_m3_transaction.fg_id = fg.finished_good_id WHERE fg_m3_transaction.mo_number IN ('".implode("','" , $monumbers)."') GROUP BY size";
         $result6 = $link->query($cut_report_details);
         $result6_num=mysqli_num_rows($result6);
         if($result6_num > 0)
         {
             while($row6 = $result6->fetch_assoc())
             {
-                $cut_recevied_quantity += $row6['good_quantity'];
+                $cut_recevied_quantity = $row6['good_quantity'];
             }
         }
 
@@ -359,7 +379,7 @@
         if($result7_num > 0){
             while($row7 = $result7->fetch_assoc())
             {
-                $tot_in += $row7['good_quantity'];
+                $tot_in = $row7['good_quantity'];
             }
         }
 
