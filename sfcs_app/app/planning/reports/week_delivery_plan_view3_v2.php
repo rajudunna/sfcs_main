@@ -315,7 +315,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 	// if($division=='ALL'){
 	// 	$sql="select * from $oms.oms_mo_details where buyer_desc in  ($buyer_name_ref) and plant_code='$plantcode'";
 	// }else{
-		$sql="select * from $oms.oms_mo_details where buyer_desc in  ($buyer_division_ref) and plant_code='$plantcode' and DATE(planned_delivery_date) between \"$start_date_w1\" and  \"$end_date_w1\" group by schedule,buyer_desc";
+		$sql="select * from $oms.oms_mo_details where buyer_desc in  ($buyer_division_ref) and plant_code='$plantcode' and DATE(planned_delivery_date) between \"$start_date_w1\" and  \"$end_date_w1\" and po_number!='' group by schedule,buyer_desc";
 //	}
 	//  echo $sql."<br>";
 	// mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -437,7 +437,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		$order_total=0;
 
 		$sql1="select master_po_details_id,style from $pps.mp_color_detail where master_po_number='$po_number' and plant_code='$plantcode'";
-		//  echo "<br>2=".$sql1."<br>";
+		// echo "<br>2=".$sql1."<br>";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2x".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -493,7 +493,6 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 				}
 
 				$get_out_qty_details="select sum(good_quantity+rejected_quantity) as cut_qty from $pts.transaction_log where schedule='$schedule_no' and color='$color' and style='$style' and size='$size' and plant_code='$plantcode' and operation=".$cut_operation." group by schedule,color";
-				
 				$get_out_qty_details_result = mysqli_query($link, $get_out_qty_details) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$get_out_qty__rows=mysqli_num_rows($get_out_qty_details_result);
 				if($get_out_qty__rows){
