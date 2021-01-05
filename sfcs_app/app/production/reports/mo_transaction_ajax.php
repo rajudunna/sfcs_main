@@ -98,7 +98,8 @@ if(isset($_GET['submit']))
         $mo_quantity=$moQtyRow['mo_quantity'];
       }
        $table_data .= "<tr><td>$counter</td><td>$size_name</td><td>$color_name</td><td>$mos</td><td>$mo_quantity</td>";
-       $qryGetOps="SELECT DISTINCT(operation) as ops FROM $pts.fg_m3_transaction WHERE sub_po='$subpo' AND plant_code='$plantcode' AND is_active=1 order by operation";
+       $qryGetOps="SELECT DISTINCT(operation) as ops FROM $pts.fg_m3_transaction WHERE sub_po='$subpo' AND plant_code='$plantcode' AND is_active=1 order by operation*1";
+       //echo $qryGetOps;
       $toget_sub_order_result=mysqli_query($link_new, $qryGetOps) or exit("Sql Error at getting fg_m3 at 1nt".mysqli_error($GLOBALS["___mysqli_ston"]));
        
       
@@ -109,8 +110,7 @@ if(isset($_GET['submit']))
          //$table_data .= "<th>".$opsRow['ops']."</th>";
 	       $good_qty = 0;
 	       $get_m3_quantities="select SUM(quantity) AS qty FROM $pts.fg_m3_transaction 
-	                           where mo_number = '$mos' and op_code='".$opsRow1['ops']."'";
-                            //  echo $get_m3_quantities;
+	                           where mo_number = '$mos' and operation='".$opsRow1['ops']."'";
 	       $get_m3__result=$link->query($get_m3_quantities);
          while($row=mysqli_fetch_array($get_m3__result))
 	       {
