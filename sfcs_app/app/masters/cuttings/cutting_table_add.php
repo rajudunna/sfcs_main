@@ -20,6 +20,8 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
+// $plant_code='N02';
+
     if(isset($_GET['tid'])){
         $jj='readonly';
         //echo "Row id".$_REQUEST['rowid'];
@@ -41,8 +43,8 @@ $username=$_SESSION['userName'];
     </div>
     <div class='panel-body'>
 
-            <form action="<?= $action_url ?>" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
-            <input type='hidden' id='tbl_id' name='tbl_id' value=<?php echo $tbl_id; ?> >
+            <form action="<?= $action_url ?>" method="POST" data-parsley-validate novalidate>
+                <input type='hidden' id='tbl_id' name='tbl_id' value=<?php echo $tbl_id; ?> >
                 <div class="container-fluid shadow">
                     <div class="row">
                         <div id="valErr" class="row viewerror clearfix hidden">
@@ -51,31 +53,25 @@ $username=$_SESSION['userName'];
                         <div id="valOk" class="row viewerror clearfix hidden">
                             <div class="alert alert-success">Yay! ..</div>
                         </div>
-
-                        
-                                    <div class="row">
-                                        <div class="col-md-12"><div class="row"><div class="col-md-4"><div class="form-group">
-                <label class="control-label control-label-left col-sm-3" for="table_name">  Employee Id:</label>
-                <div class="controls col-sm-9">
-                    
-                <input id="table_name" type="text" class="form-control k-textbox integer"   onkeyup="return validateEmpIdNum(this)" maxlength="21" data-role="text"  name="emp_id" required="required" <?= $jj ?>  value="<?php echo $emp_id; ?>" ><span id="errId1" class="error"></span></div>
-                
-        </div></div><div class="col-md-4"><div class="form-group">
-                <label class="control-label control-label-left col-sm-3" for="table_status">Employee Name:</label>
-                <div class="controls col-sm-9">
-                    
-               <input id="emp_name" type="text" class="form-control k-textbox alpha " onkeyup="return validateEmpNameLength(this)"  maxlength="21" data-role="text" pattern="[A-Za-z0-9]" name="emp_name" required="required" value="<?php echo $emp_name; ?>" ><span id="errId1" class="error"></span></div>
-    
-                
-        </div></div><div class="col-md-4"><div class="form-group">
-                
-                
-                
-        <button id="btn_save" type="submit" class="btn btn-primary btn-lg" name="btn_save">Save</button></div></div></div></div>
+                    <div class="row">
+                          <div class="col-md-12">
+                                    <div class="col-md-5">
+                                            <label class="control-label" for="table_name"><span style='color:red'>*</span> Employee Id:</label>
+                                                <input  id="table_name" type="text" class="form-control k-textbox integer"   onkeyup="return validateEmpIdNum(this)" maxlength="21" data-role="text"  name="emp_id"  <?= $jj ?>  value="<?php echo $emp_id; ?>" >
+                                                    <span id="errId1" class="error" style = 'color:red;'></span>
                                     </div>
-                                
-
-
+                                    <div class="col-md-5">
+                                        <label class="control-label" for="table_status"><span style='color:red'>*</span>Employee Name:</label>
+                                            <input  id="emp_name" type="text" class="form-control k-textbox alpha " onkeyup="return validateEmpNameLength(this)"  maxlength="21" data-role="text" pattern="[A-Za-z0-9]" name="emp_name"  value="<?php echo $emp_name; ?>" >
+                                                <span id="errId2" class="error"  style = 'color:red;'></span>
+                                    </div>
+                                    <div class="col-md-2">
+                                            <div style='padding-top:23px;'>
+                                                <button id="btn_save" type="submit" class="btn btn-primary btn-sm" name="btn_save">Save</button>
+                                            </div>
+                                    </div>
+                             </div>
+                     </div>
                     </div>
                 </div>
             </form>
@@ -84,6 +80,7 @@ $username=$_SESSION['userName'];
     
 <?php include('view_cutting_table.php'); ?>
 </body>
+
 <script>
     function validateEmpIdNum(t){
         if(t.value == '')
@@ -93,10 +90,12 @@ $username=$_SESSION['userName'];
         var found = emp_id.match(emp_id_pattern);
         if (t.value.length > 20) {
                 swal("Length must be lessthan 20 Characters");
+                $("#errId1").text("Employee Id must be lessthan 20 Characters");
                 t.value ='';
                 return false;
             }
         if(found) {
+            $("#errId1").text("");
             return true;
         } else {
             swal("ID is not valid");
@@ -109,8 +108,11 @@ $username=$_SESSION['userName'];
             if (t.value.length > 20) {
                 t.value =  t.value.substr(0,20);
                 swal("Name must be lessthan 20 Characters");
+                $("#errId2").text("Employee Name must be lessthan 20 Characters");
                 t.value ='';
                 return false;
+            }else{
+                $("#errId2").text("");
             }
         }
     }
