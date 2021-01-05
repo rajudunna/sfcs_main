@@ -233,7 +233,7 @@ if(isset($_POST['show']))
 		}
 		
 		
-		$sql2="SELECT TRIM(GROUP_CONCAT(DISTINCT lot_no SEPARATOR ',')) AS lot_no FROM $bai_rm_pj1.sticker_report WHERE batch_no='".trim($batch_no)."' and lot_no in ('".$lot_no_ref_new_final."')";
+		$sql2="SELECT TRIM(GROUP_CONCAT(DISTINCT lot_no SEPARATOR \"','\")) AS lot_no FROM $bai_rm_pj1.sticker_report WHERE batch_no='".trim($batch_no)."' and lot_no in ('".$lot_no_ref_new_final."')";
 		// echo $sql2."<br>";
 		$result2=mysqli_query($link, $sql2) or die("Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
@@ -245,7 +245,7 @@ if(isset($_POST['show']))
 				$lot_no_ref=$row2["lot_no"];
 				
 			}
-
+			
 			$sql3="select TRIM(GROUP_CONCAT(DISTINCT lot_no SEPARATOR \"','\")) as lot_no from $bai_rm_pj1.store_in where lot_no IN ('".$lot_no_ref."') and roll_status in (1,2)";
 			$result3=mysqli_query($link, $sql3) or die("Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row3=mysqli_fetch_array($result3))
@@ -458,7 +458,7 @@ if(isset($_POST['show']))
 					}else {
 						echo "<td><input type=\"text\" class=\"form-control float\" name=\"txtindrejqty[]\" id=\"txtindrejqty[]\"  size=\"8\" value='0' />";
 					}
-					echo "<td><input type=\"text\" class=\"form-control integer \" name=\"txtindrejrat[]\" size=\"8\" value=\"".($len_shrt*-1)."\" />";
+					echo "<td><input type=\"text\" class=\"form-control\" name=\"txtindrejrat[]\" size=\"8\" value=\"".($len_shrt*-1)."\" onkeypress='return checkQuote();'/>";
 					echo "<td><input type=\"text\" class=\"form-control\" name=\"txtindrejrem[]\" size=\"15\" value=\"\" />";			
 					echo "</tr>";
 				}
@@ -467,7 +467,7 @@ if(isset($_POST['show']))
 					echo "<tr>";
 					echo "<td><input type=\"hidden\" class=\"form-control\" name=\"txtindrejsno[]\" value=\"".$row5["sno"]."\" />".$row5["complaint_reason"]."</td>";
 					echo "<td><input type=\"text\" class=\"form-control float\" name=\"txtindrejqty[]\"  id=\"txtindrejqty[]\"  size=\"8\" value=\"0\" />";
-					echo "<td><input type=\"text\" class=\"form-control integer\" name=\"txtindrejrat[]\" size=\"8\" value=\"0\" />";
+					echo "<td><input type=\"text\" class=\"form-control\" name=\"txtindrejrat[]\" size=\"8\" value=\"0\" onkeypress='return checkQuote();' />";
 					echo "<td><input type=\"text\" class=\"form-control\" name=\"txtindrejrem[]\" size=\"15\" value=\"\" />";			
 					echo "</tr>";
 				}
@@ -745,3 +745,11 @@ if(isset($_POST['submitx']))
 </div>
 </div>
 </div>
+<script type="text/javascript" language="javascript">
+		function checkQuote() {
+			if(event.keyCode == 39 || event.keyCode == 34) {
+				event.keyCode = 0;
+				return false;
+			}
+		}
+	</script>
