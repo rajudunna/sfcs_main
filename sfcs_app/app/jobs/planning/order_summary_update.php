@@ -144,7 +144,7 @@ while($row=mysqli_fetch_array($result))
 	}
 	
 }
-$sql="select distinct order_del_no from $bai_pro3.plandoc_stat_log_cat_log_ref where log_update>='$log_time_stamp' and length(trim(both from order_del_no))>0";
+$sql="select distinct order_del_no from $bai_pro3.plandoc_stat_log_cat_log_ref";
 // echo $sql."<br/>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -170,7 +170,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 //input/output
 
-$sql="select distinct ims_schedule from $bai_pro3.ims_log where ims_log_date>='$log_time_stamp' and length(trim(both from ims_schedule))>0";
+$sql="select distinct ims_schedule from $bai_pro3.ims_log";
 // echo $sql."<br/>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -183,7 +183,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 }
 
-$sql="select distinct delivery from $bai_pro.bai_log_buf where log_time>='$log_time_stamp' and length(trim(both from delivery))>0";
+$sql="select delivery from $bai_pro.bai_log_buf group by delivery";
 // echo $sql."<br/>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -196,7 +196,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 
-$sql="select distinct ims_schedule from $bai_pro3.ims_log_backup where ims_log_date>='$log_time_stamp' and length(trim(both from ims_schedule))>0";
+$sql="select distinct ims_schedule from $bai_pro3.ims_log_backup";
 // echo $sql."<br/>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -209,14 +209,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 //FG
-$sql="select distinct order_del_no from $bai_pro3.packing_summary where lastup>='$log_time_stamp' and length(trim(both from order_del_no))>0";
+$sql="select schedule from $bai_pro3.pac_stat_log group by schedule ";
 // echo $sql."<br/>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	if($sql_row['order_del_no']>0)
+	if($sql_row['schedule']>0)
 	{
-		$sch_to_process[]=$sql_row['order_del_no'];
+		$sch_to_process[]=$sql_row['schedule'];
 	}
 	
 }
@@ -234,7 +234,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 }
 //Ship
-$sql="select distinct ship_schedule from $bai_pro3.ship_stat_log where last_up>='$log_time_stamp' and length(trim(both from ship_schedule))>0";
+$sql="select distinct ship_schedule from $bai_pro3.ship_stat_log";
 // echo $sql."<br/>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -422,7 +422,7 @@ if(sizeof($sch_to_process)>0)
 		$pendingcarts=0;
 		
 		//echo "-".date("H:i:s");
-		$sqlx1="select fca_app,app,scanned from $bai_pro3.disp_mix where order_del_no=$schedule";
+		$sqlx1="select fca_app,app,scanned from $bai_pro3.disp_mix where order_del_no='$schedule'";
         $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error23".mysqli_error($GLOBALS["___mysqli_ston"]));
         // echo $sqlx1."<br>";
         
@@ -447,7 +447,7 @@ if(sizeof($sch_to_process)>0)
 		// }
 		
 		//echo "-".date("H:i:s");
-		$sqlx1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container=1";
+		$sqlx1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no='$schedule' and container=1";
         $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
         // echo $sqlx1."<br>";
         
@@ -457,7 +457,7 @@ if(sizeof($sch_to_process)>0)
 		}
 		
 		//echo "-".date("H:i:s")."<br/";
-		$sqlx1="select distinct container, sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container>1";
+		$sqlx1="select distinct container, sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no='$schedule' and container>1";
         $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error26".mysqli_error($GLOBALS["___mysqli_ston"]));
         // echo $sqlx1."<br>";
         

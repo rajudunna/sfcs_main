@@ -106,7 +106,7 @@ if(isset($_POST['myval']))
 }
 ?>
 <?php
-$sql="select order_style_no from $bai_pro3.packing_summary_input group by order_style_no";	
+$sql="select order_style_no from $bai_pro3.bai_orders_db_confirm group by order_style_no";	
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 echo "<div class=\"row\"><div class=\"col-sm-3\"><label>Select Style:</label><select class='form-control' name=\"style\"  id='style'>";
 echo "<option value='' disabled selected>Please Select</option>";
