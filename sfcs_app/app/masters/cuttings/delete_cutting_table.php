@@ -8,6 +8,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
 $plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName']; 
+// $plant_code = 'N02';
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
@@ -16,6 +17,18 @@ if (!$conn) {
 	
 $delete="delete from $pms.`tbl_leader_name` where id='$tbl_id' and plant_code='$plant_code'";
 $sql_result=mysqli_query($link, $delete) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+echo"<script>setTimeout(function () { 
+  swal({
+    title: 'Record Deleted Successfully',
+    text: 'Message!',
+    type: 'warning',
+    confirmButtonText: 'OK'
+  },
+  function(isConfirm){
+    if (isConfirm) {
+    return true;
+    }
+  }); }, 100);</script>";
     echo "<script>window.location = '".$url."'</script>";
 
 //header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2N1dHRpbmcvY3V0dGluZ190YWJsZV9hZGQucGhw');
