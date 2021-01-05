@@ -27,14 +27,14 @@
 	$url1=getFullURL($_GET['r'],'delete_cutting_table.php','N');
 	if ($result->num_rows > 0) {
 		
-		echo "<div class='row col-sm-12 table-responsive'><table id='tbl_cutting_table' class='table'><thead><tr><th>S.No</th><th>Employee Id</th><th>Employee Name</th><th> Edit / Delete </th></tr></thead><tbody>";
+		echo "<div class='row col-sm-12 table-responsive'><table id='tbl_cutting_table' class='table'><thead><tr><th style='text-align:center;'>S.No</th><th style='text-align:center;'>Employee Id</th><th style='text-align:center;'>Employee Name</th><th style='text-align:center;'> Edit / Delete </th></tr></thead><tbody>";
 		// output data of each row
 		while($row = $result->fetch_assoc()) {
 			$tid=$row["id"];
 			$emp_id=$row["emp_id"];
 			$emp_name=$row["emp_name"];
 			
-			echo "<tr><td>".$sno++."</td><td>".$row["emp_id"]." </td><td>".$row["emp_name"]."</td>
+			echo "<tr><td style='text-align:right;'>".$sno++."</td><td style='text-align:right;'>".$row["emp_id"]." </td><td style='text-align:left;'>".$row["emp_name"]."</td>
 					  <td>
 					    <a href='$url&tid=$tid&emp_id=$emp_id&emp_name=$emp_name' class='btn btn-warning btn-xs editor_edit readonly'>Edit</a> /
 					 	<a href='$url1&tid=$tid' class='btn btn-danger btn-xs' onclick='return confirm_delete(event,this);'>Delete</a>

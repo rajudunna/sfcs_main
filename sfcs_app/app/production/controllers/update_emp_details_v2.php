@@ -86,6 +86,8 @@ function check_hrs(){
 	var shift_start=$('#shift_start').val();
 	var shift_end=$('#shift_end').val();
 	var team=$('#team').val();
+	var break_hours=$('#break_hours').val();
+	
 
 	console.log(shift_start+'---'+shift_end);
 	if(team=='' || shift_start=='' || shift_end=='' ){
@@ -236,7 +238,7 @@ $('.datepicker').datepicker({
 							}else{
 								while($sql_row121=mysqli_fetch_array($query_result1))
 								{
-									$shift_start_time=$sql_row121['end_time'];
+									$shift_end_time=$sql_row121['end_time'];
 									
 								}
 
@@ -265,7 +267,7 @@ $('.datepicker').datepicker({
 				}else{
 					while($sql_row1211=mysqli_fetch_array($query_result2))
 								{
-									$shift_start_time=$sql_row1211['break_hours'];
+									$break_time=$sql_row1211['break_hours'];
 									
 								}
 				}
@@ -296,6 +298,7 @@ if(isset($_POST['submit']))
 	$shift_end_time=$_POST['shift_end'];
 	$now_date=date('Y-m-d');
 	$prev_date = date('Y-m-d', strtotime($date .' -1 day'));
+	
 
 	$modules_array = array();	$modules_id_array=array();
 	
@@ -313,6 +316,7 @@ if(isset($_POST['submit']))
 		$modules = implode("','", $modules_array);
 		$modules_id = implode("','", $modules_array1);
 		$sql1="SELECT * FROM $pms.pro_attendance WHERE plant_code='$plantcode' and DATE='$date' AND shift='$shift' AND module IN ('$modules_id') ";
+		// echo $sql1;
 
 		// $get_modules1 = "SELECT max(id) as max_id FROM $bai_pro3.`module_master` where status='Active'";
 		// $modules_result1=mysqli_query($link, $get_modules1) or exit ("Error while fetching modules: $get_modules");
@@ -345,6 +349,7 @@ if(isset($_POST['submit']))
 				$e=0;$f=0;$g=0;$h=0;$p=0;$r=0;$x=0;$y=0;$t=0;$w=0;$m=0;$cd=0;
 		$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error5: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_num_check=mysqli_num_rows($sql_result1);
+				// echo $sql_num_check;
 				
 				if($sql_num_check>0)
 				{
@@ -354,7 +359,7 @@ if(isset($_POST['submit']))
 				
 					// 	while($module_row2=mysqli_fetch_array($modules_result2))
 					// 	{
-							//$modules1=$module_row2['workstation_id'];
+							//$modules1=$module_row2['workstation_id']
 							//$workstation_description=$module_row2['workstation_description'];
 							$sql4="SELECT * FROM $pms.pro_attendance left join $pms.pro_attendance_adjustment on pro_attendance_adjustment.module=pro_attendance.module where  pro_attendance.date='$date' AND pro_attendance.shift='$shift' AND pro_attendance.plant_code='$plantcode' and pro_attendance_adjustment.id = (select min(id) from $pms.pro_attendance_adjustment where pro_attendance_adjustment.module= pro_attendance.module and pro_attendance_adjustment.shift='$shift' AND pro_attendance_adjustment.DATE='$date' and pro_attendance_adjustment.plant_code='$plantcode')  group by pro_attendance_adjustment.id order by pro_attendance_adjustment.id";
 							// echo $sql4;
@@ -430,12 +435,11 @@ if(isset($_POST['submit']))
 								// if(in_array($authorized,$has_permission))
 								// {
 									$readonly = ''; ?>
-									<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_emp_data_v2.php",0,"N") ?>" id="add_name">
 								
 													
 								<input type="hidden"  name="count" id="count"  value=<?php echo $count ?>>
 								<input type="hidden"  name="plantcode" id="plantcode"  value=<?php echo $plantcode; ?>>
-								<input type="hidden"  name="username" id="username"  value=<?php echo $username; ?>>
+								<input type="hidden"  name="postusername" id="postusername"  value=<?php echo $username; ?>>
 								<input type="hidden"  name="rowcount" id="rowcount"  value=<?php echo $acd; ?>>
 								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" readonly style="width: 100px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $wy; ?>"  id="pra<?php echo $tu; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
 								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $jumper; ?>" name="jumper<?php echo $ps; ?>" id="jumper<?php echo $rt; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
@@ -452,11 +456,11 @@ if(isset($_POST['submit']))
 							echo"</tr>";
 								}	
 							
-								echo "<input type=\"hidden\" name=\"shift\" value=\"$shift\">";
-								echo "<input type=\"hidden\" name=\"date\" value=\"$date\">";
-								echo "<input type=\"hidden\" name=\"shift_start_time\" value=\"$shift_start_time\">";
-								echo "<input type=\"hidden\" name=\"shift_end_time\" value=\"$shift_end_time\">";	
-								echo "<input type=\"hidden\" name=\"break_hours\" value=\"$break_hours\">";		
+								echo "<input type=\"hidden\" name=\"shift\" id=\"shift\"  value=\"$shift\">";
+								echo "<input type=\"hidden\" name=\"date\" id=\"date\" value=\"$date\">";
+								echo "<input type=\"hidden\" name=\"shift_start_time\" id=\"shift_start_time\" value=\"$shift_start_time\">";
+								echo "<input type=\"hidden\" name=\"shift_end_time\" id=\"shift_end_time\" value=\"$shift_end_time\">";	
+								echo "<input type=\"hidden\" name=\"post_break_hours\" id=\"post_break_hours\" value=\"$break_hours\">";		
 								//echo "<input type=\"hidden\" name=\"plantcode\" value=\"$plantcode\">";	
 								//echo "<input type=\"hidden\" name=\"username\" value=\"$username\">";	
 								
@@ -484,11 +488,11 @@ if(isset($_POST['submit']))
 								 }
 								
 								if($date==$final_date || $now_date==$date){
-									echo'<input type="submit" id="submit" class="btn btn-primary" value="Submit" >';
+									echo'<input type="button" id="submit" class="btn btn-primary" value="Submit" >';
 								}
 					// }
 				
-					echo "</form>";
+					// echo "</form>";
 				}
 				else
 				{
@@ -504,7 +508,6 @@ if(isset($_POST['submit']))
 					{ 
 						$k=$modules_array1[$i];
 						?>
-						<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_emp_data_v2.php",0,"N") ?>" id="add_name">
 							<tr id='dynamic<?php echo $n++;  ?>' class='dynamic-<?php echo $l++;  ?>'>
 								<td> <input type="text" class="form-control" id="<?php echo $k ?>" value="<?php echo trim($modules_array[$i]); ?>"  readonly> </td>
 								<?php 
@@ -516,7 +519,7 @@ if(isset($_POST['submit']))
 
 						         <input type="hidden"  name="count" id="count"  value=<?php echo $count; ?>>
 								 <input type="hidden"  name="plantcode" id="plantcode"  value=<?php echo $plantcode; ?>>
-								 <input type="hidden"  name="username" id="username"  value=<?php echo $username; ?>>
+								 <input type="hidden"  name="postusername" id="postusername"  value=<?php echo $username; ?>>
 								 <input type="hidden"  name="rowcount" id="rowcount"  value=<?php echo $cd++; ?>>
 								<td><input type="text" onkeyup="validateQty1(event,this);" class="form-control" style="width: 100px;" readonly value="0" name="pra<?php echo $w++; ?>"  id="pra<?php echo $t++; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
 								<td><input type="text" onkeyup="validateQty1(event,this);"  class="form-control" style="width: 100px;"value="0" name="jumper<?php echo $p++; ?>" id="jumper<?php echo $r++; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
@@ -533,11 +536,11 @@ if(isset($_POST['submit']))
 							</tr>
 						<?php
 					}
-					echo "<input type=\"hidden\" name=\"shift\" value=\"$shift\">";
-					echo "<input type=\"hidden\" name=\"date\" value=\"$date\">";
-					echo "<input type=\"hidden\" name=\"shift_start_time\" value=\"$shift_start_time\">";
-					echo "<input type=\"hidden\" name=\"shift_end_time\" value=\"$shift_end_time\">";
-					echo "<input type=\"hidden\" name=\"break_hours\" value=\"$break_hours\">";
+					echo "<input type=\"hidden\" name=\"shift\" id = \"shift\" value=\"$shift\">";
+					echo "<input type=\"hidden\" name=\"date\" id = \"date\" value=\"$date\">";
+					echo "<input type=\"hidden\" name=\"shift_start_time\" id = \"shift_start_time\" value=\"$shift_start_time\">";
+					echo "<input type=\"hidden\" name=\"shift_end_time\" id = \"shift_end_time\" value=\"$shift_end_time\">";
+					echo "<input type=\"hidden\" name=\"post_break_hours\" id = \"post_break_hours\" value=\"$break_hours\">";
 					// echo "<input type=\"hidden\" name=\"plantcode\" value=\"$plantcode\">";	
 					// echo "<input type=\"hidden\" name=\"username\" value=\"$username\">";
 					 ?>
@@ -554,7 +557,7 @@ if(isset($_POST['submit']))
 							   }
 							 
 							   if($date==$final_date ||$now_date==$date){
-								echo'<input type="submit" id="submit" class="btn btn-primary" value="Submit" >';
+								echo'<input type="button" id="submit" class="btn btn-primary" value="Submit" >';
 							   }
 			
 	
@@ -562,7 +565,6 @@ if(isset($_POST['submit']))
 				
 				
 		          
-					</form>
 					</div>
 					</div>
 					<?php
@@ -577,6 +579,7 @@ if(isset($_POST['submit']))
 </body>
 </html>
 <script>  
+
 $(document).ready(function(){  
 
    $('#team').on('change',function(){ 
@@ -629,11 +632,11 @@ $(document).ready(function(){
 					{	
 					
 				
-						var data = jQuery.parseJSON(response);
-						var $data = jQuery.parseJSON(response);		
+						// var $data = jQuery.parseJSON(response);		
 
 						if(response.length >0)
 						{
+							var data = jQuery.parseJSON(response);
 							for(var i=0;i<=data.length;i++)
 							
 							{
@@ -716,6 +719,7 @@ $(document).ready(function(){
 				});  
 		
 				$('#submit').click(function(){ 
+					// alert('test');
 
 				var tbl = $('#dynamic_field tr:has(td)').map(function(i, v) {
 				var $td =  $('td input', this);
@@ -749,22 +753,40 @@ $(document).ready(function(){
 							}
 							}).get();
 							var postData = JSON.stringify(tbl);
-// alert(postData);
+							console.log(postData)
+							// alert(postData);
                    var module1 = $('input', this).attr("id");
 				 
 					
 					
 					var date1=$('#demo1').val();
 					var team=$('#team').val();
+					// var shift=$('#team').val();
 					var plantcode=$('#plantcode').val();
+					// var shift = $('#shift').val();
+					var date = $('#date').val();
+					var shift_start_time = $('#shift_start_time').val();
+					var shift_end_time = $('#shift_end_time').val();
+					var break_hours = $('#post_break_hours').val();
+					var username = $('#postusername').val();
+					// alert(date);
+					// alert(plantcode);
+					// alert(shift_start_time);
+					// alert(shift_end_time);
+					// alert(break_hours);
+					// alert(username);
+					// alert(team);
 					var url="<?= getFullURLLevel($_GET['r'],"insert_emp_data_v2.php",0,"N") ?>";
+					var selfurl="<?= getFullURLLevel($_GET['r'],"update_emp_details_v2.php",0,"N") ?>";
 					$.ajax({  
 							url:url,  
 							method:"POST",  
-							data:{'data':postData,'date1':date1,'team':team,'module':module1,'plantcode':plantcode},  
+							data:{'data':postData,'date1':date1,'team':team,'plantcode':plantcode,'shift_start_time':shift_start_time,'shift_end_time':shift_end_time,'break_hours':break_hours,'username':username},  
 							success:function(data)  
 							{  
-								
+								console.log(data);
+								sweetAlert('Attandance Details Sucessfully Updated','','success');
+								window.location.href = selfurl;
 								
 							} 
 								
