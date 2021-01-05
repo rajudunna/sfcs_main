@@ -5,7 +5,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
 $plant_code = $_SESSION['plantCode'];
-$plant_code = 'N02';
+// $plant_code = 'N02';
 $username = $_SESSION['userName'];
 
 if ($conn->connect_error) {
