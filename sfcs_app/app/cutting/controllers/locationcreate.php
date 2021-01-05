@@ -13,6 +13,7 @@
 error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 $plantcode=$_SESSION['plantCode'];
+// $plantcode='N02';
 $username=$_SESSION['userName'];
 
 	$flag='';
@@ -218,11 +219,11 @@ $username=$_SESSION['userName'];
 			<div class="col-sm-12" style='max-height : 400px;overflow-x:scroll;overflow-y:scroll'>
 				<table class='table table-hover' name='table_new' id='table_new'>
 				<thead>
-					<tr class='danger'>
-						<th>Location Name</th>
-						<th>Capacity</th>
-						<th>Filled Quantity</th>
-						<th>Action</th>
+					<tr class='danger' style='text-align:center;'>
+						<th style='text-align:center;'>Location Name</th>
+						<th style='text-align:center;'>Capacity</th>
+						<th style='text-align:center;'>Filled Quantity</th>
+						<th style='text-align:center;'>Action</th>
 					</tr>
 				</thead>
 				<tbody >
@@ -241,11 +242,11 @@ $username=$_SESSION['userName'];
 						}
 						if(count($resValues) > 0){
 							for($i=0;$i<count($resValues);$i++){	?>
-								<tr>
+								<tr >
 									<td> <?php echo $resValues[$i]['loc_name'];   ?> </td>
-									<td> <?php echo $resValues[$i]['capacity'];   ?> </td>
-									<td> <?php echo $resValues[$i]['filled_qty']; ?> </td>
-									<td><a  class="fa fa-pencil-square-o" title="Edit Location" style="font-size:24px;color:blue" href="<?= $self_url ?>&edit_id=<?php echo $resValues[$i]['loc_id']?>" ></a>
+									<td style='text-align:right;'> <?php echo $resValues[$i]['capacity'];   ?> </td>
+									<td style='text-align:right;'> <?php echo $resValues[$i]['filled_qty']; ?> </td>
+									<td style='text-align:center;'><a  class="fa fa-pencil-square-o" title="Edit Location" style="font-size:24px;color:blue" href="<?= $self_url ?>&edit_id=<?php echo $resValues[$i]['loc_id']?>" ></a>
 										&nbsp;
 								<?php if ($resValues[$i]['filled_qty'] == 0) {	?>
 									<a  class="fa fa-trash" title="Delete Location" 
