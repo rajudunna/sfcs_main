@@ -216,40 +216,42 @@
                                                 } 
                                             }
                                         }
-
-                                        echo "<tr>
-                                                <td>"; 
-                                                 
-                                                    if($inputQty==0)
-                                                    {    
-                                                        echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$Original_barcode."\">"; 
-                                                    }
-                                                    else 
-                                                    { 
-                                                        echo "N/A"; 
-                                                    } 
-                                                //echo '<input type="hidden" value="'.$pac_tid.'" name="pac_tid[]">'; 
-                                            echo "</td>
-                                                <td>".$Original_barcode."</td>
-                                                <td>".$input_date."</td>";
-                                            echo "<td>".$style."</td>
-                                                <td>".$schedule."</td>
-                                                <td>".$color."</td>
-                                                <td>".$sewingjobno."</td>
-                                                <td>".$cutjobno."</td>
-                                                <td>".strtoupper($bundleRow['size'])."</td>
-                                                <td>".$inputQty."</td>
-                                                <td>".$outputQty."</td>
-                                                <td>".$outputRejQty."</td>
-                                                <td>".($inputQty-($outputQty+$outputRejQty))."</td>
-                                                <td>".$remarks."</td>
-                                                <td>".$aging."</td>
-                                                <td>".($inputQty-($outputQty+$outputRejQty))."</td>
-                                        </tr>";
-                                        $count++;
-                                        $inputQty=0;
-                                        $outputQty=0;
-                                        $outputRejQty=0;
+                                        //if balance>0 then we can display
+                                        if(($inputQty-($outputQty+$outputRejQty))>0){
+                                            echo "<tr>
+                                                    <td>"; 
+                                                    
+                                                        if($inputQty==0)
+                                                        {    
+                                                            echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$Original_barcode."\">"; 
+                                                        }
+                                                        else 
+                                                        { 
+                                                            echo "N/A"; 
+                                                        } 
+                                                    //echo '<input type="hidden" value="'.$pac_tid.'" name="pac_tid[]">'; 
+                                                echo "</td>
+                                                    <td>".$Original_barcode."</td>
+                                                    <td>".$input_date."</td>";
+                                                echo "<td>".$style."</td>
+                                                    <td>".$schedule."</td>
+                                                    <td>".$color."</td>
+                                                    <td>".$sewingjobno."</td>
+                                                    <td>".$cutjobno."</td>
+                                                    <td>".strtoupper($bundleRow['size'])."</td>
+                                                    <td>".$inputQty."</td>
+                                                    <td>".$outputQty."</td>
+                                                    <td>".$outputRejQty."</td>
+                                                    <td>".($inputQty-($outputQty+$outputRejQty))."</td>
+                                                    <td>".$remarks."</td>
+                                                    <td>".$aging."</td>
+                                                    <td>".($inputQty-($outputQty+$outputRejQty))."</td>
+                                            </tr>";
+                                            $count++;
+                                            $inputQty=0;
+                                            $outputQty=0;
+                                            $outputRejQty=0;
+                                        }
                                     }
  
                                 }

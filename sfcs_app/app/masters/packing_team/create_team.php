@@ -25,17 +25,17 @@
         <div class="panel-body">
         <form name="test" action="<?= $action_url ?>" method="POST" id='form_submt'>
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-4">
         			<input type='hidden' id='row_id' name='row_id' value=<?php echo $row_id; ?> >
-                    <b>Packing Team<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="text" onkeyup="return validateLength(this)" class="form-control" id="packing_team" maxlength="21" name="packing_team" value="<?php echo $packing_team; ?>" required>
+                    <b><font color='red'>*</font>Packing Team<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"></span></b><input type="text" onkeyup="return validateLength(this)" class="form-control" id="packing_team" maxlength="21" name="packing_team" value="<?php echo $packing_team; ?>" >
                 </div>
-                <div class="col-md-3">
-                    <b>Team Leader<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="text" onkeyup="return validateLength(this)" class="form-control" id="team_leader" maxlength="21" name="team_leader" value="<?php echo $team_leader; ?>" required>
+                <div class="col-md-4">
+                    <b><font color='red'>*</font>Team Leader<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"></span></b><input type="text" onkeyup="return validateLength(this)" class="form-control" id="team_leader" maxlength="21" name="team_leader" value="<?php echo $team_leader; ?>" >
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="dropdown">
-                        <b>Status</b> <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span>
-                        <select class="form-control" id="status" name="status" required>
+                        <b><font color='red'>*</font>Status</b> <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"></span>
+                        <select class="form-control" id="status" name="status">
                         
                         <?php
                         if($status=='Active'){
@@ -64,6 +64,7 @@
         </div>
     </div>
 </div>
+
 
 <?php include('view_team.php'); ?>
 <script>

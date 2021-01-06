@@ -20,27 +20,27 @@
 
 	function firstbox()
 	{
-		window.location.href =url1+"&style="+document.mini_order_report.style.value;
+		window.location.href =url1+"&style="+document.mini_order_report.style.value+"&plantcode="+document.mini_order_report.plant.value;
 	}
 
 	function secondbox()
 	{
-		window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value;
+		window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value+"&plantcode="+document.mini_order_report.plant.value;
 		
 	}
 	function thirdbox()
 	{
-		window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value+"&color="+document.mini_order_report.color.value;
+		window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value+"&color="+document.mini_order_report.color.value+"&plantcode="+document.mini_order_report.plant.value;
 	}
 
 	function fourthbox()
 	{
-		window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value+"&color="+document.mini_order_report.color.value+"&mpo="+document.mini_order_report.mpo.value;
+		window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value+"&color="+document.mini_order_report.color.value+"&mpo="+document.mini_order_report.mpo.value+"&plantcode="+document.mini_order_report.plant.value;
 	}
 
 	function fifthbox()
 	{
-		window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value+"&color="+document.mini_order_report.color.value+"&mpo="+document.mini_order_report.mpo.value+"&sub_po="+document.mini_order_report.sub_po.value;
+		window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value+"&color="+document.mini_order_report.color.value+"&mpo="+document.mini_order_report.mpo.value+"&sub_po="+document.mini_order_report.sub_po.value+"&plantcode="+document.mini_order_report.plant.value;
 	}
 
 	function check_val()
@@ -84,11 +84,14 @@
 	include(getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R')); 
 	include(getFullURLLevel($_GET['r'],'common/config/sms_api_calls.php',4,'R')); 
 	include(getFullURLLevel($_GET['r'],'common/config/global_error_function.php',4,'R'));
-	$plant_code = $_SESSION['plantCode'];
 	$username =  $_SESSION['userName'];
 	// $has_permission=haspermission($_GET['r']);
     $main_url=getFullURL($_GET['r'],'sewing_job_create_mrn.php','R');
-
+	if($_SESSION['plantCode']!=''){
+		$plant_code = $_SESSION['plantCode'];
+	}else{
+		$plant_code = $_GET['plantcode'];
+	}
 	$get_style=$_GET['style'];
 	$get_schedule=$_GET['schedule'];
 	$get_color=$_GET['color']; 
@@ -107,6 +110,7 @@
 			<?php
 			echo "<form name=\"mini_order_report\" action=\"?r=".$_GET["r"]."\" class=\"form-inline\" method=\"post\" >";
 				?>
+				<input type="hidden" id="plant" name="plant" value="<?= $plant_code?>">
 				Style:
 				<?php
 				    echo "<select name=\"style\" id=\"style\" class='form-control' onchange=\"firstbox();\" >";

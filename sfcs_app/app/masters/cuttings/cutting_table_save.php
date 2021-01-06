@@ -14,6 +14,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 // echo $_POST['table_name'];
 $plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
+// $plant_code='N02';
 $tbl_id=$_POST['tbl_id'];
 // echo $tbl_id;
 $emp_id =$_POST['emp_id'];

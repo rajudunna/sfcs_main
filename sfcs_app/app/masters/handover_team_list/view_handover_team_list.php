@@ -5,6 +5,7 @@
 	// }
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 	$plant_code=$_SESSION['plantCode'];
+	// $plant_code='N02';
 	$username=$_SESSION['userName'];
 
 	$sql = "SELECT emp_id,team_id,emp_call_name,selected_user,emp_status FROM $pms.tbl_fg_crt_handover_team_list where plant_code='$plant_code' order by team_id desc";
@@ -12,7 +13,7 @@
 	$norows = mysqli_num_rows($sql_result);
 	$sno = 1; 
 	if ($norows > 0) {
-		echo "<table id='tbl_packing_method' class='table'><thead><tr><th>S.No</th><th>Employee Id</th><th>Employee Name</th><th>Selected User</th><th>Status</th><th> Edit / Delete </th></tr></thead><tbody>";
+		echo "<div class='table-responsive'><table id='tbl_packing_method' class='table'><thead><tr><th>S.No</th><th>Employee Id</th><th>Employee Name</th><th>Selected User</th><th>Status</th><th> Edit / Delete </th></tr></thead><tbody>";
 		// output data of each row
 		while($row=mysqli_fetch_array($sql_result)) {
 			$emp_id=$row["emp_id"];
@@ -31,11 +32,11 @@
 			
 			$edit_url = getFullURL($_GET['r'],'save_handover_team_list.php','N');
 			$delete_url = getFullURL($_GET['r'],'delete_handover_team_list.php','N');
-			echo "<tr><td>".$sno++."</td><td>".$row["emp_id"]." </td><td>".$row["emp_call_name"]."</td><td>".$row["selected_user"]."</td><td>".$cat_status."</td>
+			echo "<tr><td style='text-align:right;'>".$sno++."</td><td style='text-align:right;'>".$row["emp_id"]." </td><td style='text-align:left;'>".$row["emp_call_name"]."</td><td style='text-align:left;'>".$row["selected_user"]."</td><td style='text-align:left;'>".$cat_status."</td>
 			<td><a href='$edit_url&team_id=$team_id&emp_id=$emp_id&emp_call_name=$emp_call_name&emp_status=$cat_status' class='btn btn-warning btn-xs editor_edit'>Edit</a> / 
 			<a href='$delete_url&team_id=$team_id&emp_id=$emp_id&emp_call_name=$emp_call_name&selected_user=$selected_user&lastup=$lastup&emp_status=$cat_status' class='btn btn-danger btn-xs' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
 		}
-		echo "</tbody></table>";
+		echo "</tbody></table></div>";
 	} else {
 		echo "0 results";
 	}

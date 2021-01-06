@@ -64,7 +64,33 @@
     $task_type=TaskAttributeNamesEnum::SEWINGJOBNO;
     $revert_url = getFullURL($_GET['r'],'job_summary_view.php','N');
     echo "<button class='btn btn-sm btn-primary pull-right' onclick='location.href=\"$revert_url\"' ><< Click here to go Back</button>";
-
+     //to get style,schedule,color ganust subpo
+     $get_styledetails="SELECT style,schedule,color FROM $pts.transaction_log WHERE plant_code='$plantcode' AND sub_po='$sub_po' LIMIT 1";
+     $get_styledetails_result=mysqli_query($link_new, $get_styledetails) or exit("Sql Error at get_styledetails".mysqli_error($GLOBALS["___mysqli_ston"]));
+     while($row_details=mysqli_fetch_array($get_styledetails_result))
+     {
+       $style=$row_details['style'];
+       $color=$row_details['color'];
+       $schedule=$row_details['schedule'];
+     }
+     $get_operations_version_id="SELECT operations_version_id FROM $pps.mp_color_detail WHERE style='$style' AND color='$color' AND master_po_number='$master_po_number' AND plant_code='$plantcode' AND is_active=1";
+     $version_id_result=mysqli_query($link_new, $get_operations_version_id) or exit("Sql Error at get_operations_version_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+     while($row14=mysqli_fetch_array($version_id_result))
+     {
+         $operations_version_id = $row14['operations_version_id'];
+     }
+     //Function to get operations for style,color
+     $result_mrn_operation=getJobOpertions($style,$color,$plantcode,$operations_version_id);
+     $operations=$result_mrn_operation;
+     $category=DepartmentTypeEnum::SEWING;
+     foreach($operations as $key =>$ops){
+         if($ops['operationCategory'] == $category)
+         {
+             $operation_code[]= $ops['operationCode'];
+             $ops_get_code[$ops['operationCode']] = $ops['operationName'];
+         }
+         
+     }
     if(sizeof($job_ids) > 0){
         
         $job_ids_list = implode("','", array_unique($job_ids));
@@ -118,19 +144,19 @@
                 while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
                     $job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
                 }
-                $style[] = $job_detail_attributes[$sewing_job_attributes['style']];
-                $schedule[] = $job_detail_attributes[$sewing_job_attributes['schedule']];
-                $color[] = $job_detail_attributes[$sewing_job_attributes['color']];
+                // $style[] = $job_detail_attributes[$sewing_job_attributes['style']];
+                // $schedule[] = $job_detail_attributes[$sewing_job_attributes['schedule']];
+                // $color[] = $job_detail_attributes[$sewing_job_attributes['color']];
                 $cutjobno[] = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
                 // echo $schedule;
             }
-            $styles = implode(",", array_unique($style));
-            // var_dump($styles.'style');
-            $schedules = implode(",", array_unique($schedule));
-            $colors = implode(",", array_unique($color));
+            // $styles = implode(",", array_unique($style));
+            // // var_dump($styles.'style');
+            // $schedules = implode(",", array_unique($schedule));
+            // $colors = implode(",", array_unique($color));
             $cutjobnos = implode(",", array_unique($cutjobno));
-            $scheduless = implode("','", array_unique($schedule));
-            $get_order_details = "SELECT mo_number,vpo,destination,cpo,planned_delivery_date FROM $oms.oms_mo_details where schedule in ('$scheduless') and plant_code='$plantcode' and is_active=1";
+            // $scheduless = implode("','", array_unique($schedule));
+            $get_order_details = "SELECT mo_number,vpo,destination,cpo,planned_delivery_date FROM $oms.oms_mo_details where schedule='$schedule' and plant_code='$plantcode' and is_active=1";
             // echo $get_order_details;
             $get_order_details_result = mysqli_query($link_new, $get_order_details) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
             while ($row3 = mysqli_fetch_array($get_order_details_result)) {
@@ -152,20 +178,20 @@
             if($key == 0){
                 echo "<div style='float:left'><table class='table table-bordered' style='font-size:11px;font-family:verdana;text-align:left;'>";
                 echo "<tr>";
-                echo "<td>PO Description :</td>";
+                echo "<td>Sub PO Description :</td>";
                 echo "<td>$sub_po_description</td>";
                 echo "</tr>";
                 echo "<tr>";
                 echo "<td>Style :</td>";
-                echo "<td>$styles</td>";
+                echo "<td>$style</td>";
                 echo "</tr>";
                 echo "<tr>";
                 echo "<td>Schedule :</td>";
-                echo "<td>$schedules</td>";
+                echo "<td>$schedule</td>";
                 echo "</tr>";
                 echo "<tr>";
                 echo "<td>Color :</td>";
-                echo "<td>$colors</td>";
+                echo "<td>$color</td>";
                 echo "</tr>";
                 echo "</table></div>";
                 echo "<div class='col-md-12 table-responsive' style='max-height:600px;overflow-y:scroll;'><table class='table table-bordered'>";
@@ -189,12 +215,12 @@
             }
             echo "<tr height=20 style='height:15.0pt;>";
             echo "<td height=20 style='height:15.0pt'></td>";
-            echo "<td height=20 style='height:15.0pt'>$styles</td>";
+            echo "<td height=20 style='height:15.0pt'>$style</td>";
             echo "<td height=20 style='height:15.0pt'>$cpos</td>";
             echo "<td height=20 style='height:15.0pt'>$vpos</td>";
-            echo "<td height=20 style='height:15.0pt'>".$schedules."</td>";
+            echo "<td height=20 style='height:15.0pt'>".$schedule."</td>";
             echo "<td height=20 style='height:15.0pt'>$destinations</td>";
-            echo "<td height=20 style='height:15.0pt'>$colors</td>";
+            echo "<td height=20 style='height:15.0pt'>$color</td>";
             echo "<td height=20 style='height:15.0pt'>".$cutjobnos."</td>";
             echo "<td height=20 style='height:15.0pt'>".$planned_delivery_dates."</td>";
             echo "<td height=20 style='height:15.0pt'>".$job_number[$job_id]."</td>";
@@ -216,28 +242,10 @@
                 echo "<td height=20 style='height:15.0pt'>".$qty."</td>";
                 $cum_qty += $qty;
             }
-            $get_operations_version_id="SELECT operations_version_id FROM $pps.mp_color_detail WHERE style in ('$styles') AND color in ('$colors') AND master_po_number='$master_po_number' AND plant_code='$plantcode' AND is_active=1";
-            $version_id_result=mysqli_query($link_new, $get_operations_version_id) or exit("Sql Error at get_operations_version_id".mysqli_error($GLOBALS["___mysqli_ston"]));
-            while($row14=mysqli_fetch_array($version_id_result))
-            {
-                $operations_version_id = $row14['operations_version_id'];
-            }
-            //Function to get operations for style,color
-            $result_mrn_operation=getJobOpertions($style,$color,$plantcode,$operations_version_id);
-            $operations=$result_mrn_operation;
-            $category=DepartmentTypeEnum::SEWING;
-            foreach($operations as $key =>$ops){
-                if($ops['operationCategory'] == $category)
-                {
-                    $operation_code[]= $ops['operationCode'];
-                    $ops_get_code[$ops['operationCode']] = $ops['operationName'];
-                }
-                
-            }
-          
-
+           
             echo "<td height=20 style='height:15.0pt'>".$cum_qty."</td>";
             $final_total += $cum_qty;
+            $col_span = count($ops_get_code);
             echo "<td>";
             echo "<div class='table-responsive'>";
             echo "<table class=\"table table-bordered\">
@@ -252,9 +260,6 @@
             }
             echo "</tr>";
             
-
-
-            $col_span = count($ops_get_code);
             $tot_input=0;
             $tot_outout=0;
             $tot=0;
@@ -262,11 +267,11 @@
                 echo "<tr>";
                 echo "<td>".$planned_date."</td>";
                 echo "<td>".$workstation_code."</td>";
-                echo "<td>".$colors."</td>";
+                echo "<td>".$color."</td>";
                 $input_qty = 0;
                 $output_qty = 0;
                 $get_io_qty = "SELECT SUM(IF(operation = $input_ops,good_quantity,0)) AS input,
-                SUM(IF(operation = $out_put_ops,good_quantity,0)) AS output FROM $pts.`transaction_log` WHERE style in ('$styles') AND schedule=('$schedules') AND color= ('$colors') AND size = '$siz' AND parent_job ='$job_number[$job_id]' and plant_code='$plantcode' AND is_active=1 GROUP BY size";
+                SUM(IF(operation = $out_put_ops,good_quantity,0)) AS output FROM $pts.`transaction_log` WHERE style='$style' AND schedule='$schedule' AND color='$color' AND size = '$siz' AND parent_job ='$job_number[$job_id]' and plant_code='$plantcode' AND is_active=1 GROUP BY size";
                 mysqli_query($link_new,$get_io_qty) or exit("Sql Error70".mysqli_error());
                 $get_io_qty_result=mysqli_query($link_new,$get_io_qty) or exit("Sql Error5".mysqli_error());
                 while($row7 = mysqli_fetch_array($get_io_qty_result))
@@ -282,7 +287,7 @@
                 if(count($operation_code) > 0) {
                     foreach ($operation_code as $op_code) 
                     {
-                        $get_details="SELECT sum(if(operation_id=".$op_code.",rejected_quantity,0)) as rejected_qty FROM $pts.transaction_log WHERE style in ('$styles') AND schedule=('$schedules') AND color= ('$colors') AND size = '$siz' AND parent_job ='$job_number[$job_id]' and plant_code='$plantcode' AND is_active=1 GROUP BY size";
+                        $get_details="SELECT sum(if(operation=".$op_code.",rejected_quantity,0)) as rejected_qty FROM $pts.transaction_log WHERE style='$style' AND schedule='$schedule' AND color='$color' AND size = '$siz' AND parent_job ='$job_number[$job_id]' and plant_code='$plantcode' AND is_active=1 GROUP BY size";
                         $result5 = $link->query($get_details);
                         $result5_num=mysqli_num_rows($result5);
                         if($result5_num > 0)
@@ -321,7 +326,7 @@
         }
         //To get Total order qty
         $total_order_qty=0;
-        $get_order_qty="SELECT SUM(quantity) AS quantity FROM $pps.`mp_mo_qty` WHERE SCHEDULE in ('$schedules') AND color in ('$colors') AND plant_code='$plantcode'";
+        $get_order_qty="SELECT SUM(quantity) AS quantity FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plantcode'";
         $sql_result3=mysqli_query($link, $get_order_qty) or die("Error".$get_order_qty.mysqli_error($GLOBALS["___mysqli_ston"]));
         while($row3=mysqli_fetch_array($sql_result3))
         {
@@ -336,7 +341,7 @@
             $cut_operation=$row4['operation_code'];
         }
         $cut_recevied_quantity = 0;
-        $cut_report_details="SELECT sum(if(operation=".$cut_operation.",good_quantity,0)) as good_quantity FROM $pts.transaction_log WHERE style in ('$styles') AND schedule=('$schedules') AND color= ('$colors') and operation=$cut_operation and plant_code='$plantcode' AND is_active=1 GROUP BY size";
+        $cut_report_details="SELECT sum(if(operation=".$cut_operation.",good_quantity,0)) as good_quantity FROM $pts.transaction_log WHERE style='$style' AND schedule='$schedule' AND color='$color' and operation=$cut_operation and plant_code='$plantcode' AND is_active=1 GROUP BY size";
         $result6 = $link->query($cut_report_details);
         $result6_num=mysqli_num_rows($result6);
         if($result6_num > 0)
@@ -348,7 +353,7 @@
         }
 
         $tot_in = 0;
-        $tot_in_details="SELECT sum(if(operation=".$input_ops.",good_quantity,0)) as good_quantity FROM $pts.transaction_log WHERE style in ('$styles') AND schedule=('$schedules') AND color= ('$colors') and operation=$input_ops and plant_code='$plantcode' AND is_active=1 GROUP BY size";
+        $tot_in_details="SELECT sum(if(operation=".$input_ops.",good_quantity,0)) as good_quantity FROM $pts.transaction_log WHERE style='$style' AND schedule='$schedule' AND color='$color' and operation=$input_ops and plant_code='$plantcode' AND is_active=1 GROUP BY size";
         $result7 = $link->query($tot_in_details);
         $result7_num=mysqli_num_rows($result7);
         if($result7_num > 0){
@@ -359,7 +364,7 @@
         }
 
         $tot_out = 0;
-        $tot_out_details="SELECT sum(if(operation=".$out_put_ops.",good_quantity,0)) as good_quantity FROM $pts.transaction_log WHERE style in ('$styles') AND schedule=('$schedules') AND color= ('$colors') and operation=$out_put_ops and plant_code='$plantcode' AND is_active=1 GROUP BY size";
+        $tot_out_details="SELECT sum(if(operation=".$out_put_ops.",good_quantity,0)) as good_quantity FROM $pts.transaction_log WHERE style='$style' AND schedule='$schedule' AND color='$color' and operation=$out_put_ops and plant_code='$plantcode' AND is_active=1 GROUP BY size";
         $result8 = $link->query($tot_out_details);
         $result8_num=mysqli_num_rows($result8);
         if($result8_num > 0){
@@ -380,11 +385,4 @@
     } else{
         echo "<h3 style='color:red'>No Sewing Jobs Found!<h3>";
     }
-    
-    
-
-   
-
-
-
 ?>

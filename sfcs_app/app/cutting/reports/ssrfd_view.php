@@ -515,7 +515,7 @@ if(isset($_POST['submit']))
 			<th class='danger'>Extra Cut</th>
 			<?php
 				foreach($size_code as $key => $value){
-					$excess_size = ($excess_size_code)?$excess_size_code:0;
+					$excess_size = ($excess_size_code[$key])?$excess_size_code[$key]:0;
 					echo "<td class='danger'>".($excess_size)."</td>";
 				  } 
 				// foreach($excess_size_code as $key => $value){
@@ -536,18 +536,18 @@ if(isset($_POST['submit']))
 			</tr>
 			<tr>
 				<th class='success'>CAD Consumption:</th>
-				<td><?php  echo round($cad_consumption,4);  ?></td>
-				<td><?php  echo $cad_consumption_saving; ?>%</td>
+				<td><?php  echo round($cad_consumption, 4);  ?></td>
+				<td><?php  echo round($cad_consumption_saving, 4); ?>%</td>
 			</tr>
 			<tr>
 				<th class='success'>Actual Consumption:</th>
-				<td><?php echo round($actual_consumption,4);  ?></td>
-				<td><?php echo $actual_consumption_saving; ?>% </td>
+				<td><?php echo round($actual_consumption, 4);  ?></td>
+				<td><?php echo  round($actual_consumption_saving, 4); ?>% </td>
 			</tr>	
 			<tr>
 				<th class='success'>Net Consumption:</th>
-				<td><?php echo round($net_consumption,4);  ?></td>
-				<td><?php echo $net_consumption_saving; ?>%</td>
+				<td><?php echo round($net_consumption, 4);  ?></td>
+				<td><?php echo  round($net_consumption_saving, 4); ?>%</td>
 			</tr>	
 	</table>
 </div>

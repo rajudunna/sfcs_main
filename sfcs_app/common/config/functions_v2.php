@@ -1042,7 +1042,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                                                 $j++;
                                             }
                                             /**getting job header id from task jobs */
-                                            $qryGetTaskHeader="SELECT task_header_id FROM $tms.task_jobs WHERE task_job_refrence='$jmjgheader' AND plant_code='$plantcode' AND is_active=1";
+                                            $qryGetTaskHeader="SELECT task_header_id FROM $tms.task_jobs WHERE task_job_reference='$jmjgheader' AND plant_code='$plantcode' AND is_active=1";
                                             $resultTaskHeaderId = mysqli_query($link_new,$qryGetTaskHeader) or die(exception($qryGetTaskHeader));
                                             if (mysqli_num_rows($resultTaskHeaderId) > 0) {
                                                 while($taskHeaderRow=mysqli_fetch_array($resultGetCutJob)) 
