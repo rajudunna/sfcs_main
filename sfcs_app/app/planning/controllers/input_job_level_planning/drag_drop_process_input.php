@@ -562,8 +562,8 @@ $userName = getrbac_user()['uname'];
 			$operation_code=$get_ips_op['operation_code'];
 			$operation_name=$get_ips_op['operation_name'];
 			$remove_docs=array();
-			$sqlx11="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where
-			input_job_input_status(input_job_no_random,$operation_code)=\"DONE\"";
+			$sqlx11="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dashboard_input where
+			input_job_input_status(input_job_no_random_ref,$operation_code)=\"DONE\"";
 			//echo $sqlx;
 			$sql_resultx11=mysqli_query($link, $sqlx11) or exit("Sql Error11.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowx11=mysqli_fetch_array($sql_resultx11))
@@ -584,8 +584,8 @@ $userName = getrbac_user()['uname'];
 
 		if($operation_code != 'Auto'){
 			$remove_docs=array();
-			$sqlx111="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where
-			input_job_input_status(input_job_no_random,$operation_code)=\"DONE\"";
+			$sqlx111="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dashboard_input where
+			input_job_input_status(input_job_no_random_ref,$operation_code)=\"DONE\"";
 			//echo $sqlx;
 			$sql_resultx111=mysqli_query($link, $sqlx111) or exit("Sql Error11.3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowx111=mysqli_fetch_array($sql_resultx111))
