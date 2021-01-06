@@ -110,8 +110,13 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                 $rejection_border = "";
             }           
             //FOR SCHEDULE CLUBBING ensuring for parent docket (V2.0 there is no parent docket scenario always one docket can have multiple schedules)
-            $ft_status='1'; // after ffsp integration need to get status against to style,schedules(multiples) and color for the input job random ref(taskJobId) // Currently default 1 assuming that material available in ffsp
-            $trims_status=$sql_row33x112['st_status'];
+            //$ft_status='1'; // after ffsp integration need to get status against to style,schedules(multiples) and color for the input job random ref(taskJobId) // Currently default 1 assuming that material available in ffsp
+            $get_ftstatus="SELECT status_value FROM $wms.trims_status where style='$style' and schedule='$schedule' and color='$color_info' and status_key='FT STATUS' and plant_code=\"$plant_code\"";
+            $ftstatus_result=mysqli_query($link, $get_ftstatus)or exit("get_ftstatus".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($ftstatus_row=mysqli_fetch_array($ftstatus_result))
+            {
+                $ft_status=$ftstatus_row['status_value'];
+            }
             if($input_trims_status == TrimStatusEnum::PREPARINGMATERIAL)
             {
                 $tstatus='Preparing Material';
@@ -201,30 +206,28 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                                 $fabric_req="0";
                             }
                             // fabric status logic
-                            $sql1x12="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_id` IN ($docket_line_ids) and fabric_status='1'";
+                            $sql1x12="SELECT fabric_status FROM `$pps`.`requested_dockets` WHERE jm_docket_id IN ($docket_line_ids) AND fabric_status='1'";
                             $sql_result1x12=mysqli_query($link, $sql1x12) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            if(mysqli_num_rows($sql_result1x12)>0)
+                            while($fabric_row=mysqli_fetch_array($sql_result1x12))
                             {
-                                // if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x12))
-                                // {
-                                    $fabric_status="1";
-                                // }
+                                if(sizeof($doc_no_ref_explode)==mysqli_num_rows($sql_result1x12))
+                                {
+                                  $fabric_status=$fabric_row['fabric_status'];
+                                } else {
+                                  $fabric_status=0;
+                                }
                             }
-                            $sql1x11="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_id` IN ($docket_line_ids) and fabric_status = '5'";
-                            $sql_result1x11=mysqli_query($link, $sql1x11) or exit("Sql Error83".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            if(mysqli_num_rows($sql_result1x11)>0)
+                            $sql1x122="SELECT fabric_status FROM `$pps`.`requested_dockets` WHERE jm_docket_id IN ($docket_line_ids) AND fabric_status='5'";
+                            $sql_result1x122=mysqli_query($link, $sql1x122) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            while($fabric_row1=mysqli_fetch_array($sql_result1x122))
                             {
-                                // if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x11))
-                                // {
-                                    $fabric_status="5";
-                                // }
+                                if(sizeof($doc_no_ref_explode)==mysqli_num_rows($sql_result1x122))
+                                {
+                                  $fabric_status=$fabric_row1['fabric_status'];
+                                }
                             }
                         }
-                        
-                        if ($fabric_status == "")
-                        {
-                            $fabric_status="0";
-                        }
+                        $id="yash";
                         // assigning colors for status based on fabric
                         if($cut_status=="5")
                         {
