@@ -1,9 +1,9 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
-
-$date=$_POST['date'];
-$shift=$_POST['shift'];
+// error_reporting(E_ALL);
+$date=$_POST['date1'];
+$shift=$_POST['team'];
 $shift_start_time=$_POST['shift_start_time'];
 $shift_end_time=$_POST['shift_end_time'];
 $break_hours=$_POST['break_hours'];
@@ -34,49 +34,77 @@ while($module_row=mysqli_fetch_array($modules_result))
 $j=0;
 $k=0;
 $a=0;
-for($i=1;$i<sizeof($modules_array);$i++)
-{
+// for($i=1;$i<sizeof($modules_array);$i++)
+// {
 	
-	$pra_id = 'pra'.$j++;
-	$jumper_id = 'jumper'.$k++;
-	$adjustment_type = 'adjustment_type'.$modules_array[$modules_array[$i]];
-	$adjustment_smo = 'adjustment_smo'.$modules_array[$modules_array[$i]];
-	$working_hours_min = 'working_hours_min'.$modules_array[$modules_array[$i]];
-	$adjustment_min = 'adjustment_min'.$modules_array[$modules_array[$i]];
-	$adjustment_hours = 'adjustment_hours'.$modules_array[$modules_array[$i]];
-	 // $jumper_id."</br>";
-	//echo $_POST[$jumper_id];die();
-	$sqla="Select * from $pms.pro_attendance where date=\"$date\" and module=\"$modules_array1[$i]\" and shift='".$shift."' and plant_code='".$plantcode."'";
+// 	$pra_id = 'pra'.$j++;
+// 	$jumper_id = 'jumper'.$k++;
+// 	$adjustment_type = 'adjustment_type'.$modules_array[$modules_array[$i]];
+// 	$adjustment_smo = 'adjustment_smo'.$modules_array[$modules_array[$i]];
+// 	$working_hours_min = 'working_hours_min'.$modules_array[$modules_array[$i]];
+// 	$adjustment_min = 'adjustment_min'.$modules_array[$modules_array[$i]];
+// 	$adjustment_hours = 'adjustment_hours'.$modules_array[$modules_array[$i]];
+// 	 // $jumper_id."</br>";
+// 	//echo $_POST[$jumper_id];die();
+// 	$sqla="Select * from $pms.pro_attendance where date=\"$date\" and module=\"$modules_array1[$i]\" and shift='".$shift."' and plant_code='".$plantcode."'";
 
-	$sqlresa=mysqli_query($link, $sqla) or exit("Sql Errord $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($sqlresa)==0)
-	{
-		$sql1="INSERT INTO $pms.pro_attendance (date,module,shift,plant_code,created_at,created_user,present,jumper,break_hours) VALUES ('".$date."','$modules_array1[$i]','".$shift."','".$plantcode."',NOW(),'".$username."','".$_POST[$pra_id]."','".$_POST[$jumper_id]."','".$_POST['break_hours']."')";
-		mysqli_query($link, $sql1) or exit("Sql Errore $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// $sql23="update $pms.pro_attendance set present='".$_POST[$pra_id]."',jumper='".$_POST[$jumper_id]."',break_hours='".$_POST['break_hours']."',updated_at=NOW(),updated_user='".$username."'  where date='".$date."' and module='$modules_array1[$i]' and shift='".$shift."' and plant_code='$plantcode'";
-		// mysqli_query($link, $sql23) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
-	}else{
-		$sql22="update $pms.pro_attendance  set present='".$_POST[$pra_id]."',jumper='".$_POST[$jumper_id]."',break_hours='".$_POST['break_hours']."',updated_at=NOW(),updated_user='".$username."'  where date='".$date."' and module='$modules_array1[$i]' and shift='".$shift."' and plant_code='$plantcode'";
-		// echo $sql22."</br>";
-		mysqli_query($link, $sql22) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
-	}
+// 	$sqlresa=mysqli_query($link, $sqla) or exit("Sql Errord $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 	if(mysqli_num_rows($sqlresa)==0)
+// 	{
+// 		$sql1="INSERT INTO $pms.pro_attendance (date,module,shift,plant_code,created_at,created_user,present,jumper,break_hours) VALUES ('".$date."','$modules_array1[$i]','".$shift."','".$plantcode."',NOW(),'".$username."','".$_POST[$pra_id]."','".$_POST[$jumper_id]."','".$_POST['break_hours']."')";
+// 		mysqli_query($link, $sql1) or exit("Sql Errore $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 		// $sql23="update $pms.pro_attendance set present='".$_POST[$pra_id]."',jumper='".$_POST[$jumper_id]."',break_hours='".$_POST['break_hours']."',updated_at=NOW(),updated_user='".$username."'  where date='".$date."' and module='$modules_array1[$i]' and shift='".$shift."' and plant_code='$plantcode'";
+// 		// mysqli_query($link, $sql23) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 	}else{
+// 		$sql22="update $pms.pro_attendance  set present='".$_POST[$pra_id]."',jumper='".$_POST[$jumper_id]."',break_hours='".$_POST['break_hours']."',updated_at=NOW(),updated_user='".$username."'  where date='".$date."' and module='$modules_array1[$i]' and shift='".$shift."' and plant_code='$plantcode'";
+// 		// echo $sql22."</br>";
+// 		mysqli_query($link, $sql22) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 	}
 
 	
-}
+// }
+// var_dump($_POST['data']);die();
 if(isset($_POST['data'])) 
   {
+	//   echo 'test';die();
 	$date1=$_POST['date1'];
 	$team=$_POST['team'];
-	$module=$_POST['module'];
+	// $module=$_POST['module'];
 	$plantcode=$_POST['plantcode'];
 	$username=$_POST['username'];
 	$dataArray = json_decode($_POST['data'], true);
+
+	foreach ($dataArray as $key => $value) 
+	{
+		// var_dump($value['module']);
+		$post_module = $value['module'];
+		$present = $value['present_emp'];
+		$jumper = $value['jumper'];
+		// die();
+		$sqla="Select * from $pms.pro_attendance where date=\"$date1\" and module='".$post_module."' and shift='".$team."' and plant_code='".$plantcode."'";
+
+
+		$sqlresa=mysqli_query($link, $sqla) or exit("Sql Errord $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sqlresa)==0)
+		{
+			$sql1="INSERT INTO $pms.pro_attendance (date,module,shift,plant_code,created_at,created_user,present,jumper,break_hours) VALUES ('".$date."','".$post_module."','".$team."','".$plantcode."',NOW(),'".$username."','".$present."','".$jumper."','".$_POST['break_hours']."')";
+			mysqli_query($link, $sql1) or exit("Sql Errore $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		}else{
+			$sql22="update $pms.pro_attendance  set present='".$present."',jumper='".$jumper."',break_hours='".$_POST['break_hours']."',updated_at=NOW(),updated_user='".$username."'  where date='".$date."' and module='".$post_module."' and shift='".$team."' and plant_code='$plantcode'";
+			// echo $sql22."</br>";
+			mysqli_query($link, $sql22) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
+		}
+
+	}
+	// die();
+
 	$check_val = "select * from $pms.pro_attendance_adjustment where date=\"$date1\" and shift='".$team."' and plant_code='$plantcode'";
 	$check_val_ref = mysqli_query($link, $check_val) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
 	$rows_id = mysqli_num_rows($check_val_ref);
 	if($rows_id>0){
 		$delete_child = "Delete from  $pms.`pro_attendance_adjustment` where date='" .$date1. "' and shift='" .$team. "' and plant_code='$plantcode'";
 		$roll_inspection_delete = $link->query($delete_child) or exit('query error in deleteing222---2');
+
 		$insert_four_points = "INSERT  INTO $pms.`pro_attendance_adjustment` (`date`,`module`, `shift`, `smo`, `adjustment_type`, `smo_minutes`,`smo_adjustment_min`,`smo_adjustment_hours`,created_at,created_user,plant_code,parent_id) VALUES ";
 		foreach ($dataArray as $key => $value) 
 		{
@@ -117,12 +145,12 @@ if(isset($_POST['data']))
 	}	
 	
   }
-  echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-  		function Redirect() {
-  			sweetAlert('Attandance Details Sucessfully Updated','','success');
-  			location.href = \"".getFullURLLevel($_GET['r'], "update_emp_details_v2.php", "0", "N")."\";
-  			}
-		  </script>";
+//   echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+//   		function Redirect() {
+//   			sweetAlert('Attandance Details Sucessfully Updated','','success');
+//   			location.href = \"".getFullURLLevel($_GET['r'], "update_emp_details_v2.php", "0", "N")."\";
+//   			}
+// 		  </script>";
 
 		 
 		 
