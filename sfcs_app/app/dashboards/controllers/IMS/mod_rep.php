@@ -475,6 +475,7 @@
                                         }
                                     }
                                 }
+                                sort($work_mod);
                                 // $final_mods = array_unique($work_mod);
                                 // echo($final_mods);
                                 for($x=0;$x<sizeof($work_mod);$x++)
